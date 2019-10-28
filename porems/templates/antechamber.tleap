@@ -1,0 +1,6 @@
+source leaprc.gaff #
+MOLSHORT = loadmol2 MOLNAME.mol2 #
+loadamberparams MOLNAME.frcmod #
+saveoff MOLSHORT MOLSHORTLOWER.lib #
+saveamberparm MOLSHORT MOLNAME.prmtop MOLNAME.inpcrd #
+quit #

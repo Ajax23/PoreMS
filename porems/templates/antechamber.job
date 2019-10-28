@@ -1,0 +1,11 @@
+#! /bin/sh
+antechamber -i MOLNAME.pdb -fi pdb -o MOLNAME.mol2 -fo mol2 -c bcc -s 2 >> MOLNAME.log 2>&1 #
+python ../neutralize.py MOLNAME >> MOLNAME.log 2>&1 #
+parmchk -i MOLNAME.mol2 -f mol2 -o MOLNAME.frcmod >> MOLNAME.log 2>&1 #
+rm MOLNAME.top >> MOLNAME.log 2>&1 #
+tleap -f MOLNAME.tleap >> MOLNAME.log 2>&1 #
+python ../toGro.py MOLNAME >> MOLNAME.log 2>&1 #
+rm A* >> MOLNAME.log 2>&1 #
+rm sqm* >> MOLNAME.log 2>&1 #
+rm *.lib >> MOLNAME.log 2>&1 #
+rm leap.log >> MOLNAME.log 2>&1 #

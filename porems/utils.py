@@ -1,5 +1,5 @@
 ################################################################################
-# Utility                                                                      #
+# Utils                                                                        #
 #                                                                              #
 """Here popular basic methods are noted. Furthermore terminal commands are
 specified depending on the operating system."""

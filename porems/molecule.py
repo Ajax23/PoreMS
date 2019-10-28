@@ -6,7 +6,8 @@
 
 
 import math
-import utility
+
+import porems.utils as utils
 
 
 class Molecule:
@@ -136,7 +137,7 @@ class Molecule:
                 line_idx += 1
 
         # Transform to column
-        return utility.column(data)
+        return utils.column(data)
 
     def _concat(self,mol_list):
         """Concatenate a molecule list into one molecule object.
