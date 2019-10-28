@@ -6,6 +6,8 @@
 
 
 import math
+import utility
+
 
 class Molecule:
     """This class defines a molecule object, which is basically a data matrix
@@ -119,7 +121,7 @@ class Molecule:
                 # Pdb file
                 elif file_type=="PDB":
                     if line_val[0] in ["ATOM","HETATM"]:
-                        coord = [float(line_val[i])/10 for i in range(6,7+1)]
+                        coord = [float(line_val[i])/10 for i in range(6,8+1)]
                         coord.append(line_val[11])
                         data.append(coord)
 
@@ -155,7 +157,7 @@ class Molecule:
         # Concatenate
         for mol in mol_list:
             # Molecules
-            mol_data = mol.getData()
+            mol_data = mol.get_data()
             for i in range(len(mol_data)):
                 for j in range(len(mol_data[i])):
                     data[i].append(mol_data[i][j])
@@ -208,7 +210,7 @@ class Molecule:
         mol : Molecule
             Molecule object
         """
-        temp = mol.getData()
+        temp = mol.get_data()
         for i in range(len(temp)):
             for j in range(len(temp[i])):
                 self._data[i].append(temp[i][j])
@@ -217,8 +219,8 @@ class Molecule:
     ##############################
     # Private Methods - Geometry #
     ##############################
-    def _dotproduct(self,vec1,vec2):
-        """Calculate the dot-product of two vectors
+    def _dotproduct(self,vec_a,vec_b):
+        """Calculate the dotproduct of two vectors
         :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^n`
 
         .. math::
@@ -230,17 +232,17 @@ class Molecule:
 
         Parameters
         ----------
-        vec1 : list
-            First vector
-        vec2 : list
-            Second vector
+        vec_a : list
+            First vector :math:`\\boldsymbol{a}`
+        vec_b : list
+            Second vector :math:`\\boldsymbol{b}`
 
         Returns
         -------
         dot : float
             Dotproduct value
         """
-        return sum((a*b) for a, b in zip(vec1,vec2))
+        return sum((a*b) for a, b in zip(vec_a,vec_b))
 
     def _length(self,vec):
         """Calculate the length of a vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`
@@ -252,7 +254,7 @@ class Molecule:
         Parameters
         ----------
         vec : list
-            Input vector
+            Vector a
 
         Returns
         -------
@@ -261,8 +263,8 @@ class Molecule:
         """
         return math.sqrt(self._dotproduct(vec,vec))
 
-    def _vector(self,inpA,inpB):
-        """Calculate the vector beween to two positions
+    def _vector(self,pos_a,pos_b):
+        """Calculate the vector :math:`\\boldsymbol{b}`eween to two positions
         :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^n`
 
         .. math::
@@ -273,37 +275,31 @@ class Molecule:
 
         Parameters
         ----------
-        inpA : int, list
-            Either an atom id or a position vector
-        inpB : int, list
-            Either an atom id or a position vector
+        pos_a : int, list
+            First position :math:`\\boldsymbol{a}`
+        pos_b : int, list
+            Second position :math:`\\boldsymbol{b}`
 
         Returns
         -------
         vector : list
             Bond vector
         """
-        # Initialize
-        dim = self._dim
-        vec = []
-
         # Process input
-        if isinstance(inpA,int) and isinstance(inpB,int):
-            inpA = self.pos(inpA)
-            inpB = self.pos(inpB)
-        elif not isinstance(inpA,list) and isinstance(inpB,list):
+        if isinstance(pos_a,int) and isinstance(pos_b,int):
+            pos_a = self.pos(pos_a)
+            pos_b = self.pos(pos_b)
+        elif not isinstance(pos_a,list) and isinstance(pos_b,list):
             print("Vector: Wrong input...")
             return
 
         # Check dimensions
-        if not len(inpA)==len(inpB) or not len(inpA)==dim:
+        if not len(pos_a)==len(pos_b) or not len(pos_a)==self._dim:
             print("Vector: Wrong dimensions...")
             return
 
         # Calculate vector
-        for i in range(dim):
-            vec.append(inpB[i]-inpA[i])
-        return vec
+        return [pos_b[i]-pos_a[i] for i in range(self._dim)]
 
     def _unit(self,vec):
         """Transform a vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^n` into a unit vactor
@@ -314,24 +310,19 @@ class Molecule:
 
         Parameters
         ----------
-        pos1 : list
-            First vector
-        pos1 : list
-            Second vector
+        vec : list
+            Vector a
 
         Returns
         -------
         vec : list
             Vector
         """
-        vec    = vec[:]
         length = self._length(vec)
-        for i in range(self._dim):
-            vec[i] = vec[i]/length if not length==0 else vec[i]
 
-        return vec
+        return [vec[i]/length if not length==0 else vec[i] for i in range(self._dim)]
 
-    def _cross(self,vecA,vecB):
+    def _cross(self,vec_a,vec_b):
         """Calculate the crossproduct of two three-dimensional vectors
         :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^3`
 
@@ -345,15 +336,15 @@ class Molecule:
 
         Parameters
         ----------
-        vecA : list
-            Vector a
-        vecB : list
-            Vector b
+        vec_a : list
+            First vector :math:`\\boldsymbol{a}`
+        vec_b : list
+            Second vector :math:`\\boldsymbol{b}`
 
         Returns
         -------
         vec : list
-            Crossproduct Vector
+            Crossproduct
         """
         vec = []
         vec.append(vecA[1]*vecB[2]-vecA[2]*vecB[1])
@@ -362,7 +353,7 @@ class Molecule:
 
         return vec
 
-    def _anglePolar(self,pos,isDeg=False):
+    def _angle_polar(self,pos,is_deg=False):
         """Calculate the polar angle of a position vector
         :math:`\\boldsymbol{a}\\in\\mathbb{R}^3`, which is the angle of the
         x-axis towards the reflected position vector on the x-y-plane
@@ -385,8 +376,8 @@ class Molecule:
         Parameters
         ----------
         pos : list
-            Position vector a
-        isDeg : bool
+            Position vector :math:`\\boldsymbol{a}`
+        is_deg : bool
             True if the output should be in degree
 
         Returns
@@ -399,9 +390,9 @@ class Molecule:
         except:
             angle = math.atan(0)
 
-        return angle*180/math.pi if isDeg else angle
+        return angle*180/math.pi if is_deg else angle
 
-    def _angleAzi(self,pos,isDeg=False):
+    def _angle_azi(self,pos,is_deg=False):
         """Calculate the azimuthal angle of a position vector
         :math:`\\boldsymbol{a}\\in\\mathbb{R}^3`, which is the angle of the
         position vector towards the x-y-plane
@@ -415,8 +406,8 @@ class Molecule:
         Parameters
         ----------
         pos : list
-            Position vector a
-        isDeg : bool
+            Position vector :math:`\\boldsymbol{a}`
+        is_deg : bool
             True if the output should be in degree
 
         Returns
@@ -429,10 +420,11 @@ class Molecule:
         except:
             angle = math.acos(0)
 
-        return angle*180/math.pi if isDeg else angle
+        return angle*180/math.pi if is_deg else angle
 
     def _axis(self,inp):
-        """Return the unit-vector of the main axes. Input is either integer or string with
+        """Return the three dimensional unit-vector of the main axes.
+        Input is either integer or string
 
         * 1 or "x" for the x-axis
         * 2 or "y" for the y-axis
@@ -452,22 +444,15 @@ class Molecule:
         axisError = "Wrong axis definition..."
 
         # Process input
-        if   isinstance(inp,str):
-            if   inp=="x":
-                axis = 1
-            elif inp=="y":
-                axis = 2
-            elif inp=="z":
-                axis = 3
-            else:
-                return axisError
+        if isinstance(inp,str):
+            if   inp=="x": axis = 1
+            elif inp=="y": axis = 2
+            elif inp=="z": axis = 3
+            else: return axisError
         elif isinstance(inp,int):
-            if inp==1 or inp==2 or inp==3:
-                axis = inp
-            else:
-                return axisError
-        else:
-            return axisError
+            if inp==1 or inp==2 or inp==3: axis = inp
+            else: return axisError
+        else: return axisError
 
         # Return vector
         return [1 if i==axis-1 else 0 for i in range(self._dim)]
@@ -490,15 +475,11 @@ class Molecule:
         focal : list
             Focal point
         """
-        # Initialize
-        data = self._data
+        return [sum(self._data[i])/len(self._data[i]) for i in range(self._dim)]
 
-        # Calculate focal point
-        return [sum(data[i])/len(data[i]) for i in range(self._dim)]
-
-    def _angle(self,v1,v2,isDeg=True):
+    def _angle(self,vec_a,vec_b,is_deg=True):
         """Calculate the angle between two vectors
-        :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`
+        :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^n`
 
         .. math::
 
@@ -507,11 +488,11 @@ class Molecule:
 
         Parameters
         ----------
-        v1 : list
-            First vector
-        v2 : list
-            Second vector
-        isDeg : bool
+        vec_a : list
+            First vector :math:`\\boldsymbol{a}`
+        vec_b : list
+            Second vector :math:`\\boldsymbol{b}`
+        is_deg : bool
             True if the output should be in degree
 
         Returns
@@ -519,11 +500,11 @@ class Molecule:
         angle : float
             Angle
         """
-        angle = math.acos(self._dotproduct(v1,v2)/(self._length(v1)*self._length(v2)))
+        angle = math.acos(self._dotproduct(vec_a,vec_b)/(self._length(vec_a)*self._length(vec_b)))
 
-        return angle*180/math.pi if isDeg else angle
+        return angle*180/math.pi if is_deg else angle
 
-    def _rotate(self,data,axis,angle,isDeg):
+    def _rotate(self,data,axis,angle,is_deg):
         """Rotate a vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^3`
         along an axis :math:`\\boldsymbol{b}\\in\\mathbb{R}^3` with angle
         :math:`\\alpha\\in\\mathbb{R}`.
@@ -551,12 +532,12 @@ class Molecule:
         Parameters
         ----------
         data : list
-            Vector a
+            Vector :math:`\\boldsymbol{a}`
         axis : int, str, list
-            Axis b
+            Axis :math:`\\boldsymbol{b}`
         angle : float
             Angle
-        isDeg : bool
+        is_deg : bool
             True if the input is in degree
 
         Returns
@@ -564,18 +545,13 @@ class Molecule:
         coord : list
             Vector c as the result of the rotation
         """
-        # Initialize
-        dim = self._dim
-
         # Angle
-        angle = angle*math.pi/180 if isDeg else angle
+        angle = angle*math.pi/180 if is_deg else angle
 
         # Set vector
         if isinstance(axis,list):
-            if   len(axis)==dim:
-                n = axis
-            elif len(axis)==2:
-                n = self._vector(axis[0],axis[1])
+            if   len(axis)==self._dim: n = axis
+            elif len(axis)==2:         n = self._vector(axis[0],axis[1])
             else:
                 print("Wrong vector dimensions.")
                 return
@@ -585,7 +561,7 @@ class Molecule:
                 print(n)
                 return
 
-        # Unity
+        # Unit vector
         n = self._unit(n)
 
         # Define rotation matrix
@@ -601,13 +577,9 @@ class Molecule:
               [n3*n1*(1.-c) - n2*s, n3*n2*(1.-c) + n1*s,  n3*n3*(1.-c) +    c]]
 
         # Rotate
-        coord = []
-        for i in range(dim):
-            coord.append(data[0]*r[i][0]+data[1]*r[i][1]+data[2]*r[i][2])
+        return [data[0]*r[i][0]+data[1]*r[i][1]+data[2]*r[i][2] for i in self._dim]
 
-        return coord
-
-    def _boxSize(self):
+    def _box_size(self):
         """Calculate the boxsize of the current molecule. This is done by
         determining the maximal coordinate value of all atoms in all dimensions
 
@@ -622,10 +594,7 @@ class Molecule:
         box : list
             Box length of the current molecule
         """
-        data = self._data
-        dim  = self._dim
-
-        return [max(data[i]) if max(data[i])>0 else 0.001 for i in range(dim)]
+        return [max(self._data[i]) if max(self._data[i])>0 else 0.001 for i in range(self._dim)]
 
 
     ##############################
@@ -648,15 +617,12 @@ class Molecule:
         vec : list
             Vector a
         """
-        # Initialize
-        data = self._data
-
         # Translate coordinates
         for i in range(self._dim):
-            for j in range(len(data[i])):
-                data[i][j] += vec[i]
+            for j in range(len(self._data[i])):
+                self._data[i][j] += vec[i]
 
-    def rotate(self,axis,angle,isDeg=True):
+    def rotate(self,axis,angle,is_deg=True):
         """Rotate data matrix :math:`\\boldsymbol{D}` around an axis
         :math:`\\boldsymbol{a}\\in\\mathbb{R}^3` with angle
         :math:`\\alpha\\in\\mathbb{R}` using rotation function :func:`_rotate`.
@@ -667,21 +633,20 @@ class Molecule:
             Axis
         angle : float
             Angle
-        isDeg : bool
+        is_deg : bool
             True if the input is in degree
         """
         # Initialize
-        dim     = self._dim
-        data    = self._data
-        dataLen = len(data[0])
+        dim  = self._dim
+        data = self._data
 
         # Rotate
-        for i in range(dataLen):
+        for i in range(len(data[0])):
             coord = [0 for i in range(dim)]
             for j in range(dim):
                 coord[j] += data[j][i]
 
-            coord = self._rotate(coord,axis,angle,isDeg)
+            coord = self._rotate(coord,axis,angle,is_deg)
             for j in range(dim):
                 data[j][i] = coord[j]
 
@@ -697,8 +662,7 @@ class Molecule:
             New position vector
         """
         # User input
-        if atom=="last":
-            atom = len(self._data[0])-1
+        atom = len(self._data[0])-1 if atom=="last" else atom
 
         # Change position
         for i in range(len(pos)):
@@ -751,30 +715,26 @@ class Molecule:
 
         return vec
 
-    def box(self,size,isExtend=True):
+    def box(self,size,is_extend=True):
         """Create a molecule box around a centered molecule, where the
         coordinate systems zero point is set to the positional focal point of
         the molecule. The resulting box has the edge length of the given size
-        value. If *isExtend* is set to True, then the maximal molecule
+        value. If *is_extend* is set to True, then the maximal molecule
         coordinate of all dimensions is added to *size*.
 
         Parameters
         ----------
         size : float
             Box size
-        isExtend : bool
+        is_extend : bool
             Should the molecule size be added to the box-size
         """
-        # Initialize
-        data = self._data
-        dim  = self._dim
-
         # Get focal point
         focal = self._focal()
 
         # Calculate box size
         boxFocal  = [f+size for f in focal]
-        self._box = [max(boxFocal) if isExtend else size for f in range(3)]
+        self._box = [max(boxFocal) if is_extend else size for f in range(3)]
 
         # Move molecule to box center
         self.add   ("R",focal)
@@ -785,7 +745,7 @@ class Molecule:
     #########################
     # Public Methods - Edit #
     #########################
-    def partMove(self,bond,atoms,length,vec=None):
+    def part_move(self,bond,atoms,length,vec=None):
         """Change the length of a specified bond. Variable *atoms* specifies
         which atoms or rather which part of the molecule needs to be moved for
         this specific bond. The given length is going to be the new bond length,
@@ -808,18 +768,14 @@ class Molecule:
 
         Examples
         --------
-        >>> partMove([0,1],[1,2,3],0.5)
+        >>> part_move([0,1],[1,2,3],0.5)
         """
-        # Initialize
-        data = self._data
-        dim  = self._dim
-
         # Create temporary molecule
         if isinstance(atoms,int): atoms = [atoms]
         temp = self._temp(atoms)
 
         # Set length
-        length = abs(length - self.bond(bond))
+        length = abs(length-self.bond(*bond)[1])
 
         # Set vector
         if vec==None:
@@ -830,9 +786,9 @@ class Molecule:
         temp.translate(vec)
 
         # Update positions
-        self._update(temp.getData(),atoms)
+        self._update(temp.get_data(),atoms)
 
-    def partRotate(self,bond,atoms,angle,zero):
+    def part_rotate(self,bond,atoms,angle,zero):
         """Rotate a set of specified atoms around a given bond as the rotation
         axis. First however the system needs to be set to zero. Therefore the
         atom id to define the new coordinate system has to be given for the set
@@ -853,12 +809,8 @@ class Molecule:
 
         Examples
         --------
-        >>> partRotate([0,1],[1,2,3],90,0)
+        >>> part_rotate([0,1],[1,2,3],90,0)
         """
-        # Initialize
-        data = self._data
-        dim  = self._dim
-
         # Create temporary molecule
         self.move(zero,[0,0,0])
         if isinstance(atoms,int): atoms = [atoms]
@@ -868,9 +820,9 @@ class Molecule:
         temp.rotate([self.pos(bond[0]),self.pos(bond[1])],angle)
 
         # Update positions
-        self._update(temp.getData(),atoms)
+        self._update(temp.get_data(),atoms)
 
-    def partAngle(self,bondA,bondB,atoms,angle,zero):
+    def part_angle(self,bond_a,bond_b,atoms,angle,zero):
         """Change the bond angle of two bond vectors. Variable *atoms* specifies
         which atoms or rather which part of the molecule needs rotated to change
         the specified bond angle. First however the system needs to be set to
@@ -884,9 +836,9 @@ class Molecule:
 
         Parameters
         ----------
-        bondA : list
+        bond_a : list
             First bond vector given as a list of two atom ids
-        bondB : list
+        bond_b : list
             Second bond vector given as a list of two atom ids
         atoms : int, list
             List of atoms to be rotated (can also be one id)
@@ -897,31 +849,27 @@ class Molecule:
 
         Examples
         --------
-        >>> partAngle([0,1],[1,2],[1,2,3],90,1)
+        >>> part_angle([0,1],[1,2],[1,2,3],90,1)
         """
-        # Initialize
-        data = self._data
-        dim  = self._dim
-
         # Create temporary molecule
         self.move(zero,[0,0,0])
         if isinstance(atoms,int): atoms = [atoms]
         temp = self._temp(atoms)
 
         # Rotate molecule around normal vector
-        if   len(bondA)==2   and len(bondB)==2:
-            vec = self._cross(self._vector(bondA[0],bondA[1]),self._vector(bondB[0],bondB[1]))
-        elif len(bondA)==dim and len(bondB)==dim:
-            vec = self._cross(bondA,bondB)
+        if   len(bond_a)==2   and len(bond_b)==2:
+            vec = self._cross(self._vector(bond_a[0],bond_a[1]),self._vector(bond_b[0],bond_b[1]))
+        elif len(bond_a)==self._dim and len(bond_b)==self._dim:
+            vec = self._cross(bond_a,bond_b)
         else:
             print("Wrong bond input...")
             return
         temp.rotate(vec,angle)
 
         # Update positions
-        self._update(temp.getData(),atoms)
+        self._update(temp.get_data(),atoms)
 
-    def lengthAngle(self,bond,bondA,bondB,atoms,zero,length,angle=[0,45],grid=0.001,isSilent=True,isNegative=False):
+    def length_angle(self,bond,bond_a,bond_b,atoms,zero,length,angle=[0,45],grid=0.001,is_silent=True,is_negative=False):
         """If the bond length of an exemplary circular molecule is correlated
         to an angle, then the bond length has to be changed in dependence to
         the bond angle.
@@ -945,9 +893,9 @@ class Molecule:
         ----------
         bond : list
             Bond of which the length should be changed
-        bondA : list
+        bond_a : list
             First bond vector given as a list of two atom ids
-        bondB : list
+        bond_b : list
             Second bond vector given as a list of two atom ids
         atoms : int, list
             List of atoms to be rotated (can also be one id)
@@ -959,24 +907,24 @@ class Molecule:
             Angle range to be tested
         grid : float
             angle steps fineness
-        isSilent : bool
+        is_silent : bool
             True to suppress error-value messages
-        isNegative : bool
+        is_negative : bool
             True for a negative rotation
 
         Examples
         --------
-        >>> lengthAngle([0,19],[8,9],[9,10],[10,11,12],self.pos(9))
+        >>> length_angle([0,19],[8,9],[9,10],[10,11,12],self.pos(9))
 
         """
         angles = [x*grid for x in range(int(angle[0]/grid),int(angle[1]/grid)+1)]
         for a in angles:
-            a = -a if isNegative else a
-            self.partAngle(bondA,bondB,atoms,a,zero)
+            a = -a if is_negative else a
+            self.part_angle(bond_a,bond_b,atoms,a,zero)
 
-            error = round(abs(self.bond(bond)-length),3)
+            error = round(abs(self.bond(*bond)[1]-length),3)
 
-            if not isSilent:
+            if not is_silent:
                 print("Error = "+str(error))
 
             if error==0:
@@ -986,39 +934,32 @@ class Molecule:
     #############################
     # Public Methods - Calulate #
     #############################
-    def angle(self,vec1,vec2,isDeg=True):
-        """Calculate the angle using function :func:`_angle`.
+    def angle(self,vec_a,vec_b,is_deg=True):
+        """Calculate the angle between two vectors
+        :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^n`
+
+        .. math::
+
+            angle=\\cos^{-1}\\frac{\\boldsymbol{a}\cdot\\boldsymbol{b}}
+            {|\\boldsymbol{a}||\\boldsymbol{a}|}
 
         Parameters
         ----------
-        vec1 : list
-            First vector
-        vec2 : list
-            Second vector
-        isDeg : bool
+        vec_a : list
+            First vector :math:`\\boldsymbol{a}`
+        vec_b : list
+            Second vector :math:`\\boldsymbol{b}`
+        is_deg : bool
             True if the output should be in degree
 
         Returns
         -------
         angle : float
-            Angle value
+            Angle
         """
-        return self._angle(vec1,vec2,isDeg)
+        angle = math.acos(self._dotproduct(vec_a,vec_b)/(self._length(vec_a)*self._length(vec_b)))
 
-    def bond(self,atoms):
-        """Calculate the bond length of a given bond (list of two atom ids).
-
-        Parameters
-        ----------
-        atoms : list
-            Bond atoms
-
-        Returns
-        -------
-        bond : float
-            Bond length
-        """
-        return self._length(self._vector(atoms[0],atoms[1]))
+        return angle*180/math.pi if is_deg else angle
 
     def pos(self,atom):
         """Get the position of an atom as a vector.
@@ -1033,17 +974,37 @@ class Molecule:
         pos : list
             Position vector of the specified atom
         """
-        pos = []
-        for i in range(self._dim):
-            pos.append(self._data[i][atom])
+        return [self._data[i][atom] for i in range(self._dim)]
 
-        return pos
+    def bond(self,inp_a,inp_b):
+        """Return the bond length and vector of a specified bond. The two inputs
+        can either be atom indices or to vectorial positions.
+
+        Parameters
+        ----------
+        inp_a : int, list
+            Either an atom id or a position vector
+        inp_b : int, list
+            Either an atom id or a position vector
+
+        Returns
+        -------
+        bond : list
+            Bond vector and length
+
+        Examples
+        --------
+        >>> bond(0,1)
+        >>> bond(*[0,1])
+        >>> bond([1,0,0],[0,0,0])
+        """
+        return [self._vector(inp_a,inp_b),self._length(self._vector(inp_a,inp_b))]
 
 
     #########################
     # Public Methods - Edit #
     #########################
-    def add(self,name,pos,bond=None,r=0,theta=0,phi=0,isDeg=True,bondType="s"):
+    def add(self,name,pos,bond=None,r=0,theta=0,phi=0,is_deg=True):
         """Add a new atom in polar coordinates. The *pos* input is either
         an atom id, that determines is the bond-start,
         or a vector for a specific position.
@@ -1070,10 +1031,8 @@ class Molecule:
             Azimuthal angle
         phi : float
             Polar angle
-        isDeg : bool
+        is_deg : bool
             True if the input of the angles in degree
-        bondType : str
-            Bond type "s"-single, "d"-double
 
         Examples
         --------
@@ -1081,12 +1040,9 @@ class Molecule:
         >>> add("C",0,r=0.153,theta=-135)
         >>> add("C",1,[0,1],r=0.153,theta= 135)
         """
-        # Initialize
-        data = self._data
-
         # Angles
-        phi   *= math.pi/180 if isDeg else 1
-        theta *= math.pi/180 if isDeg else 1
+        phi   *= math.pi/180 if is_deg else 1
+        theta *= math.pi/180 if is_deg else 1
 
         # Transform sphercial to cartesian coordinates
         x     = r*math.sin(theta)*math.cos(phi)
@@ -1095,22 +1051,18 @@ class Molecule:
         coord = [x,y,z]
 
         # Bond vector
-        if bond==None:
-            vec = self._axis("z")
-        else:
-            vec = self._vector(bond[0],bond[1])
+        if bond==None: vec = self._axis("z")
+        else:          vec = self._vector(bond[0],bond[1])
 
         # Calculate angles for rotation
-        phi   = self._anglePolar(vec)
-        theta = self._angleAzi  (vec)
+        phi   = self._angle_polar(vec)
+        theta = self._angle_azi  (vec)
 
         # Rotate towards axis
         tRot = self._cross([0,0,1],vec)
         if sum(tRot)==0: tRot  = "y"
 
-        coord = self._rotate(coord,tRot,theta,isDeg=False)
-        #coord = self._rotate(coord,"z",phi,  isDeg=False)
-        #coord = [round(i,4) for i in coord]
+        coord = self._rotate(coord,tRot,theta,is_deg=False)
 
         # Process position input
         b = None
@@ -1118,13 +1070,12 @@ class Molecule:
             b   = pos
             pos = self.pos(pos)
 
-
         # Add coordinates
         for i in range(self._dim):
-            data[i].append(pos[i]+coord[i])
+            self._data[i].append(pos[i]+coord[i])
 
         # Add name
-        data[self._dim].append(name)
+        self._data[self._dim].append(name)
 
     # Delete an atom
     def delete(self,atom):
@@ -1136,143 +1087,36 @@ class Molecule:
         atom :  int, list
             Atom id or list to be deleted
         """
-        # Initialize
-        data = self._data
-
         # Process input
         if isinstance(atom,str):
             if atom == "last":
-                atom = [len(data[0])-1]
+                atom = [len(self._data[0])-1]
         elif not isinstance(atom,list):
             atom = [atom]
         atom = sorted(atom,reverse=True)
 
         # Remove line
-        for dat in data:
+        for data in self._data:
             for a in atom:
-                dat.pop(a)
+                data.pop(a)
 
-    def overlap(self,error=0.005,isPrint=False):
-        """Check if atoms are overlapping (as in duplicates) and delete these.
-
-        Parameters
-        ----------
-        error : float
-            Error of the overlap search
-        isPrint : bool
-            True to print the list of overlapping atoms
-        """
-        # Initialize
-        data = self._data
-        dim  = self._dim
-
-        # Find duplicate atoms in reverse
-        for i in list(reversed(range(self.getNum()))):
-            # Get positions
-            atomA = self.pos(i)
-            for j in range(self.getNum()):
-                if not j==i:
-                    atomB  = self.pos(j)
-
-                    # Check if identical
-                    sumDel = 0
-                    a = []
-                    for k in range(dim):
-                        if abs(atomA[k]-atomB[k]) < error:
-                            a.append(abs(atomA[k]-atomB[k]))
-                            sumDel += 1
-
-                    # Delete atom
-                    if sumDel == dim:
-                        # print(i,j,a)
-                        self.delete(i)
-                        if isPrint:
-                            print(i)
-                        break
-
-    def bondLength(self,inpA,inpB):
-        """Return the bond length of a specified bond. The two inputs can either
-        be atom indices or to vectorial positions.
-
-        Parameters
-        ----------
-        inpA : int, list
-            Either an atom id or a position vector
-        inpB : int, list
-            Either an atom id or a position vector
-
-        Returns
-        -------
-        length : float
-            Bond length
-
-        Examples
-        --------
-        >>> bondLength(0,1)
-        >>> bondLength([1,0,0],[0,0,0])
-        """
-        return self._length(self._vector(inpA,inpB))
-
-    def bondVec(self,inpA,inpB):
-        """Return the bond vector of a given bond. the Two inputs can either
-        be atom indices or to vectorial positions.
-
-        Parameters
-        ----------
-        inpA : int, list
-            Either an atom id or a position vector
-        inpB : int, list
-            Either an atom id or a position vector
-
-        Returns
-        -------
-        bond : list
-            Bond vector
-        """
-        return self._vector(inpA,inpB)
-
-    def changeType(self,atom,atomType):
+    def change_type(self,atom,atom_type):
         """Change the atom type of a specified atom.
 
         Parameters
         ----------
         atom : int
             Atom id
-        atomType : str
+        atom_type : str
             New atomtype
         """
-        self._data[self._dim][atom] = atomType
-
-    def getMin(self,inp):
-        """Return minimal coordinate value for the specified
-        dimension (start at zero).
-
-        Parameters
-        ----------
-        inp : inst
-            Axis id
-
-        Returns
-        -------
-        minimum : float
-            Minimal coordinate
-        """
-        # Initialize
-        data = self._data
-
-        # Check minimum
-        minimum = 0
-        for i in range(len(data[inp])):
-            if minimum>data[inp][i]:
-                minimum = data[inp][i]
-
-        return minimum
+        self._data[self._dim][atom] = atom_type
 
 
     ##################
     # Setter Methods #
     ##################
-    def setName(self,name):
+    def set_name(self,name):
         """Set the molecule name, short name and link based on that name.
 
         Parameters
@@ -1282,17 +1126,7 @@ class Molecule:
         """
         self._name = name
 
-    def setLink(self,link=None):
-        """Set the molecule folder link. If input is None, set the link automatically.
-
-        Parameters
-        ----------
-        link : str, None
-            Molecule folder link
-        """
-        self._link = config.load("system")["home"]+config.load("ident")["links"]["mols"]["out"]+self.getName()+"/" if link is None else link
-
-    def setShort(self,short=None):
+    def set_short(self,short=None):
         """Set the molecule short name. If input is None, set the short name automatically.
 
         Parameters
@@ -1300,9 +1134,9 @@ class Molecule:
         short : str, None
             Molecule short name
         """
-        self._short = config.load("mols")[self.getName()] if short is None else short
+        self._short = config.load("mols")[self.get_name()] if short is None else short
 
-    def setWrite(self,write):
+    def set_write(self,write):
         """Set the molecule list for writing the structure file
 
         Parameters
@@ -1312,7 +1146,7 @@ class Molecule:
         """
         self._write = write
 
-    def setBox(self,box):
+    def set_box(self,box):
         """Set the molecule box dimensions.
 
         Parameters
@@ -1322,7 +1156,7 @@ class Molecule:
         """
         self._box = box
 
-    def setCharge(self,charge):
+    def set_charge(self,charge):
         """Set the total charge of the molecule.
 
         Parameters
@@ -1332,7 +1166,7 @@ class Molecule:
         """
         self._charge = charge
 
-    def setMasses(self,masses=None):
+    def set_masses(self,masses=None):
         """Set the molar masses of the atoms.
 
         Parameters
@@ -1345,9 +1179,9 @@ class Molecule:
         else:
             self._masses = []
             for atom in self._data[self._dim]:
-                self._masses.append(self._db.getMass(atom))
+                self._masses.append(self._db.get_mass(atom))
 
-    def setMass(self,mass=None):
+    def set_mass(self,mass=None):
         """Set the molar mass of the molecule.
 
         Parameters
@@ -1359,10 +1193,10 @@ class Molecule:
             self._mass = mass
         else:
             self._mass = 0
-            for mass in self.getMasses():
+            for mass in self.get_masses():
                 self._mass += mass
 
-    def setCOM(self,com=None):
+    def set_com(self,com=None):
         """Set the center of mass coordinates of the molecule.
 
         Parameters
@@ -1374,7 +1208,7 @@ class Molecule:
             self._com = com
         else:
             self._com = []
-            masses    = self.getMasses()
+            masses    = self.get_masses()
             for i in range(self._dim):
                 self._com.append(0)
                 for j in range(len(self._data[i])):
@@ -1386,7 +1220,7 @@ class Molecule:
     ##################
     # Getter Methods #
     ##################
-    def getData(self):
+    def get_data(self):
         """Return the data matrix.
 
         Returns
@@ -1396,7 +1230,7 @@ class Molecule:
         """
         return self._data
 
-    def getName(self):
+    def get_name(self):
         """Return the molecule name.
 
         Returns
@@ -1406,19 +1240,7 @@ class Molecule:
         """
         return self._name
 
-    def getLink(self):
-        """Return the molecule folder link.
-
-        Returns
-        -------
-        link : str
-            Molecule folder link
-        """
-        if self._link is None: self.setLink()
-
-        return self._link
-
-    def getShort(self):
+    def get_short(self):
         """Return the molecule short name.
 
         Returns
@@ -1426,11 +1248,11 @@ class Molecule:
         short : str
             Molecule short name
         """
-        if self._short is None: self.setShort()
+        if self._short is None: self.set_short()
 
         return self._short
 
-    def getWrite(self):
+    def get_write(self):
         """Return the global molecule list for writing the structure file.
 
         Returns
@@ -1440,7 +1262,7 @@ class Molecule:
         """
         return self._write
 
-    def getBox(self):
+    def get_box(self):
         """Calculate and return the box size of the current molecule.
 
         Returns
@@ -1448,9 +1270,9 @@ class Molecule:
         box : list
             Box dimensions
         """
-        return self._boxSize()
+        return self._box_size()
 
-    def getBoxC(self):
+    def get_box_c(self):
         """Return the current box size.
 
         Returns
@@ -1460,7 +1282,7 @@ class Molecule:
         """
         return self._box
 
-    def getNum(self):
+    def get_num(self):
         """Return the number of atoms.
 
         Returns
@@ -1470,7 +1292,7 @@ class Molecule:
         """
         return len(self._data[0])
 
-    def getType(self,atom):
+    def get_type(self,atom):
         """Return the atomtype of the given atom id.
 
         Parameters
@@ -1485,7 +1307,7 @@ class Molecule:
         """
         return self._data[self._dim][atom]
 
-    def getCharge(self):
+    def get_charge(self):
         """Return the total charge of the molecule.
 
         Returns
@@ -1495,7 +1317,7 @@ class Molecule:
         """
         return self._charge
 
-    def getMasses(self):
+    def get_masses(self):
         """Return a list of masses of the atoms.
 
         Returns
@@ -1503,10 +1325,10 @@ class Molecule:
         masses : list
             Masses in :math:`\\frac g{mol}`
         """
-        if self._masses is None: self.setMasses()
+        if self._masses is None: self.set_masses()
         return self._masses
 
-    def getMass(self):
+    def get_mass(self):
         """Return the molar mass of the molecule.
 
         Returns
@@ -1514,10 +1336,10 @@ class Molecule:
         mass : float
             Molar mass in :math:`\\frac g{mol}`
         """
-        if self._mass is None: self.setMass()
+        if self._mass is None: self.set_mass()
         return self._mass
 
-    def getCOM(self):
+    def get_com(self):
         """Return the center of mass of the molecule.
 
         Returns
@@ -1525,5 +1347,5 @@ class Molecule:
         com : list
             center of mass coordinates
         """
-        if self._com is None: self.setCOM()
+        if self._com is None: self.set_com()
         return self._com
