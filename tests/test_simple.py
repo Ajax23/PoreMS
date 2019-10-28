@@ -23,6 +23,7 @@ molMol = Molecule(inp="data/benzene.mol2")
 # # _concat
 # for x in Molecule([molGro,molGro]).get_data(): print(x)
 
+
 #########
 # Write #
 #########
