@@ -21,5 +21,8 @@ help:
 
 # Github documentation copy
 github:
+	@rm -r ../docs
+	@mkdir ../docs
+	@touch ../docs/.nojekyll
 	@make html
 	@cp -a _build/html/. ../docs
