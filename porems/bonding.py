@@ -219,7 +219,7 @@ class Bonding:
 
         Parameters
         ----------
-        is_list : bool
+        is_list : bool, optional
             True to return the atom list to be deleted, False to delte the atoms with no return value.
 
         Returns

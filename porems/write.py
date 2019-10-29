@@ -232,9 +232,9 @@ class Write:
 
         Parameters
         ----------
-        name : string, None
+        name : string, None, optional
             Filename
-        link : string, None
+        link : string, None, optional
             Full link with filename
         """
         # Initialize

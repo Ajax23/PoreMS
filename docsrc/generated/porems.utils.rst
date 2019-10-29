@@ -3,28 +3,16 @@ porems\.utils
 
 .. automodule:: porems.utils
 
-   
-   
-   .. rubric:: Functions
+  .. rubric:: Functions
 
-   .. autosummary::
-   
-      column
-      copy
-      copy_dir
-      load
-      mkdirp
-      replace
-      save
-      tic
-      toc
-   
-   
+  .. autosummary::
 
-   
-   
-   
-
-   
-   
-   
+    column
+    copy
+    copy_dir
+    load
+    mkdirp
+    replace
+    save
+    tic
+    toc

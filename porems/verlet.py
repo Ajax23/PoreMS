@@ -105,7 +105,7 @@ class Verlet:
 
         .. math::
 
-            pos(12)=\\begin{bmatrix}0&1&1\\end{bmatrix}.
+            \\text{pos}(12)=\\begin{bmatrix}0&1&1\\end{bmatrix}.
 
         Parameters
         ----------
@@ -186,7 +186,7 @@ class Verlet:
         return int(index)
 
     def _position(self, index):
-        """Get the box position in x,y and z values from a given box id.
+        """Get the box position in x, y and z values from a given box id.
 
         :ToDo: Need recursion for arbitrary dimension.
 
@@ -198,7 +198,7 @@ class Verlet:
         Returns
         -------
         pos : list
-            Box position in x,y and z values
+            Box position in x, y and z values
         """
         # Initialize
         dim = self._dim
@@ -521,7 +521,7 @@ class Verlet:
         Parameters
         ----------
         bond : bool
-            Pbc mode
+            PBC mode
         """
         self._is_pbc = pbc
 

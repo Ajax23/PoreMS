@@ -18,7 +18,7 @@ A pore generator for Molecular simulation
 
 
 To see the code or report a bug, please visit the `github repository
-<https://github.com/mwaskom/seaborn>`_. General support issues are most at home on `stackoverflow <https://stackoverflow.com/>`_, where there is a seaborn tag.
+<https://github.com/Ajax23/PoreMS>`_. General support issues are most at home on `stackoverflow <https://stackoverflow.com/>`_, where there is a seaborn tag.
 
 
 .. raw:: html
