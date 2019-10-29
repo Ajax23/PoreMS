@@ -75,7 +75,7 @@ class Bonding:
 
         self._mol     = verlet.get_mol()
         self._data    = self._mol.get_data()
-        self._dim     = config.load("prefs")["dim"]
+        self._dim     = 3
         self._si_grid = 0.155
         self._y_grid  = 0.073
 

@@ -348,9 +348,9 @@ class Molecule:
             Crossproduct
         """
         vec = []
-        vec.append(vecA[1]*vecB[2]-vecA[2]*vecB[1])
-        vec.append(vecA[2]*vecB[0]-vecA[0]*vecB[2])
-        vec.append(vecA[0]*vecB[1]-vecA[1]*vecB[0])
+        vec.append(vec_a[1]*vec_b[2]-vec_a[2]*vec_b[1])
+        vec.append(vec_a[2]*vec_b[0]-vec_a[0]*vec_b[2])
+        vec.append(vec_a[0]*vec_b[1]-vec_a[1]*vec_b[0])
 
         return vec
 
@@ -578,7 +578,7 @@ class Molecule:
               [n3*n1*(1.-c) - n2*s, n3*n2*(1.-c) + n1*s,  n3*n3*(1.-c) +    c]]
 
         # Rotate
-        return [data[0]*r[i][0]+data[1]*r[i][1]+data[2]*r[i][2] for i in self._dim]
+        return [data[0]*r[i][0]+data[1]*r[i][1]+data[2]*r[i][2] for i in range(self._dim)]
 
     def _box_size(self):
         """Calculate the boxsize of the current molecule. This is done by
@@ -1100,6 +1100,44 @@ class Molecule:
         for data in self._data:
             for a in atom:
                 data.pop(a)
+
+    def overlap(self,error=0.005,is_print=False):
+        """Check if atoms are overlapping (as in duplicates) and delete these.
+
+        Parameters
+        ----------
+        error : float
+            Error of the overlap search
+        is_print : bool
+            True to print the list of overlapping atoms
+        """
+        # Initialize
+        data = self._data
+        dim  = self._dim
+
+        # Find duplicate atoms in reverse
+        for i in list(reversed(range(self.get_num()))):
+            # Get positions
+            atom_a = self.pos(i)
+            for j in range(self.get_num()):
+                if not j==i:
+                    atom_b  = self.pos(j)
+
+                    # Check if identical
+                    sum_del = 0
+                    a = []
+                    for k in range(dim):
+                        if abs(atom_a[k]-atom_b[k]) < error:
+                            a.append(abs(atom_a[k]-atom_b[k]))
+                            sum_del += 1
+
+                    # Delete atom
+                    if sum_del == dim:
+                        # print(i,j,a)
+                        self.delete(i)
+                        if is_print:
+                            print(i)
+                        break
 
     def change_type(self,atom,atom_type):
         """Change the atom type of a specified atom.

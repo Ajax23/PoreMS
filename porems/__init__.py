@@ -3,7 +3,7 @@ from .pore     import Pore
 from .write    import Write
 
 __all__ = [
-    Molecule,
-    Pore,
-    Write
+    "Molecule",
+    "Pore",
+    "Write"
 ]

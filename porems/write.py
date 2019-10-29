@@ -17,8 +17,12 @@ from porems.pore     import Pore
 
 
 class Write:
-    """This class converts a molecule object to a text file of different
+    """This class converts a molecule object to a structure file of different
     possible formats. Currently only **PDB** and **GRO** are fully supported.
+
+    For pore objects two additional methods are available for generating the
+    main topology file and a topology file containing grid molecule
+    parameters and charges. Currently only the gromacs format is supported. 
 
     Furthermore there is an automized rountine for generating topologies
     with Antechamber where job-file for this tool are created.
@@ -34,6 +38,7 @@ class Write:
         # Get molecule properties
         self._dim   = 3
         self._link  = link if link[-1]=="/" else link+"/"
+        self._mol   = molecule
         self._mols  = molecule.get_write()
         self._name  = molecule.get_name()
         self._short = molecule.get_short()
@@ -248,3 +253,89 @@ class Write:
                         out_string += "%13.7f"%(data[j][i]*10)
 
                     file_out.write(out_string+"\n")
+
+
+    ############
+    # Topology #
+    ############
+    def top(self,name=None,link=None):
+        """Write the topology file for a pore. A top file is created containing
+        the itp-include for all molecules and the count of the different groups
+        of the pore.
+
+        Parameters
+        ----------
+        name : str, None
+            Filename
+        link : str, None
+            Full link with filename
+        """
+        # Initialize
+        mols = self._mols
+        if link is None:
+            link  = self._link
+            link += self._name+".top" if name is None else name
+
+        # Get unique molecules
+        unique_mols = []
+        for mol in mols:
+            if not mol.get_name() in unique_mols:
+                unique_mols.append(mol.get_name())
+
+        # Open file
+        with open(link,"w") as file_out:
+            # Write header
+            file_out.write("[ defaults ]\n")
+            file_out.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
+            file_out.write("1               2               yes             0.5     0.833333\n")
+            file_out.write("\n")
+            file_out.write("#include \"grid.itp\"\n")
+
+            for mol_name in unique_mols:
+                if mol_name not in ["si","om","ox","sl","slg","slx"]:
+                    file_out.write("#include \""+mol_name+".itp\"\n")
+
+            file_out.write("\n")
+            file_out.write("[ system ]\n")
+            file_out.write("A pore used in molecular simulation plus reservoir\n")
+            file_out.write("\n")
+            file_out.write("[ molecules ]\n")
+
+            # Atoms
+            counter = 1
+            for i in range(1,len(mols)):
+                if mols[i].get_name()==mols[i-1].get_name():
+                    counter += 1
+                else:
+                    file_out.write(mols[i-1].get_short()+" "+str(counter)+"\n")
+                    counter  = 1
+
+            file_out.write(mols[-1].get_short()+" "+str(counter)+"\n")
+
+
+    def grid(self,name=None,link=None):
+        """Write the grid.itp file containing the necesarry parameters and
+        charges of the grid molecules.
+
+        Parameters
+        ----------
+        name : str, None
+            Filename
+        link : str, None
+            Full link with filename
+        """
+        # Initialize
+        if link is None:
+            link  = self._link
+            link += "grid.itp" if name is None else name
+
+        # Calculate excess charge
+        charges = self._mol.get_q()
+
+        # Copy grid file
+        utils.copy(os.path.split(__file__)[0]+"/templates/grid.itp",link)
+
+        # Replace charges
+        utils.replace(link,"CHARGEOX","%8.6f"%charges["ox"])
+        utils.replace(link,"CHARGEO", "%8.6f"%charges["om"])
+        utils.replace(link,"CHARGESI","%8.6f"%charges["si"])

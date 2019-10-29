@@ -59,11 +59,11 @@ class Verlet:
     """
     def __init__(self,mol,size,is_pbc):
         # Initialize
-        self._dim    = config.load("prefs")["dim"]
-        self._np     = config.load("system")["np"]
+        self._dim    = 3
+        self._np     = mp.cpu_count()
         self._is_pbc = is_pbc
         self._mol    = mol
-        self._data   = mol.getData()
+        self._data   = mol.get_data()
         self._box    = [[],[]]
 
         self._verlet(size)

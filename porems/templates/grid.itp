@@ -1,0 +1,115 @@
+[ atomtypes ]
+; name    at.num    mass    charge ptype  sigma      epsilon
+SI            14   28.08600    0.000000  A      0.250000     0.0004000
+HO             1    2.01600    0.000000  A      0.129000     0.0015000
+HW             1    1.00800    0.000000  A      0.000000     0.0000000
+H              1    1.00800    0.000000  A      0.000000     0.0000000
+OM             8   15.99940    0.000000  A      0.270000     1.9120000
+OA             8   15.99940    0.000000  A      0.307000     0.7110000
+OC             8   15.99940    0.000000  A      0.305000     0.6570000
+O              8   15.99940    0.000000  A      0.302000     0.7730000
+OW             8   15.99940    0.000000  A      0.316570     0.6500000
+
+si            14   28.08600    0.000000  A      0.250000     0.0004000
+os             8   16.00000    0.000000  A      0.300001     0.7112800
+c3             6   12.01000    0.000000  A      0.339967     0.4577300
+hc             1    1.00800    0.000000  A      0.264953     0.0656888
+cx             6   12.01000    0.000000  A      0.339967     0.3598240
+oh             8   16.00000    0.000000  A      0.306647     0.8803140
+ho             1    1.00800    0.000000  A      0.000000     0.0000000
+hoepo          1    1.00800    0.000000  A      0.129000     0.0015000
+h1             1    1.00800    0.000000  A      0.247135     0.0656888
+na             7   14.01000    0.000000  A      0.325000     0.7112800
+c2             6   12.01000    0.000000  A      0.339967     0.3598240
+cb             6   12.01000    0.000000  A      0.339967     0.3598240
+ca             6   12.01000    0.000000  A      0.339967     0.3598240
+h4             1    1.00800    0.000000  A      0.251055     0.0627600
+ha             1    1.00800    0.000000  A      0.259964     0.0627600
+ru            44  101.07000    0.000000  A      0.290000     3.1380000
+cl            17   35.45000    0.000000  A      0.347094     1.1087600
+c              6   12.01000    0.000000  A      0.339967     0.3598240
+o              8   16.00000    0.000000  A      0.295992     0.8786400
+
+
+[ moleculetype ]
+; Name nrexcl
+SL           2
+
+[ atoms ]
+;   nr      type  resnr resid  atom  cgnr   charge  mass
+    1         SI      1     SL    Si1      1   CHARGESI   ; original 1.28
+    2         OA      1     SL     O1      1  -0.7400000
+    3         HO      1     SL     H1      1   0.4200000
+
+[ bonds ]
+; ai  aj  fu    c0, c1, ...
+      1      2     1   0.16300 251040.000000
+      2      3     1   0.10000 313800.000000
+
+[ angles ]
+; ai  aj  ak  fu    c0, c1, ...
+      1      2      3     1  116.00000  3970.4800
+
+
+[ moleculetype ]
+; Name nrexcl
+SLG          3
+
+[ atoms ]
+;   nr      type  resnr resid  atom  cgnr   charge
+    1         SI      1    SLG    Si1      1   CHARGESI   ; original 1.28
+    2         OA      1    SLG     O1      1  -0.7400000
+    3         HO      1    SLG     H1      1   0.4200000
+    4         OA      1    SLG     O2      1  -0.7400000
+    5         HO      1    SLG     H2      1   0.4200000
+
+[ bonds ]
+; ai  aj  fu    c0, c1, ...
+      1      2     1   0.16300 251040.000000
+      1      4     1   0.16300 251040.000000
+      2      3     1   0.10000 313800.000000
+      4      5     1   0.10000 313800.000000
+
+[ angles ]
+; ai  aj  ak  fu    c0, c1, ...
+      1      2      3     1  116.00000  3970.4800
+      1      4      5     1  116.00000  3970.4800
+
+[ constraints ]
+      2      4      2     0.253
+
+
+[ moleculetype ]
+; molname       nrexcl
+SLX          1
+
+[ atoms ]
+; id    at type res nr  residu name     at name  cg nr   charge
+    1         OM      1    SLX    OM1      1  -0.6399985
+
+
+[ moleculetype ]
+; molname       nrexcl
+ OM               1
+
+[ atoms ]
+; id    at type res nr  residu name     at name  cg nr   charge
+1       OM       1       OM              OM1        1    CHARGEO   ; original -0.64
+
+
+[ moleculetype ]
+; molname       nrexcl
+ OX               1
+
+[ atoms ]
+; id    at type res nr  residu name     at name  cg nr   charge
+1       OM       1       OX              OM1        1    CHARGEOX   ; original -0.64
+
+
+[ moleculetype ]
+; molname       nrexcl
+SI               1
+
+[ atoms ]
+; id    at type res nr  residu name     at name  cg nr   charge
+1       SI        1       SI             SI1         1    CHARGESI   ; original 1.28
