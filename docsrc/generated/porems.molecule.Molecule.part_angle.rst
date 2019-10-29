@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.lengthAngle
+Molecule\.part\_angle
 =====================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.lengthAngle
+.. automethod:: Molecule.part_angle

@@ -24,7 +24,11 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sphinx_bootstrap_theme
 
-sys.path.append(os.path.abspath('../'))
+# sys.path.append(os.path.abspath('../'))
+
+# Install package
+os.system("pip install ../. &> /dev/null")
+print("Finished inistalling package...")
 
 
 # -- General configuration ------------------------------------------------
@@ -66,9 +70,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project   = 'PoreMS'
+project = 'PoreMS'
 copyright = '2019, Hamzeh Kraus'
-author    = 'Hamzeh Kraus'
+author = 'Hamzeh Kraus'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -118,7 +122,7 @@ html_theme_options = {
     'source_link_position': "",
     'bootswatch_theme': "paper",
     'bootstrap_version': "3",
-    'navbar_links': [("API", "api"),("Molecule", "molecule"),("Pore", "pore"),],
+    'navbar_links': [("API", "api"), ("Molecule", "molecule"), ("Pore", "pore"), ],
 }
 
 html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
@@ -181,7 +185,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'PoreMS.tex', 'PoreMS Documentation','Hamzeh Kraus', 'manual'),
+    (master_doc, 'PoreMS.tex', 'PoreMS Documentation', 'Hamzeh Kraus', 'manual'),
 ]
 
 
@@ -190,7 +194,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'porems', 'PoreMS Documentation',[author], 1)
+    (master_doc, 'porems', 'PoreMS Documentation', [author], 1)
 ]
 
 
@@ -207,5 +211,7 @@ texinfo_documents = [
 
 # Add the 'copybutton' javascript, to hide/show the prompt in code
 # examples, originally taken from scikit-learn's doc/conf.py
+
+
 def setup(app):
     app.add_stylesheet('style.css')

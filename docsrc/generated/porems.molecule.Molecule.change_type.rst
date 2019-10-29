@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.setCOM
-================
+Molecule\.change\_type
+======================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.setCOM
+.. automethod:: Molecule.change_type

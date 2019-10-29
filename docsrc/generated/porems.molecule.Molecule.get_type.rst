@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.\_boxSize
+Molecule\.get\_type
 ===================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule._boxSize
+.. automethod:: Molecule.get_type

@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.setBox
-================
+Molecule\.set\_name
+===================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.setBox
+.. automethod:: Molecule.set_name

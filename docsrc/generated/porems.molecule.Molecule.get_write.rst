@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.changeType
+Molecule\.get\_write
 ====================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.changeType
+.. automethod:: Molecule.get_write

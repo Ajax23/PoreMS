@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.partRotate
-====================
+Molecule\.get\_name
+===================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.partRotate
+.. automethod:: Molecule.get_name

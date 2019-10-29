@@ -5,8 +5,8 @@ API reference
 
 .. _build_api:
 
-Build package
--------------
+Generation
+----------
 
 .. currentmodule:: porems
 
@@ -14,3 +14,12 @@ Build package
     :toctree: generated/
 
     molecule.Molecule
+    pore.Pore
+
+
+Pore Optimization
+-----------------
+
+
+Utilities
+---------

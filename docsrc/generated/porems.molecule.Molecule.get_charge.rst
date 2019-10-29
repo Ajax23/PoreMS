@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.\_angle
-=================
+Molecule\.get\_charge
+=====================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule._angle
+.. automethod:: Molecule.get_charge

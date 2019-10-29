@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.setCharge
-===================
+Molecule\.get\_short
+====================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.setCharge
+.. automethod:: Molecule.get_short

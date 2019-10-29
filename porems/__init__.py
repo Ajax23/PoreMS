@@ -1,6 +1,6 @@
 from .molecule import Molecule
-from .pore     import Pore
-from .write    import Write
+from .pore import Pore
+from .write import Write
 
 __all__ = [
     "Molecule",

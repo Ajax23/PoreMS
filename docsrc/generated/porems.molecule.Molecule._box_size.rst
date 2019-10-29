@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.partMove
-==================
+Molecule\.\_box\_size
+=====================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.partMove
+.. automethod:: Molecule._box_size

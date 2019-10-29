@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.bondVec
-=================
+Molecule\.set\_box
+==================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.bondVec
+.. automethod:: Molecule.set_box

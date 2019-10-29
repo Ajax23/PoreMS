@@ -57,14 +57,14 @@ class Verlet:
     is_pbc : bool
         True if periodic boundry conditions are needed
     """
-    def __init__(self,mol,size,is_pbc):
+    def __init__(self, mol, size, is_pbc):
         # Initialize
-        self._dim    = 3
-        self._np     = mp.cpu_count()
+        self._dim = 3
+        self._np = mp.cpu_count()
         self._is_pbc = is_pbc
-        self._mol    = mol
-        self._data   = mol.get_data()
-        self._box    = [[],[]]
+        self._mol = mol
+        self._data = mol.get_data()
+        self._box = [[], []]
 
         self._verlet(size)
         self._fill()
@@ -73,7 +73,7 @@ class Verlet:
     ################################
     # Private Methods - Definition #
     ################################
-    def _verlet(self,size):
+    def _verlet(self, size):
         """Here the possible number of verlet boxes is calculated for each dimension
         for the given size and molecule dimensions. The given size is adjusted,
         since only whole numbered box number are reasonable.
@@ -113,42 +113,42 @@ class Verlet:
             Desired verlet box length
         """
         # Initialize
-        boxes    = []
+        boxes = []
         box_size = self._mol.get_box()
 
         # Calculate box number and sizes
         count = [math.floor(box/size) for box in box_size]
-        size  = [box_size[i]/count[i] for i in range(len(count))]
+        size = [box_size[i]/count[i] for i in range(len(count))]
 
         # Fill verlet list - k=x, j=y, i=z
         for i in range(count[2]):
             for j in range(count[1]):
                 for k in range(count[0]):
-                    boxes.append([size[0]*k,size[1]*j,size[2]*i])
+                    boxes.append([size[0]*k, size[1]*j, size[2]*i])
 
         # Globalize
         self._box[0] = boxes
-        self._size   = size
-        self._count  = count
+        self._size = size
+        self._count = count
 
     def _fill(self):
         """Atoms are so to say filled in the verlet boxes depending on their position.
         This is done by adding atom ids to specific boxes in the box array.
         """
         # Initialize
-        data    = self._data
-        data    = self._mol.get_data()
-        dim     = self._dim
-        size    = self._size
-        count   = self._count
+        data = self._data
+        data = self._mol.get_data()
+        dim = self._dim
+        size = self._size
+        count = self._count
         pointer = [[] for i in range(count[0]*count[1]*count[2])]
 
         # Fill boxes with atoms
         for i in range(len(data[0])):
             pos = [0 for i in range(dim)]
             for j in range(dim):
-                pos[j] =  math.floor(data[j][i]/size[j])
-                pos[j] -= 1 if pos[j]==count[j] else 0
+                pos[j] = math.floor(data[j][i]/size[j])
+                pos[j] -= 1 if pos[j] == count[j] else 0
 
             pointer[self._index(pos)].append(i)
 
@@ -159,7 +159,7 @@ class Verlet:
     ##############################
     # Private Methods - Iterator #
     ##############################
-    def _index(self,pos):
+    def _index(self, pos):
         """Get the box id from a given box position which is a list of x, y and z values.
 
         :ToDo: Need recursion for arbitrary dimension.
@@ -179,13 +179,13 @@ class Verlet:
         index = 0
 
         # Calculate id
-        index +=                   pos[0]
-        index += count[0]         *pos[1]
+        index += pos[0]
+        index += count[0] * pos[1]
         index += count[0]*count[1]*pos[2]
 
         return int(index)
 
-    def _position(self,index):
+    def _position(self, index):
         """Get the box position in x,y and z values from a given box id.
 
         :ToDo: Need recursion for arbitrary dimension.
@@ -201,9 +201,9 @@ class Verlet:
             Box position in x,y and z values
         """
         # Initialize
-        dim   = self._dim
+        dim = self._dim
         count = self._count
-        pos   = [0 for i in range(self._dim)]
+        pos = [0 for i in range(self._dim)]
 
         # Get index
         pos[2] = math.floor(index/(count[0]*count[1]))
@@ -212,7 +212,7 @@ class Verlet:
 
         return pos
 
-    def _input(self,inp):
+    def _input(self, inp):
         """Check if input is a box id or a position. If it is an id then
         the id is transformed to a position list.
 
@@ -228,19 +228,19 @@ class Verlet:
         is_id : bool
             True if the input was an id
         """
-        if   isinstance(inp,list):
-            pos   = inp
+        if isinstance(inp, list):
+            pos = inp
             is_id = False
-        elif isinstance(inp,int):
-            pos   = self._position(inp)
+        elif isinstance(inp, int):
+            pos = self._position(inp)
             is_id = True
         else:
             print("Wrong input!")
             return None
 
-        return pos,is_id
+        return pos, is_id
 
-    def _forward(self,dim,inp):
+    def _forward(self, dim, inp):
         """Helper function for stepping forward with the iterator. Periodic
         boundary conditions are applied depending on the global pbc variable.
 
@@ -257,20 +257,23 @@ class Verlet:
             Iterated position in the input format
         """
         # Check if input is None
-        if inp is None: return
+        if inp is None:
+            return
 
         # Process input
-        pos,is_id = self._input(inp)
+        pos, is_id = self._input(inp)
 
         # Move
-        if pos[dim]==self._count[dim]-1: pos[dim]  = 0 if self._is_pbc else None
-        else:                            pos[dim] += 1
+        if pos[dim] == self._count[dim]-1:
+            pos[dim] = 0 if self._is_pbc else None
+        else:
+            pos[dim] += 1
 
         # Return
         if not None in pos:
             return self._index(pos) if is_id else pos
 
-    def _backward(self,dim,inp):
+    def _backward(self, dim, inp):
         """Helper function for stepping backward with the iterator. Periodic
         boundary conditions are applied depending on the global pbc variable.
 
@@ -287,32 +290,35 @@ class Verlet:
             Iterated position in the input format
         """
         # Check if input is None
-        if inp is None: return
+        if inp is None:
+            return
 
         # Process input
-        pos,is_id = self._input(inp)
+        pos, is_id = self._input(inp)
 
         # Move
-        if pos[dim]==0: pos[dim]  = self._count[dim]-1 if self._is_pbc else None
-        else:           pos[dim] -= 1
+        if pos[dim] == 0:
+            pos[dim] = self._count[dim]-1 if self._is_pbc else None
+        else:
+            pos[dim] -= 1
 
         # Return
         if not None in pos:
             return self._index(pos) if is_id else pos
 
     # Iterators
-    def _right(self,inp): return self._forward (0,inp)
-    def _left (self,inp): return self._backward(0,inp)
-    def _top  (self,inp): return self._forward (1,inp)
-    def _bot  (self,inp): return self._backward(1,inp)
-    def _back (self,inp): return self._forward (2,inp)
-    def _front(self,inp): return self._backward(2,inp)
+    def _right(self, inp): return self._forward(0, inp)
+    def _left(self, inp): return self._backward(0, inp)
+    def _top(self, inp): return self._forward(1, inp)
+    def _bot(self, inp): return self._backward(1, inp)
+    def _back(self, inp): return self._forward(2, inp)
+    def _front(self, inp): return self._backward(2, inp)
 
 
     ###########################
     # Parallelization methods #
     ###########################
-    def _find_bond(self,box_list,atom_type,distance,error,condition):
+    def _find_bond(self, box_list, atom_type, distance, error, condition):
         """Search for a bond in the given verlet boxes. This function automatically
         searches for the surrounding boxes and checks in all 27 of them for the
         defined bond (atomtypes and bond length). If the bond length is within a
@@ -339,12 +345,12 @@ class Verlet:
             Bond array containing lists of two atom ids
         """
         # Initialize
-        data    = self._data
-        dim     = self._dim
-        size    = self._size
-        count   = self._count
+        data = self._data
+        dim = self._dim
+        size = self._size
+        count = self._count
         box_len = [count[i]*size[i] for i in range(dim)]
-        output  = []
+        output = []
 
         # User input
         if box_list == None:
@@ -354,47 +360,49 @@ class Verlet:
         for box in box_list:
             # Get surrounding boxes
             neighbour = self.neighbour(box)
-            atoms     = []
-            for n in neighbour: atoms.extend(self._box[1][n])
+            atoms = []
+            for n in neighbour:
+                atoms.extend(self._box[1][n])
 
             # Run through atoms in main boxes
             for atom_a in self._box[1][box]:
                 # Check type
-                if data[3][atom_a]==atom_type[0]:
-                    entry = [atom_a,[]]
+                if data[3][atom_a] == atom_type[0]:
+                    entry = [atom_a, []]
                     pos_a = self._mol.pos(atom_a)
                     # Search in neighbouring boxes for partner
                     for atom_b in atoms:
-                        if data[3][atom_b]==atom_type[1] and not atom_a==atom_b:
+                        if data[3][atom_b] == atom_type[1] and not atom_a == atom_b:
                             # Calculate length
-                            length = self._mol.bond(atom_a,atom_b)[1]
+                            length = self._mol.bond(atom_a, atom_b)[1]
 
                             # Periodic boundaries
-                            if length>max(size)*3 and self._is_pbc:
+                            if length > max(size)*3 and self._is_pbc:
                                 pos_b = self._mol.pos(atom_b)
                                 temp = [pos for pos in pos_b]
 
                                 for i in range(dim):
                                     # Without z-axis
-                                    if abs(pos_b[i]-pos_a[i])>size[i]*3: # and not i==dim-1:
-                                        temp[i] += -box_len[i] if pos_b[i]>pos_a[i] else box_len[i]
+                                    if abs(pos_b[i]-pos_a[i]) > size[i]*3:  # and not i==dim-1:
+                                        temp[i] += -box_len[i] if pos_b[i] > pos_a[i] else box_len[i]
 
                                 # New length
-                                length = self._mol.bond(self._mol.pos(atom_a),temp)[1]
+                                length = self._mol.bond(self._mol.pos(atom_a), temp)[1]
 
                             # Add if in range
-                            if abs(length-distance)<error:
+                            if abs(length-distance) < error:
                                 entry[1].append(atom_b)
 
                     # Add atom
                     is_add = True
                     if condition is not None:
-                        is_add = condition(self._mol,entry[0])
-                    if is_add: output.append(entry)
+                        is_add = condition(self._mol, entry[0])
+                    if is_add:
+                        output.append(entry)
 
         return output
 
-    def find_parallel(self,box_list,atom_type,distance,error,condition=None,is_time=False):
+    def find_parallel(self, box_list, atom_type, distance, error, condition=None, is_time=False):
         """Parallelized bond search of function :func:`_find_bond`.
 
         Parameters
@@ -425,28 +433,32 @@ class Verlet:
             box_list = [i for i in range(len(self.get_box()[1]))]
 
         # Time calculation
-        if is_time: t = m.tic()
+        if is_time:
+            t = m.tic()
 
         # Break box list down on number of processors
         box_len = math.floor(len(box_list)/np)
 
         boxes = []
         for i in range(np):
-            if i==np-1:
+            if i == np-1:
                 boxes.append(box_list[box_len*i:])
             else:
                 boxes.append(box_list[box_len*i:box_len*(i+1)])
 
         # Parallel search
-        pool    = mp.Pool(processes=np)
-        results = [pool.apply_async(self._find_bond,args=(x,atom_type,distance,error,condition)) for x in boxes]
+        pool = mp.Pool(processes=np)
+        results = [pool.apply_async(self._find_bond, args=(
+            x, atom_type, distance, error, condition)) for x in boxes]
 
         # Concat processes
-        output  = []
-        for p in results: output.extend(p.get())
+        output = []
+        for p in results:
+            output.extend(p.get())
 
         # Time calculation
-        if is_time: m.toc(t,"Find bond "+atom_type[0]+"-"+atom_type[1])
+        if is_time:
+            m.toc(t, "Find bond "+atom_type[0]+"-"+atom_type[1])
 
         return output
 
@@ -454,7 +466,7 @@ class Verlet:
     ##################
     # Public methods #
     ##################
-    def neighbour(self,index,is_self=True):
+    def neighbour(self, index, is_self=True):
         """Get the ids of the boxes surrounding the given one.
 
         Parameters
@@ -473,12 +485,12 @@ class Verlet:
         neighbour = []
 
         # Find neighbours
-        z = [self._back(index),index,self._front(index)]
-        y = [[self._top(i),i,self._bot(i)] for i in z]
+        z = [self._back(index), index, self._front(index)]
+        y = [[self._top(i), i, self._bot(i)] for i in z]
 
         for i in range(len(z)):
             for j in range(len(y[i])):
-                neighbour.append(self._left (y[i][j]))
+                neighbour.append(self._left(y[i][j]))
                 neighbour.append(y[i][j])
                 neighbour.append(self._right(y[i][j]))
 
@@ -487,7 +499,7 @@ class Verlet:
 
         return [n for n in neighbour if n is not None]
 
-    def delete(self,inp):
+    def delete(self, inp):
         """Delete given atoms, then refill the verlet boxes,
         since the list ids changed.
 
@@ -503,7 +515,7 @@ class Verlet:
     ##################
     # Setter methods #
     ##################
-    def set_pbc(self,pbc):
+    def set_pbc(self, pbc):
         """Turn the periodic boundary consitions on and off.
 
         Parameters
@@ -517,6 +529,7 @@ class Verlet:
     ##################
     # Getter methods #
     ##################
+
     def get_box(self):
         """Return the box list.
 

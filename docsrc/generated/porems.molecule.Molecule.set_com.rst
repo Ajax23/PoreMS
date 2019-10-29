@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.getMasses
-===================
+Molecule\.set\_com
+==================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.getMasses
+.. automethod:: Molecule.set_com

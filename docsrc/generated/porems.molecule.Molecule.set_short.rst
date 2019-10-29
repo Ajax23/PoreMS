@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.getLink
-=================
+Molecule\.set\_short
+====================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.getLink
+.. automethod:: Molecule.set_short
