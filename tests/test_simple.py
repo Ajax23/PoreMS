@@ -8,7 +8,6 @@ print("Finished inistalling package...")
 # import package
 from porems import *
 
-
 # Generate molecules
 molGro = Molecule(inp="data/benzene.gro")
 molPdb = Molecule(inp="data/benzene.pdb")
@@ -40,7 +39,7 @@ molMol = Molecule(inp="data/benzene.mol2")
 ########
 # Pore #
 ########
-pore = Pore(size=[10,10,10],diam=6,drill="z",res=5.5,is_time=True)
+pore = Pore(size=[10, 10, 10], diam=6, drill="z", res=5.5, is_time=True)
 pore.set_name("pore")
 
 # pore.couple([C18(),C18()],    [[0,7,8],[0,7,8]],[30.4,39])
@@ -48,8 +47,8 @@ pore.set_name("pore")
 #
 # pore.setGrid([C18(),Silyl()])
 
-pore.finish(is_mol=True,is_props=False)
+pore.finish(is_mol=True, is_props=False)
 
-Write(pore,"output").gro()
-Write(pore,"output").top()
-Write(pore,"output").grid()
+Write(pore, "output").gro()
+Write(pore, "output").top()
+Write(pore, "output").grid()

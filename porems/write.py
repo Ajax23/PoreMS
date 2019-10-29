@@ -31,7 +31,7 @@ class Write:
     ----------
     molecule : Molecule
         Molecule object
-    link : str
+    link : string, optional
         Folder link for output
     """
     def __init__(self, molecule, link="./"):
@@ -60,7 +60,7 @@ class Write:
 
         Parameters
         ----------
-        is_master : bool
+        is_master : bool, optional
             True if the jobfile call should be added to a master run file
             (pracitcall for running multiple topology genrations)
         """
@@ -104,13 +104,13 @@ class Write:
     ##############################
     def pdb(self, name=None, link=None):
         """Generate the structure file for the defined molecule in the **PDB** format.
-        If parameter *link* is given, parameter *name* will be ignored.
+        If parameter ``link`` is given, parameter ``name`` will be ignored.
 
         Parameters
         ----------
-        name : str, None
+        name : None, string, optional
             Filename
-        link : str, None
+        link : None, string, optional
             Full link with filename
         """
         # Initialize
@@ -167,13 +167,13 @@ class Write:
 
     def gro(self, name=None, link=None):
         """Generate the structure file for the defined molecule in the **GRO** format.
-        If parameter *link* is given, parameter *name* will be ignored.
+        If parameter ``link`` is given, parameter ``name`` will be ignored.
 
         Parameters
         ----------
-        name : str, None
+        name : None, string, optional
             Filename
-        link : str, None
+        link : None, string, optional
             Full link with filename
         """
         # Initialize
@@ -228,13 +228,13 @@ class Write:
     def xyz(self, name=None, link=None):
         """Generate the structure file for the defined molecule in the xyz
         format for running qm-simulations.
-        If parameter *link* is given, parameter *name* will be ignored.
+        If parameter ``link`` is given, parameter ``name`` will be ignored.
 
         Parameters
         ----------
-        name : str, None
+        name : string, None
             Filename
-        link : str, None
+        link : string, None
             Full link with filename
         """
         # Initialize
@@ -265,13 +265,14 @@ class Write:
     def top(self, name=None, link=None):
         """Write the topology file for a pore. A top file is created containing
         the itp-include for all molecules and the count of the different groups
-        of the pore.
+        of the pore. If parameter ``link`` is given, parameter ``name`` will be
+        ignored.
 
         Parameters
         ----------
-        name : str, None
+        name : None, string, optional
             Filename
-        link : str, None
+        link : None, string, optional
             Full link with filename
         """
         # Initialize
@@ -318,13 +319,14 @@ class Write:
 
     def grid(self, name=None, link=None):
         """Write the grid.itp file containing the necesarry parameters and
-        charges of the grid molecules.
+        charges of the grid molecules. If parameter ``link`` is given, parameter
+        ``name`` will be ignored.
 
         Parameters
         ----------
-        name : str, None
+        name : None, string, optional
             Filename
-        link : str, None
+        link : None, string, optional
             Full link with filename
         """
         # Initialize

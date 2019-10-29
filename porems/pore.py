@@ -20,7 +20,8 @@ from porems.bonding import Bonding
 class Pore(Molecule):
     """This class is an extension of the molecule class
     :class:`porems.molecule.Molecule` and the core class for creating
-    silica pores.
+    silica pores. Note that this class can therefore use all methods of the
+    Molecule class.
 
     At the beginning a silica-oxygene grid is genreated from the smallest
     possible grid unit by duplication. Using the verlet list
@@ -41,15 +42,15 @@ class Pore(Molecule):
         Size of the silica-oxygene-grid, can be a float, if same size in all dimensions
     diam : float
         Pore diameter
-    drill : str
+    drill : string
         Axis for the pore drilling
-    res : float
+    res : float, optional
         Value to extend and translate the pore by on the drill side creating reservoirs
-    vs : float
+    vs : float, optional
         Verlet-list box size
-    is_pbc : bool
+    is_pbc : bool, optional
         True if periodic boundary conditions are needed
-    is_time : bool
+    is_time : bool, optional
         True to print the used time for the single steps
     """
     def __init__(self, size, diam, drill, res=1, vs=0.4, is_pbc=True, is_time=False):
@@ -226,7 +227,7 @@ class Pore(Molecule):
 
         Parameters
         ----------
-        dim : int
+        dim : integer
             Repeat dimensions
         block : Molecule
             Molecule unit to be duplicated
@@ -346,22 +347,22 @@ class Pore(Molecule):
         In case the random site is not available, this run is repeated. A break-counter
         prevents the occurance of an endless loop.
 
-        If *is_proxi* is set to True, then binding sites nearest to each other
+        If ``is_proxi`` is set to True, then binding sites nearest to each other
         are determined. the return value then consists of lists containing the
         ids of both sites. Geminal pairs are not allowed, since creating the
         topology is too complex. This however might be added in the future.
 
         Parameters
         ----------
-        site_type : int
+        site_type : integer
             Type of the sites inside-0, outside-1
         rate : float
             Rate of how many binding sites
-        inp : str
+        inp : string
             Input type of the rate
-        counter : int
+        counter : integer
             Number of attempts before breaking the randoming loop
-        is_proxi : bool
+        is_proxi : bool, optional
             True to search for site pairs in proximity
 
         Returns
@@ -427,7 +428,7 @@ class Pore(Molecule):
 
         Parameters
         ----------
-        sites : int, list
+        sites : integer, list
             identifiers of sites to be closed
         """
         # Initialize
@@ -450,7 +451,7 @@ class Pore(Molecule):
     def _couple(self, mol, sio, site_type, rate, inp="percent", sites=None, counter=1000):
         """Add a molecule to the pore binding site.
 
-        The *sio* input defines the silica atom in the first entry and the
+        The ``sio`` input defines the silica atom in the first entry and the
         directional vector with the other two entries.
 
         First the molecule is rotated around its directional vector randomly to
@@ -477,15 +478,15 @@ class Pore(Molecule):
             Molecule to be added
         sio : list
             List containing the silica id and directional vector of the molecule
-        site_type : int
-            Type of the sites inside-0, outside-1
+        site_type : integer
+            Type of the sites ``inside - 0``, ``outside - 1``
         rate : float
             Rate of how many binding sites
-        inp : str
+        inp : string, optional
             Input type of the rate
-        sites : int, list
+        sites : integer, list, optional
             Listindex of binding sites
-        counter : int
+        counter : integer, optional
             Number of attempts before breaking the randoming loop
         """
         # Initialize
@@ -557,7 +558,7 @@ class Pore(Molecule):
     def _couple_proxi(self, mol, sio, orient, rate, inp="percent", counter=1000):
         """Add a molecule to two pore binding sites.
 
-        The *sio* input defines the silica and oxygen atom pair in two seperate
+        The ``sio`` input defines the silica and oxygen atom pair in two seperate
         lists.
 
         First the molecule is rotated, so that the oxygens are ontop of the
@@ -581,9 +582,9 @@ class Pore(Molecule):
             Molecule direction vector
         rate : float
             Rate of how many binding sites
-        inp : str
+        inp : string, optional
             Input type of the rate
-        counter : int
+        counter : integer, optional
             Number of attempts before breaking the randoming loop
         """
         # Initialize
@@ -651,9 +652,9 @@ class Pore(Molecule):
             Molecule to be added
         sio : list
             List containing the silica id and directional vector of the molecule
-        num : int
+        num : integer
             Number of molecules to be added
-        symmetry : str
+        symmetry : string
             Molecule symmetry orientation to each other
         """
         # Initialize
@@ -715,7 +716,7 @@ class Pore(Molecule):
 
         Parameters
         ----------
-        site : list, None
+        site_range : list, None
             Site list to go trhough
 
         Returns
@@ -849,9 +850,9 @@ class Pore(Molecule):
         ----------
         rate : float
             Rate of binding sites to be editied
-        inp : str
+        inp : string, optional
             Rate input type
-        counter : int
+        counter : integer, optional
             Number of attempts before breaking the randoming loop
         """
         # Initialize
@@ -1080,7 +1081,7 @@ class Pore(Molecule):
 
         Parameters
         ----------
-        is_rand : bool
+        is_rand : bool, optional
             True to randomly distribute rounding error charge on block oxygen atoms
         """
         # Initialize
@@ -1170,37 +1171,37 @@ class Pore(Molecule):
 
         .. math::
 
-            A_{pore} = 2\\pi r\\cdot l_{drill},
+            A_\\text{pore} = 2\\pi r\\cdot l_\\text{drill},
 
         with opening radius :math:`r` and length of the drilling axis
-        :math:`l_{drill}`, and the one on the drill sides
+        :math:`l_\\text{drill}`, and the one on the drill sides
 
         .. math::
 
-            A_{drill} = 2\\cdot\\left(A_{side}-\\pi r^2\\right)
+            A_\\text{drill} = 2\\cdot\\left(A_{side}-\\pi r^2\\right)
 
-        with block surface on the drilling side :math:`A_{drill}`. Using this
+        with block surface on the drilling side :math:`A_\\text{drill}`. Using this
         surface, the allocation rates can be determined by counting the number
         of used sites and free sites from the input binding site list.
 
         This was done to determine the maximal possible allocation
-        :math:`c_{tot}`, the rate for the molecule modification
-        :math:`c_{mod}` and the rate for the silanol modification
-        :math:`c_{oh}`. For better overview, the relative allocation for the
-        molecule modification :math:`c_{rel}` has been calculated
+        :math:`c_\\text{tot}`, the rate for the molecule modification
+        :math:`c_\\text{mod}` and the rate for the silanol modification
+        :math:`c_\\text{oh}`. For better overview, the relative allocation for the
+        molecule modification :math:`c_\\text{rel}` has been calculated
 
         .. math::
 
             \\begin{array}{cccc}
-            c_{tot}^{pore} = \\dfrac{s_{tot}^{pore}}{A_{pore}},&
-            c_{mod}^{pore} = \\dfrac{s_{mod}^{pore}}{A_{pore}},&
-            c_{oh}^{pore}  = \\dfrac{s_{oh} ^{pore}}{A_{pore}},&
-            c_{rel}^{pore} = \\dfrac{s_{mod}^{pore}}{s_{tot}^{pore}}
+            c_\\text{tot}^\\text{pore} = \\dfrac{s_\\text{tot}^\\text{pore}}{A_\\text{pore}},&
+            c_\\text{mod}^\\text{pore} = \\dfrac{s_\\text{mod}^\\text{pore}}{A_\\text{pore}},&
+            c_\\text{oh}^\\text{pore}  = \\dfrac{s_\\text{oh} ^\\text{pore}}{A_\\text{pore}},&
+            c_\\text{rel}^\\text{pore} = \\dfrac{s_\\text{mod}^\\text{pore}}{s_\\text{tot}^\\text{pore}}
             \\end{array}
 
-        with the total number of binding sites :math:`s_{tot}`,
-        number of sites used for the modification :math:`s_{mod}`
-        and number of sites used for the silanol modification :math:`s_{oh}`.
+        with the total number of binding sites :math:`s_\\text{tot}`,
+        number of sites used for the modification :math:`s_\\text{mod}`
+        and number of sites used for the silanol modification :math:`s_\\text{oh}`.
         The resulting units are
 
         .. math::
@@ -1211,9 +1212,9 @@ class Pore(Molecule):
 
         Parameters
         ----------
-        site : None, list
+        site : None, list, optional
             Binding site list, None for the public list
-        is_mol : bool
+        is_mol : bool, optional
             True to calculate allocation in micro molar
 
         Returns
@@ -1350,9 +1351,9 @@ class Pore(Molecule):
             Molecule to be added
         sio : list
             List containing the silica id and directional vector of the molecule
-        num : int
+        num : integer, optional
             Number of molecules to be added
-        symmetry : str
+        symmetry : string, optional
             Molecule symmetry orientation to each other
 
         Examples
@@ -1372,16 +1373,16 @@ class Pore(Molecule):
 
         Parameters
         ----------
-        mol : list, mol
+        mol : list, Molecule
             List of two molecules for the inside and outside, entries can be None
         sio : list
             List containing the silica id and directional vector of the molecules
         rate : list, float
             Rate of molecules to be added
-        intent : str
-            Set to *inside* to add molecules inside the pore and *outside* for
+        intent : string, optional
+            Set to ``inside`` to add molecules inside the pore and ``outside`` for
             the outside surface
-        inp : str
+        inp : string, optional
             Rate type
 
         Examples
@@ -1415,7 +1416,7 @@ class Pore(Molecule):
 
         self._t_tot += utils.toc(t, "Couple ", self._is_time)
 
-    def coupleProxi(self, mol, sio, orient, rate, inp="percent"):
+    def couple_proxi(self, mol, sio, orient, rate, inp="percent"):
         """Public method of :func:`_couple_proxi` for a adding specified rates of
         molecules requiring two binding sites to the pore inside.
 
@@ -1429,14 +1430,14 @@ class Pore(Molecule):
             Molecule direction vector
         rate : float
             Rate of how many binding sites
-        inp : str
+        inp : string, optional
             Input type of the rate
 
         Examples
         --------
-        >>> self.coupleProxi(Epoxi(1),[[0,2],[1,3]],[4,6],80)
-        >>> self.coupleProxi(Epoxi(1),[[0,2],[1,3]],[4,6],80,inp="precent")
-        >>> self.coupleProxi(Epoxi(1),[[0,2],[1,3]],[4,6],10,inp="num")
+        >>> self.couple_proxi(Epoxi(1),[[0,2],[1,3]],[4,6],80)
+        >>> self.couple_proxi(Epoxi(1),[[0,2],[1,3]],[4,6],80,inp="precent")
+        >>> self.couple_proxi(Epoxi(1),[[0,2],[1,3]],[4,6],10,inp="num")
         """
         t = utils.tic()
         if mol is not None:
@@ -1451,13 +1452,13 @@ class Pore(Molecule):
 
         Parameters
         ----------
-        slx : float
+        slx : float, optional
             Rate of siloxcan bridges
-        is_rand : bool
+        is_rand : bool, optional
             True to randomly distribute rounding error charge on block oxygen atoms
-        is_mol : bool
+        is_mol : bool, optional
             True to calculate allocation in micro molar
-        is_props : bool
+        is_props : bool, optional
             True to calculate pore properties
         """
         # Start timer
@@ -1595,19 +1596,6 @@ class Pore(Molecule):
 
         return 2*res+pore
 
-    ##################
-    # Setter Methods #
-    ##################
-    def set_grid(self, grid):
-        """Set the grid molecule list.
-
-        Parameters
-        ----------
-        grid : list
-            List of grid molecule identifier
-        """
-        self._grid = grid if isinstance(grid, list) else [grid]
-
 
     ##################
     # Getter Methods #
@@ -1652,16 +1640,6 @@ class Pore(Molecule):
         """
         return self._res
 
-    def get_grid(self):
-        """Return the grid molecules.
-
-        Returns
-        -------
-        grid : list
-            List of grid molecule identifier
-        """
-        return self._grid
-
     def get_q(self):
         """Return the adjusted grid charges.
 
@@ -1677,7 +1655,7 @@ class Pore(Molecule):
 
         Returns
         -------
-        drill : str
+        drill : string
             Drilling axis
         """
         return self._drill

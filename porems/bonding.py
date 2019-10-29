@@ -122,9 +122,9 @@ class Bonding:
 
         Parameters
         ----------
-        silica : int
+        silica : integer
             Silica atom id
-        oxygene : int
+        oxygene : integer
             Oxygene atom id
         """
         # initialize
@@ -164,7 +164,7 @@ class Bonding:
 
         Parameters
         ----------
-        atoms : list, int
+        atoms : list, integer
             List of atoms to be unlinked, can also be one atom id
         """
         # initialize
@@ -204,7 +204,7 @@ class Bonding:
 
         Parameters
         ----------
-        atoms : list, int
+        atoms : list, integer
             List of atoms to be removed, can also be one atom id
         """
         # User input

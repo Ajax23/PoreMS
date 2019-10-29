@@ -39,15 +39,13 @@ class Molecule:
     Private functions are solely needed for internal puposes,
     whereas the public functions are inteded to be used for the editingself.
 
-    For example molecule consider class extensions **Catalysator** and **Educt**.
-
     Parameters
     ----------
-    name : str
+    name : string, optional
         Molecule name
-    short : str
+    short : string, optional
         Molecule short name
-    inp : None, str, list
+    inp : None, string, list, optional
         None for empty Molecule, string to read a molecule from a
         specified filelink or a list of either molecules to concatenate these
         into one object, or a data list in the earlier discussed format
@@ -92,9 +90,9 @@ class Molecule:
 
         Parameters
         ----------
-        file_name : str
+        file_name : string
             Link to requested file
-        file_type : str
+        file_type : string
             Int for types list id or str for file extension name
 
         Returns
@@ -278,9 +276,9 @@ class Molecule:
 
         Parameters
         ----------
-        pos_a : int, list
+        pos_a : integer, list
             First position :math:`\\boldsymbol{a}`
-        pos_b : int, list
+        pos_b : integer, list
             Second position :math:`\\boldsymbol{b}`
 
         Returns
@@ -380,7 +378,7 @@ class Molecule:
         ----------
         pos : list
             Position vector :math:`\\boldsymbol{a}`
-        is_deg : bool
+        is_deg : bool, optional
             True if the output should be in degree
 
         Returns
@@ -410,7 +408,7 @@ class Molecule:
         ----------
         pos : list
             Position vector :math:`\\boldsymbol{a}`
-        is_deg : bool
+        is_deg : bool, optional
             True if the output should be in degree
 
         Returns
@@ -435,7 +433,7 @@ class Molecule:
 
         Parameters
         ----------
-        inp : int, str
+        inp : integer, string
             Axis type input
 
         Returns
@@ -516,7 +514,7 @@ class Molecule:
         ----------
         data : list
             Vector :math:`\\boldsymbol{a}`
-        axis : int, str, list
+        axis : integer, string, list
             Axis :math:`\\boldsymbol{b}`
         angle : float
             Angle
@@ -614,11 +612,11 @@ class Molecule:
 
         Parameters
         ----------
-        axis : int, str, list
+        axis : integer, string, list
             Axis
         angle : float
             Angle
-        is_deg : bool
+        is_deg : bool, optional
             True if the input is in degree
         """
         # Initialize
@@ -641,8 +639,8 @@ class Molecule:
 
         Parameters
         ----------
-        atom : int, str
-            Atom-id whose position will be changed, use "last" for the newest atom
+        atom : integer, string
+            Atom-id whose position will be changed, use **"last"** for the newest atom
         pos : list
             New position vector
         """
@@ -659,8 +657,8 @@ class Molecule:
 
         Parameters
         ----------
-        atom : int, str
-            Main atom-id whose position will be changed, use "last" for the newest atom
+        atom : integer, string
+            Main atom-id whose position will be changed, use **"last"** for the newest atom
         pos : list
             New position vector
         """
@@ -676,12 +674,12 @@ class Molecule:
     def zero(self, pos=[0, 0, 0]):
         """Move whole the molecule, so that the minimal coordinate
         between all atoms is zero in all dimensions, or rather the values of the
-        position variable *pos*. This function is basically setting
-        the zero point of the coordinate system to *pos*.
+        position variable ``pos``. This function is basically setting
+        the zero point of the coordinate system to ``pos``.
 
         Parameters
         ----------
-        pos : list
+        pos : list, optional
             Vector of the zero point of the coordinate system
 
         Returns
@@ -704,14 +702,14 @@ class Molecule:
         """Create a molecule box around a centered molecule, where the
         coordinate systems zero point is set to the positional focal point of
         the molecule. The resulting box has the edge length of the given size
-        value. If *is_extend* is set to True, then the maximal molecule
-        coordinate of all dimensions is added to *size*.
+        value. If ``is_extend`` is set to True, then the maximal molecule
+        coordinate of all dimensions is added to ``size``.
 
         Parameters
         ----------
         size : float
             Box size
-        is_extend : bool
+        is_extend : bool, optional
             Should the molecule size be added to the box-size
         """
         # Get focal point
@@ -731,24 +729,24 @@ class Molecule:
     # Public Methods - Edit #
     #########################
     def part_move(self, bond, atoms, length, vec=None):
-        """Change the length of a specified bond. Variable *atoms* specifies
+        """Change the length of a specified bond. Variable ``atoms`` specifies
         which atoms or rather which part of the molecule needs to be moved for
         this specific bond. The given length is going to be the new bond length,
         not by how much the bond length is changed.
 
         The move vector is determined automatically by the given length and atom bond.
         This vector can also be given manually with no regards to length,
-        by setting the vector *vec*.
+        by setting the vector ``vec``.
 
         Parameters
         ----------
         bond : list
             List of two atom ids of the bond to be adjusted
-        atoms : int, list
+        atoms : integer, list
             List of atoms that need to be moved by changing the bond length (can also be one id)
         length : float
             New bond length
-        vec : list
+        vec : list, optional
             Set this vector, to manually move the atoms
 
         Examples
@@ -786,11 +784,11 @@ class Molecule:
 
         bond : list
             List of two atom ids of the bond to be set as an axis
-        atoms : int, list
+        atoms : integer, list
             List of atoms to be rotated (can also be one id)
         angle : float
             Rotation angle
-        zero : int
+        zero : integer
             Atom id to define zero point of the new coordinate system
 
         Examples
@@ -810,7 +808,7 @@ class Molecule:
         self._update(temp.get_data(), atoms)
 
     def part_angle(self, bond_a, bond_b, atoms, angle, zero):
-        """Change the bond angle of two bond vectors. Variable *atoms* specifies
+        """Change the bond angle of two bond vectors. Variable ``atoms`` specifies
         which atoms or rather which part of the molecule needs rotated to change
         the specified bond angle. First however the system needs to be set to
         zero. Therefore the atom id to define the new coordinate system has to be
@@ -827,11 +825,11 @@ class Molecule:
             First bond vector given as a list of two atom ids
         bond_b : list
             Second bond vector given as a list of two atom ids
-        atoms : int, list
+        atoms : integer, list
             List of atoms to be rotated (can also be one id)
         angle : float
             Rotation angle
-        zero : int
+        zero : integer
             Atom id to define zero point of the new coordinate system
 
         Examples
@@ -863,7 +861,7 @@ class Molecule:
         to an angle, then the bond length has to be changed in dependence to
         the bond angle.
 
-        Variable *atoms* specifies which atoms or rather which part of the
+        Variable ``atoms`` specifies which atoms or rather which part of the
         molecule needs moved and rotated to change the specified bond length.
 
         First however the system needs to be set to zero. Therefore the atom id
@@ -886,19 +884,19 @@ class Molecule:
             First bond vector given as a list of two atom ids
         bond_b : list
             Second bond vector given as a list of two atom ids
-        atoms : int, list
+        atoms : integer, list
             List of atoms to be rotated (can also be one id)
-        zero : int
+        zero : integer
             Atom id to define zero point of the new coordinate system
         length : float
             New bond length
-        angle : list
+        angle : list, optional
             Angle range to be tested
-        grid : float
+        grid : float, optional
             angle steps fineness
-        is_silent : bool
+        is_silent : bool, optional
             True to suppress error-value messages
-        is_negative : bool
+        is_negative : bool, optional
             True for a negative rotation
 
         Examples
@@ -938,7 +936,7 @@ class Molecule:
             First vector :math:`\\boldsymbol{a}`
         vec_b : list
             Second vector :math:`\\boldsymbol{b}`
-        is_deg : bool
+        is_deg : bool, optional
             True if the output should be in degree
 
         Returns
@@ -955,7 +953,7 @@ class Molecule:
 
         Parameters
         ----------
-        atom : int
+        atom : integer
             Atom id
 
         Returns
@@ -971,9 +969,9 @@ class Molecule:
 
         Parameters
         ----------
-        inp_a : int, list
+        inp_a : integer, list
             Either an atom id or a position vector
-        inp_b : int, list
+        inp_b : integer, list
             Either an atom id or a position vector
 
         Returns
@@ -994,7 +992,7 @@ class Molecule:
     # Public Methods - Edit #
     #########################
     def add(self, name, pos, bond=None, r=0, theta=0, phi=0, is_deg=True):
-        """Add a new atom in polar coordinates. The *pos* input is either
+        """Add a new atom in polar coordinates. The ``pos`` input is either
         an atom id, that determines is the bond-start,
         or a vector for a specific position.
 
@@ -1008,19 +1006,19 @@ class Molecule:
 
         Parameters
         ----------
-        name : str
+        name : string
             Atom type
-        pos : int, list
+        pos : integer, list
             Position of the atom
-        bond : None, list
+        bond : None, list, optional
             Bond axis
-        r : float
+        r : float, optional
             Bond length
-        theta : float
+        theta : float, optional
             Azimuthal angle
-        phi : float
+        phi : float, optional
             Polar angle
-        is_deg : bool
+        is_deg : bool, optional
             True if the input of the angles in degree
 
         Examples
@@ -1097,9 +1095,9 @@ class Molecule:
 
         Parameters
         ----------
-        error : float
+        error : float, optional
             Error of the overlap search
-        is_print : bool
+        is_print : bool, optional
             True to print the list of overlapping atoms
         """
         # Initialize
@@ -1135,9 +1133,9 @@ class Molecule:
 
         Parameters
         ----------
-        atom : int
+        atom : integer
             Atom id
-        atom_type : str
+        atom_type : string
             New atomtype
         """
         self._data[self._dim][atom] = atom_type
@@ -1151,7 +1149,7 @@ class Molecule:
 
         Parameters
         ----------
-        name : str
+        name : string
             Molecule name
         """
         self._name = name
@@ -1161,7 +1159,7 @@ class Molecule:
 
         Parameters
         ----------
-        short : str, None
+        short : string, None, optional
             Molecule short name
         """
         self._short = config.load("mols")[self.get_name()] if short is None else short
@@ -1203,7 +1201,7 @@ class Molecule:
 
         Parameters
         ----------
-        masses : list
+        masses : list, optional
             List of molar masses in :math:`\\frac g{mol}`
         """
         if masses is not None:
@@ -1218,7 +1216,7 @@ class Molecule:
 
         Parameters
         ----------
-        mass : float
+        mass : float, optional
             Molar mass in :math:`\\frac g{mol}`
         """
         if mass is not None:
@@ -1233,7 +1231,7 @@ class Molecule:
 
         Parameters
         ----------
-        com : list
+        com : list, optional
             Center of mass coordinates
         """
         if com is not None:
@@ -1267,7 +1265,7 @@ class Molecule:
 
         Returns
         -------
-        name : str
+        name : string
             Molecule name
         """
         return self._name
@@ -1277,7 +1275,7 @@ class Molecule:
 
         Returns
         -------
-        short : str
+        short : string
             Molecule short name
         """
         if self._short is None:
@@ -1320,7 +1318,7 @@ class Molecule:
 
         Returns
         -------
-        num : int
+        num : integer
             Number of atoms
         """
         return len(self._data[0])
@@ -1330,7 +1328,7 @@ class Molecule:
 
         Parameters
         ----------
-        atom : int
+        atom : integer
             Atom id
 
         Returns

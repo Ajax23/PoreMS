@@ -171,7 +171,7 @@ class Verlet:
 
         Returns
         -------
-        index : int
+        index : integer
             Box index
         """
         # Initialize
@@ -192,7 +192,7 @@ class Verlet:
 
         Parameters
         ----------
-        index : int
+        index : integer
             Box index
 
         Returns
@@ -218,7 +218,7 @@ class Verlet:
 
         Parameters
         ----------
-        inp : int, list
+        inp : integer, list
             Input
 
         Returns
@@ -246,14 +246,14 @@ class Verlet:
 
         Parameters
         ----------
-        dim : int
+        dim : integer
             Stepping dimension
-        inp : int, list
+        inp : integer, list
             Position input, can also be an id
 
         Returns
         -------
-        pos : int, list
+        pos : integer, list
             Iterated position in the input format
         """
         # Check if input is None
@@ -279,14 +279,14 @@ class Verlet:
 
         Parameters
         ----------
-        dim : int
+        dim : integer
             Stepping dimension
-        inp : int, list
+        inp : integer, list
             Position input, can also be an id
 
         Returns
         -------
-        pos : int, list
+        pos : integer, list
             Iterated position in the input format
         """
         # Check if input is None
@@ -415,9 +415,9 @@ class Verlet:
             Bond length
         error : float
             Tollerated deviation of the bondlength
-        condition : None, func
+        condition : None, function, optional
             None or a function f(Molecule,bond) with a boolean output
-        is_time : bool
+        is_time : bool, optional
             True to print the used search time
 
         Returns
@@ -471,9 +471,9 @@ class Verlet:
 
         Parameters
         ----------
-        index : int
+        index : integer
             Main box id
-        is_self : bool
+        is_self : bool, optional
             True to add the main box to the output
 
         Returns
@@ -505,7 +505,7 @@ class Verlet:
 
         Parameters
         ----------
-        inp : list, int
+        inp : list, integer
             Atom list or single atom id
         """
         self._mol.delete(inp)

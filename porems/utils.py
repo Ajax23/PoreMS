@@ -19,7 +19,7 @@ def mkdirp(directory):
 
     Parameters
     ----------
-    directory : str
+    directory : string
         Directory name
     """
     if not os.path.exists(directory):
@@ -56,9 +56,9 @@ def copy(source, target):
 
     Parameters
     ----------
-    source : str
+    source : string
         Link to requested file
-    target : str
+    target : string
         Link to requested new file
     """
     copyfile(source, target)
@@ -69,9 +69,9 @@ def copy_dir(source, target):
 
     Parameters
     ----------
-    source : str
+    source : string
         Link to requested folder
-    target : str
+    target : string
         Link to requested new folder
     """
     if not os.path.isdir(target):
@@ -89,7 +89,7 @@ def tic():
     return time.time()
 
 
-def toc(t, message=None, isPrint=True):
+def toc(t, message=None, is_print=True):
     """Matlab toc reproduction - return time difference to tic and alternatively
     print a message.
 
@@ -97,9 +97,9 @@ def toc(t, message=None, isPrint=True):
     ----------
     t : float
         Starting time - given by tic function
-    message : str
+    message : string, optional
         Custom output message
-    isPrint : bool
+    is_print : bool, optional
         True for printing an output message
 
     Returns
@@ -114,7 +114,7 @@ def toc(t, message=None, isPrint=True):
 
     tDiff = time.time()-t
 
-    if isPrint:
+    if is_print:
         print(message+"%6.3f" % tDiff+" s")
 
     return tDiff
@@ -125,11 +125,11 @@ def replace(fileLink, old, new):
 
     Parameters
     ----------
-    fileLink : str
+    fileLink : string
         Link to requested file
-    old : str
+    old : string
         String to be replaced in file
-    new : str
+    new : string
         New string to be written
     """
     for line in fileinput.input(fileLink, inplace=True):
@@ -143,7 +143,7 @@ def save(obj, link):
     ----------
     obj : Object
         Object to be saved
-    link : str
+    link : string
         Specific link to save object
     """
     with open(link, "wb") as f:
@@ -155,7 +155,7 @@ def load(link):
 
     Parameters
     ----------
-    link : str
+    link : string
         Specific link to load object
 
     Returns
