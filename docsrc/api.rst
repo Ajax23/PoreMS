@@ -35,3 +35,4 @@ Utilities
     :toctree: generated/
 
     utils
+    database

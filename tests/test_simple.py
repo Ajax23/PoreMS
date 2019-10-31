@@ -9,9 +9,9 @@ print("Finished inistalling package...")
 from porems import *
 
 # Generate molecules
-molGro = Molecule(inp="data/benzene.gro")
-molPdb = Molecule(inp="data/benzene.pdb")
-molMol = Molecule(inp="data/benzene.mol2")
+mol_gro = Molecule(inp="data/benzene.gro")
+mol_pdb = Molecule(inp="data/benzene.pdb")
+mol_mol = Molecule(inp="data/benzene.mol2")
 
 
 ############
@@ -19,21 +19,23 @@ molMol = Molecule(inp="data/benzene.mol2")
 ############
 # # _read
 # for i in range(4):
-#     print(molGro.get_data()[i])
-#     print(molPdb.get_data()[i])
-#     print(molMol.get_data()[i])
+#     print(mol_gro.get_data()[i])
+#     print(mol_pdb.get_data()[i])
+#     print(mol_mol.get_data()[i])
 #
 # # _concat
-# for x in Molecule([molGro,molGro]).get_data(): print(x)
+# for x in Molecule([mol_gro,mol_gro]).get_data(): print(x)
 
+# set_masses
+# print(mol_gro.get_masses())
 
 #########
 # Write #
 #########
-# Write(molGro,"output").job()
-# Write(molGro,"output").gro()
-# Write(molGro,"output").pdb()
-# Write(molGro,"output").xyz()
+# Write(mol_gro,"output").job()
+# Write(mol_gro,"output").gro()
+# Write(mol_gro,"output").pdb()
+# Write(mol_gro,"output").xyz()
 
 
 ########

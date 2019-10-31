@@ -1145,7 +1145,7 @@ class Molecule:
     # Setter Methods #
     ##################
     def set_name(self, name):
-        """Set the molecule name, short name and link based on that name.
+        """Set the molecule name.
 
         Parameters
         ----------
@@ -1154,15 +1154,15 @@ class Molecule:
         """
         self._name = name
 
-    def set_short(self, short=None):
-        """Set the molecule short name. If input is None, set the short name automatically.
+    def set_short(self, short):
+        """Set the molecule short name
 
         Parameters
         ----------
-        short : string, None, optional
+        short : string
             Molecule short name
         """
-        self._short = config.load("mols")[self.get_name()] if short is None else short
+        self._short = short
 
     def set_write(self, write):
         """Set the molecule list for writing the structure file
@@ -1197,41 +1197,30 @@ class Molecule:
     def set_masses(self, masses=None):
         """Set the molar masses of the atoms.
 
-        :TODO: remove masses from database
-
         Parameters
         ----------
-        masses : list, optional
+        masses : list, None, optional
             List of molar masses in :math:`\\frac g{mol}`
         """
-        if masses is not None:
-            self._masses = masses
-        else:
-            self._masses = []
-            for atom in self._data[self._dim]:
-                self._masses.append(self._db.get_mass(atom))
+        import porems.database as db
+        self._masses = [db.get_mass(atom) for atom in self._data[self._dim]] if masses is None else masses
 
     def set_mass(self, mass=None):
         """Set the molar mass of the molecule.
 
         Parameters
         ----------
-        mass : float, optional
+        mass : float, None, optional
             Molar mass in :math:`\\frac g{mol}`
         """
-        if mass is not None:
-            self._mass = mass
-        else:
-            self._mass = 0
-            for mass in self.get_masses():
-                self._mass += mass
+        self._mass = sum(self.get_masses()) if mass is None else mass
 
     def set_com(self, com=None):
         """Set the center of mass coordinates of the molecule.
 
         Parameters
         ----------
-        com : list, optional
+        com : list, None, optional
             Center of mass coordinates
         """
         if com is not None:
@@ -1278,9 +1267,6 @@ class Molecule:
         short : string
             Molecule short name
         """
-        if self._short is None:
-            self.set_short()
-
         return self._short
 
     def get_write(self):
