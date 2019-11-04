@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Write\.pdb
+Store\.obj
 ==========
 
-.. currentmodule:: porems.write
+.. currentmodule:: porems.store
 
-.. automethod:: Write.pdb
+.. automethod:: Store.obj

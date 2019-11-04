@@ -1,5 +1,5 @@
 ################################################################################
-# Write Class                                                                  #
+# Store Class                                                                  #
 #                                                                              #
 """Contains function for creating simululation files."""
 ################################################################################
@@ -16,7 +16,7 @@ from porems.molecule import Molecule
 from porems.pore import Pore
 
 
-class Write:
+class Store:
     """This class converts a molecule object to a structure file of different
     possible formats. Currently only **PDB** and **GRO** are fully supported.
 
@@ -42,8 +42,7 @@ class Write:
         self._mols = molecule.get_write()
         self._name = molecule.get_name()
         self._short = molecule.get_short()
-        self._box = Molecule(self._mols).get_box(
-        ) if molecule.get_box_c() == None else molecule.get_box_c()
+        self._box = Molecule(inp=self._mols).get_box() if molecule.get_box_c() == None else molecule.get_box_c()
 
         # Create output folder
         utils.mkdirp(link)
@@ -102,6 +101,25 @@ class Write:
     ##############################
     # Public Methods - Structure #
     ##############################
+    def obj(self, name=None, link=None):
+        """Save the molecule object using pickle.
+        If parameter ``link`` is given, parameter ``name`` will be ignored.
+
+        Parameters
+        ----------
+        name : None, string, optional
+            Filename
+        link : None, string, optional
+            Full link with filename
+        """
+        # Initialize
+        if link is None:
+            link = self._link
+            link += self._name+".obj" if name is None else name
+
+        # Save object
+        utils.save(self._mol, link)
+
     def pdb(self, name=None, link=None):
         """Generate the structure file for the defined molecule in the **PDB** format.
         If parameter ``link`` is given, parameter ``name`` will be ignored.
@@ -263,7 +281,7 @@ class Write:
     # Topology #
     ############
     def top(self, name=None, link=None):
-        """Write the topology file for a pore. A top file is created containing
+        """Store the topology file for a pore. A top file is created containing
         the itp-include for all molecules and the count of the different groups
         of the pore. If parameter ``link`` is given, parameter ``name`` will be
         ignored.
@@ -289,7 +307,7 @@ class Write:
 
         # Open file
         with open(link, "w") as file_out:
-            # Write header
+            # Store header
             file_out.write("[ defaults ]\n")
             file_out.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
             file_out.write("1               2               yes             0.5     0.833333\n")
@@ -318,7 +336,7 @@ class Write:
             file_out.write(mols[-1].get_short()+" "+str(counter)+"\n")
 
     def grid(self, name=None, link=None):
-        """Write the grid.itp file containing the necesarry parameters and
+        """Store the grid.itp file containing the necesarry parameters and
         charges of the grid molecules. If parameter ``link`` is given, parameter
         ``name`` will be ignored.
 

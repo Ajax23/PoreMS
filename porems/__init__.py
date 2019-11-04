@@ -1,9 +1,9 @@
 from .molecule import Molecule
 from .pore import Pore
-from .write import Write
+from .store import Store
 
 __all__ = [
     "Molecule",
     "Pore",
-    "Write"
+    "Store"
 ]

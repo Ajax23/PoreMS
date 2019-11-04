@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Write\.gro
+Store\.job
 ==========
 
-.. currentmodule:: porems.write
+.. currentmodule:: porems.store
 
-.. automethod:: Write.gro
+.. automethod:: Store.job

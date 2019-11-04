@@ -58,6 +58,7 @@ Molecule
     ~Molecule.pos
     ~Molecule.put
     ~Molecule.rotate
+    ~Molecule.table
     ~Molecule.translate
     ~Molecule.zero
 

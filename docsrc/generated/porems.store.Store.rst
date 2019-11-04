@@ -3,27 +3,28 @@
     </div>
     <div class=col-md-9 content>
 
-Write
+Store
 =====
 
-.. currentmodule:: porems.write
+.. currentmodule:: porems.store
 
-.. autoclass:: Write
+.. autoclass:: Store
 
 
   .. rubric:: Structure Methods
 
   .. autosummary::
 
-    ~Write.gro
-    ~Write.job
-    ~Write.pdb
-    ~Write.xyz
+    ~Store.obj
+    ~Store.gro
+    ~Store.job
+    ~Store.pdb
+    ~Store.xyz
 
 
   .. rubric:: Topology Methods
 
   .. autosummary::
 
-    ~Write.grid
-    ~Write.top
+    ~Store.grid
+    ~Store.top

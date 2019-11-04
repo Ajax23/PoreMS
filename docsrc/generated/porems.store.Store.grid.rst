@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Write\.grid
+Store\.grid
 ===========
 
-.. currentmodule:: porems.write
+.. currentmodule:: porems.store
 
-.. automethod:: Write.grid
+.. automethod:: Store.grid

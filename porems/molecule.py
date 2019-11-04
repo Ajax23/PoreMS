@@ -84,13 +84,15 @@ class Molecule:
     ################################
     # Private Methods - Management #
     ################################
-    def _read(self, file_name, file_type):
+    def _read(self, file_path, file_type):
         """Read a molecule from a file. Currently only **GRO**, **PFB** and
-        **MOL2** files are supported.
+        **MOL2** files are supported. In case the `file_type` is **OBJ**, the
+        function will attempt unpickling the object file. Note that laoding the
+        object this way, only the data will be imported.
 
         Parameters
         ----------
-        file_name : string
+        file_path : string
             Link to requested file
         file_type : string
             Int for types list id or str for file extension name
@@ -101,13 +103,21 @@ class Molecule:
             data matrix
         """
         # Process input
-        if not file_type in ["GRO", "PDB", "MOL2"]:
+        if not file_type in ["GRO", "PDB", "MOL2", "OBJ"]:
             print("Unsupported filetype.")
             return
 
-        # Read molecules
+        # Load object
+        if file_type == "OBJ":
+            try:
+                return utils.load(file_path).get_data()
+            except:
+                print("Erroneous object file.")
+                return
+
+        # Read molecule
         data = []
-        with open(file_name, "r") as file_in:
+        with open(file_path, "r") as file_in:
             line_idx = 0
             for line in file_in:
                 line_val = line.split()
@@ -1139,6 +1149,21 @@ class Molecule:
             New atomtype
         """
         self._data[self._dim][atom] = atom_type
+
+
+    ###########################
+    # Public Methods - Output #
+    ###########################
+    def table(self):
+        """Create a pandas table of the molecule data."""
+        import pandas as pd
+
+        # Create dictionary
+        data = {"Axis "+str(dim+1): self._data[dim] for dim in range(self._dim)}
+        data["Type"] = self._data[-1]
+
+        # Create dataframe
+        return pd.DataFrame(data)
 
 
     ##################
