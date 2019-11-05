@@ -919,16 +919,15 @@ class Pore(Molecule):
             self._close(i)
 
 
-    #################################
-    # Private Methods - Final Edits #
-    #################################
+    ###############
+    # Final Edits #
+    ###############
     def _connect(self):
         """Concatenate two geminal molecules to one molecule.
         """
         # Initialize
         site = self._site
         mol_list = self._mol_list
-        dim = self._dim
         gemi = []
 
         # Check for geminal sites
@@ -1001,28 +1000,6 @@ class Pore(Molecule):
 
         # Add mols to molecule list
         self._mol_list.pop(0)
-
-    def _sort(self):
-        """Sort molecules in order to prevent multiple molecule appearances in
-        the structure file.
-        """
-        # Initialize
-        mol_list = self._mol_list
-        mol_list_new = []
-
-        # Get unique mols
-        unique_mols = []
-        for mol in mol_list:
-            if mol.get_name() not in unique_mols:
-                unique_mols.append(mol.get_name())
-
-        # Sort molecules
-        for molName in unique_mols:
-            for mol in mol_list:
-                if mol.get_name() == molName:
-                    mol_list_new.append(mol)
-
-        self._mol_list = mol_list_new
 
     def _position(self):
         """Tranlate the pore into position, and consider the periodic repeat gap.
@@ -1154,10 +1131,36 @@ class Pore(Molecule):
 
         self.set_charge(sum([mol.get_charge() for mol in self._mol_list]))
 
+    def _sort(self):
+        """Sort molecules in order to prevent multiple molecule appearances in
+        the structure file.
+        """
+        # Add molecules to a dictionary
+        mol_dict = {}
+        for mol in self._mol_list:
+            if mol.get_name() not in mol_dict:
+                mol_dict[mol.get_name()] = []
 
-    ############################
-    # Public Methods - Analyze #
-    ############################
+            mol_dict[mol.get_name()].append(mol)
+
+        # Create new molecule list
+        mol_list = []
+        priority = ["si","om","ox","slx","sl","slg"]
+        for mol_name in priority:
+            if mol_name in mol_dict:
+                mol_list += mol_dict[mol_name]
+
+        for mol_name in mol_dict:
+            if mol_name not in priority:
+                mol_list += mol_dict[mol_name]
+
+        # Replace global list
+        self._mol_list = mol_list
+
+
+    ###########
+    # Analyze #
+    ###########
     def _allocation(self, site=None, is_mol=True):
         """Calculate the surface allocation. This is done by first calculating
         the pores surface
@@ -1329,6 +1332,27 @@ class Pore(Molecule):
         # Calculate roughness
         return 2*r_bar
 
+    def volume(self):
+        """This function calculates the available volume in the pore system.
+
+        Returns
+        -------
+        volume : list
+            System volume of pore and reservoir
+        """
+        # Initialize
+        size = self._size
+
+        # Calculate volumes
+        res = self._res
+        for i in range(self._dim):
+            if not i == 2:
+                res *= size[i]
+
+        pore = math.pi*(self._diam/2)**2
+
+        return 2*res+pore
+
 
     #########################
     # Public Methods - Edit #
@@ -1360,8 +1384,8 @@ class Pore(Molecule):
         self._connect()          # Connect geminal molecules into one
         self._bonding.delete()   # Delete marked atoms
         self._objectify()        # Move all silicon and oxygenes into unique mols
-        self._sort()             # Sort molecules
         self._excess(is_rand)    # Distribute excess charge
+        self._sort()             # Sort molecules
         self._position()         # Position the pore considering pbc
         self._overlap()          # Check for silicon or oxygen atoms overlapping
 
@@ -1456,31 +1480,6 @@ class Pore(Molecule):
             print("Excess charge         - "+props["C"][0]+" "+props["C"][1])
             print("Total time            - "+props["t"][0]+" "+props["t"][1])
             print()
-
-
-    ##########################
-    # Public methods - Props #
-    ##########################
-    def volume(self):
-        """This function calculates the available volume in the pore system.
-
-        Returns
-        -------
-        volume : list
-            System volume of pore and reservoir
-        """
-        # Initialize
-        size = self._size
-
-        # Calculate volumes
-        res = self._res
-        for i in range(self._dim):
-            if not i == 2:
-                res *= size[i]
-
-        pore = math.pi*(self._diam/2)**2
-
-        return 2*res+pore
 
 
     ##################
