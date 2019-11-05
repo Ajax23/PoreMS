@@ -86,7 +86,7 @@ class Molecule:
     ################################
     def _read(self, file_path, file_type):
         """Read a molecule from a file. Currently only **GRO**, **PFB** and
-        **MOL2** files are supported. In case the `file_type` is **OBJ**, the
+        **MOL2** files are supported. In case the ``file_type`` is **OBJ**, the
         function will attempt unpickling the object file. Note that laoding the
         object this way, only the data will be imported.
 

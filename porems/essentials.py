@@ -213,7 +213,7 @@ class Ketone(Molecule):
 
 class TMS(Molecule):
     """This class extends the molecule class :class:`porems.molecule.Molecule`
-    and defines trimethylsilyl (TMS) bound to a silica-grid.
+    and defines trimethylsilyl (TMS) bound to a silicon-grid.
 
     Parameters
     ----------
@@ -226,7 +226,7 @@ class TMS(Molecule):
     compress : float, optional
         Compress molecule sidechain angles
     is_si : bool, optional
-        True if the terminus should be a lone silica, False for a CH3 group
+        True if the terminus should be a lone silicon, False for a CH3 group
     """
     def __init__(self, name="tms", short="TMS", charge=1.070428, compress=0, is_si=True):
         # Call super class
@@ -236,7 +236,7 @@ class TMS(Molecule):
         self.set_name(name)
         self.set_short(short)
 
-        # Check silica
+        # Check silicon
         si = "Si" if is_si else "Ci"
 
         # Define bond lengths and angles
@@ -257,7 +257,7 @@ class TMS(Molecule):
             for j in range(3):
                 self.add("H", i, bond=[i, 2], r=b["ch"], theta=a["cch"]+compress, phi=60+120*j)
 
-        # If not silica ending
+        # If not silicon ending
         for i in range(3):
             if not is_si:
                 self.add("H", 0, bond=[0, 1], r=b["ch"], theta=a["cch"], phi=60+120*i)

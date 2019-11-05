@@ -20,8 +20,6 @@ Pore
     ~Pore._block
     ~Pore._close
     ~Pore._connect
-    ~Pore._couple
-    ~Pore._couple_proxi
     ~Pore._diameter
     ~Pore._excess
     ~Pore._foundation
@@ -34,18 +32,17 @@ Pore
     ~Pore._rough
     ~Pore._silanol
     ~Pore._silanol_parallel
-    ~Pore._siloxan
     ~Pore._sort
-    ~Pore._special
 
 
   .. rubric:: Public Methods
 
   .. autosummary::
 
-    ~Pore.couple
-    ~Pore.couple_proxi
+    ~Pore.attach
+    ~Pore.attach_dual
     ~Pore.finish
+    ~Pore.siloxan
     ~Pore.special
     ~Pore.volume
 

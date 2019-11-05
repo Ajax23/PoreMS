@@ -11,16 +11,16 @@ import porems.utils as utils
 
 
 class Bonding:
-    """The aim of this class is preserving all information of the silica grid
+    """The aim of this class is preserving all information of the silicon grid
     bonds. This is needed since firstly, verlet searches get costly the more often
     they are needed and secondly, multiple searches deteriorate the bond information,
     due to numeric errors thus resulting in bonds beeing lost.
 
     The idea here was reducing the verlet searches to a single search by creating
-    a connection matrix of all oxygene and silica atoms.
+    a connection matrix of all oxygene and silicon atoms.
     In fact two matrices :math:`ox\\in\\mathbb{N}^{no\\times2}` for oxygene and
     :math:`si\\in\\mathbb{N}^{ns\\times2}` were created with numbers of
-    oxygene atoms :math:`no` and silica atoms :math:`ns`
+    oxygene atoms :math:`no` and silicon atoms :math:`ns`
 
     .. math::
 
@@ -43,20 +43,20 @@ class Bonding:
             \\right]
         \\end{array}
 
-    with oxygene :math:`o_{i=0,\\dots,no}` and silica :math:`s_{j=0,\\dots,ns}`.
-    The entries next to the main atoms are the silica atoms :math:`s_{i,ko=0,\\dots,so}`
+    with oxygene :math:`o_{i=0,\\dots,no}` and silicon :math:`s_{j=0,\\dots,ns}`.
+    The entries next to the main atoms are the silicon atoms :math:`s_{i,ko=0,\\dots,so}`
     bound to oxygene :math:`i` and oxygene atoms :math:`o_{j,ks=0,\\dots,os}` bound to
-    silica :math:`j`, which are found using the verlet search algorithm.
+    silicon :math:`j`, which are found using the verlet search algorithm.
     As an optimization, these values are not the atom ids, but the list pointers
     of the specific atoms in their corresponfing connection matrices :math:`si`
     and :math:`ox`. Due to chemical properties, the maximal possible silca atoms
     bound to one oxegene is :math:`so=2` and the maximal possible number of
-    oxygene atoms bound to one silica is :math:`os=4`.
+    oxygene atoms bound to one silicon is :math:`os=4`.
 
     In the beginning, considering periodic boundary conditions and before
     removing any atoms, every atom should be saturated with partners. This means,
-    That every silica has a set of four oxygenes and every oxygene has two
-    silica bonds.
+    That every silicon has a set of four oxygenes and every oxygene has two
+    silicon bonds.
 
     With this connection matrix, bonds can be easily deleted and their number
     for specific atoms can be easily determined without needing another search
@@ -116,13 +116,13 @@ class Bonding:
     ###################
     # Private Methods #
     ###################
-    def _unbind(self, silica, oxygene):
-        """Remove the bond between a silica and an oxygene atom from the
+    def _unbind(self, silicon, oxygene):
+        """Remove the bond between a silicon and an oxygene atom from the
         connection matrix.
 
         Parameters
         ----------
-        silica : integer
+        silicon : integer
             Silica atom id
         oxygene : integer
             Oxygene atom id
@@ -133,7 +133,7 @@ class Bonding:
         pointer = self._pointer
 
         # Get pointer
-        id_s = pointer[silica]
+        id_s = pointer[silicon]
         id_o = pointer[oxygene]
 
         # Remove bond
@@ -141,17 +141,17 @@ class Bonding:
         osi[1][id_o].pop(osi[1][id_o].index(id_s))
 
     def _geminal(self):
-        """Get the list silica that have gmeinal bonds - two binding sites.
+        """Get the list silicon that have gmeinal bonds - two binding sites.
 
         Returns
         -------
         geminal : list
-            List of silica with geminal bonds
+            List of silicon with geminal bonds
         """
-        # Get list of geminal silica
+        # Get list of geminal silicon
         oxygene = [o[0] for o in self._osi[1] if len(o) == 1]
-        silica = list(set(oxygene))
-        geminal = [self._sio[0][s] for s in silica if oxygene.count(s) == 2]
+        silicon = list(set(oxygene))
+        geminal = [self._sio[0][s] for s in silicon if oxygene.count(s) == 2]
 
         return geminal
 
@@ -255,7 +255,7 @@ class Bonding:
         """The bonds in drilling direction are broken, since on these sides the
         reservoirs containing molecules arre appended and binding sites
         are needed. After breaking the bonds, oxygenes are added to the unsaturated
-        silica on the outer surface.
+        silicon on the outer surface.
         """
         # Initialize
         sio = self._sio
@@ -316,7 +316,7 @@ class Bonding:
                 # Move atom
                 mol.put(osi[0][o], pos)
 
-        # Run through silica molecules
+        # Run through silicon molecules
         for i in range(len(sio[0])):
             # x-axis
             if drill == "x":
@@ -348,7 +348,7 @@ class Bonding:
 
                         # Double oxygenes
                         if abs(data[2][osi[0][o]]-box[2]) < 10e-3:
-                            # Find second silica and get positions
+                            # Find second silicon and get positions
                             si = osi[1][o][0] if not osi[1][o][0] == i else osi[1][o][1]
                             oP = data[0][osi[0][o]]
                             sP = data[0][sio[0][si]]
@@ -371,7 +371,7 @@ class Bonding:
                             add_oxy(i, o, -si_grid)
 
     def drill(self, focal, diam):
-        """Drill through a pore through the silica-ogygene-grid. This function
+        """Drill through a pore through the silicon-ogygene-grid. This function
         does not delete any atoms but rather unlinks all bonds of atoms
         within the pore diameter.
 
@@ -388,7 +388,7 @@ class Bonding:
         sio = self._sio
         osi = self._osi
 
-        # Delete silica atoms
+        # Delete silicon atoms
         lists = [sio, osi]
 
         for i in range(len(lists)):
@@ -400,25 +400,25 @@ class Bonding:
 
     def prepare(self):
         """Prepare binding site in the pore. These are oxygene atoms with only
-        one bond to a grid silica and another loose end directed to the pore.
+        one bond to a grid silicon and another loose end directed to the pore.
 
         Inspired by earlier work, the pore is then prepared in the steps
 
-        1. Remove all unsaturated silica, meaning all silica with less than four bonds
-        2. Remove all silica with three binding sites
+        1. Remove all unsaturated silicon, meaning all silicon with less than four bonds
+        2. Remove all silicon with three binding sites
 
-        Thus only silica are left with a maximum of two binding sites.
+        Thus only silicon are left with a maximum of two binding sites.
         """
         # Initialize
         sio = self._sio
         osi = self._osi
 
-        # Remove unsaturated silica
+        # Remove unsaturated silicon
         for i in range(len(sio[0])):
             if len(sio[1][i]) < 4:
                 self.unlink(sio[0][i])
 
-        # Remove silica with three binding sites (2 times for safety)
+        # Remove silicon with three binding sites (2 times for safety)
         for i in range(2):
             temp_o = []
             for i in range(len(osi[0])):

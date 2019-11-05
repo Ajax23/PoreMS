@@ -7,6 +7,10 @@ print("Finished inistalling package...")
 
 # import package
 from porems import *
+from porems.essentials import Alkane
+from porems.essentials import Alcohol
+from porems.essentials import Ketone
+from porems.essentials import TMS
 
 # Generate molecules
 mol_gro = Molecule(inp="data/benzene.gro")
@@ -48,35 +52,29 @@ mol_mol = Molecule(inp="data/benzene.mol2")
 ##############
 # Essentials #
 ##############
-from porems.essentials import Alkane
-from porems.essentials import Alcohol
-from porems.essentials import Ketone
-from porems.essentials import TMS
-
-alkane = Alkane(10,"alkane")
-alcohol = Alcohol(10,"alcohol")
-ketone = Ketone(10,5,"ketone")
-tms = TMS(compress=30)
-
-Store(alkane,"output").gro()
-Store(alcohol,"output").gro()
-Store(ketone,"output").gro()
-Store(tms,"output").gro()
+# alkane = Alkane(10,"alkane")
+# alcohol = Alcohol(10,"alcohol")
+# ketone = Ketone(10,5,"ketone")
+# tms = TMS(compress=30)
+#
+# Store(alkane,"output").gro()
+# Store(alcohol,"output").gro()
+# Store(ketone,"output").gro()
+# Store(tms,"output").gro()
 
 
 ########
 # Pore #
 ########
-# pore = Pore(size=[10, 10, 10], diam=6, drill="z", res=5.5, is_time=True)
-# pore.set_name("pore")
-#
-# # pore.couple([C18(),C18()],    [[0,7,8],[0,7,8]],[30.4,39])
-# # pore.couple([Silyl(),Silyl()],[[0,1,2],[0,1,2]],[54-30.4,54-39])
-# #
-# # pore.setGrid([C18(),Silyl()])
-#
-# pore.finish(is_mol=True, is_props=False)
-#
-# Store(pore, "output").gro()
-# Store(pore, "output").top()
-# Store(pore, "output").grid()
+pore = Pore(size=[5, 5, 3], diam=3, drill="z", res=5.5, is_time=True)
+pore.set_name("pore")
+
+pore.siloxan(10,"num")
+pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 10, inp="num")
+pore.attach(TMS(compress=30), [0, 1], [1, 2], 1, 10, inp="num")
+
+pore.finish(is_mol=True, is_props=True)
+
+Store(pore, "output").gro()
+Store(pore, "output").top()
+Store(pore, "output").grid()

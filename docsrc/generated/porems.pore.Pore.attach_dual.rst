@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Pore\.couple\_proxi
-===================
+Pore\.attach\_dual
+==================
 
 .. currentmodule:: porems.pore
 
-.. automethod:: Pore.couple_proxi
+.. automethod:: Pore.attach_dual
