@@ -72,9 +72,9 @@ Molecule
     ~Molecule.set_com
     ~Molecule.set_mass
     ~Molecule.set_masses
+    ~Molecule.set_mol_list
     ~Molecule.set_name
     ~Molecule.set_short
-    ~Molecule.set_write
 
 
   .. rubric:: Getter Methods
@@ -88,8 +88,8 @@ Molecule
     ~Molecule.get_data
     ~Molecule.get_mass
     ~Molecule.get_masses
+    ~Molecule.get_mol_list
     ~Molecule.get_name
     ~Molecule.get_num
     ~Molecule.get_short
     ~Molecule.get_type
-    ~Molecule.get_write

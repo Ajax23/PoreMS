@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Molecule\.set\_write
-====================
+Molecule\.set\_mol\_list
+========================
 
 .. currentmodule:: porems.molecule
 
-.. automethod:: Molecule.set_write
+.. automethod:: Molecule.set_mol_list

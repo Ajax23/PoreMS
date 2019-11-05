@@ -284,10 +284,10 @@ class Pore(Molecule):
         .. math::
 
             \\boldsymbol{B}=\\begin{bmatrix}
-                o_0&s_0&p_0&u_0&t_0&g_0&w_0\\\\
-                o_1&s_1&p_1&u_1&t_1&g_1&w_1\\\\
+                o_0&s_0&p_0&u_0&t_0&g_0&m_0\\\\
+                o_1&s_1&p_1&u_1&t_1&g_1&m_1\\\\
                 \\vdots\\\\
-                o_b&s_b&p_b&u_b&t_0&g_b&w_b\\\\
+                o_b&s_b&p_b&u_b&t_0&g_b&m_b\\\\
             \\end{bmatrix}
 
         with binding site number :math:`b` and entries
@@ -298,7 +298,7 @@ class Pore(Molecule):
         3. State :math:`u_k`: avilable - 0, used - 1, is in proximity - 2
         4. Type :math:`t_k`: inside the pore - 0, outsite the pore - 1
         5. Pointer :math:`g_k` to geminal binding site
-        6. Molecule position :math:`w_k` in the global write list
+        6. Molecule position :math:`m_k` in the global molecule list
         """
         # Initialize
         site = []
@@ -461,6 +461,27 @@ class Pore(Molecule):
                 if not site[prox][3] == 1:
                     site[prox][3] = 2
 
+    def _add_mol_list(self, mol_list):
+        """Add given molecule list to global molecule list and add the position
+        in this list to the corresponding binding site. The input has the format
+
+        * [binding_site_idx, molecule]
+        * [[binding_site_idx_1, molecule_1], [binding_site_idx_2, molecule_2], ...]
+
+        Parameters
+        ----------
+        mol_list : list
+            Molecules to be added to the global list
+        """
+        # Process input
+        if not isinstance(mol_list[0],list):
+            mol_list = [mol_list]
+
+        # Add to molecule list
+        for mol in mol_list:
+            self._site[mol[1]][6] = len(self._mol_list)
+            self._mol_list.append(mol[0])
+
 
     #######################
     # Molecule Attachment #
@@ -514,7 +535,7 @@ class Pore(Molecule):
 
         Returns
         -------
-        write : list
+        mol_list : list
             List of Molecule objects and corresponding site ids
 
         Examples
@@ -537,7 +558,7 @@ class Pore(Molecule):
         t = utils.tic()
 
         # Add molcule
-        write = []
+        mol_list = []
         for i in sorted(site_list, reverse=True):
             # Initialize
             site = self._site[i]
@@ -577,19 +598,18 @@ class Pore(Molecule):
             # Remove obsolete atoms
             self._bonding.remove([site[0], site[1]])
 
-            # Add molecule to write list
+            # Addto molecule list
             if sites == None:
-                site[6] = len(self._write)
-                self._write.append(temp)
+                self._add_mol_list([temp, i])
 
-            write.append([temp, i])
+            mol_list.append([temp, i])
 
             # Close binding sites
             self._close(i)
 
         self._t_tot += utils.toc(t, "Attach ", self._is_time)
 
-        return write
+        return mol_list
 
     def special(self, mol, si_o, orient, num, symmetry):
         """Add a molecule in a specified orientation with a specific amount.
@@ -657,16 +677,12 @@ class Pore(Molecule):
         else:
             sites = None
 
-        write = self.attach(mol, si_o, orient, 0, num, inp="num", sites=sites, is_rotate=False)
+        mol_list = self.attach(mol, si_o, orient, 0, num, inp="num", sites=sites, is_rotate=False)
 
-        for w in write:
-            self._site[w[1]][6] = len(self._write)
-            self._write.append(w[0])
+        self._add_mol_list(mol_list)
 
     def _silanol(self, sites=None):
-        """Add hydrogene atoms to all open binding sites. Add rotate the direction
-        of the binding site to point to the pore center,
-        in case the site is on the inside. This is done using
+        """Convert the remaining binding sites to silanol groups using
         function :func:`attach`.
 
         Parameters
@@ -676,7 +692,7 @@ class Pore(Molecule):
 
         Returns
         -------
-        write : list
+        mol_list : list
             List of Molecule objects and ids
         """
         # Initialize
@@ -695,14 +711,12 @@ class Pore(Molecule):
         mol.set_short("SL")
 
         # Run attach method
-        write = self.attach(mol, [0, 1], [0, 1], 0, len(site_list), inp="num", sites=site_list)
+        mol_list = self.attach(mol, [0, 1], [0, 1], 0, len(site_list), inp="num", sites=site_list)
 
         if sites is None:
-            for w in write:
-                self._site[w[1]][6] = len(self._write)
-                self._write.append(w[0])
+            self._add_mol_list(mol_list)
         else:
-            return write
+            return mol_list
 
     def _silanol_parallel(self):
         """Parallelized function :func:`_silanol`.
@@ -725,14 +739,12 @@ class Pore(Molecule):
         pool.close()
 
         # Extract results
-        write = []
+        mol_list = []
         for result in results.get():
-            write.extend(result)
+            mol_list.extend(result)
 
-        # Add to write and add site - molecule connection
-        for w in write:
-            self._site[w[1]][6] = len(self._write)
-            self._write.append(w[0])
+        # Add to mol_list and add site - molecule connection
+        self._add_mol_list(mol_list)
 
     def attach_dual(self, mol, si_o, orient, rate, inp="percent", counter=1000):
         """Add a molecule to two pore binding sites.
@@ -819,8 +831,8 @@ class Pore(Molecule):
             # Remove atoms
             self._bonding.remove([sites[0][0], sites[0][1], sites[1][0], sites[1][1]])
 
-            # Add to write
-            self._write.append(temp)
+            # Add to molecule list
+            self._mol_list.append(temp)
 
             # Close binding sites
             self._close(i)
@@ -900,8 +912,8 @@ class Pore(Molecule):
             # Remove atoms
             self._bonding.remove([site[0][0], site[1][0]])
 
-            # Add to write
-            self._write.append(temp)
+            # Add to molecule list
+            self._mol_list.append(temp)
 
             # Close binding sites
             self._close(i)
@@ -915,7 +927,7 @@ class Pore(Molecule):
         """
         # Initialize
         site = self._site
-        write = self._write
+        mol_list = self._mol_list
         dim = self._dim
         gemi = []
 
@@ -931,11 +943,11 @@ class Pore(Molecule):
         # Append atoms
         pop = []
         for g in gemi:
-            id_a = 0 if write[g[1]].get_name() == "slg" else 1
+            id_a = 0 if mol_list[g[1]].get_name() == "slg" else 1
             id_b = abs(id_a-1)
 
-            mol_a = write[g[id_a]]
-            mol_b = write[g[id_b]]
+            mol_a = mol_list[g[id_a]]
+            mol_b = mol_list[g[id_b]]
 
             num = mol_b.get_num()
 
@@ -946,27 +958,22 @@ class Pore(Molecule):
             pop.append(g[id_b])
 
             # Add charge
-            write[g[id_a]].set_charge(write[g[id_a]].get_charge()+self._q_oh)
+            mol_list[g[id_a]].set_charge(mol_list[g[id_a]].get_charge()+self._q_oh)
 
-        # Delete from write list
+        # Delete from mol_list list
         for d in sorted(pop, reverse=True):
-            write.pop(d)
+            mol_list.pop(d)
 
     def _objectify(self):
         """Move all remaining grid silicon and oxygen atoms to individual molecules
         for writing the structure file and add these molecules to the global
         molecule list after sorting.
         """
-        # Initialize
-        data = self._data
-        dim = self._dim
-        write_list = [[], []]
-
         # Define temporary molecule object
         temp_mol = Molecule()
 
         # Create OM and SI mols
-        for i in range(len(data[0])):
+        for i in range(len(self._data[0])):
             temp = copy.deepcopy(temp_mol)
 
             # Check if oxygene
@@ -977,47 +984,45 @@ class Pore(Molecule):
             name = "om" if is_oxy else "si"
             short = "OM" if is_oxy else "SI"
             charge = self._q_o if is_oxy else self._q_si
-            write_id = 0 if is_oxy else 1
 
             # Testing
             if self.get_type(i) == "R":
                 atom = "R"
                 name = "test"
 
-            # Creat unique object and add to write
+            # Creat unique object
             temp.add(atom, self.pos(i))
             temp.set_name(name)
             temp.set_short(short)
             temp.set_charge(charge)
-            write_list[write_id].append(temp)
 
-        # Add mols to write
-        self._write.pop(0)
+            # Add to molecule list
+            self._mol_list.append(temp)
 
-        for write in write_list:
-            self._write = write + self._write
+        # Add mols to molecule list
+        self._mol_list.pop(0)
 
     def _sort(self):
         """Sort molecules in order to prevent multiple molecule appearances in
         the structure file.
         """
         # Initialize
-        write = self._write
-        write_new = []
+        mol_list = self._mol_list
+        mol_list_new = []
 
         # Get unique mols
         unique_mols = []
-        for mol in write:
+        for mol in mol_list:
             if mol.get_name() not in unique_mols:
                 unique_mols.append(mol.get_name())
 
         # Sort molecules
         for molName in unique_mols:
-            for mol in write:
+            for mol in mol_list:
                 if mol.get_name() == molName:
-                    write_new.append(mol)
+                    mol_list_new.append(mol)
 
-        self._write = write_new
+        self._mol_list = mol_list_new
 
     def _position(self):
         """Tranlate the pore into position, and consider the periodic repeat gap.
@@ -1026,35 +1031,27 @@ class Pore(Molecule):
         perodic movement, the drill side is extended and translated by a fixed value,
         thus creating reservoirs.
         """
-        # Initialize
-        dim = self._dim
-        box = self._box
-        gap = self._gap
-        write = self._write
-
         # Get vector to coordinate zero
-        vec = Molecule(inp=[x for x in write if x.get_name() in ["si", "om"]]).zero()
+        vec = Molecule(inp=[mol for mol in self._mol_list if mol.get_name() in ["si", "om"]]).zero()
 
         # Position pore
-        for x in write:
-            x.translate([vec[i]+gap[i]/2 for i in range(dim)])
-            x.translate([self._res if i == 2 else 0 for i in range(dim)])
+        for mol in self._mol_list:
+            mol.translate([vec[i]+self._gap[i]/2 for i in range(self._dim)])
+            mol.translate([self._res if i == 2 else 0 for i in range(self._dim)])
 
         # Extend box
-        coord = Molecule(inp=[x for x in write if x.get_name() in ["si", "om", "ox"]]).get_box()
+        coord = Molecule(inp=[mol for mol in self._mol_list if mol.get_name() in ["si", "om", "ox"]]).get_box()
 
-        for i in range(dim):
-            box[i] = coord[i] + gap[i]/2
-        box[2] += self._res
+        self._box = [coord[i] + self._gap[i]/2 for i in range(self._dim)]
+
+        self._box[2] += self._res
 
     def _overlap(self):
         """Method for checking of silicon or oxygene atoms are overlapping
         using verlet lists. Duplicate atoms will be printed.
         """
         # Initialize
-        temp = Molecule()
-        for write in self._write:
-            temp._append(write)
+        temp = Molecule(inp=self._mol_list)
 
         # Create verlet
         verlet = Verlet(temp, self._vs, True)
@@ -1081,7 +1078,7 @@ class Pore(Molecule):
             True to randomly distribute rounding error charge on block oxygen atoms
         """
         # Initialize
-        mols = self._write
+        mols = self._mol_list
         grid = [x.get_name() for x in self._grid]+["sl"]
         grid += [x+"g" for x in grid]
 
@@ -1137,25 +1134,25 @@ class Pore(Molecule):
             # Push oxy after om
             min_o = min([x for x in oxy])
             max_o = max([x for x in oxy])
-            write = []
-            write_ox = []
+            mol_list = []
+            mol_list_ox = []
             for i in range(min_o):
-                write.append(mols[i])
+                mol_list.append(mols[i])
             for i in range(min_o, max_o+1):
                 if i not in oxy_r:
-                    write.append(mols[i])
+                    mol_list.append(mols[i])
                 else:
-                    write_ox.append(mols[i])
-            write += write_ox
+                    mol_list_ox.append(mols[i])
+            mol_list += mol_list_ox
             for i in range(max_o+1, len(mols)):
-                write.append(mols[i])
+                mol_list.append(mols[i])
 
-            self._write = write
+            self._mol_list = mol_list
 
         # Make global
         self._q = {"om": q_o, "ox": q_ox, "si": q_si}
 
-        self.set_charge(sum([mol.get_charge() for mol in self._write]))
+        self.set_charge(sum([mol.get_charge() for mol in self._mol_list]))
 
 
     ############################

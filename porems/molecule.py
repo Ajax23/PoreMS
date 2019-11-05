@@ -56,7 +56,7 @@ class Molecule:
         self._masses = None
         self._mass = None
         self._com = None
-        self._write = [self]
+        self._mol_list = [self]
 
         self._dim = 3
         self._charge = 0
@@ -1189,15 +1189,15 @@ class Molecule:
         """
         self._short = short
 
-    def set_write(self, write):
+    def set_mol_list(self, mol_list):
         """Set the molecule list for writing the structure file
 
         Parameters
         ----------
-        write : list
+        mol_list : list
             List of molecule objects
         """
-        self._write = write
+        self._mol_list = mol_list
 
     def set_box(self, box):
         """Set the molecule box dimensions.
@@ -1294,15 +1294,15 @@ class Molecule:
         """
         return self._short
 
-    def get_write(self):
+    def get_mol_list(self):
         """Return the global molecule list for writing the structure file.
 
         Returns
         -------
-        write : list
+        mol_list : list
             List of all molecules
         """
-        return self._write
+        return self._mol_list
 
     def get_box(self):
         """Calculate and return the box size of the current molecule.

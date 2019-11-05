@@ -66,6 +66,7 @@ mol_mol = Molecule(inp="data/benzene.mol2")
 ########
 # Pore #
 ########
+# Generation
 pore = Pore(size=[5, 5, 3], diam=3, drill="z", res=5.5, is_time=True)
 pore.set_name("pore")
 
@@ -75,6 +76,10 @@ pore.attach(TMS(compress=30), [0, 1], [1, 2], 1, 10, inp="num")
 
 pore.finish(is_mol=True, is_props=True)
 
+# Analysis
+
+
+# Structure
 Store(pore, "output").gro()
 Store(pore, "output").top()
 Store(pore, "output").grid()

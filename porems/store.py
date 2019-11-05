@@ -39,7 +39,7 @@ class Store:
         self._dim = 3
         self._link = link if link[-1] == "/" else link+"/"
         self._mol = molecule
-        self._mols = molecule.get_write()
+        self._mols = molecule.get_mol_list()
         self._name = molecule.get_name()
         self._short = molecule.get_short()
         self._box = Molecule(inp=self._mols).get_box() if molecule.get_box_c() == None else molecule.get_box_c()
