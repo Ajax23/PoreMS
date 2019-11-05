@@ -101,42 +101,34 @@ class Store:
     ##############################
     # Public Methods - Structure #
     ##############################
-    def obj(self, name=None, link=None):
+    def obj(self, name=None):
         """Save the molecule object using pickle.
-        If parameter ``link`` is given, parameter ``name`` will be ignored.
 
         Parameters
         ----------
         name : None, string, optional
             Filename
-        link : None, string, optional
-            Full link with filename
         """
         # Initialize
-        if link is None:
-            link = self._link
-            link += self._name+".obj" if name is None else name
+        link = self._link
+        link += self._name+".obj" if name is None else name
 
         # Save object
         utils.save(self._mol, link)
 
-    def pdb(self, name=None, link=None):
+    def pdb(self, name=None):
         """Generate the structure file for the defined molecule in the **PDB** format.
-        If parameter ``link`` is given, parameter ``name`` will be ignored.
 
         Parameters
         ----------
         name : None, string, optional
             Filename
-        link : None, string, optional
-            Full link with filename
         """
         # Initialize
         dim = self._dim
         mols = self._mols
-        if link is None:
-            link = self._link
-            link += self._name+".pdb" if name is None else name
+        link = self._link
+        link += self._name+".pdb" if name is None else name
 
         # Open file
         with open(link, "w") as file_out:
@@ -183,24 +175,20 @@ class Store:
             # End statement
             file_out.write("TER\nEND\n")
 
-    def gro(self, name=None, link=None):
+    def gro(self, name=None):
         """Generate the structure file for the defined molecule in the **GRO** format.
-        If parameter ``link`` is given, parameter ``name`` will be ignored.
 
         Parameters
         ----------
         name : None, string, optional
             Filename
-        link : None, string, optional
-            Full link with filename
         """
         # Initialize
         dim = self._dim
         box = self._box
         mols = self._mols
-        if link is None:
-            link = self._link
-            link += self._name+".gro" if name is None else name
+        link = self._link
+        link += self._name+".gro" if name is None else name
 
         # Open file
         with open(link, "w") as file_out:
@@ -243,23 +231,19 @@ class Store:
 
             file_out.write(out_string)
 
-    def xyz(self, name=None, link=None):
+    def xyz(self, name=None):
         """Generate the structure file for the defined molecule in the xyz
         format for running qm-simulations.
-        If parameter ``link`` is given, parameter ``name`` will be ignored.
 
         Parameters
         ----------
         name : string, None, optional
             Filename
-        link : string, None, optional
-            Full link with filename
         """
         # Initialize
         mols = self._mols
-        if link is None:
-            link = self._link
-            link += self._name+".xyz" if name is None else name
+        link = self._link
+        link += self._name+".xyz" if name is None else name
 
         # Open output file and set title
         with open(link, "w") as file_out:
@@ -280,7 +264,7 @@ class Store:
     ############
     # Topology #
     ############
-    def top(self, name=None, link=None):
+    def top(self, name=None):
         """Store the topology file for a pore. A top file is created containing
         the itp-include for all molecules and the count of the different groups
         of the pore. If parameter ``link`` is given, parameter ``name`` will be
@@ -290,14 +274,11 @@ class Store:
         ----------
         name : None, string, optional
             Filename
-        link : None, string, optional
-            Full link with filename
         """
         # Initialize
         mols = self._mols
-        if link is None:
-            link = self._link
-            link += self._name+".top" if name is None else name
+        link = self._link
+        link += self._name+".top" if name is None else name
 
         # Get unique molecules
         unique_mols = []
@@ -335,22 +316,18 @@ class Store:
 
             file_out.write(mols[-1].get_short()+" "+str(counter)+"\n")
 
-    def grid(self, name=None, link=None):
+    def grid(self, name=None):
         """Store the grid.itp file containing the necesarry parameters and
-        charges of the grid molecules. If parameter ``link`` is given, parameter
-        ``name`` will be ignored.
+        charges of the grid molecules.
 
         Parameters
         ----------
         name : None, string, optional
             Filename
-        link : None, string, optional
-            Full link with filename
         """
         # Initialize
-        if link is None:
-            link = self._link
-            link += "grid.itp" if name is None else name
+        link = self._link
+        link += "grid.itp" if name is None else name
 
         # Calculate excess charge
         charges = self._mol.get_q()

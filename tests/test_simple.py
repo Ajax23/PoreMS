@@ -28,7 +28,7 @@ mol_mol = Molecule(inp="data/benzene.mol2")
 #     print(mol_mol.get_data()[i])
 #
 # # _concat
-# for x in Molecule([mol_gro,mol_gro]).get_data(): print(x)
+# for x in Molecule(inp=[mol_gro,mol_gro]).get_data(): print(x)
 #
 # # set_masses
 # print(mol_gro.get_masses())
