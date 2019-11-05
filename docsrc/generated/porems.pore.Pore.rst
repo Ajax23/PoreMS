@@ -11,40 +11,56 @@ Pore
 .. autoclass:: Pore
 
 
-  .. rubric:: Private Methods
+  .. rubric:: Private Methods - Building
 
   .. autosummary::
 
-    ~Pore._allocation
-    ~Pore._bind
     ~Pore._block
-    ~Pore._close
-    ~Pore._connect
-    ~Pore._diameter
-    ~Pore._excess
     ~Pore._foundation
-    ~Pore._objectify
     ~Pore._orientation
-    ~Pore._overlap
-    ~Pore._position
+
+
+  .. rubric:: Private Methods - Binding Sites
+
+  .. autosummary::
+
+    ~Pore._add_mol_list
+    ~Pore._bind
+    ~Pore._close
     ~Pore._proxi
     ~Pore._random
-    ~Pore._rough
+
+
+  .. rubric:: Private Methods - Final Edits
+
+  .. autosummary::
+
+    ~Pore._connect
+    ~Pore._excess
+    ~Pore._objectify
+    ~Pore._overlap
+    ~Pore._position
     ~Pore._silanol
     ~Pore._silanol_parallel
     ~Pore._sort
 
 
-  .. rubric:: Public Methods
+  .. rubric:: Public Methods - Surface Attachment
 
   .. autosummary::
 
     ~Pore.attach
     ~Pore.attach_dual
-    ~Pore.finish
     ~Pore.siloxan
     ~Pore.special
-    ~Pore.volume
+
+
+  .. rubric:: Public Methods - Completion
+
+  .. autosummary::
+
+    ~Pore.finalize
+    ~Pore.props
 
 
   .. rubric:: Getter Methods

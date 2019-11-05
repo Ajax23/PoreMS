@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Pore\.\_allocation
-==================
+Pore\.finalize
+==============
 
 .. currentmodule:: porems.pore
 
-.. automethod:: Pore._allocation
+.. automethod:: Pore.finalize

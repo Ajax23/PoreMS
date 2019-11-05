@@ -71,13 +71,20 @@ pore = Pore(size=[5, 5, 3], diam=3, drill="z", res=5.5, is_time=True)
 pore.set_name("pore")
 
 pore.siloxan(10,"num")
-pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 10, inp="num")
+# pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 10, inp="num")
+pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 0.67, inp="molar")
 pore.attach(TMS(compress=30), [0, 1], [1, 2], 1, 10, inp="num")
 
-pore.finish(is_mol=True, is_props=True)
+pore.finalize()
 
 # Analysis
+props = pore.props()
 
+# for prop in props:
+#     print(prop,":",props[prop])
+
+for prop in props["Allocation"]:
+    print(prop,":",props["Allocation"][prop])
 
 # Structure
 Store(pore, "output").gro()

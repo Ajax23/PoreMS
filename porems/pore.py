@@ -91,7 +91,12 @@ class Pore(Molecule):
         self._grid = []
 
         # Time management
-        self._t_tot = 0
+        self._t_tot = {}
+
+        # Properties
+        self._props = {}
+        self._is_props = False
+        self._slx = 0
 
         # Create silicon pore
         t = utils.tic()
@@ -99,13 +104,13 @@ class Pore(Molecule):
         self._orientation()                            # Rotate drill axis
         self.translate(self._gap)                      # Translate gap
         self._center = self._focal()                   # Find focal point
-        self._t_tot += utils.toc(t, "Build  ", is_time)
+        self._t_tot["Build"] = utils.toc(t, "Build   ", is_time)
 
         # Verlet and bonding
         t = utils.tic()
         self._verlet = Verlet(self, vs, is_pbc)        # Create verlet boxes
         self._bonding = Bonding(self._verlet)          # Create bond matrix
-        self._t_tot += utils.toc(t, "Matrix ", is_time)
+        self._t_tot["Matrix"] = utils.toc(t, "Matrix  ", is_time)
 
         # Prepare pore
         t = utils.tic()
@@ -113,7 +118,7 @@ class Pore(Molecule):
         self._bonding.attach()                         # Preperare sides
         self._bonding.drill(self._center, self._diam)  # Drill pore
         self._bonding.prepare()                        # Prepare pore surface
-        self._t_tot += utils.toc(t, "Prepare", is_time)
+        self._t_tot["Prepare"] = utils.toc(t, "Prepare ", is_time)
 
         # Find binding sites
         t = utils.tic()
@@ -121,8 +126,9 @@ class Pore(Molecule):
         self._box = self.get_box()                     # Reset box size
         self._bind()                                   # Create site array
         self._proxi()                                  # Find sites in proximity
-        self._diam = self._diameter()                  # Calculate new diameter
-        self._t_tot += utils.toc(t, "Binding", is_time)
+        self.props()                                   # Recalculate properties
+        self._diam = self._props["Diameter"]           # Set new diameter
+        self._t_tot["Binding"] = utils.toc(t, "Binding ", is_time)
 
 
     ############
@@ -377,8 +383,8 @@ class Pore(Molecule):
 
         Returns
         -------
-        rand : list
-            List of pointers to random binding sites.
+        ran_list : list
+            List of pointers to random binding sites
         """
         # Initialize
         site = copy.deepcopy(self._site)
@@ -388,16 +394,15 @@ class Pore(Molecule):
 
         # Calculate random element number
         if inp == "num":
-            ran_num = rate
+            ran_num = int(rate)
         elif inp == "percent":
             ran_num = site_len*rate
             ran_num /= 100
-            ran_num = math.floor(ran_num)
+            ran_num = math.ceil(ran_num)
             ran_num = rate
         elif inp == "molar":
-            ran_num = site_len*rate
-            ran_num /= 100
-            ran_num = math.floor(ran_num)
+            ran_num = rate*6.022/10*self._props["Surface"][site_type]
+            ran_num = math.ceil(ran_num)
 
         # Get list of all partners
         if is_proxi:
@@ -607,7 +612,18 @@ class Pore(Molecule):
             # Close binding sites
             self._close(i)
 
-        self._t_tot += utils.toc(t, "Attach ", self._is_time)
+        # Finalize
+        if not mol.get_name()=="sl":
+            # Initialize
+            key_name = mol.get_name()+"_"+str(site_type)
+
+            # Add to time dict
+            self._t_tot["Attach_"+key_name] = utils.toc(t, "Attach  ", self._is_time)
+
+            # Add number of bonds to allocation
+            if not key_name in self._props["Allocation"]:
+                self._props["Allocation"][key_name] = 0
+            self._props["Allocation"][key_name] += len(site_list)
 
         return mol_list
 
@@ -837,7 +853,16 @@ class Pore(Molecule):
             # Close binding sites
             self._close(i)
 
-        self._t_tot += utils.toc(t, "Attach ", self._is_time)
+        # Finalize
+        key_name = mol.get_name()+"_0"
+
+        # Add to time dict
+        self._t_tot["Attach_"+key_name] = utils.toc(t, "Attach  ", self._is_time)
+
+        # Add number of bonds to allocation
+        if not key_name in self._props["Allocation"]:
+            self._props["Allocation"][key_name] = 0
+        self._props["Allocation"][key_name] += len(site_list)*2
 
     def siloxan(self, rate, inp="percent", counter=1000):
         """Add siloxan bridges to the pore by selecting two binding sites in
@@ -866,7 +891,7 @@ class Pore(Molecule):
 
         # Get random list
         site_list = self._random(0, rate, inp, counter, is_proxi=True)
-        self._slx = len(site_list)
+        self._slx += len(site_list)
 
         # Molecule and center vector
         center = self._center[:-1]
@@ -1161,41 +1186,98 @@ class Pore(Molecule):
     ###########
     # Analyze #
     ###########
-    def _allocation(self, site=None, is_mol=True):
-        """Calculate the surface allocation. This is done by first calculating
-        the pores surface
+    def props(self):
+        """This function calculates all necessary properties of the system and
+        retruns a dictionary. Note that most of the properties can only be
+        calculated after the pore is finalized in function :func:`finalize`.
+
+        The output dictionary contains following properties which will be
+        explained further down
+
+        * **Allocation** - Dictionary of all molecule allocations in molar and percent
+        * **Charge** - Excess charge
+        * **Diameter** - Generated pore diameter
+        * **Dimension** - Generated Dimensions
+        * **Generation_Time** - Dictionary of all time steps
+        * **Hydroxylation** - Hydroxylation dictionary inside and outside of the pore
+        * **Roughness** - Surface roughness
+        * **Silanol_Geminal** - Dictionary containing the number of silanol and geminal silanol molecules inside and outside the pore
+        * **Surface** - Dictionary of inner and outer pore surface
+        * **System_Size** - Total system size including reservoirs
+        * **Volume** - Inner pore volume
+
+        The **roughness** is calculated as the standard deviation of the peaks and
+        valles of a surface.
+
+        In the case of a pore one can visualize pulling it appart, creating a
+        flat surface out of the interior. The roughness is thus determined by
+        calculating the standard deviation of the binding site silicon peaks and
+        valleys.
+
+        The only difference in the pore is therefore the definition of the axis,
+        which is going to be the centeral axis. The mean value :math:`\\bar r`
+        of the silicon distances :math:`r_i` of silicon :math:`i` towards the
+        pore center, is calculated by
 
         .. math::
 
-            A_\\text{pore} = 2\\pi r\\cdot l_\\text{drill},
+            \\bar r=\\frac1n\\sum_{i=1}^nr_i
+
+        with the number of silicon atoms :math:`n`. This mean value is used in
+        the sqareroot roughness calculation
+
+        .. math::
+
+            R_q = \\sqrt{\\frac1n\\sum_{i=1}^n\\|r_i-\\bar r\\|^2}.
+
+
+        The **diameter** is the mean value :math:`\\bar r` of the silicon distances
+        :math:`r_i` of binding site silicon :math:`i` towards the pore center
+
+        .. math::
+
+            d=2\\bar r=\\frac2n\\sum_{i=1}^nr_i.
+
+        The **surface** inside the pore is calculated by
+
+        .. math::
+
+            A_\\text{inside}=2\\pi r\\cdot l_\\text{drill},
 
         with opening radius :math:`r` and length of the drilling axis
-        :math:`l_\\text{drill}`, and the one on the drill sides
+        :math:`l_\\text{drill}`, the total outside surface of the pore system by
 
         .. math::
 
-            A_\\text{drill} = 2\\cdot\\left(A_\\text{side}-\\pi r^2\\right)
+            A_\\text{outside}=2\\cdot\\left(A_\\text{side}-\\pi r^2\\right)
 
-        with block surface on the drilling side :math:`A_\\text{drill}`. Using this
-        surface, the allocation rates can be determined by counting the number
-        of used sites and free sites from the input binding site list.
+        with block surface on the drilling side :math:`A_\\text{side}`,
+        and the **volume** by
 
-        This was done to determine the maximal possible allocation
-        :math:`c_\\text{tot}`, the rate for the molecule modification
-        :math:`c_\\text{mod}` and the rate for the silanol modification
-        :math:`c_\\text{oh}`. For better overview, the relative allocation for the
-        molecule modification :math:`c_\\text{rel}` has been calculated
+        .. math::
+
+            V_\\text{pore}=\\pi r^2\\cdot l_\\text{drill}.
+
+        Using these surfaces, the **allocation** rates can be determined by
+        counting the number of used sites and free sites from the binding
+        site list. Thus it is possible to determine the maximal possible allocation
+        :math:`c_\\text{tot}` also called hydroxylation, the rate for the
+        molecule modification :math:`c_\\text{mod}` and the rate for the silanol
+        modification :math:`c_\\text{oh}`. For better overview, the relative
+        allocation for the molecule modification :math:`c_\\text{rel}` has been
+        calculated
 
         .. math::
 
             \\begin{array}{cccc}
-            c_\\text{tot}^\\text{pore} = \\dfrac{s_\\text{tot}^\\text{pore}}{A_\\text{pore}},&
-            c_\\text{mod}^\\text{pore} = \\dfrac{s_\\text{mod}^\\text{pore}}{A_\\text{pore}},&
-            c_\\text{oh}^\\text{pore}  = \\dfrac{s_\\text{oh} ^\\text{pore}}{A_\\text{pore}},&
-            c_\\text{rel}^\\text{pore} = \\dfrac{s_\\text{mod}^\\text{pore}}{s_\\text{tot}^\\text{pore}}
+            c_\\text{tot} = \\dfrac{s_\\text{tot}}{A},&
+            c_\\text{mod} = \\dfrac{s_\\text{mod}}{A},&
+            c_\\text{oh}  = \\dfrac{s_\\text{oh} }{A},&
+            c_\\text{rel} = \\dfrac{s_\\text{mod}}{s_\\text{tot}}
             \\end{array}
 
-        with the total number of binding sites :math:`s_\\text{tot}`,
+        with the corresponding surface :math:`A` for either inside or outside
+        the pore, the total number of binding sites :math:`s_\\text{tot}`,
         number of sites used for the modification :math:`s_\\text{mod}`
         and number of sites used for the silanol modification :math:`s_\\text{oh}`.
         The resulting units are
@@ -1204,180 +1286,103 @@ class Pore(Molecule):
 
             [c_{i}]=\\frac{\\text{Number of molecules}}{nm^2}
             =\\frac{1}{N_A}\\frac{mol}{nm^2}
-            =\\frac{10}{6.022}\\frac{\mu mol}{m^2}.
-
-        Parameters
-        ----------
-        site : None, list, optional
-            Binding site list, None for the public list
-        is_mol : bool, optional
-            True to calculate allocation in micro molar
+            =\\frac{10}{6.022}\\frac{\\mu mol}{m^2}.
 
         Returns
         -------
-        allocation : dictionary
-            Surface allocation values
+        props : dictionary
+            Properties of the pore
         """
         # Initialize
-        size = self._size
-        diam = self._diam
+        props = self._props
 
-        # User input
-        site = self._site if site == None else site
-        unit = 10/6.022 if is_mol else 1
+        # Calculate generation properties
+        if not self._is_props:
+            # Run through binding site silicon atoms and calculate distances
+            r_list = []
+            for site in self._site:
+                if site[4] == 0:
+                    si_id = site[1]
+                    center = [self._center[0], self._center[1], self._data[2][si_id]]
+                    r_list.append(self._length(self._vector(self.pos(si_id), center)))
 
-        # Calculate surfaces
-        surface = {"pore":  size[2]*2*math.pi*(diam/2),
-                   "drill": 2*(size[0]*size[1]-math.pi*(diam/2)**2)}
+            # Calculate mean
+            r_bar = sum(r_list)/len(r_list)
 
-        # Get total number of sites
-        count = {}
-        count["pore"] = {"tot": sum([1 for x in site if x[4] == 0]),
-                         "mod":  sum([1 for x in site if x[4] == 0 and x[3] == 1])}
-        count["drill"] = {"tot": sum([1 for x in site if x[4] == 1]),
-                          "mod":  sum([1 for x in site if x[4] == 1 and x[3] == 1])}
+            # Set dimension order
+            dim_order = {"x": [2, 1, 0], "y": [0, 2, 1], "z": [0, 1, 2]}
 
-        # Total allocation
-        alloc = {}
-        alloc["pore"] = {"tot": count["pore"]["tot"]/surface["pore"]*unit,
-                         "mod":  count["pore"]["mod"]/surface["pore"]*unit,
-                         "oh": (count["pore"]["tot"]-count["pore"]["mod"])/surface["pore"]*unit,
-                         "rel": count["pore"]["mod"]/count["pore"]["tot"]}
-        alloc["drill"] = {"tot": count["drill"]["tot"]/surface["drill"]*unit,
-                          "mod":  count["drill"]["mod"]/surface["drill"]*unit,
-                          "oh": (count["drill"]["tot"]-count["drill"]["mod"])/surface["drill"]*unit,
-                          "rel": count["drill"]["mod"]/count["drill"]["tot"]}
+            # Calculate properties
+            props["Roughness"] = math.sqrt(sum([(ri-r_bar)**2 for ri in r_list])/len(r_list))
+            props["Diameter"] = 2*r_bar
+            props["Surface"] = {0: self._size[2]*2*math.pi*(props["Diameter"]/2),
+                                1: 2*(self._size[0]*self._size[1]-math.pi*(props["Diameter"]/2)**2)}
+            props["Volume"] = self._size[2]*math.pi*(props["Diameter"]/2)**2
+            props["Dimension"] = [self._size[dim_order[self._drill][i]] for i in range(3)]
+            props["Allocation"] = {}
 
-        return alloc
+        # Calculate finished properties
+        else:
+            # Molar conversion
+            molar = 10/6.022
 
-    def _rough(self):
-        """Calculate the pore roughness. This is normally done by calculating
-        the standard deviation of the peaks and valles of a surface.
+            # Count number of groups
+            num_i = sum([1 for x in self._site if x[4] == 0 and x[5] is None])
+            num_o = sum([1 for x in self._site if x[4] == 1 and x[5] is None])
+            num_i_g = sum([1 for x in self._site if x[4] == 0 and x[5] is not None])/2
+            num_o_g = sum([1 for x in self._site if x[4] == 1 and x[5] is not None])/2
 
-        In the case of a pore one can visualize pulling the pore appart creating
-        a flat surface of the pores interior. Of this surface the roughness is
-        determined by calculating the standard deviation of the binding site
-        silicon peaks and valleys.
+            num_tot = [num_i+num_i_g-2*self._slx,num_o+num_o_g]
 
-        The only difference in the pore is therefore the definition of the axis,
-        which is going to be the centeral axis. the mean value :math:`\\bar r`
-        of the silicon distances :math:`r_i` of silicon :math:`i` towards the
-        pore center, is calculated by
+            # Calculate hydroxylation
+            hydro = [num_tot[0]/props["Surface"][0], num_tot[1]/props["Surface"][1]]
 
-        .. math::
+            # Calculate allocation
+            num_oh = [num_i+num_i_g, num_o+num_o_g]
+            mols = [mol for mol in props["Allocation"]]
 
-            \\bar r=\\frac1n\\sum_{i=1}^nr_i
+            for mol in mols:
+                site_type = int(mol[-1])
+                mod = props["Allocation"][mol]/props["Surface"][site_type]
+                rel = props["Allocation"][mol]/num_tot[site_type]
 
-        with the number of silicon atoms :math:`n`. This mean value goes into
-        the sqareroot roughness calculation
+                # Add molar
+                props["Allocation"][mol+"_mod"] = [mod, mod*molar]
+                props["Allocation"][mol+"_rel"] = [rel, rel*molar]
 
-        .. math::
+                # Count oh
+                num_oh[site_type] -= props["Allocation"][mol]
 
-            R_q = \\sqrt{\\frac1n\\sum_{i=1}^n\\|r_i-\\bar r\\|^2}.
+            oh = [num_oh[0]/props["Surface"][0], num_oh[1]/props["Surface"][1]]
+            props["Allocation"]["OH"] = {"in": [oh[0], oh[0]*molar], "out": [oh[1], oh[1]*molar]}
 
-        Returns
-        -------
-        roughness : float
-            Pore roughness in nm
-        """
-        # Initialize
-        site = self._site
-        center = self._center
+            # Calculate properties
+            props["Charge"] = self._charge
+            props["System_Size"] = self._size
+            props["Generation_Time"] = self._t_tot
+            props["Hydroxylation"] = {"in": [hydro[0],hydro[0]*molar], "out": [hydro[1],hydro[1]*molar]}
+            props["Silanol_Geminal"] = {"in": num_i, "out": num_o, "in_g": num_i_g, "out_g": num_o_g}
 
-        # Run through silicon atoms and calculate distances
-        r_list = []
-        for x in site:
-            if x[4] == 0:
-                surf = x[1]
-                cent = [center[0], center[1], self._data[2][surf]]
-                r_list.append(self._length(self._vector(self.pos(surf), cent)))
-
-        # Calculate mean
-        r_bar = sum(r_list)/len(r_list)
-
-        # Calculate roughness
-        return math.sqrt(sum([(ri-r_bar)**2 for ri in r_list])/len(r_list))
-
-    def _diameter(self):
-        """Calculate the resulting pore diameter. This is done by calculating
-        the mean value :math:`\\bar r` of the silicon distances :math:`r_i` of
-        binding site silicon :math:`i` towards the pore center
-
-        .. math::
-
-            d=2\\bar r=\\frac2n\\sum_{i=1}^nr_i
-
-        with the number of silicon atoms :math:`n`.
-
-        Returns
-        -------
-        diameter : float
-            Pore roughness in nm
-        """
-        # Initialize
-        site = self._site
-        center = self._center
-
-        # Run through silicon atoms and calculate distances
-        r_list = []
-        for x in site:
-            if x[4] == 0:
-                surf = x[1]
-                cent = [center[0], center[1], self._data[2][surf]]
-                r_list.append(self._length(self._vector(self.pos(surf), cent)))
-
-        # Calculate mean
-        r_bar = sum(r_list)/len(r_list)
-
-        # Calculate roughness
-        return 2*r_bar
-
-    def volume(self):
-        """This function calculates the available volume in the pore system.
-
-        Returns
-        -------
-        volume : list
-            System volume of pore and reservoir
-        """
-        # Initialize
-        size = self._size
-
-        # Calculate volumes
-        res = self._res
-        for i in range(self._dim):
-            if not i == 2:
-                res *= size[i]
-
-        pore = math.pi*(self._diam/2)**2
-
-        return 2*res+pore
+        # Return properties
+        return props
 
 
     #########################
     # Public Methods - Edit #
     #########################
-    def finish(self, is_rand=True, is_mol=False, is_props=True):
+    def finalize(self, is_rand=True):
         """Finalize pore by adding siloxan bridges, filling empty bond with
         silanol groups, connecting geminal molecules, removing marked atoms,
         converting the grid to individual molecules and finally moving the pore
-        into position. Furthermore the allocation is printed if needed.
+        into position.
 
         Parameters
         ----------
         is_rand : bool, optional
             True to randomly distribute rounding error charge on block oxygen atoms
-        is_mol : bool, optional
-            True to calculate allocation in micro molar
-        is_props : bool, optional
-            True to calculate pore properties
         """
         # Start timer
         t = utils.tic()
-
-        # Analysis
-        alloc = self._allocation(is_mol=is_mol)  # Calculate allocation
-        rough = self._rough()                    # Calculate pore roughness
 
         # Finalize
         self._silanol_parallel() # Fill empty sites with silanol
@@ -1388,97 +1393,13 @@ class Pore(Molecule):
         self._sort()             # Sort molecules
         self._position()         # Position the pore considering pbc
         self._overlap()          # Check for silicon or oxygen atoms overlapping
+        self._is_props = True   # Allow properties calculation
 
-        self._t_tot += utils.toc(t, "Finish ", self._is_time)
+        self._t_tot["Finalize"] = utils.toc(t, "Finalize", self._is_time)
 
         if self._is_time:
             print("----------------------------")
-            print("Total   - runtime = "+"%6.3f" % self._t_tot+" s")
-            print()
-
-        if is_props:
-            # Initialize
-            diam = self._diam
-            size = self._size
-            site = self._site
-            drill = self._drill
-
-            # Number of groups
-            num_psl = sum([1 for x in site if x[4] == 0 and x[5] is None])
-            num_osl = sum([1 for x in site if x[4] == 1 and x[5] is None])
-            num_psl_g = sum([1 for x in site if x[4] == 0 and x[5] is not None])
-            num_osl_g = sum([1 for x in site if x[4] == 1 and x[5] is not None])
-
-            # Volume and surface
-            vol = math.pi*diam**2/4*size[2]
-            surf_p = math.pi*diam*size[2]
-            surf_o = size[0]*size[1]-math.pi*diam
-
-            # Hydroxylation
-            hydro_p = (num_psl+num_psl_g*2)/surf_p
-            hydro_o = (num_osl+num_osl_g*2)/surf_o/2
-
-            # Dimensions
-            if drill == "x":
-                size_str = "%4.1f" % size[2]+" "+"%4.1f" % size[1]+" "+"%4.1f" % size[0]
-            elif drill == "y":
-                size_str = "%4.1f" % size[0]+" "+"%4.1f" % size[2]+" "+"%4.1f" % size[1]
-            elif drill == "z":
-                size_str = "%4.1f" % size[0]+" "+"%4.1f" % size[1]+" "+"%4.1f" % size[2]
-
-            # Create dictionary
-            props = {
-                "D":   ["["+size_str+"]", "nm"],
-                "d":   ["%4.2f" % diam,    "nm"],
-                "Rq":  ["%5.3f" % rough,   "nm"],
-                "S":   ["%6.2f" % surf_p,  "nm^2"],
-                "V":   ["%6.2f" % vol,     "nm^3"],
-                "hi":  ["%4.2f" % hydro_p, "OH/nm^2"],
-                "ho":  ["%4.2f" % hydro_o, "OH/nm^2"],
-                "hio": ["%5.3f" % (hydro_p/hydro_o), ""],
-                "Ni":  ["%4i" % num_psl,  "#"],
-                "Nig": ["%4i" % num_psl_g, "#"],
-                "Nii": ["%5.2f" % (num_psl/num_psl_g), ""],
-                "No":  ["%4i" % num_osl, " #"],
-                "Nog": ["%4i" % num_osl_g, "#"],
-                "Noo": ["%5.2f" % (num_osl/num_osl_g), ""],
-                "ai":  ["%5.2f" % (alloc["pore"]["rel"]*100), "%"],
-                "ao":  ["%5.2f" % (alloc["drill"]["rel"]*100), "%"],
-                "aio": ["%5.3f" % (alloc["pore"]["rel"]/alloc["drill"]["rel"]), ""] if alloc["drill"]["rel"] > 0 else ["%5.3f" % 0, ""],
-                "C":   ["%7.5e" % self.get_charge(), "C"],
-                "t":   ["%5.2f" % self._t_tot,      "s"]
-            }
-            self._props = props
-
-            # Print allocation
-            unit = "[mumol/m^2]" if is_mol else "[#/nm^2]"
-            print("Surface allocation in "+unit)
-            print("Unmodified Pore  - "+"%6.3f" %
-                  alloc["pore"]["tot"] + ",  Out - "+"%6.3f" % alloc["drill"]["tot"])
-            print("Modified   Pore  - "+"%6.3f" %
-                  alloc["pore"]["mod"] + ",  Out - "+"%6.3f" % alloc["drill"]["mod"])
-            print("Silanol    Pore  - "+"%6.3f" %
-                  alloc["pore"]["oh"] + ",  Out - "+"%6.3f" % alloc["drill"]["oh"])
-            print("Relative   Pore  - "+"%6.3f" %
-                  (alloc["pore"]["rel"]*100)+"%, Out - "+"%6.3f" % (alloc["drill"]["rel"]*100)+"%")
-            print()
-
-            print("Properties")
-            print("Dimensions            - "+props["D"][0]+" "+props["D"][1])
-            print("Diameter              - "+props["d"][0]+" "+props["d"][1])
-            print("Roughness             - "+props["Rq"][0]+" "+props["Rq"][1])
-            print("Surface               - "+props["S"][0]+" "+props["S"][1])
-            print("Volume                - "+props["V"][0]+" "+props["V"][1])
-            print("Hydroxylation in/out  - "+props["hi"][0]+"/" +
-                  props["ho"][0]+" "+props["hi"][1]+" = "+props["hio"][0])
-            print("Number of pore SL/SLG - "+props["Ni"][0]+"/" +
-                  props["Nig"][0]+" "+props["Ni"][1]+" = "+props["Nii"][0])
-            print("Number of out  SL/SLG - "+props["No"][0]+"/" +
-                  props["Nog"][0]+" "+props["No"][1]+" = "+props["Noo"][0])
-            print("Relative allocation   - "+props["ai"][0]+"/" +
-                  props["ao"][0]+" "+props["ai"][1]+" = "+props["aio"][0])
-            print("Excess charge         - "+props["C"][0]+" "+props["C"][1])
-            print("Total time            - "+props["t"][0]+" "+props["t"][1])
+            print("Total   - runtime = "+"%6.3f" % sum([self._t_tot[x] for x in self._t_tot])+" s")
             print()
 
 
