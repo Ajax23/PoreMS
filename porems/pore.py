@@ -988,16 +988,28 @@ class Pore(Molecule):
         for d in sorted(pop, reverse=True):
             mol_list.pop(d)
 
-    def _objectify(self):
+    def _objectify(self, data=None):
         """Move all remaining grid silicon and oxygen atoms to individual molecules
         for writing the structure file and add these molecules to the global
-        molecule list after sorting.
+        molecule list.
+
+        Parameters
+        ----------
+        data_range : list, None, optional
+            Datarange to process
+
+        Returns
+        -------
+        mol_list : list
+            Molecule list to be added to globale molecule list
         """
         # Define temporary molecule object
         temp_mol = Molecule()
+        data_range = [0,len(self._data[0])] if data is None else data
 
         # Create OM and SI mols
-        for i in range(len(self._data[0])):
+        mol_list = []
+        for i in range(data_range[0], data_range[1]):
             temp = copy.deepcopy(temp_mol)
 
             # Check if oxygene
@@ -1021,9 +1033,47 @@ class Pore(Molecule):
             temp.set_charge(charge)
 
             # Add to molecule list
-            self._mol_list.append(temp)
+            if data is None:
+                self._mol_list.append(temp)
+            else:
+                mol_list.append(temp)
 
         # Add mols to molecule list
+        if data is None:
+            self._mol_list.pop(0)
+        else:
+            return mol_list
+
+    def _objectify_parallel(self):
+        """Parallelized function :func:`_objectify`.
+        """
+        # Initialize
+        np = mp.cpu_count()
+
+        # Split site list
+        data_len = math.floor(len(self._data[0])/np)
+        data_list = []
+        for i in range(np):
+            if i == np-1:
+                data_list.append([data_len*i, len(self._data[0])])
+            else:
+                data_list.append([data_len*i, data_len*(i+1)])
+
+        # Paralellize
+        pool = mp.Pool(processes=np)
+        results = pool.map_async(self._objectify, data_list)
+        pool.close()
+
+        # Extract results
+        mol_list = []
+        for result in results.get():
+            mol_list.extend(result)
+
+        # Add to molecule list
+        for mol in mol_list:
+            self._mol_list.append(mol)
+
+        # Remove pore from molecule list
         self._mol_list.pop(0)
 
     def _position(self):
@@ -1353,8 +1403,13 @@ class Pore(Molecule):
                 # Count oh
                 num_oh[site_type] -= props["Allocation"][mol]
 
+            # OH allocation
             oh = [num_oh[0]/props["Surface"][0], num_oh[1]/props["Surface"][1]]
             props["Allocation"]["OH"] = {"in": [oh[0], oh[0]*molar], "out": [oh[1], oh[1]*molar]}
+
+            # Siloxan allocation
+            slx = self._slx/props["Surface"][0]
+            props["Allocation"]["SLX"] = [slx, slx*molar]
 
             # Calculate properties
             props["Charge"] = self._charge
@@ -1385,15 +1440,15 @@ class Pore(Molecule):
         t = utils.tic()
 
         # Finalize
-        self._silanol_parallel() # Fill empty sites with silanol
-        self._connect()          # Connect geminal molecules into one
-        self._bonding.delete()   # Delete marked atoms
-        self._objectify()        # Move all silicon and oxygenes into unique mols
-        self._excess(is_rand)    # Distribute excess charge
-        self._sort()             # Sort molecules
-        self._position()         # Position the pore considering pbc
-        self._overlap()          # Check for silicon or oxygen atoms overlapping
-        self._is_props = True   # Allow properties calculation
+        self._silanol_parallel()   # Fill empty sites with silanol
+        self._connect()            # Connect geminal molecules into one
+        self._bonding.delete()     # Delete marked atoms
+        self._objectify_parallel() # Move all silicon and oxygenes into unique mols
+        self._excess(is_rand)      # Distribute excess charge
+        self._sort()               # Sort molecules
+        self._position()           # Position the pore considering pbc
+        self._overlap()            # Check for silicon or oxygen atoms overlapping
+        self._is_props = True      # Allow properties calculation
 
         self._t_tot["Finalize"] = utils.toc(t, "Finalize", self._is_time)
 

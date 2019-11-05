@@ -38,6 +38,7 @@ Pore
     ~Pore._connect
     ~Pore._excess
     ~Pore._objectify
+    ~Pore._objectify_parallel
     ~Pore._overlap
     ~Pore._position
     ~Pore._silanol
