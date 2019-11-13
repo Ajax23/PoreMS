@@ -1150,6 +1150,25 @@ class Molecule:
         """
         self._data[self._dim][atom] = atom_type
 
+    def switch_order(self, atom_a, atom_b):
+        """Switch atom order of two atoms.
+
+        Parameters
+        ----------
+        atom_a : integer
+            Atom id of the first atom
+        atom_b : integer
+            Atom id of the second atom
+        """
+        # Get data
+        data_a = [self._data[i][atom_a] for i in range(self._dim+1)]
+        data_b = [self._data[i][atom_b] for i in range(self._dim+1)]
+
+        # Switch data
+        for i in range(self._dim+1):
+            self._data[i][atom_a] = data_b[i]
+            self._data[i][atom_b] = data_a[i]
+
 
     ###########################
     # Public Methods - Output #
