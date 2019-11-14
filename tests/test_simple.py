@@ -28,7 +28,7 @@ mol_mol = Molecule(inp="data/benzene.mol2")
 #     print(mol_mol.get_data()[i])
 #
 # # _concat
-# for x in Molecule(inp=[mol_gro,mol_gro]).get_data(): print(x)
+# for x in Molecule(inp=[mol_gro, mol_gro]).get_data(): print(x)
 #
 # # set_masses
 # print(mol_gro.get_masses())
@@ -40,11 +40,11 @@ mol_mol = Molecule(inp="data/benzene.mol2")
 #########
 # Store #
 #########
-# Store(mol_gro,"output").job()
-# Store(mol_gro,"output").obj()
-# Store(mol_gro,"output").gro()
-# Store(mol_gro,"output").pdb()
-# Store(mol_gro,"output").xyz()
+# Store(mol_gro, "output").job()
+# Store(mol_gro, "output").obj()
+# Store(mol_gro, "output").gro()
+# Store(mol_gro, "output").pdb()
+# Store(mol_gro, "output").xyz()
 #
 # print(Molecule(inp="output/Molecule.obj").get_data())
 
@@ -52,15 +52,15 @@ mol_mol = Molecule(inp="data/benzene.mol2")
 ##############
 # Essentials #
 ##############
-# alkane = Alkane(10,"alkane")
-# alcohol = Alcohol(10,"alcohol")
-# ketone = Ketone(10,5,"ketone")
+# alkane = Alkane(10, "alkane")
+# alcohol = Alcohol(10, "alcohol")
+# ketone = Ketone(10,5, "ketone")
 # tms = TMS(compress=30)
 #
-# Store(alkane,"output").gro()
-# Store(alcohol,"output").gro()
-# Store(ketone,"output").gro()
-# Store(tms,"output").gro()
+# Store(alkane, "output").gro()
+# Store(alcohol, "output").gro()
+# Store(ketone, "output").gro()
+# Store(tms, "output").gro()
 
 
 ########
@@ -87,6 +87,7 @@ for prop in props["Allocation"]:
     print(prop,":",props["Allocation"][prop])
 
 # Structure
+Store(pore, "output").obj()
 Store(pore, "output").gro()
 Store(pore, "output").top()
 Store(pore, "output").grid()
