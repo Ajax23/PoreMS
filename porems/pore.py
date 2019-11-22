@@ -126,9 +126,13 @@ class Pore(Molecule):
         self._box = self.get_box()                     # Reset box size
         self._bind()                                   # Create site array
         self._proxi()                                  # Find sites in proximity
+        self._t_tot["Binding"] = utils.toc(t, "Binding ", is_time)
+
+        # Calculate properties
+        t = utils.tic()
         self.props()                                   # Recalculate properties
         self._diam = self._props["Diameter"]           # Set new diameter
-        self._t_tot["Binding"] = utils.toc(t, "Binding ", is_time)
+        self._t_tot["Props"] = utils.toc(t, "Props   ", is_time)
 
 
     ############
@@ -1137,6 +1141,8 @@ class Pore(Molecule):
     def _excess(self, is_rand=True):
         """Adjust grid atoms charges to compensate for excess charges on the pore.
 
+        :TODO: Remove grid
+
         Parameters
         ----------
         is_rand : bool, optional
@@ -1445,6 +1451,8 @@ class Pore(Molecule):
         silanol groups, connecting geminal molecules, removing marked atoms,
         converting the grid to individual molecules and finally moving the pore
         into position.
+
+        :TODO: Split timer
 
         Parameters
         ----------
