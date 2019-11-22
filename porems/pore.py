@@ -542,6 +542,8 @@ class Pore(Molecule):
         -------
         mol_list : list
             List of Molecule objects and corresponding site ids
+        remove_list : list
+            List of atom ids to be deleted from the pore
 
         Examples
         --------
@@ -564,6 +566,7 @@ class Pore(Molecule):
 
         # Add molcule
         mol_list = []
+        remove_list = []
         for i in sorted(site_list, reverse=True):
             # Initialize
             site = self._site[i]
@@ -601,9 +604,9 @@ class Pore(Molecule):
             temp.set_short(temp.get_short()+"G" if is_gem else temp.get_short())
 
             # Remove obsolete atoms
-            self._bonding.remove([site[0], site[1]])
+            remove_list.extend([site[0], site[1]])
 
-            # Addto molecule list
+            # Add to molecule list
             if sites == None:
                 self._add_mol_list([temp, i])
 
@@ -614,7 +617,10 @@ class Pore(Molecule):
 
         # Finalize
         if not mol.get_name()=="sl":
-            # Initialize
+            # Remove obsolete atoms
+            self._bonding.remove(remove_list)
+
+            # Initialize allocation
             key_name = mol.get_name()+"_"+str(site_type)
 
             # Add to time dict
@@ -625,7 +631,7 @@ class Pore(Molecule):
                 self._props["Allocation"][key_name] = 0
             self._props["Allocation"][key_name] += len(site_list)
 
-        return mol_list
+        return mol_list, remove_list
 
     def special(self, mol, si_o, orient, num, symmetry):
         """Add a molecule in a specified orientation with a specific amount.
@@ -693,7 +699,7 @@ class Pore(Molecule):
         else:
             sites = None
 
-        mol_list = self.attach(mol, si_o, orient, 0, num, inp="num", sites=sites, is_rotate=False)
+        mol_list, temp = self.attach(mol, si_o, orient, 0, num, inp="num", sites=sites, is_rotate=False)
 
         self._add_mol_list(mol_list)
 
@@ -708,8 +714,8 @@ class Pore(Molecule):
 
         Returns
         -------
-        mol_list : list
-            List of Molecule objects and ids
+        attach : dictionary
+            List of Molecule objects and ids and List of atom ids to be deleted from the pore as a dictionary
         """
         # Initialize
         center = self._center[:-1]
@@ -725,14 +731,16 @@ class Pore(Molecule):
         mol.add("H", 1, r=self._oh)
         mol.set_name("sl")
         mol.set_short("SL")
+        mol.set_charge(self._q_si+self._q_oh)
 
         # Run attach method
-        mol_list = self.attach(mol, [0, 1], [0, 1], 0, len(site_list), inp="num", sites=site_list)
+        mol_list, remove_list = self.attach(mol, [0, 1], [0, 1], 0, len(site_list), inp="num", sites=site_list)
 
         if sites is None:
             self._add_mol_list(mol_list)
+            self._bonding.remove(remove_list)
         else:
-            return mol_list
+            return {"mol_list": mol_list, "remove_list": remove_list}
 
     def _silanol_parallel(self):
         """Parallelized function :func:`_silanol`.
@@ -756,11 +764,16 @@ class Pore(Molecule):
 
         # Extract results
         mol_list = []
+        remove_list = []
         for result in results.get():
-            mol_list.extend(result)
+            mol_list.extend(result["mol_list"])
+            remove_list.extend(result["remove_list"])
 
         # Add to mol_list and add site - molecule connection
         self._add_mol_list(mol_list)
+
+        # Remove obsolete atoms
+        self._bonding.remove(remove_list)
 
     def attach_dual(self, mol, si_o, orient, rate, inp="percent", counter=1000):
         """Add a molecule to two pore binding sites.
@@ -1136,7 +1149,9 @@ class Pore(Molecule):
 
         # Get excess charge
         charge = 0.0
-        num_o = num_si = num_g = 0
+        num_o = 0
+        num_si = 0
+        num_g = 0
         round_o = 6
         for mol in mols:
             charge += mol.get_charge()
