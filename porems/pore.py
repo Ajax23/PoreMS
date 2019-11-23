@@ -48,12 +48,14 @@ class Pore(Molecule):
         Value to extend and translate the pore by on the drill side creating reservoirs
     vs : float, optional
         Verlet-list box size
+    proxi_dist : float
+        Minimal distance between two groups attatched to the surface
     is_pbc : bool, optional
         True if periodic boundary conditions are needed
     is_time : bool, optional
         True to print the used time for the single steps
     """
-    def __init__(self, size, diam, drill, res=1, vs=0.4, is_pbc=True, is_time=False):
+    def __init__(self, size, diam, drill, res=1, vs=0.4, proxi_dist=0.5, is_pbc=True, is_time=False):
         # Call super class
         super(Pore, self).__init__()
 
@@ -65,15 +67,13 @@ class Pore(Molecule):
         self._is_time = is_time
         self._res = res
         self._vs = vs
+        self._o_proxi = proxi_dist
         self._drill = drill
 
         # Define bond lengths
         self._si_grid = 0.155
         self._si_oh = 0.164
         self._oh = 0.098
-
-        # Set proximity range
-        self._o_grid = 0.3
 
         # Define silicon block information
         self._repeat = [0.506, 0.877, 1.240]
@@ -115,7 +115,7 @@ class Pore(Molecule):
         # Prepare pore
         t = utils.tic()
         self._box = self.get_box()                     # Set box
-        self._bonding.attach()                         # Preperare sides
+        self._bonding.attach()                         # Preperare sites
         self._bonding.drill(self._center, self._diam)  # Drill pore
         self._bonding.prepare()                        # Prepare pore surface
         self._t_tot["Prepare"] = utils.toc(t, "Prepare ", is_time)
@@ -333,17 +333,17 @@ class Pore(Molecule):
 
         # Create local verlet list
         atoms = [o[0] for o in site]
-        verlet = Verlet(self._temp(atoms), self._vs, self._is_pbc)
+        verlet = Verlet(self._temp(atoms), self._o_proxi, self._is_pbc)
 
         # Find oxygenes in proximity
         box_list = [i for i in range(len(verlet.get_box()[1]))]
-        oo = verlet.find_parallel(box_list, ["O", "O"], self._o_grid, 10e-2)
-        ooCol = utils.column(oo)
+        oo = verlet.find_parallel(box_list, ["O", "O"], 0.0, self._o_proxi)
+        oo_col = utils.column(oo)
 
         # Append proxi list to sites
         for i in range(len(site)):
             os = site[i]
-            o = oo[ooCol[0].index(i)][1] if i in ooCol[0] else []
+            o = oo[oo_col[0].index(i)][1] if i in oo_col[0] else []
 
             os[2].extend(o)
 
@@ -392,8 +392,7 @@ class Pore(Molecule):
         """
         # Initialize
         site = copy.deepcopy(self._site)
-        temp = utils.column(site)
-        site_len = temp[4].count(site_type)
+        site_len = utils.column(site)[4].count(site_type)
         id_list = [i for i in range(len(site))]
 
         # Calculate random element number
@@ -403,12 +402,11 @@ class Pore(Molecule):
             ran_num = site_len*rate
             ran_num /= 100
             ran_num = math.ceil(ran_num)
-            ran_num = rate
         elif inp == "molar":
             ran_num = rate*6.022/10*self._props["Surface"][site_type]
             ran_num = math.ceil(ran_num)
 
-        # Get list of all partners
+        # Get list of all closest partners for dual attachment
         if is_proxi:
             site_min = []
             for i in range(len(site)):
@@ -424,12 +422,14 @@ class Pore(Molecule):
             # Get random site index
             rand = random.choice(id_list)
 
-            # Check binding site
-            is_app = (is_proxi and site[rand][4] == site_type and
-                      site[rand][3] == 0 and site[site_min[rand][0]][3] == 0 and
-                      site[rand][5] == None and site[site_min[rand][0]][5] == None)
-
-            is_app = site[rand][4] == site_type and site[rand][3] == 0 if not is_proxi else is_app
+            # Check binding site for dual attachment
+            if is_proxi:
+                is_app = (is_proxi and site[rand][4] == site_type and
+                          site[rand][3] == 0 and site[site_min[rand][0]][3] == 0 and
+                          site[rand][5] == None and site[site_min[rand][0]][5] == None)
+            # Check binding site for singular attachment
+            else:
+                is_app = site[rand][4] == site_type and site[rand][3] == 0
 
             # Append to return list
             if is_app:
@@ -440,7 +440,7 @@ class Pore(Molecule):
                 ran_list.append([rand, site_min[rand][0]] if is_proxi else rand)
 
                 # Set site and proximity to used
-                self._close([rand, site_min[rand][0]] if is_proxi else rand, site)
+                site = self._close([rand, site_min[rand][0]] if is_proxi else rand, site)
             else:
                 # Add counter
                 count += 1
@@ -448,7 +448,9 @@ class Pore(Molecule):
         return ran_list
 
     def _close(self, sites, site_list=None):
-        """This function cloese the specified site.
+        """This function closes the specified site by setting the used value
+        to 1 and the used value of all sites in proximity to 2 in the given
+        site list.
 
         Parameters
         ----------
@@ -456,6 +458,11 @@ class Pore(Molecule):
             identifiers of sites to be closed
         site_list : list, None, optional
             List for closing off binding sites, leave None for global list
+
+        Returns
+        -------
+        site : list
+            Processed site list
         """
         # Initialize
         site = self._site if site_list is None else site_list
@@ -469,6 +476,8 @@ class Pore(Molecule):
             for prox in site[x][2]:
                 if not site[prox][3] == 1:
                     site[prox][3] = 2
+
+        return site
 
     def _add_mol_list(self, mol_list):
         """Add given molecule list to global molecule list and add the position
@@ -555,6 +564,9 @@ class Pore(Molecule):
         >>> self.attach(TMS(), [0, 1], [1, 2], 0, 50, inp="percent")
         >>> self.attach(TMS(), [0, 1], [1, 2], 1, 2.4, inp="molar")
         """
+        # Stop time
+        t = utils.tic()
+
         # Process user input
         sites = [sites] if isinstance(sites, int) else sites
 
@@ -564,9 +576,6 @@ class Pore(Molecule):
         # Molecule and center vector
         vec_m = mol.bond(orient[0], orient[1])[0]
         center = self._center[:-1]
-
-        # Stop time
-        t = utils.tic()
 
         # Add molcule
         mol_list = []

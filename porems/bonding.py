@@ -252,8 +252,8 @@ class Bonding:
     # Public Methods - Structure #
     ##############################
     def attach(self):
-        """The bonds in drilling direction are broken, since on these sides the
-        reservoirs containing molecules arre appended and binding sites
+        """The bonds in drilling direction are broken, since on these sites the
+        reservoirs containing molecules are appended and binding sites
         are needed. After breaking the bonds, oxygenes are added to the unsaturated
         silicon on the outer surface.
         """
