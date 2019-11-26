@@ -149,7 +149,6 @@ class Pore(Molecule):
             Smallest possible pore unit
         """
         # Initialize
-        dim = self._dim
         dist = self._si_grid
         angle = 2*math.atan(math.sqrt(2))*180/math.pi
 
@@ -222,8 +221,8 @@ class Pore(Molecule):
 
         # Delete overlapping atoms
         block.delete([4, 3, 2, 12, 15, 45, 46, 55, 57, 63, 26, 25, 24, 34, 37, 61])  # x-Axis
-        block.delete([50, 48, 36, 40, 41])                               # y-Axis
-        block.delete([45, 20, 19, 21, 22, 23, 24, 25, 17, 18])                # z-Axis
+        block.delete([50, 48, 36, 40, 41]) # y-Axis
+        block.delete([45, 20, 19, 21, 22, 23, 24, 25, 17, 18]) # z-Axis
 
         # Move to zero
         block.zero()
