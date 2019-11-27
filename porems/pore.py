@@ -1386,14 +1386,14 @@ class Pore(Molecule):
                     r_list.append(self._length(self._vector(self.pos(si_id), center)))
 
             # Calculate mean
-            r_bar = sum(r_list)/len(r_list)
+            r_bar = sum(r_list)/len(r_list) if len(r_list)>0 else 0
 
             # Set dimension order
             dim_order = {"x": [2, 1, 0], "y": [0, 2, 1], "z": [0, 1, 2]}
 
             # Calculate properties
-            props["Roughness"] = math.sqrt(sum([(ri-r_bar)**2 for ri in r_list])/len(r_list))
-            props["Diameter"] = 2*r_bar
+            props["Roughness"] = math.sqrt(sum([(ri-r_bar)**2 for ri in r_list])/len(r_list)) if r_bar>0 else 0
+            props["Diameter"] = 2*r_bar if r_bar>0 else 0
             props["Surface"] = {0: self._size[2]*2*math.pi*(props["Diameter"]/2),
                                 1: 2*(self._size[0]*self._size[1]-math.pi*(props["Diameter"]/2)**2)}
             props["Volume"] = self._size[2]*math.pi*(props["Diameter"]/2)**2
