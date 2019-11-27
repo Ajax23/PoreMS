@@ -17,7 +17,7 @@ The docs include an example for generating [molecules](https://ajax23.github.io/
 
 ## Dependencies
 
-Seaborn supports Python 3.5+.
+PoreMS supports Python 3.5+.
 
 Installation requires [multiprocessing](https://docs.python.org/3/library/multiprocessing.html) and optionally [pandas](https://pandas.pydata.org/).
 
@@ -44,6 +44,6 @@ To test porems, run the test in the test directory.
 
 ## Development
 
-Seaborn development takes place on Github: https://github.com/Ajax23/PoreMS
+PoreMS development takes place on Github: https://github.com/Ajax23/PoreMS
 
 Please submit any reproducible bugs you encounter to the [issue tracker](https://github.com/Ajax23/PoreMS/issues).
