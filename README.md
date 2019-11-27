@@ -1,84 +1,49 @@
-PoreMS: Pore Generator for Molecular Simulations
-================================================
-
-<div class="row">
-
-<a href=https://seaborn.pydata.org/examples/scatterplot_matrix.html>
-<img src="https://seaborn.pydata.org/_static/scatterplot_matrix_thumb.png" height="135" width="135">
-</a>
-
-<a href=http://seaborn.pydata.org/examples/errorband_lineplots.html>
-<img src="https://seaborn.pydata.org/_static/errorband_lineplots_thumb.png" height="135" width="135">
-</a>
-
-<a href=http://seaborn.pydata.org/examples/different_scatter_variables.html>
-<img src="http://seaborn.pydata.org/_static/different_scatter_variables_thumb.png" height="135" width="135">
-</a>
-
-<a href=https://seaborn.pydata.org/examples/many_facets.html>
-<img src="https://seaborn.pydata.org/_static/many_facets_thumb.png" height="135" width="135">
-</a>
-
-<a href=https://seaborn.pydata.org/examples/structured_heatmap.html>
-<img src="https://seaborn.pydata.org/_static/structured_heatmap_thumb.png" height="135" width="135">
-</a>
-
-<a href=https://seaborn.pydata.org/examples/horizontal_boxplot.html>
-<img src="https://seaborn.pydata.org/_static/horizontal_boxplot_thumb.png" height="135" width="135">
-</a>
-
-</div>
+<img src="https://github.com/Ajax23/PoreMS/blob/master/docsrc/pics/logo_text.svg" width="40%">
 
 --------------------------------------
 
 [![PyPI Version](https://img.shields.io/pypi/v/seaborn.svg)](https://pypi.org/project/seaborn/)
 [![License](https://img.shields.io/pypi/l/seaborn.svg)](https://github.com/mwaskom/seaborn/blob/master/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1313201.svg)](https://doi.org/10.5281/zenodo.1313201)
-[![Build Status](https://travis-ci.org/mwaskom/seaborn.svg?branch=master)](https://travis-ci.org/mwaskom/seaborn)
-[![Code Coverage](https://codecov.io/gh/mwaskom/seaborn/branch/master/graph/badge.svg)](https://codecov.io/gh/mwaskom/seaborn)
 
-Seaborn is a Python visualization library based on matplotlib. It provides a high-level interface for drawing attractive statistical graphics.
+# PoreMS: Pore Generator for Molecular Simulations
 
+## Documentation
 
-Documentation
--------------
+Online documentation is available at [ajax23.github.io/porems](https://ajax23.github.io/porems/).
 
-Online documentation is available at [seaborn.pydata.org](https://seaborn.pydata.org).
-
-The docs include a [tutorial](https://seaborn.pydata.org/tutorial.html), [example gallery](https://seaborn.pydata.org/examples/index.html), [API reference](https://seaborn.pydata.org/api.html), and other useful information.
+The docs include an example for generating [molecules](https://ajax23.github.io/porems/molecule.html) and [pores](https://ajax23.github.io/porems/pore.html), and an [API reference](https://ajax23.github.io/porems/api.html).
 
 
-Dependencies
-------------
+## Dependencies
 
-Seaborn supports Python 2.7 and 3.5+.
+Seaborn supports Python 3.5+.
 
-Installation requires [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [pandas](https://pandas.pydata.org/), and [matplotlib](https://matplotlib.org/). Some functions will optionally use [statsmodels](https://www.statsmodels.org/) if it is installed.
+Installation requires [multiprocessing](https://docs.python.org/3/library/multiprocessing.html) and optionally [pandas](https://pandas.pydata.org/).
 
 
-Installation
-------------
+## Installation
 
 The latest stable release (and older versions) can be installed from PyPI:
 
-    pip install seaborn
+    pip install porems
 
 You may instead want to use the development version from Github:
 
-    pip install git+https://github.com/mwaskom/seaborn.git#egg=seaborn
+    pip install git+https://github.com/ajax23/porems.git#egg=porems
+    
+Or download the repository and install in the top directory via:
+
+    pip install
 
 
-Testing
--------
+## Testing
 
-To test seaborn, run `make test` in the source directory.
-
-This will exercise both the unit tests and docstring examples (using `pytest`).
+To test porems, run the test in the test directory.
 
 
-Development
------------
+## Development
 
-Seaborn development takes place on Github: https://github.com/mwaskom/seaborn
+Seaborn development takes place on Github: https://github.com/Ajax23/PoreMS
 
-Please submit any reproducible bugs you encounter to the [issue tracker](https://github.com/mwaskom/seaborn/issues).
+Please submit any reproducible bugs you encounter to the [issue tracker](https://github.com/Ajax23/PoreMS/issues).
