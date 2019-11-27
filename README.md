@@ -34,7 +34,7 @@ You may instead want to use the development version from Github:
     
 Or download the repository and install in the top directory via:
 
-    pip install
+    pip install .
 
 
 ## Testing
