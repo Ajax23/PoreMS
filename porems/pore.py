@@ -572,8 +572,10 @@ class Pore(Molecule):
         # Get random list or given list
         site_list = self._random(site_type, rate, inp, counter) if sites is None else sites
 
-        # Molecule and center vector
+        # Molecule orientation vector
         vec_m = mol.bond(orient[0], orient[1])[0]
+
+        # Center vector independet of z-axis
         center = self._center[:-1]
 
         # Add molcule
@@ -586,34 +588,44 @@ class Pore(Molecule):
             # Copy molecule
             temp = copy.deepcopy(mol)
 
-            # Calculate center position
-            pos_c = center[:]+[self.pos(site[0])[self._dim-1]]
-
-            # Calculate osi vector
-            vec_o = self._vector(site[1], site[0])
-            vec_c = self._vector(self.pos(site[1]), pos_c)
-
-            # Random axis rotation
+            # Randomly rotate molecule around orientational axis
             if is_rotate: temp.rotate(vec_m, random.randint(1, 180))
 
-            # Adjust molecule vector to osi
+            # Set vector of silicon to oxygen atom of binding site
+            vec_o = self._vector(site[1], site[0])
+
+            # Adjust molecule vector to binding site vector
             temp.rotate(self._cross(vec_m, vec_o), self.angle(vec_m, vec_o))
 
-            # Adjust molecule towards center
+            # Adjust molecule to face central axis on the inside
             if site[4] == 0:
+                # Get center axis position perpendicular to binding site
+                pos_c = center[:]+[self.pos(site[0])[self._dim-1]]
+
+                # Set vector of binding site silicon atom to central position
+                vec_c = self._vector(self.pos(site[1]), pos_c)
+
+                # Rotate molecule towards center
                 temp.rotate(self._cross(vec_c, vec_o), -self.angle(vec_c, vec_o))
 
-            # Move molecule to position
+            # Adjust orientation perpendicular to surface on the outside
+            elif site[4] == 1:
+                # Set vector towards or away from z-axis depending on which side
+                vec_z = [x if self.pos(site[0])[2]>self._size[2]/2 else -1*x for x in self._axis("z")]
+
+                # Rotate molecule perpendicular to surface
+                temp.rotate(self._cross(vec_z, vec_o), -self.angle(vec_z, vec_o))
+
+            # Move molecule to position of binding site originating from the oxygen atom
             temp.move(si_o[1], self.pos(site[0]))
 
-            # Move silicon
+            # Move molecule silicon atom to binding site position
             temp.put(si_o[0], self.pos(site[1]))
 
-            # Check if geminal
-            is_gem = site[5] is not None
-
-            temp.set_name(temp.get_name()+"g" if is_gem else temp.get_name())
-            temp.set_short(temp.get_short()+"G" if is_gem else temp.get_short())
+            # Check if geminal and set names
+            if site[5] is not None:
+                temp.set_name(temp.get_name()+"g")
+                temp.set_short(temp.get_short()+"G")
 
             # Remove obsolete atoms
             remove_list.extend([site[0], site[1]])
