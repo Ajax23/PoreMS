@@ -161,9 +161,7 @@ class Verlet:
     ##############################
     def _index(self, pos):
         """Get the box id from a given box position which is a list of x, y and z values.
-
-        :ToDo: Need recursion for arbitrary dimension.
-
+        
         Parameters
         ----------
         pos : list
@@ -180,15 +178,13 @@ class Verlet:
 
         # Calculate id
         index += pos[0]
-        index += count[0] * pos[1]
-        index += count[0]*count[1]*pos[2]
+        index += pos[1]*count[0]
+        index += pos[2]*count[0]*count[1]
 
         return int(index)
 
     def _position(self, index):
         """Get the box position in x, y and z values from a given box id.
-
-        :ToDo: Need recursion for arbitrary dimension.
 
         Parameters
         ----------
