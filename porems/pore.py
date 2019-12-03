@@ -1161,8 +1161,6 @@ class Pore(Molecule):
     def _excess(self, is_rand=True):
         """Adjust grid atoms charges to compensate for excess charges on the pore.
 
-        :TODO: Remove grid
-
         Parameters
         ----------
         is_rand : bool, optional
@@ -1170,8 +1168,6 @@ class Pore(Molecule):
         """
         # Initialize
         mols = self._mol_list
-        grid = [x.get_name() for x in self._grid]+["sl"]
-        grid += [x+"g" for x in grid]
 
         # Get excess charge
         charge = 0.0
@@ -1186,7 +1182,7 @@ class Pore(Molecule):
                 num_o += 1
             elif mol.get_name() == "si":
                 num_si += 1
-            elif mol.get_name() in grid:
+            else:
                 num_g += 1
 
         # Calculate adjustment
@@ -1200,7 +1196,7 @@ class Pore(Molecule):
                 mol.set_charge(q_o)
             elif mol.get_name() == "si":
                 mol.set_charge(q_si)
-            elif mol.get_name() in grid:
+            else:
                 mol.set_charge(round(mol.get_charge()-self._q_si+q_si, round_o))
 
         # Calculate rounding error
@@ -1472,33 +1468,61 @@ class Pore(Molecule):
         converting the grid to individual molecules and finally moving the pore
         into position.
 
-        :TODO: Split timer
-
         Parameters
         ----------
         is_rand : bool, optional
             True to randomly distribute rounding error charge on block oxygen atoms
         """
-        # Start timer
+        # Fill empty sites with silanol
         t = utils.tic()
+        self._silanol_parallel()
+        self._t_tot["Silanol"] = utils.toc(t, "Silanol ", self._is_time)
 
-        # Finalize
-        self._silanol_parallel()   # Fill empty sites with silanol
-        self._connect()            # Connect geminal molecules into one
-        self._bonding.delete()     # Delete marked atoms
-        self._objectify_parallel() # Move all silicon and oxygenes into unique mols
-        self._excess(is_rand)      # Distribute excess charge
-        self._sort()               # Sort molecules
-        self._position()           # Position the pore considering pbc
-        self._overlap()            # Check for silicon or oxygen atoms overlapping
-        self._is_props = True      # Allow properties calculation
+        # Connect geminal molecules into one
+        t = utils.tic()
+        self._connect()
+        self._t_tot["Connect"] = utils.toc(t, "Connect ", self._is_time)
 
-        self._t_tot["Finalize"] = utils.toc(t, "Finalize", self._is_time)
+        # Delete marked atoms
+        t = utils.tic()
+        self._bonding.delete()
+        self._t_tot["Delete"] = utils.toc(t, "Delete  ", self._is_time)
+
+        # Move all silicon and oxygenes into unique mols
+        t = utils.tic()
+        self._objectify_parallel()
+        self._t_tot["Objects"] = utils.toc(t, "Objects ", self._is_time)
+
+        # Distribute excess charge
+        t = utils.tic()
+        self._excess(is_rand)
+        self._t_tot["Excess"] = utils.toc(t, "Excess  ", self._is_time)
+
+        # Sort molecules
+        t = utils.tic()
+        self._sort()
+        self._t_tot["Sort"] = utils.toc(t, "Sort    ", self._is_time)
+
+        # Position the pore considering pbc
+        t = utils.tic()
+        self._position()
+        self._t_tot["Position"] = utils.toc(t, "Position", self._is_time)
+
+        # Check for silicon or oxygen atoms overlapping
+        t = utils.tic()
+        self._overlap()
+        self._t_tot["Overlap"] = utils.toc(t, "Overlap ", self._is_time)
+
+        # Allow properties calculation
+        self._is_props = True
 
         if self._is_time:
             print("----------------------------")
             print("Total   - runtime = "+"%6.3f" % sum([self._t_tot[x] for x in self._t_tot])+" s")
             print()
+
+        # Print finalization note
+        print("Pore is finalized. Attachement functions should not be called anymore.")
 
 
     ##################

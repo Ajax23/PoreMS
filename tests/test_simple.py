@@ -67,10 +67,10 @@ mol_mol = Molecule(inp="data/benzene.mol2")
 # Pore #
 ########
 # Generation
-pore = Pore(size=[5, 5, 3], diam=3, drill="z", res=5.5, is_time=True)
+pore = Pore(size=[16, 16, 10], diam=9, drill="z", res=5.5, is_time=True)
 pore.set_name("pore")
 
-pore.siloxan(10,"num")
+pore.siloxan(10, "num")
 # pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 10, inp="num")
 pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 0.67, inp="molar")
 pore.attach(TMS(compress=30), [0, 1], [1, 2], 1, 10, inp="num")
