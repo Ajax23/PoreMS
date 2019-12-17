@@ -12,7 +12,7 @@
 
 Online documentation is available at [ajax23.github.io/porems](https://ajax23.github.io/porems/).
 
-The docs include an example for generating [molecules](https://ajax23.github.io/porems/molecule.html) and [pores](https://ajax23.github.io/porems/pore.html), and an [API reference](https://ajax23.github.io/porems/api.html).
+The docs include an example for generating [molecules](https://ajax23.github.io/porems/molecule.html) and [pores](https://ajax23.github.io/porems/pore.html), and an [API reference](https://ajax23.github.io/porems/api.html). Additionally a [worklow](https://ajax23.github.io/porems/workflow.html) is provided, describing the programs operating principle.
 
 
 ## Dependencies
@@ -31,7 +31,7 @@ The latest stable release (and older versions) can be installed from PyPI:
 You may instead want to use the development version from Github:
 
     pip install git+https://github.com/ajax23/porems.git#egg=porems
-    
+
 Or download the repository and install in the top directory via:
 
     pip install .
