@@ -2,7 +2,9 @@
 
 --------------------------------------
 
+[![PyPI Version](https://img.shields.io/badge/pypi-0.1.0-orange)](https://pypi.org/project/porems/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/Ajax23/PoreMS/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3580613.svg)](https://doi.org/10.5281/zenodo.3580613)
 
 # PoreMS: Pore Generator for Molecular Simulations
 

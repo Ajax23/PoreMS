@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Pore.props &#8212; PoreMS 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          PoreMS</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../molecule.html">Molecule</a></li>
+                <li><a href="../pore.html">Pore</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Pore.props</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  </div>
+<div class=col-md-9 content><div class="section" id="pore-props">
+<h1>Pore.props<a class="headerlink" href="#pore-props" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="porems.pore.Pore.props">
+<code class="descclassname">Pore.</code><code class="descname">props</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.props" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates all necessary properties of the system and
+retruns a dictionary. Note that most of the properties can only be
+calculated after the pore is finalized in function <a class="reference internal" href="porems.pore.Pore.finalize.html#porems.pore.Pore.finalize" title="porems.pore.Pore.finalize"><code class="xref py py-func docutils literal"><span class="pre">finalize()</span></code></a>.</p>
+<p>The output dictionary contains following properties which will be
+explained further down</p>
+<ul class="simple">
+<li><strong>Allocation</strong> - Dictionary of all molecule allocations in molar and percent</li>
+<li><strong>Charge</strong> - Excess charge</li>
+<li><strong>Diameter</strong> - Generated pore diameter</li>
+<li><strong>Dimension</strong> - Generated Dimensions</li>
+<li><strong>Generation_Time</strong> - Dictionary of all time steps</li>
+<li><strong>Hydroxylation</strong> - Hydroxylation dictionary inside and outside of the pore</li>
+<li><strong>Roughness</strong> - Surface roughness</li>
+<li><strong>Silanol_Geminal</strong> - Dictionary containing the number of silanol and geminal silanol molecules inside and outside the pore</li>
+<li><strong>Surface</strong> - Dictionary of inner and outer pore surface</li>
+<li><strong>System_Size</strong> - Total system size including reservoirs</li>
+<li><strong>Volume</strong> - Inner pore volume</li>
+</ul>
+<p>The <strong>roughness</strong> is calculated as the standard deviation of the peaks and
+valles of a surface.</p>
+<p>In the case of a pore one can visualize pulling it appart, creating a
+flat surface out of the interior. The roughness is thus determined by
+calculating the standard deviation of the binding site silicon peaks and
+valleys.</p>
+<p>The only difference in the pore is therefore the definition of the axis,
+which is going to be the centeral axis. The mean value <span class="math">\(\bar r\)</span>
+of the silicon distances <span class="math">\(r_i\)</span> of silicon <span class="math">\(i\)</span> towards the
+pore center, is calculated by</p>
+<div class="math">
+\[\bar r=\frac1n\sum_{i=1}^nr_i\]</div>
+<p>with the number of silicon atoms <span class="math">\(n\)</span>. This mean value is used in
+the sqareroot roughness calculation</p>
+<div class="math">
+\[R_q = \sqrt{\frac1n\sum_{i=1}^n\|r_i-\bar r\|^2}.\]</div>
+<p>The <strong>diameter</strong> is the mean value <span class="math">\(\bar r\)</span> of the silicon distances
+<span class="math">\(r_i\)</span> of binding site silicon <span class="math">\(i\)</span> towards the pore center</p>
+<div class="math">
+\[d=2\bar r=\frac2n\sum_{i=1}^nr_i.\]</div>
+<p>The <strong>surface</strong> inside the pore is calculated by</p>
+<div class="math">
+\[A_\text{inside}=2\pi r\cdot l_\text{drill},\]</div>
+<p>with opening radius <span class="math">\(r\)</span> and length of the drilling axis
+<span class="math">\(l_\text{drill}\)</span>, the total outside surface of the pore system by</p>
+<div class="math">
+\[A_\text{outside}=2\cdot\left(A_\text{side}-\pi r^2\right)\]</div>
+<p>with block surface on the drilling side <span class="math">\(A_\text{side}\)</span>,
+and the <strong>volume</strong> by</p>
+<div class="math">
+\[V_\text{pore}=\pi r^2\cdot l_\text{drill}.\]</div>
+<p>Using these surfaces, the <strong>allocation</strong> rates can be determined by
+counting the number of used sites and free sites from the binding
+site list. Thus it is possible to determine the maximal possible allocation
+<span class="math">\(c_\text{tot}\)</span> also called hydroxylation, the rate for the
+molecule modification <span class="math">\(c_\text{mod}\)</span> and the rate for the silanol
+modification <span class="math">\(c_\text{oh}\)</span>. For better overview, the relative
+allocation for the molecule modification <span class="math">\(c_\text{rel}\)</span> has been
+calculated</p>
+<div class="math">
+\[\begin{array}{cccc}
+c_\text{tot} = \dfrac{s_\text{tot}}{A},&amp;
+c_\text{mod} = \dfrac{s_\text{mod}}{A},&amp;
+c_\text{oh}  = \dfrac{s_\text{oh} }{A},&amp;
+c_\text{rel} = \dfrac{s_\text{mod}}{s_\text{tot}}
+\end{array}\]</div>
+<p>with the corresponding surface <span class="math">\(A\)</span> for either inside or outside
+the pore, the total number of binding sites <span class="math">\(s_\text{tot}\)</span>,
+number of sites used for the modification <span class="math">\(s_\text{mod}\)</span>
+and number of sites used for the silanol modification <span class="math">\(s_\text{oh}\)</span>.
+The resulting units are</p>
+<div class="math">
+\[[c_{i}]=\frac{\text{Number of molecules}}{nm^2}
+=\frac{1}{N_A}\frac{mol}{nm^2}
+=\frac{10}{6.022}\frac{\mu mol}{m^2}.\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>props</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dictionary</span></dt>
+<dd><p class="first last">Properties of the pore</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, Hamzeh Kraus.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
