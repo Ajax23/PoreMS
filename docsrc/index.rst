@@ -6,8 +6,8 @@
   :align: center
   :width: 40%
 
-A Pore generator for Molecular Simulations
-==========================================
+Pore Generator for Molecular Simulations
+========================================
 
 .. raw:: html
 
