@@ -122,7 +122,7 @@ html_theme_options = {
     'source_link_position': "",
     'bootswatch_theme': "paper",
     'bootstrap_version': "3",
-    'navbar_links': [("API", "api"), ("Molecule", "molecule"), ("Pore", "pore"), ],
+    'navbar_links': [("API", "api"), ("Workflow", "workflow"), ("Molecule", "molecule"), ("Pore", "pore"), ],
 }
 
 html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
