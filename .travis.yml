@@ -11,6 +11,7 @@ install:
 
 script:
   - cd tests
+  - pip install .
   - python test_simple.py
 
 # after_success:
