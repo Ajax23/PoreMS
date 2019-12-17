@@ -6,6 +6,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/Ajax23/PoreMS/blob/master/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3580613.svg)](https://doi.org/10.5281/zenodo.3580613)
 [![Build Status](https://travis-ci.com/Ajax23/PoreMS.svg?branch=master)](https://travis-ci.com/Ajax23/PoreMS)
+[![codecov](https://codecov.io/gh/Ajax23/PoreMS/branch/master/graph/badge.svg)](https://codecov.io/gh/Ajax23/PoreMS)
 
 # PoreMS: Pore Generator for Molecular Simulations
 
