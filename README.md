@@ -10,9 +10,9 @@
 
 ## Documentation
 
-Online documentation is available at [ajax23.github.io/porems](https://ajax23.github.io/porems/).
+Online documentation is available at [ajax23.github.io/PoreMS](https://ajax23.github.io/PoreMS/).
 
-The docs include an example for generating [molecules](https://ajax23.github.io/porems/molecule.html) and [pores](https://ajax23.github.io/porems/pore.html), and an [API reference](https://ajax23.github.io/porems/api.html). Additionally a [worklow](https://ajax23.github.io/porems/workflow.html) is provided, describing the programs operating principle.
+The docs include an example for generating [molecules](https://ajax23.github.io/PoreMS/molecule.html) and [pores](https://ajax23.github.io/PoreMS/pore.html), and an [API reference](https://ajax23.github.io/PoreMS/api.html). Additionally a [worklow](https://ajax23.github.io/PoreMS/workflow.html) is provided, describing the programs operating principle.
 
 
 ## Dependencies
