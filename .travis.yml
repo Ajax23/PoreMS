@@ -13,15 +13,14 @@ python:
 
 install:
   - pip install -r requirements.txt
+  - pip install coverage
   - pip install .
 
 script:
   - cd tests
-  - python test_simple.py
+  - coverage run test_simple.py
 
 after_success:
-    - pip install codecov
-    - codecov
     - bash <(curl -s https://codecov.io/bash)
 
 notifications:
