@@ -16,7 +16,8 @@ install:
   - pip install .
 
 script:
-  - python tests/test_simple.py
+  - cd tests
+  - python test_simple.py
 
 after_success:
     - pip install codecov
