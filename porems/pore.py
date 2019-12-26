@@ -1450,7 +1450,7 @@ class Pore(Molecule):
 
             # Calculate properties
             props["Charge"] = self._charge
-            props["System_Size"] = self._size
+            props["System_Size"] = self._box
             props["Generation_Time"] = self._t_tot
             props["Hydroxylation"] = {"in": [hydro[0],hydro[0]*molar], "out": [hydro[1],hydro[1]*molar]}
             props["Silanol_Geminal"] = {"in": num_i, "out": num_o, "in_g": num_i_g, "out_g": num_o_g}
