@@ -27,4 +27,5 @@ notifications:
   email:
     recipients:
       - kraus@itt.uni-stuttgart.de
-    on_success: change
+    on_success: never
+    on_failure: always
