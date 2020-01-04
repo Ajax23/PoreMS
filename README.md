@@ -1,8 +1,4 @@
-<img src="https://github.com/Ajax23/PoreMS/blob/master/docsrc/pics/logo_text.svg" width="40%">
-
---------------------------------------
-
-# PoreMS: Pore Generator for Molecular Simulations
+<img src="https://github.com/Ajax23/PoreMS/blob/master/docsrc/pics/logo_text_sub.svg" width="40%">
 
 <img src="https://github.com/Ajax23/PoreMS/blob/master/docsrc/pics/pore.svg" width="60%">
 
