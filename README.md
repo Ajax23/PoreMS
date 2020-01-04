@@ -16,7 +16,7 @@ Online documentation is available at [ajax23.github.io/PoreMS](https://ajax23.gi
 
 The docs include an example for generating [molecules](https://ajax23.github.io/PoreMS/molecule.html) and [pores](https://ajax23.github.io/PoreMS/pore.html), and an [API reference](https://ajax23.github.io/PoreMS/api.html). Visit [process](https://ajax23.github.io/PoreMS/workflow.html) for an overview of the programs operating principle.
 
-An examplary [workflow](https://ajax23.github.io/PoreMS/workflow.html) has been provided for using the PoreMS package to create a pore system and run molecular dynamics simulation using Gromcas [Gromacs](http://www.gromacs.org/).
+An examplary [workflow](https://ajax23.github.io/PoreMS/workflow.html) has been provided for using the PoreMS package to create a pore system and run molecular dynamics simulation using [Gromacs](http://www.gromacs.org/).
 
 ## Dependencies
 
