@@ -1,7 +1,5 @@
 <img src="https://github.com/Ajax23/PoreMS/blob/master/docsrc/pics/logo_text.svg" width="40%">
 
---------------------------------------
-
 # PoreMS: Pore Generator for Molecular Simulations
 
 [![PyPI Version](https://img.shields.io/badge/PyPI-0.1.0-orange)](https://pypi.org/project/porems/)
@@ -10,11 +8,13 @@
 [![Build Status](https://travis-ci.com/Ajax23/PoreMS.svg?branch=master)](https://travis-ci.com/Ajax23/PoreMS)
 [![codecov](https://codecov.io/gh/Ajax23/PoreMS/branch/master/graph/badge.svg)](https://codecov.io/gh/Ajax23/PoreMS)
 
+--------------------------------------
+
 ## Documentation
 
 Online documentation is available at [ajax23.github.io/PoreMS](https://ajax23.github.io/PoreMS/).
 
-The docs include an example for generating [molecules](https://ajax23.github.io/PoreMS/molecule.html) and [pores](https://ajax23.github.io/PoreMS/pore.html), and an [API reference](https://ajax23.github.io/PoreMS/api.html). Visit [process](https://ajax23.github.io/PoreMS/workflow.html) for an overview of the programs operating principle.
+The docs include an example for generating [molecules](https://ajax23.github.io/PoreMS/molecule.html) and [pores](https://ajax23.github.io/PoreMS/pore.html), and an [API reference](https://ajax23.github.io/PoreMS/api.html). Visit [process](https://ajax23.github.io/PoreMS/process.html) for an overview of the programs operating principle.
 
 An examplary [workflow](https://ajax23.github.io/PoreMS/workflow.html) has been provided for using the PoreMS package to create a pore system and run molecular dynamics simulation using [Gromacs](http://www.gromacs.org/).
 
