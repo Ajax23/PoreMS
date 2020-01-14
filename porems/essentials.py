@@ -10,9 +10,11 @@ from porems.molecule import Molecule
 
 
 class Alkane(Molecule):
-    """This class extends the molecule class :class:`porems.molecule.Molecule`.
-    Here linear alkane molecules can be easily constructed with the only
-    input of the carbon atom number. Hydrogenes are then automatically added.
+    """Using this class linear alkane molecules can be easily constructed with
+    the only input of the carbon atom number. Hydrogenes are then automatically
+    added.
+
+    This class extends the molecule class :class:`porems.molecule.Molecule`.
 
     Parameters
     ----------
@@ -75,10 +77,11 @@ class Alkane(Molecule):
 
 
 class Alcohol(Molecule):
-    """This class extends the molecule class :class:`porems.molecule.Molecule`.
-    Here linear alcohol molecules can be easily constructed with the only
-    input of the carbon atom number. Hydrogenes and the hydroxy group are then
-    automatically added.
+    """Using this class linear alcohol molecules can be easily constructed with
+    the only input of the carbon atom number. Hydrogenes and the hydroxy group
+    are then automatically added.
+
+    This class extends the molecule class :class:`porems.molecule.Molecule`.
 
     Parameters
     ----------
@@ -141,10 +144,11 @@ class Alcohol(Molecule):
 
 
 class Ketone(Molecule):
-    """This class extends the molecule class :class:`porems.molecule.Molecule`.
-    Here linear ketone molecules can be easily constructed with the only
-    input of the carbon atom number and oxygene position.
+    """Using this class linear ketone molecules can be easily constructed with
+    the only input of the carbon atom number and oxygene position.
     Hydrogenes are then automatically added.
+
+    This class extends the molecule class :class:`porems.molecule.Molecule`.
 
     Parameters
     ----------
@@ -212,8 +216,9 @@ class Ketone(Molecule):
 
 
 class TMS(Molecule):
-    """This class extends the molecule class :class:`porems.molecule.Molecule`
-    and defines trimethylsilyl (TMS) bound to a silicon-grid.
+    """This class defines trimethylsilyl (TMS) bound to a silicon-grid.
+
+    This class extends the molecule class :class:`porems.molecule.Molecule`.
 
     Parameters
     ----------

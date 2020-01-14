@@ -161,7 +161,7 @@ class Verlet:
     ##############################
     def _index(self, pos):
         """Get the box id from a given box position which is a list of x, y and z values.
-        
+
         Parameters
         ----------
         pos : list

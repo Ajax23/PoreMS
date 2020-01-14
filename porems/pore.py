@@ -54,6 +54,22 @@ class Pore(Molecule):
         True if periodic boundary conditions are needed
     is_time : bool, optional
         True to print the used time for the single steps
+
+    Examples
+    --------
+    Following example generates a pore with TMS molecules on the inside and outside surface
+
+    .. code-block:: python
+
+        from porems.pore import Pore
+        from porems.essentials import TMS
+
+        pore = Pore([10, 10, 10], 6, "z", 5.5)
+
+        pore.attach(TMS(), [0, 1], [1, 2], 0, 4.3, inp="molar")
+        pore.attach(TMS(), [0, 1], [1, 2], 1, 60, inp="percent")
+
+        pore.finalize()
     """
     def __init__(self, size, diam, drill, res=1, vs=0.4, proxi_dist=0.5, is_pbc=True, is_time=False):
         # Call super class
@@ -559,9 +575,11 @@ class Pore(Molecule):
 
         Examples
         --------
-        >>> self.attach(TMS(), [0, 1], [1, 2], 0, 50)
-        >>> self.attach(TMS(), [0, 1], [1, 2], 0, 50, inp="percent")
-        >>> self.attach(TMS(), [0, 1], [1, 2], 1, 2.4, inp="molar")
+        .. code-block:: python
+
+            pore.attach(TMS(), [0, 1], [1, 2], 0, 50)
+            pore.attach(TMS(), [0, 1], [1, 2], 0, 50, inp="percent")
+            pore.attach(TMS(), [0, 1], [1, 2], 1, 2.4, inp="molar")
         """
         # Stop time
         t = utils.tic()
@@ -681,9 +699,11 @@ class Pore(Molecule):
 
         Examples
         --------
-        >>> self.special(TMS(), [0, 1], [1, 2], 2)
-        >>> self.special(TMS(), [0, 1], [1, 2], 2, symmetry="point")
-        >>> self.special(TMS(), [0, 1], [1, 2], 3, symmetry="random")
+        .. code-block:: python
+
+            pore.special(TMS(), [0, 1], [1, 2], 2)
+            pore.special(TMS(), [0, 1], [1, 2], 2, symmetry="point")
+            pore.special(TMS(), [0, 1], [1, 2], 3, symmetry="random")
         """
         # Process input
         if symmetry not in ["random", "point", "mirror"]:
@@ -833,9 +853,11 @@ class Pore(Molecule):
 
         Examples
         --------
-        >>> self.attach_dual(DualMol(), [[0, 2], [1, 3]], [4, 6], 80)
-        >>> self.attach_dual(DualMol(), [[0, 2], [1, 3]], [4, 6], 80, inp="precent")
-        >>> self.attach_dual(DualMol(), [[0, 2], [1, 3]], [4, 6], 10, inp="num")
+        .. code-block:: python
+
+            pore.attach_dual(DualMol(), [[0, 2], [1, 3]], [4, 6], 80)
+            pore.attach_dual(DualMol(), [[0, 2], [1, 3]], [4, 6], 80, inp="precent")
+            pore.attach_dual(DualMol(), [[0, 2], [1, 3]], [4, 6], 10, inp="num")
         """
         # Get random list
         site_list = self._random(0, rate, inp, counter, is_proxi=True)
@@ -917,10 +939,12 @@ class Pore(Molecule):
 
         Examples
         --------
-        >>> self.siloxan(10)
-        >>> self.siloxan(10, inp="precent")
-        >>> self.siloxan(15, inp="num")
-        >>> self.siloxan(2.4, inp="molar")
+        .. code-block:: python
+
+            pore.siloxan(10)
+            pore.siloxan(10, inp="precent")
+            pore.siloxan(15, inp="num")
+            pore.siloxan(2.4, inp="molar")
         """
         # Exit if rate is zero
         if rate == 0:
@@ -1515,6 +1539,7 @@ class Pore(Molecule):
 
         # Allow properties calculation
         self._is_props = True
+        self.props()
 
         if self._is_time:
             print("----------------------------")
