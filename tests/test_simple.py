@@ -80,7 +80,7 @@ if __name__ == "__main__":
     pore.finalize()
 
     # Analysis
-    props = pore.props()
+    props = pore.get_props()
 
     # for prop in props:
         # print(prop,":",props[prop])
