@@ -49,6 +49,22 @@ class Molecule:
         None for empty Molecule, string to read a molecule from a
         specified filelink or a list of either molecules to concatenate these
         into one object, or a data list in the earlier discussed format
+
+    Examples
+    --------
+    Following example generates a benzene molecule without hydrogen atoms
+
+    .. code-block:: python
+
+        from porems.molecule import Molecule
+
+        mol = Molecule("benzene", "BEN")
+        mol.add("C", [0,0,0])
+        mol.add("C", 0, r=0.1375, theta= 60)
+        mol.add("C", 1, r=0.1375, theta=120)
+        mol.add("C", 2, r=0.1375, theta=180)
+        mol.add("C", 3, r=0.1375, theta=240)
+        mol.add("C", 4, r=0.1375, theta=300)
     """
     def __init__(self, name="Molecule", short="MOL", inp=None):
         # Initialize
@@ -761,7 +777,9 @@ class Molecule:
 
         Examples
         --------
-        >>> part_move([0,1],[1,2,3],0.5)
+        .. code-block:: python
+
+            mol.part_move([0, 1], [1, 2, 3], 0.5)
         """
         # Create temporary molecule
         if isinstance(atoms, int):
@@ -803,7 +821,9 @@ class Molecule:
 
         Examples
         --------
-        >>> part_rotate([0,1],[1,2,3],90,0)
+        .. code-block:: python
+
+            mol.part_rotate([0, 1], [1, 2, 3], 90, 0)
         """
         # Create temporary molecule
         self.move(zero, [0, 0, 0])
@@ -844,7 +864,9 @@ class Molecule:
 
         Examples
         --------
-        >>> part_angle([0,1],[1,2],[1,2,3],90,1)
+        .. code-block:: python
+
+            mol.part_angle([0, 1], [1, 2], [1, 2, 3], 90, 1)
         """
         # Create temporary molecule
         self.move(zero, [0, 0, 0])
@@ -911,7 +933,9 @@ class Molecule:
 
         Examples
         --------
-        >>> length_angle([0,19],[8,9],[9,10],[10,11,12],self.pos(9))
+        .. code-block:: python
+
+            mol.length_angle([0, 19], [8, 9], [9, 10], [10, 11, 12], mol.pos(9))
 
         """
         angles = [x*grid for x in range(int(angle[0]/grid), int(angle[1]/grid)+1)]
@@ -991,9 +1015,11 @@ class Molecule:
 
         Examples
         --------
-        >>> bond(0,1)
-        >>> bond(*[0,1])
-        >>> bond([1,0,0],[0,0,0])
+        .. code-block:: python
+
+            mol.bond(0, 1)
+            mol.bond(*[0, 1])
+            mol.bond([1, 0, 0], [0, 0, 0])
         """
         return [self._vector(inp_a, inp_b), self._length(self._vector(inp_a, inp_b))]
 
@@ -1033,9 +1059,11 @@ class Molecule:
 
         Examples
         --------
-        >>> add("C",[0,0,0])
-        >>> add("C",0,r=0.153,theta=-135)
-        >>> add("C",1,[0,1],r=0.153,theta= 135)
+        .. code-block:: python
+
+            mol.add("C", [0, 0, 0])
+            mol.add("C", 0, r=0.153, theta=-135)
+            mol.add("C", 1, [0, 1], r=0.153, theta= 135)
         """
         # Angles
         phi *= math.pi/180 if is_deg else 1

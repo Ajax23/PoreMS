@@ -33,6 +33,18 @@ class Store:
         Molecule object
     link : string, optional
         Folder link for output
+
+    Examples
+    --------
+    Assuming a pore or molecule object have already been created, the structure
+    files can be generated like following examples
+
+    .. code-block:: python
+
+        from porems.store import Store
+
+        Store(pore).gro()
+        Store(mol).pdb()
     """
     def __init__(self, molecule, link="./"):
         # Get molecule properties
