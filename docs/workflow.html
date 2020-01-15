@@ -85,7 +85,7 @@
 <li><a class="reference internal" href="#simulation-folder-structure">Simulation folder structure</a></li>
 <li><a class="reference internal" href="#fixiating-surface-molecules-and-grid">Fixiating surface molecules and grid</a></li>
 <li><a class="reference internal" href="#filling-box">Filling box</a></li>
-<li><a class="reference internal" href="#basic-analysis-idea-of-density">Basic analysis idea of density</a></li>
+<li><a class="reference internal" href="#density-analysis-procedure">Density analysis procedure</a></li>
 </ul>
 </li>
 </ul>
@@ -123,36 +123,53 @@
       <div style="text-align: justify; text-justify: inter-word;"><div class="section" id="simulation-workflow">
 <h1>Simulation Workflow<a class="headerlink" href="#simulation-workflow" title="Permalink to this headline">¶</a></h1>
 <p>In this workflow a simply pore simulation system will be created with TMS as
-surface molecules.</p>
+surface molecules. Additionaly the GROMACS simulation package will be utilized.</p>
 <div class="section" id="create-surface-molecules">
 <h2>Create surface molecules<a class="headerlink" href="#create-surface-molecules" title="Permalink to this headline">¶</a></h2>
 <p>Trimethysilyl or for short TMS is a simple surface group that can be imported
-from the porems package</p>
+from the porems package.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.essentials</span> <span class="kn">import</span> <span class="n">TMS</span>
 </pre></div>
 </div>
-<p>Following code block can be used as a base structure to create further surface
-group structures</p>
+<p>Assuming a new surface group structure is to be created, following code block
+can be used as a base.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.molecule</span> <span class="kn">import</span> <span class="n">Molecule</span>
 
 <span class="n">tms</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="s2">&quot;tms&quot;</span><span class="p">,</span> <span class="s2">&quot;TMS&quot;</span><span class="p">)</span>
 <span class="n">tms</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="mf">0.96</span><span class="p">)</span>
 <span class="n">compress</span> <span class="o">=</span> <span class="mi">30</span>
 
-<span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sio&quot;</span><span class="p">:</span> <span class="mf">0.161</span><span class="p">,</span> <span class="s2">&quot;sic&quot;</span><span class="p">:</span> <span class="mf">0.190</span><span class="p">}</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sio&quot;</span><span class="p">:</span> <span class="mf">0.155</span><span class="p">,</span> <span class="s2">&quot;sic&quot;</span><span class="p">:</span> <span class="mf">0.186</span><span class="p">,</span> <span class="s2">&quot;ch&quot;</span><span class="p">:</span> <span class="mf">0.109</span><span class="p">}</span>
 <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ccc&quot;</span><span class="p">:</span> <span class="mf">30.00</span><span class="p">,</span> <span class="s2">&quot;cch&quot;</span><span class="p">:</span> <span class="mf">109.47</span><span class="p">}</span>
 
+<span class="c1"># Create tail</span>
 <span class="n">tms</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Si&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="n">tms</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;sio&quot;</span><span class="p">])</span>
 <span class="n">tms</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Si&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bond</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;sio&quot;</span><span class="p">],</span> <span class="n">theta</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
 
+<span class="c1"># Add carbons</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
     <span class="n">tms</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bond</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;sic&quot;</span><span class="p">],</span> <span class="n">theta</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="s2">&quot;cch&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">compress</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">60</span><span class="o">+</span><span class="mi">120</span><span class="o">*</span><span class="n">i</span><span class="p">)</span>
+
+<span class="c1"># Add hydrogenes</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">tms</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bond</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;ch&quot;</span><span class="p">],</span> <span class="n">theta</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="s2">&quot;cch&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">compress</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">60</span><span class="o">+</span><span class="mi">120</span><span class="o">*</span><span class="n">j</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="figure align-center" id="fig1">
+<a class="reference internal image-reference" href="_images/tms.png"><img alt="_images/tms.png" src="_images/tms.png" style="width: 30%;" /></a>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Parametrization has to be carried out by the user. Topology generation should
+be performed for both a singular binding site and a geminal binding site.</p>
 </div>
 </div>
 <div class="section" id="create-pore-system">
 <h2>Create pore system<a class="headerlink" href="#create-pore-system" title="Permalink to this headline">¶</a></h2>
+<p>Next step is to create a pore structure functionalized with the created TMS
+sruface group.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.pore</span> <span class="kn">import</span> <span class="n">Pore</span>
 
 <span class="n">pore</span> <span class="o">=</span> <span class="n">Pore</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">diam</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">drill</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">is_time</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -165,28 +182,149 @@ group structures</p>
 <span class="n">pore</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>Once the generation is done, store the structure and preferably the object for
+future analysis. Furthermore a master topology with the number of residues and
+a topology containing grid molecule parameters should be created using the
+<a class="reference internal" href="generated/porems.store.Store.top.html#porems.store.Store.top" title="porems.store.Store.top"><code class="xref py py-func docutils literal"><span class="pre">porems.store.Store.top()</span></code></a> and <a class="reference internal" href="generated/porems.store.Store.grid.html#porems.store.Store.grid" title="porems.store.Store.grid"><code class="xref py py-func docutils literal"><span class="pre">porems.store.Store.grid()</span></code></a> functions.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">gro</span><span class="p">(</span><span class="s2">&quot;pore.gro&quot;</span><span class="p">)</span>
 <span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="s2">&quot;pore.obj&quot;</span><span class="p">)</span>
 <span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="s2">&quot;topol.top&quot;</span><span class="p">)</span>
 <span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="s2">&quot;grid.itp&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="figure align-center" id="fig2">
+<a class="reference internal image-reference" href="_images/pore.png"><img alt="_images/pore.png" src="_images/pore.png" style="width: 50%;" /></a>
+</div>
 </div>
 <div class="section" id="simulation-folder-structure">
 <h2>Simulation folder structure<a class="headerlink" href="#simulation-folder-structure" title="Permalink to this headline">¶</a></h2>
-<p>Provide zip file of basic structure (nofill)</p>
+<p>The simulations folder <a class="reference download internal" href="_downloads/test_sim.zip" download=""><code class="xref download docutils literal"><span class="pre">provided</span></code></a> has following structure</p>
+<ul class="simple">
+<li>Top Folder<ul>
+<li><strong>_top</strong> - Folder containing topologies<ul>
+<li><strong>topol.top</strong> - Master topology</li>
+<li><strong>grid.itp</strong> - Grid molecule parameters</li>
+<li><strong>tip3p.itp</strong> - Topology for TMS with singular binding site</li>
+<li><strong>tms.itp</strong> - Topology for TMS with singular binding site</li>
+<li><strong>tmsg.itp</strong> - Topology for TMS with geminal binding site</li>
+</ul>
+</li>
+<li><strong>_gro</strong> - Folder containing structure files<ul>
+<li><strong>box.gro</strong> - Simulation box</li>
+<li><strong>spc216.gro</strong> - Water structure to be filled in the simulation box</li>
+<li><strong>pore.obj</strong> - Pore object as a backup for future analysis</li>
+</ul>
+</li>
+<li><strong>_mdp</strong> - Folder containing simulation parameter files<ul>
+<li><strong>min.mdp</strong> - Energy minimization parameter file</li>
+<li><strong>nvt.mdp</strong> - NVT equlibration parameter file</li>
+<li><strong>run.mdp</strong> - Production parameter file</li>
+</ul>
+</li>
+<li><strong>min</strong> - Folder for carrying out energy minimization</li>
+<li><strong>nvt</strong> - Folder for carrying out NVT equilibration</li>
+<li><strong>run</strong> - Folder for the production run</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Topologies provided are from the General AMBER ForceField (GAFF).</p>
+<p class="last">Furthermore the excess charge which might arise from surface molecule
+parametrization can be distributed among the grid molecules.</p>
+</div>
 </div>
 <div class="section" id="fixiating-surface-molecules-and-grid">
 <h2>Fixiating surface molecules and grid<a class="headerlink" href="#fixiating-surface-molecules-and-grid" title="Permalink to this headline">¶</a></h2>
-<p>gromacs index call</p>
+<p>The grid is fixiated by removing specified atoms from the energy calculation of
+GROMACS. This can be done by first defining an index group</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>gmx make_ndx -f _gro/box.gro -o _gro/index.ndx
+</pre></div>
+</div>
+<p>and choosing the specified atoms. Since <code class="docutils literal"><span class="pre">make_ndx</span></code> works iterativaly, first
+the silicon atoms of of the surface groups, silanol and TMS, are chosen for both
+geminal and singular binding sites, and then the grid molecules. In the case of
+the generated pore system, the call would be</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="m">5</span> <span class="p">|</span> <span class="m">6</span> <span class="p">|</span> <span class="m">7</span> <span class="p">|</span> <span class="m">8</span> <span class="p">&amp;</span> a SI1 <span class="p">|</span> <span class="m">2</span> <span class="p">|</span> <span class="m">3</span> <span class="p">|</span> <span class="m">4</span>
+</pre></div>
+</div>
+<p>This index group is then specified in the mdp files under the freezed groups tag</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">freezegrps</span> <span class="o">=</span> SL_SLG_TMS_TMSG_<span class="p">&amp;</span>_SI1_SI_OM_OX
+<span class="nv">freezedim</span>  <span class="o">=</span> Y Y Y
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To make sure all fixiated atoms were added to the index group, a simple
+calculation should be performed.</p>
+</div>
 </div>
 <div class="section" id="filling-box">
 <h2>Filling box<a class="headerlink" href="#filling-box" title="Permalink to this headline">¶</a></h2>
-<p>Example water density of tip3p GAFF</p>
+<p>The pore system is simulated in the NVT ensample, since NPT would displace the
+grid molecules in the simulation while adjusting the box-size to the pressure.
+Nonetheless, the system needs to be simulated at a specified density. This is
+done by iterativaly filling the box with the solute molecules, here water, until
+achieving the reference density as in an NPT simulation at the desired pressure.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the GROMACS filling functions, like <code class="docutils literal"><span class="pre">solvate</span></code> or <code class="docutils literal"><span class="pre">insert-molecules</span></code>
+are used with small molecules, it may that molecules are placed within the
+grid. Of course these molecules have to be removed from the grid before
+running the simulation.</p>
 </div>
-<div class="section" id="basic-analysis-idea-of-density">
-<h2>Basic analysis idea of density<a class="headerlink" href="#basic-analysis-idea-of-density" title="Permalink to this headline">¶</a></h2>
-<p>Formulas and import data from pore object</p>
+</div>
+<div class="section" id="density-analysis-procedure">
+<h2>Density analysis procedure<a class="headerlink" href="#density-analysis-procedure" title="Permalink to this headline">¶</a></h2>
+<p>All atoms are sampled each frame if they are inside or outside the bounds of
+the pore minus an entry length on both sides.
+Inside the pore the atom instances will be added to radial cylindric slices
+<span class="math">\(r_i-r_{i-1}\)</span> and outside to rectangular slices <span class="math">\(z_j-z_{j-1}\)</span>
+with pore radius <span class="math">\(r_i\)</span> of radial slice <span class="math">\(i\)</span> and length <span class="math">\(z_j\)</span>
+of slice <span class="math">\(j\)</span>.</p>
+<p>The density calculation inside and outside the pore is done by calculating
+the number density <span class="math">\(\rho_n\)</span> and using the molar mass <span class="math">\(M\)</span> of the
+molecule to determine the mass density <span class="math">\(\rho\)</span>.</p>
+<p>The basic idea is counting the number of molecules <span class="math">\(N_i\)</span>
+in volume slices <span class="math">\(V_i\)</span>, thus getting the number densitiy <span class="math">\(\rho_{n,i}\)</span>
+in these subvolumes. Inside the pore this is done by creating a radial slicing,
+similar to the radial distribution function. These subvolumes are calculated by</p>
+<div class="math">
+\[V_i^\text{radial}=\pi z_\text{pore}(r_i^2-r_{i-1}^2).\]</div>
+<p>with pore length <span class="math">\(z_\text{pore}\)</span> and radius <span class="math">\(r_i\)</span> of subvolume
+<span class="math">\(i\)</span>. This yields</p>
+<div class="math">
+\[\rho_{n,i}^\text{radial}=\frac{N_i}{V_i^\text{radial}}=\frac{N_i}{\pi z_\text{pore}}\frac{1}{r_i^2-r_{i-1}^2}.\]</div>
+<p>Outside the pore, the subvolumes are given by</p>
+<div class="math">
+\[V_j^\text{out}=(x_\text{pore}\cdot y_\text{pore}-\pi r^2)z_j\]</div>
+<p>with pore width <span class="math">\(x_\text{pore}\)</span>, height <span class="math">\(y_\text{pore}\)</span>, pore radius
+<span class="math">\(r\)</span> and slice width <span class="math">\(z_j\)</span>. Thus</p>
+<div class="math">
+\[\rho_{n,j}^\text{out}=\frac{N_j}{V_j^\text{out}}=\frac{N_j}{x_\text{pore}\cdot y_\text{pore}-\pi r^2}\frac{1}{z_j}.\]</div>
+<p>Note that the outside referes to the reservoirs of the pore simulation.
+Therefore the slices add up to the reservoir length <span class="math">\(z_{res}\)</span>.
+Since there is a reservoir on each side, they are brought together
+by translating the atomcoordinates to one of the reservoirs. Since the
+outside density refers to the density of the outside surface, it does
+not contain the cylindrical extension of the pore inside the reservoirs.</p>
+<p>Finally the mass density is calculated by</p>
+<div class="math">
+\[\rho=\frac M{N_A}\rho_n\]</div>
+<p>with Avogadro constant <span class="math">\(N_A\)</span>. The units are then transformed to
+<span class="math">\(\frac{\text{kg}}{\text m^3}\)</span> by</p>
+<div class="math">
+\[[\rho]=\frac{[M]\frac{\text{g}}{\text{mol}}}{[N_A]10^{23}\frac{\#}{\text{mol}}}[\rho_n]\frac{\#}{\text{nm}^3}
+       =\frac{[M]}{[N_A]}[\rho_n]\cdot10\frac{\text{kg}}{\text m^3}\]</div>
+<p>where the square brackets mean, that only the variables value is taken.
+Since finding full molecules in a subvolume is difficult, the atoms
+of the specified molecule are counted in the subvolumes and the result
+is then divided by the number of atoms the molecule consists of.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Neecessary parameters like reservoir length and pore diameter can be imported
+from the backed up pore object.</p>
+</div>
       </div>
     </div>
   </div>
