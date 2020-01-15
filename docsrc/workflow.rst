@@ -86,6 +86,11 @@ sruface group.
 
   pore.finalize()
 
+.. figure::  /pics/flow/pore.png
+ :align: center
+ :width: 50%
+ :name: fig2
+
 Once the generation is done, store the structure and preferably the object for
 future analysis. Furthermore a master topology with the number of residues and
 a topology containing grid molecule parameters should be created using the
@@ -97,11 +102,6 @@ a topology containing grid molecule parameters should be created using the
   Store(pore).obj("pore.obj")
   Store(pore).top("topol.top")
   Store(pore).grid("grid.itp")
-
-.. figure::  /pics/flow/pore.png
- :align: center
- :width: 50%
- :name: fig2
 
 
 Simulation folder structure
@@ -278,7 +278,7 @@ is then divided by the number of atoms the molecule consists of.
 
   Neecessary parameters like reservoir length and pore diameter can be imported
   from the backed up pore object.
-  
+
 
 .. raw:: html
 
