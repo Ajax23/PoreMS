@@ -138,6 +138,15 @@ with Antechamber where job-file for this tool are created.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<p>Assuming a pore or molecule object have already been created, the structure
+files can be generated like following examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.store</span> <span class="kn">import</span> <span class="n">Store</span>
+
+<span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">gro</span><span class="p">()</span>
+<span class="n">Store</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span><span class="o">.</span><span class="n">pdb</span><span class="p">()</span>
+</pre></div>
+</div>
 <p class="rubric">Structure Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>

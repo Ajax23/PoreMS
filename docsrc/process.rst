@@ -57,6 +57,7 @@ This is necessary to assure the requested system size is achieved by multiplying
   :align: center
   :width: 70%
   :name: fig1
+  :alt: Minimal structure viewed from different perscpectives.
 
 **Figure 1:** Minimal structure viewed (a) from the :math:`xy`-plane, (b) from the :math:`yz`-plane (c) and from the :math:`xz`-plane. Silicon atoms are colored yellow and oxygen atoms orange.
 

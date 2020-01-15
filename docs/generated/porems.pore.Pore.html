@@ -163,6 +163,19 @@ individual molecule properties.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<p>Following example generates a pore with TMS molecules on the inside and outside surface</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.pore</span> <span class="kn">import</span> <span class="n">Pore</span>
+<span class="kn">from</span> <span class="nn">porems.essentials</span> <span class="kn">import</span> <span class="n">TMS</span>
+
+<span class="n">pore</span> <span class="o">=</span> <span class="n">Pore</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">)</span>
+
+<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">TMS</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">4.3</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;molar&quot;</span><span class="p">)</span>
+<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">TMS</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+
+<span class="n">pore</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</pre></div>
+</div>
 <p class="rubric">Private Methods - Building</p>
 <table border="1" class="longtable docutils">
 <colgroup>
