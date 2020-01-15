@@ -157,6 +157,19 @@ into one object, or a data list in the earlier discussed format</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<p>Following example generates a benzene molecule without hydrogen atoms</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.molecule</span> <span class="kn">import</span> <span class="n">Molecule</span>
+
+<span class="n">mol</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="s2">&quot;benzene&quot;</span><span class="p">,</span> <span class="s2">&quot;BEN&quot;</span><span class="p">)</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1375</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1375</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1375</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1375</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">240</span><span class="p">)</span>
+<span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1375</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
 <p class="rubric">Private Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
