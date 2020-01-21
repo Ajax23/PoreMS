@@ -146,7 +146,7 @@ class Pore(Molecule):
 
         # Calculate properties
         t = utils.tic()
-        self.props()                                   # Recalculate properties
+        self._calc_props()                                   # Recalculate properties
         self._diam = self._props["Diameter"]           # Set new diameter
         self._t_tot["Props"] = utils.toc(t, "Props   ", is_time)
 
@@ -663,15 +663,17 @@ class Pore(Molecule):
             self._bonding.remove(remove_list)
 
             # Initialize allocation
-            key_name = mol.get_name()+"_"+str(site_type)
+            key_name = mol.get_short()
+            location = "in" if site_type==0 else "out"
 
             # Add to time dict
-            self._t_tot["Attach_"+key_name] = utils.toc(t, "Attach  ", self._is_time)
+            self._t_tot["Attach_"+key_name+"_"+location] = utils.toc(t, "Attach  ", self._is_time)
 
             # Add number of bonds to allocation
             if not key_name in self._props["Allocation"]:
-                self._props["Allocation"][key_name] = 0
-            self._props["Allocation"][key_name] += len(site_list)
+                self._props["Allocation"][key_name] = {0: 0, 1: 0}
+
+            self._props["Allocation"][key_name][site_type] += len(site_list)
 
         return mol_list, remove_list
 
@@ -1297,7 +1299,7 @@ class Pore(Molecule):
     ###########
     # Analyze #
     ###########
-    def props(self):
+    def _calc_props(self):
         """This function calculates all necessary properties of the system and
         retruns a dictionary. Note that most of the properties can only be
         calculated after the pore is finalized in function :func:`finalize`.
@@ -1398,11 +1400,6 @@ class Pore(Molecule):
             [c_{i}]=\\frac{\\text{Number of molecules}}{nm^2}
             =\\frac{1}{N_A}\\frac{mol}{nm^2}
             =\\frac{10}{6.022}\\frac{\\mu mol}{m^2}.
-
-        Returns
-        -------
-        props : dictionary
-            Properties of the pore
         """
         # Initialize
         props = self._props
@@ -1443,34 +1440,37 @@ class Pore(Molecule):
             num_i_g = sum([1 for x in self._site if x[4] == 0 and x[5] is not None])/2
             num_o_g = sum([1 for x in self._site if x[4] == 1 and x[5] is not None])/2
 
-            num_tot = [num_i+num_i_g-2*self._slx,num_o+num_o_g]
+            num_tot = [num_i+num_i_g-2*self._slx, num_o+num_o_g]
 
             # Calculate hydroxylation
             hydro = [num_tot[0]/props["Surface"][0], num_tot[1]/props["Surface"][1]]
 
             # Calculate allocation
             num_oh = [num_i+num_i_g, num_o+num_o_g]
-            mols = [mol for mol in props["Allocation"]]
 
-            for mol in mols:
-                site_type = int(mol[-1])
-                mod = props["Allocation"][mol]/props["Surface"][site_type]
-                rel = props["Allocation"][mol]/num_tot[site_type]
+            for mol in props["Allocation"]:
+                mol_data = {}
+                for site_type in props["Allocation"][mol]:
+                    location = "in" if site_type==0 else "out"
 
-                # Add molar
-                props["Allocation"][mol+"_mod"] = [mod, mod*molar]
-                props["Allocation"][mol+"_rel"] = [rel, rel*molar]
+                    mod = props["Allocation"][mol][site_type]/props["Surface"][site_type]
+                    rel = props["Allocation"][mol][site_type]/num_tot[site_type]
 
-                # Count oh
-                num_oh[site_type] -= props["Allocation"][mol]
+                    mol_data[location] = [props["Allocation"][mol][site_type], mod, mod*molar]
+                    # mol_data[location] = [rel, rel*molar] # Relative allocation
+
+                    # Count oh
+                    num_oh[site_type] -= props["Allocation"][mol][site_type]
+
+                props["Allocation"][mol] = mol_data
 
             # OH allocation
             oh = [num_oh[0]/props["Surface"][0], num_oh[1]/props["Surface"][1]]
-            props["Allocation"]["OH"] = {"in": [oh[0], oh[0]*molar], "out": [oh[1], oh[1]*molar]}
+            props["Allocation"]["OH"] = {"in": [int(num_oh[0]), oh[0], oh[0]*molar], "out": [int(num_oh[1]), oh[1], oh[1]*molar]}
 
             # Siloxan allocation
             slx = self._slx/props["Surface"][0]
-            props["Allocation"]["SLX"] = [slx, slx*molar]
+            props["Allocation"]["SLX"] = {"in": [self._slx, slx, slx*molar], "out": [0, 0.0, 0.0]}
 
             # Calculate properties
             props["Charge"] = self._charge
@@ -1479,13 +1479,10 @@ class Pore(Molecule):
             props["Hydroxylation"] = {"in": [hydro[0],hydro[0]*molar], "out": [hydro[1],hydro[1]*molar]}
             props["Silanol_Geminal"] = {"in": num_i, "out": num_o, "in_g": num_i_g, "out_g": num_o_g}
 
-        # Return properties
-        return props
 
-
-    #########################
-    # Public Methods - Edit #
-    #########################
+    ################
+    # Finalization #
+    ################
     def finalize(self, is_rand=True):
         """Finalize pore by adding siloxan bridges, filling empty bond with
         silanol groups, connecting geminal molecules, removing marked atoms,
@@ -1539,7 +1536,7 @@ class Pore(Molecule):
 
         # Allow properties calculation
         self._is_props = True
-        self.props()
+        self._calc_props()
 
         if self._is_time:
             print("----------------------------")
@@ -1548,6 +1545,63 @@ class Pore(Molecule):
 
         # Print finalization note
         print("Pore is finalized. Attachement functions should not be called anymore.")
+
+    def table_props(self, decimals=3):
+        """This functions creates readable pandas DataFrames of all properties
+        data. Available tables are
+
+        * **props** - Pore properties
+        * **alloc** - Surface allocation
+        * **time** - Time consumption
+
+        Parameters
+        ----------
+        decimals : integer
+            Number of decimals to be rounded to
+
+        Returns
+        -------
+        tables : dictionary
+            Dictionary of pandas DataFrames
+        """
+        # Import
+        import pandas as pd
+
+        # Initialize
+        tables = {}
+        props = self._props
+        form = "%."+str(decimals)+"f"
+
+        # Properties table
+        data_props = {}
+        data_props["Dimension"] = "["+form%props["Dimension"][0]+", "+form%props["Dimension"][1]+", "+form%props["Dimension"][2]+"]"
+        data_props["Diameter"] = form%props["Diameter"]
+        data_props["Roughness"] = form%props["Roughness"]
+        data_props["Surface"] = form%props["Surface"][0]
+        data_props["Volume"] = form%props["Volume"]
+        data_props["Hydroxylation"] = form%props["Hydroxylation"]["in"][0]+"/"+form%props["Hydroxylation"]["out"][0]
+        data_props["Silanol_In"] = "%i"%props["Silanol_Geminal"]["in"]+"/"+"%i"%props["Silanol_Geminal"]["in_g"]
+        data_props["Silanol_Out"] = "%i"%props["Silanol_Geminal"]["out"]+"/"+"%i"%props["Silanol_Geminal"]["out_g"]
+        data_props["Time"] = form%sum([props["Generation_Time"][x] for x in props["Generation_Time"]])
+
+        tables["props"] = pd.DataFrame.from_dict(data_props, orient="index", columns={self._drill+"-Axis - "+"%.0f"%self._diam+"nm"})
+
+        # Allocation table
+        data_alloc = {}
+        for mol in props["Allocation"]:
+            data_alloc[mol] = {}
+            for location in props["Allocation"][mol]:
+                data_alloc[mol][location+" - Count"] = props["Allocation"][mol][location][0]
+                data_alloc[mol][location+" - mol/nm^2"] = form%props["Allocation"][mol][location][1]
+                data_alloc[mol][location+" - mumol/m^2"] = form%props["Allocation"][mol][location][2]
+
+        tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
+
+        # Time table
+        tables["time"] = pd.DataFrame.from_dict(props["Generation_Time"], orient="index", columns={"Time (s)"}).round(decimals)
+
+        # Return tables
+        return tables
 
 
     ##################

@@ -225,31 +225,34 @@ individual molecule properties.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._connect.html#porems.pore.Pore._connect" title="porems.pore.Pore._connect"><code class="xref py py-obj docutils literal"><span class="pre">_connect</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._calc_props.html#porems.pore.Pore._calc_props" title="porems.pore.Pore._calc_props"><code class="xref py py-obj docutils literal"><span class="pre">_calc_props</span></code></a>(self)</td>
+<td>This function calculates all necessary properties of the system and retruns a dictionary.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._connect.html#porems.pore.Pore._connect" title="porems.pore.Pore._connect"><code class="xref py py-obj docutils literal"><span class="pre">_connect</span></code></a>(self)</td>
 <td>Concatenate two geminal molecules to one molecule.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._excess.html#porems.pore.Pore._excess" title="porems.pore.Pore._excess"><code class="xref py py-obj docutils literal"><span class="pre">_excess</span></code></a>(self[,&nbsp;is_rand])</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._excess.html#porems.pore.Pore._excess" title="porems.pore.Pore._excess"><code class="xref py py-obj docutils literal"><span class="pre">_excess</span></code></a>(self[,&nbsp;is_rand])</td>
 <td>Adjust grid atoms charges to compensate for excess charges on the pore.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._objectify.html#porems.pore.Pore._objectify" title="porems.pore.Pore._objectify"><code class="xref py py-obj docutils literal"><span class="pre">_objectify</span></code></a>(self[,&nbsp;data])</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._objectify.html#porems.pore.Pore._objectify" title="porems.pore.Pore._objectify"><code class="xref py py-obj docutils literal"><span class="pre">_objectify</span></code></a>(self[,&nbsp;data])</td>
 <td>Move all remaining grid silicon and oxygen atoms to individual molecules for writing the structure file and add these molecules to the global molecule list.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._objectify_parallel.html#porems.pore.Pore._objectify_parallel" title="porems.pore.Pore._objectify_parallel"><code class="xref py py-obj docutils literal"><span class="pre">_objectify_parallel</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._objectify_parallel.html#porems.pore.Pore._objectify_parallel" title="porems.pore.Pore._objectify_parallel"><code class="xref py py-obj docutils literal"><span class="pre">_objectify_parallel</span></code></a>(self)</td>
 <td>Parallelized function <a class="reference internal" href="porems.pore.Pore._objectify.html#porems.pore.Pore._objectify" title="porems.pore.Pore._objectify"><code class="xref py py-func docutils literal"><span class="pre">_objectify()</span></code></a>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._overlap.html#porems.pore.Pore._overlap" title="porems.pore.Pore._overlap"><code class="xref py py-obj docutils literal"><span class="pre">_overlap</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._overlap.html#porems.pore.Pore._overlap" title="porems.pore.Pore._overlap"><code class="xref py py-obj docutils literal"><span class="pre">_overlap</span></code></a>(self)</td>
 <td>Method for checking of silicon or oxygene atoms are overlapping using verlet lists.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._position.html#porems.pore.Pore._position" title="porems.pore.Pore._position"><code class="xref py py-obj docutils literal"><span class="pre">_position</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._position.html#porems.pore.Pore._position" title="porems.pore.Pore._position"><code class="xref py py-obj docutils literal"><span class="pre">_position</span></code></a>(self)</td>
 <td>Tranlate the pore into position, and consider the periodic repeat gap.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._silanol.html#porems.pore.Pore._silanol" title="porems.pore.Pore._silanol"><code class="xref py py-obj docutils literal"><span class="pre">_silanol</span></code></a>(self[,&nbsp;sites])</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._silanol.html#porems.pore.Pore._silanol" title="porems.pore.Pore._silanol"><code class="xref py py-obj docutils literal"><span class="pre">_silanol</span></code></a>(self[,&nbsp;sites])</td>
 <td>Convert the remaining binding sites to silanol groups using function <a class="reference internal" href="porems.pore.Pore.attach.html#porems.pore.Pore.attach" title="porems.pore.Pore.attach"><code class="xref py py-func docutils literal"><span class="pre">attach()</span></code></a>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._silanol_parallel.html#porems.pore.Pore._silanol_parallel" title="porems.pore.Pore._silanol_parallel"><code class="xref py py-obj docutils literal"><span class="pre">_silanol_parallel</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._silanol_parallel.html#porems.pore.Pore._silanol_parallel" title="porems.pore.Pore._silanol_parallel"><code class="xref py py-obj docutils literal"><span class="pre">_silanol_parallel</span></code></a>(self)</td>
 <td>Parallelized function <a class="reference internal" href="porems.pore.Pore._silanol.html#porems.pore.Pore._silanol" title="porems.pore.Pore._silanol"><code class="xref py py-func docutils literal"><span class="pre">_silanol()</span></code></a>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._sort.html#porems.pore.Pore._sort" title="porems.pore.Pore._sort"><code class="xref py py-obj docutils literal"><span class="pre">_sort</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._sort.html#porems.pore.Pore._sort" title="porems.pore.Pore._sort"><code class="xref py py-obj docutils literal"><span class="pre">_sort</span></code></a>(self)</td>
 <td>Sort molecules in order to prevent multiple molecule appearances in the structure file.</td>
 </tr>
 </tbody>
@@ -285,8 +288,8 @@ individual molecule properties.</p>
 <tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore.finalize.html#porems.pore.Pore.finalize" title="porems.pore.Pore.finalize"><code class="xref py py-obj docutils literal"><span class="pre">finalize</span></code></a>(self[,&nbsp;is_rand])</td>
 <td>Finalize pore by adding siloxan bridges, filling empty bond with silanol groups, connecting geminal molecules, removing marked atoms, converting the grid to individual molecules and finally moving the pore into position.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore.props.html#porems.pore.Pore.props" title="porems.pore.Pore.props"><code class="xref py py-obj docutils literal"><span class="pre">props</span></code></a>(self)</td>
-<td>This function calculates all necessary properties of the system and retruns a dictionary.</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore.table_props.html#porems.pore.Pore.table_props" title="porems.pore.Pore.table_props"><code class="xref py py-obj docutils literal"><span class="pre">table_props</span></code></a>(self[,&nbsp;decimals])</td>
+<td>This functions creates readable pandas DataFrames of all properties data.</td>
 </tr>
 </tbody>
 </table>

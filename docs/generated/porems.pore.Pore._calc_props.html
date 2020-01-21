@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Pore.props &#8212; PoreMS 0.1.1 documentation</title>
+    <title>Pore._calc_props &#8212; PoreMS 0.1.1 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -79,7 +79,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Pore.props</a></li>
+<li><a class="reference internal" href="#">Pore._calc_props</a></li>
 </ul>
 </ul>
 </li>
@@ -110,11 +110,11 @@
     <div class="body col-md-12 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="pore-props">
-<h1>Pore.props<a class="headerlink" href="#pore-props" title="Permalink to this headline">¶</a></h1>
+<div class=col-md-9 content><div class="section" id="pore-calc-props">
+<h1>Pore._calc_props<a class="headerlink" href="#pore-calc-props" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="porems.pore.Pore.props">
-<code class="descclassname">Pore.</code><code class="descname">props</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.props" title="Permalink to this definition">¶</a></dt>
+<dt id="porems.pore.Pore._calc_props">
+<code class="descclassname">Pore.</code><code class="descname">_calc_props</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore._calc_props" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function calculates all necessary properties of the system and
 retruns a dictionary. Note that most of the properties can only be
 calculated after the pore is finalized in function <a class="reference internal" href="porems.pore.Pore.finalize.html#porems.pore.Pore.finalize" title="porems.pore.Pore.finalize"><code class="xref py py-func docutils literal"><span class="pre">finalize()</span></code></a>.</p>
@@ -188,19 +188,6 @@ The resulting units are</p>
 \[[c_{i}]=\frac{\text{Number of molecules}}{nm^2}
 =\frac{1}{N_A}\frac{mol}{nm^2}
 =\frac{10}{6.022}\frac{\mu mol}{m^2}.\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>props</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dictionary</span></dt>
-<dd><p class="first last">Properties of the pore</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>

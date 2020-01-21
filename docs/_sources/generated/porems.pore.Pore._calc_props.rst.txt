@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Pore\.\props
-============
+Pore\.\_calc\_props
+===================
 
 .. currentmodule:: porems.pore
 
-.. automethod:: Pore.props
+.. automethod:: Pore._calc_props

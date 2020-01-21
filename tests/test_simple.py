@@ -82,11 +82,14 @@ if __name__ == "__main__":
     # Analysis
     props = pore.get_props()
 
-    # for prop in props:
-        # print(prop,":",props[prop])
+    for prop in props:
+        print(prop,":",props[prop])
 
-    for prop in props["Allocation"]:
-        print(prop,":",props["Allocation"][prop])
+    # Tables
+    tables = pore.table_props()
+    print(tables["props"])
+    print(tables["alloc"])
+    print(tables["time"])
 
     # Structure
     Store(pore, "output").obj()

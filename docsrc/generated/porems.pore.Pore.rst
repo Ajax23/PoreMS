@@ -35,6 +35,7 @@ Pore
 
   .. autosummary::
 
+    ~Pore._calc_props
     ~Pore._connect
     ~Pore._excess
     ~Pore._objectify
@@ -61,7 +62,7 @@ Pore
   .. autosummary::
 
     ~Pore.finalize
-    ~Pore.props
+    ~Pore.table_props
 
 
   .. rubric:: Getter Methods
