@@ -71,7 +71,7 @@ Create pore system
 ------------------
 
 Next step is to create a pore structure functionalized with the created TMS
-sruface group.
+surface group.
 
 .. code-block:: python
 
@@ -117,7 +117,7 @@ The simulations folder :download:`provided <data/test_sim.zip>` has following st
 
     * **grid.itp** - Grid molecule parameters
 
-    * **tip3p.itp** - Topology for TMS with singular binding site
+    * **tip3p.itp** - Topology for TIP3P water
 
     * **tms.itp** - Topology for TMS with singular binding site
 
@@ -183,15 +183,15 @@ This index group is then specified in the mdp files under the freezed groups tag
 .. note::
 
    To make sure all fixiated atoms were added to the index group, a simple
-   calculation should be performed.
+   calculation should be performed before simulation.
 
 
 
 Filling box
 -----------
 
-The pore system is simulated in the NVT ensample, since NPT would displace the
-grid molecules in the simulation while adjusting the box-size to the pressure.
+The pore system is simulated in the NVT ensample, since NPT in GROMACS displaces
+the grid molecules in the simulation while adjusting the box-size to the pressure.
 Nonetheless, the system needs to be simulated at a specified density. This is
 done by iterativaly filling the box with the solute molecules, here water, until
 achieving the reference density as in an NPT simulation at the desired pressure.
@@ -199,29 +199,21 @@ achieving the reference density as in an NPT simulation at the desired pressure.
 .. note::
 
   If the GROMACS filling functions, like ``solvate`` or ``insert-molecules``
-  are used with small molecules, it may that molecules are placed within the
-  grid. Of course these molecules have to be removed from the grid before
+  are used with small molecules, it may happen that molecules are placed within
+  the grid. Naturally these molecules have to be removed from the grid before
   running the simulation.
 
 
 Density analysis procedure
 --------------------------
 
-All atoms are sampled each frame if they are inside or outside the bounds of
-the pore minus an entry length on both sides.
-Inside the pore the atom instances will be added to radial cylindric slices
-:math:`r_i-r_{i-1}` and outside to rectangular slices :math:`z_j-z_{j-1}`
-with pore radius :math:`r_i` of radial slice :math:`i` and length :math:`z_j`
-of slice :math:`j`.
-
-
 The density calculation inside and outside the pore is done by calculating
 the number density :math:`\rho_n` and using the molar mass :math:`M` of the
 molecule to determine the mass density :math:`\rho`.
 
-The basic idea is counting the number of molecules :math:`N_i`
-in volume slices :math:`V_i`, thus getting the number densitiy :math:`\rho_{n,i}`
-in these subvolumes. Inside the pore this is done by creating a radial slicing,
+The basic idea is counting the number of molecules :math:`N_i` in volume slices
+:math:`V_i`, thus getting the number densitiy :math:`\rho_{n,i}` in these
+subvolumes. Inside the pore this is done by creating a radial slicing,
 similar to the radial distribution function. These subvolumes are calculated by
 
 .. math::

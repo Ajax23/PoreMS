@@ -169,7 +169,7 @@ be performed for both a singular binding site and a geminal binding site.</p>
 <div class="section" id="create-pore-system">
 <h2>Create pore system<a class="headerlink" href="#create-pore-system" title="Permalink to this headline">¶</a></h2>
 <p>Next step is to create a pore structure functionalized with the created TMS
-sruface group.</p>
+surface group.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.pore</span> <span class="kn">import</span> <span class="n">Pore</span>
 
 <span class="n">pore</span> <span class="o">=</span> <span class="n">Pore</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">diam</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">drill</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">is_time</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -204,7 +204,7 @@ a topology containing grid molecule parameters should be created using the
 <li><strong>_top</strong> - Folder containing topologies<ul>
 <li><strong>topol.top</strong> - Master topology</li>
 <li><strong>grid.itp</strong> - Grid molecule parameters</li>
-<li><strong>tip3p.itp</strong> - Topology for TMS with singular binding site</li>
+<li><strong>tip3p.itp</strong> - Topology for TIP3P water</li>
 <li><strong>tms.itp</strong> - Topology for TMS with singular binding site</li>
 <li><strong>tmsg.itp</strong> - Topology for TMS with geminal binding site</li>
 </ul>
@@ -256,38 +256,32 @@ the generated pore system, the call would be</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">To make sure all fixiated atoms were added to the index group, a simple
-calculation should be performed.</p>
+calculation should be performed before simulation.</p>
 </div>
 </div>
 <div class="section" id="filling-box">
 <h2>Filling box<a class="headerlink" href="#filling-box" title="Permalink to this headline">¶</a></h2>
-<p>The pore system is simulated in the NVT ensample, since NPT would displace the
-grid molecules in the simulation while adjusting the box-size to the pressure.
+<p>The pore system is simulated in the NVT ensample, since NPT in GROMACS displaces
+the grid molecules in the simulation while adjusting the box-size to the pressure.
 Nonetheless, the system needs to be simulated at a specified density. This is
 done by iterativaly filling the box with the solute molecules, here water, until
 achieving the reference density as in an NPT simulation at the desired pressure.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If the GROMACS filling functions, like <code class="docutils literal"><span class="pre">solvate</span></code> or <code class="docutils literal"><span class="pre">insert-molecules</span></code>
-are used with small molecules, it may that molecules are placed within the
-grid. Of course these molecules have to be removed from the grid before
+are used with small molecules, it may happen that molecules are placed within
+the grid. Naturally these molecules have to be removed from the grid before
 running the simulation.</p>
 </div>
 </div>
 <div class="section" id="density-analysis-procedure">
 <h2>Density analysis procedure<a class="headerlink" href="#density-analysis-procedure" title="Permalink to this headline">¶</a></h2>
-<p>All atoms are sampled each frame if they are inside or outside the bounds of
-the pore minus an entry length on both sides.
-Inside the pore the atom instances will be added to radial cylindric slices
-<span class="math">\(r_i-r_{i-1}\)</span> and outside to rectangular slices <span class="math">\(z_j-z_{j-1}\)</span>
-with pore radius <span class="math">\(r_i\)</span> of radial slice <span class="math">\(i\)</span> and length <span class="math">\(z_j\)</span>
-of slice <span class="math">\(j\)</span>.</p>
 <p>The density calculation inside and outside the pore is done by calculating
 the number density <span class="math">\(\rho_n\)</span> and using the molar mass <span class="math">\(M\)</span> of the
 molecule to determine the mass density <span class="math">\(\rho\)</span>.</p>
-<p>The basic idea is counting the number of molecules <span class="math">\(N_i\)</span>
-in volume slices <span class="math">\(V_i\)</span>, thus getting the number densitiy <span class="math">\(\rho_{n,i}\)</span>
-in these subvolumes. Inside the pore this is done by creating a radial slicing,
+<p>The basic idea is counting the number of molecules <span class="math">\(N_i\)</span> in volume slices
+<span class="math">\(V_i\)</span>, thus getting the number densitiy <span class="math">\(\rho_{n,i}\)</span> in these
+subvolumes. Inside the pore this is done by creating a radial slicing,
 similar to the radial distribution function. These subvolumes are calculated by</p>
 <div class="math">
 \[V_i^\text{radial}=\pi z_\text{pore}(r_i^2-r_{i-1}^2).\]</div>
