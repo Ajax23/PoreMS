@@ -36,19 +36,19 @@ def column(data):
 
     Returns
     -------
-    dat : list
+    data_col : list
         column data matrix
     """
-    numRow = len(data)
-    numCol = len(data[0])
+    num_row = len(data)
+    num_col = len(data[0])
 
-    dat = [[] for i in range(numCol)]
+    data_col = [[] for i in range(num_col)]
 
-    for i in range(numRow):
-        for j in range(numCol):
-            dat[j].append(data[i][j])
+    for i in range(num_row):
+        for j in range(num_col):
+            data_col[j].append(data[i][j])
 
-    return dat
+    return data_col
 
 
 def copy(source, target):
@@ -112,27 +112,27 @@ def toc(t, message=None, is_print=True):
     else:
         message += " - runtime = "
 
-    tDiff = time.time()-t
+    t_diff = time.time()-t
 
     if is_print:
-        print(message+"%6.3f" % tDiff+" s")
+        print(message+"%6.3f" % t_diff+" s")
 
-    return tDiff
+    return t_diff
 
 
-def replace(fileLink, old, new):
+def replace(file_link, old, new):
     """Replace a given string in a file.
 
     Parameters
     ----------
-    fileLink : string
+    file_link : string
         Link to requested file
     old : string
         String to be replaced in file
     new : string
         New string to be written
     """
-    for line in fileinput.input(fileLink, inplace=True):
+    for line in fileinput.input(file_link, inplace=True):
         print(line.rstrip().replace(old, new))
 
 
