@@ -2,10 +2,6 @@
 
 .. raw:: html
 
-  <br>
-
-.. raw:: html
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-10">
