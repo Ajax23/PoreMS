@@ -15,13 +15,13 @@ Simulation Workflow
 ===================
 
 In this workflow a simply pore simulation system will be created with TMS as
-surface molecules. Additionaly the GROMACS simulation package will be utilized.
+surface molecules. Additionally, the GROMACS simulation package will be utilized.
 
 
 Create surface molecules
 ------------------------
 
-Trimethysilyl or for short TMS is a simple surface group that can be imported
+Trimethylsilyl or for short TMS is a simple surface group that can be imported
 from the porems package.
 
 .. code-block:: python
@@ -51,7 +51,7 @@ can be used as a base.
   for i in range(3):
       tms.add("C", 2, bond=[2, 1], r=b["sic"], theta=a["cch"]+compress, phi=60+120*i)
 
-  # Add hydrogenes
+  # Add hydrogens
   for i in range(3, 5+1):
       for j in range(3):
           tms.add("H", i, bond=[i, 2], r=b["ch"], theta=a["cch"]+compress, phi=60+120*j)
@@ -63,7 +63,7 @@ can be used as a base.
 
 .. note::
 
-  Parametrization has to be carried out by the user. Topology generation should
+  Parametrization must be carried out by the user. Topology generation should
   be performed for both a singular binding site and a geminal binding site.
 
 
@@ -92,7 +92,7 @@ surface group.
  :name: fig2
 
 Once the generation is done, store the structure and preferably the object for
-future analysis. Furthermore a master topology with the number of residues and
+future analysis. Furthermore, a master topology with the number of residues and
 a topology containing grid molecule parameters should be created using the
 :func:`porems.store.Store.top` and :func:`porems.store.Store.grid` functions.
 
@@ -135,7 +135,7 @@ The simulations folder :download:`provided <data/test_sim.zip>` has following st
 
     * **min.mdp** - Energy minimization parameter file
 
-    * **nvt.mdp** - NVT equlibration parameter file
+    * **nvt.mdp** - NVT equilibration parameter file
 
     * **run.mdp** - Production parameter file
 
@@ -147,17 +147,17 @@ The simulations folder :download:`provided <data/test_sim.zip>` has following st
 
 .. note::
 
-  Topologies provided are from the General AMBER ForceField (GAFF).
+  Topologies provided are from the General AMBER Force Field (GAFF).
 
-  Furthermore the excess charge which might arise from surface molecule
+  Furthermore, the excess charge which might arise from surface molecule
   parametrization can be distributed among the grid molecules.
 
 
 
-Fixiating surface molecules and grid
+Fixating surface molecules and grid
 ------------------------------------
 
-The grid is fixiated by removing specified atoms from the energy calculation of
+The grid is fixated by removing specified atoms from the energy calculation of
 GROMACS. This can be done by first defining an index group
 
 .. code-block:: bash
@@ -165,7 +165,7 @@ GROMACS. This can be done by first defining an index group
   gmx make_ndx -f _gro/box.gro -o _gro/index.ndx
 
 and choosing the specified atoms. Since ``make_ndx`` works iterativaly, first
-the silicon atoms of of the surface groups, silanol and TMS, are chosen for both
+the silicon atoms of the surface groups, silanol and TMS, are chosen for both
 geminal and singular binding sites, and then the grid molecules. In the case of
 the generated pore system, the call would be
 
@@ -182,7 +182,7 @@ This index group is then specified in the mdp files under the freezed groups tag
 
 .. note::
 
-   To make sure all fixiated atoms were added to the index group, a simple
+   To make sure all fixated atoms were added to the index group, a simple
    calculation should be performed before simulation.
 
 
@@ -193,14 +193,14 @@ Filling box
 The pore system is simulated in the NVT ensample, since NPT in GROMACS displaces
 the grid molecules in the simulation while adjusting the box-size to the pressure.
 Nonetheless, the system needs to be simulated at a specified density. This is
-done by iterativaly filling the box with the solute molecules, here water, until
+done by iteratively filling the box with the solute molecules, here water, until
 achieving the reference density as in an NPT simulation at the desired pressure.
 
 .. note::
 
   If the GROMACS filling functions, like ``solvate`` or ``insert-molecules``
   are used with small molecules, it may happen that molecules are placed within
-  the grid. Naturally these molecules have to be removed from the grid before
+  the grid. Naturally these molecules must be removed from the grid before
   running the simulation.
 
 
@@ -212,22 +212,22 @@ the number density :math:`\rho_n` and using the molar mass :math:`M` of the
 molecule to determine the mass density :math:`\rho`.
 
 The basic idea is counting the number of molecules :math:`N_i` in volume slices
-:math:`V_i`, thus getting the number densitiy :math:`\rho_{n,i}` in these
-subvolumes. Inside the pore this is done by creating a radial slicing,
-similar to the radial distribution function. These subvolumes are calculated by
+:math:`V_i`, thus getting the number density :math:`\rho_{n,i}` in these
+sub volumes. Inside the pore this is done by creating a radial slicing,
+similar to the radial distribution function. These sub volumes are calculated by
 
 .. math::
 
     V_i^\text{radial}=\pi z_\text{pore}(r_i^2-r_{i-1}^2).
 
-with pore length :math:`z_\text{pore}` and radius :math:`r_i` of subvolume
+with pore length :math:`z_\text{pore}` and radius :math:`r_i` of sub volume
 :math:`i`. This yields
 
 .. math::
 
     \rho_{n,i}^\text{radial}=\frac{N_i}{V_i^\text{radial}}=\frac{N_i}{\pi z_\text{pore}}\frac{1}{r_i^2-r_{i-1}^2}.
 
-Outside the pore, the subvolumes are given by
+Outside the pore, the sub volumes are given by
 
 .. math::
 
@@ -240,10 +240,10 @@ with pore width :math:`x_\text{pore}`, height :math:`y_\text{pore}`, pore radius
 
     \rho_{n,j}^\text{out}=\frac{N_j}{V_j^\text{out}}=\frac{N_j}{x_\text{pore}\cdot y_\text{pore}-\pi r^2}\frac{1}{z_j}.
 
-Note that the outside referes to the reservoirs of the pore simulation.
+Note that the outside refers to the reservoirs of the pore simulation.
 Therefore the slices add up to the reservoir length :math:`z_{res}`.
 Since there is a reservoir on each side, they are brought together
-by translating the atomcoordinates to one of the reservoirs. Since the
+by translating the atom coordinates to one of the reservoirs. Since the
 outside density refers to the density of the outside surface, it does
 not contain the cylindrical extension of the pore inside the reservoirs.
 
@@ -262,14 +262,14 @@ with Avogadro constant :math:`N_A`. The units are then transformed to
            =\frac{[M]}{[N_A]}[\rho_n]\cdot10\frac{\text{kg}}{\text m^3}
 
 where the square brackets mean, that only the variables value is taken.
-Since finding full molecules in a subvolume is difficult, the atoms
-of the specified molecule are counted in the subvolumes and the result
+Since finding full molecules in a sub volume is difficult, the atoms
+of the specified molecule are counted in the sub volumes and the result
 is then divided by the number of atoms the molecule consists of.
 
 .. note::
 
-  Neecessary parameters like reservoir length and pore diameter can be imported
-  from the backed up pore object.
+  Necessary parameters like reservoir length and pore diameter can be imported
+  from the backed-up pore object.
 
 
 .. raw:: html
