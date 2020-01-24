@@ -83,7 +83,7 @@
 <li><a class="reference internal" href="#create-surface-molecules">Create surface molecules</a></li>
 <li><a class="reference internal" href="#create-pore-system">Create pore system</a></li>
 <li><a class="reference internal" href="#simulation-folder-structure">Simulation folder structure</a></li>
-<li><a class="reference internal" href="#fixiating-surface-molecules-and-grid">Fixiating surface molecules and grid</a></li>
+<li><a class="reference internal" href="#fixating-surface-molecules-and-grid">Fixating surface molecules and grid</a></li>
 <li><a class="reference internal" href="#filling-box">Filling box</a></li>
 <li><a class="reference internal" href="#density-analysis-procedure">Density analysis procedure</a></li>
 </ul>
@@ -123,10 +123,10 @@
       <div style="text-align: justify; text-justify: inter-word;"><div class="section" id="simulation-workflow">
 <h1>Simulation Workflow<a class="headerlink" href="#simulation-workflow" title="Permalink to this headline">¶</a></h1>
 <p>In this workflow a simply pore simulation system will be created with TMS as
-surface molecules. Additionaly the GROMACS simulation package will be utilized.</p>
+surface molecules. Additionally, the GROMACS simulation package will be utilized.</p>
 <div class="section" id="create-surface-molecules">
 <h2>Create surface molecules<a class="headerlink" href="#create-surface-molecules" title="Permalink to this headline">¶</a></h2>
-<p>Trimethysilyl or for short TMS is a simple surface group that can be imported
+<p>Trimethylsilyl or for short TMS is a simple surface group that can be imported
 from the porems package.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.essentials</span> <span class="kn">import</span> <span class="n">TMS</span>
 </pre></div>
@@ -151,7 +151,7 @@ can be used as a base.</p>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
     <span class="n">tms</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bond</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;sic&quot;</span><span class="p">],</span> <span class="n">theta</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="s2">&quot;cch&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">compress</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">60</span><span class="o">+</span><span class="mi">120</span><span class="o">*</span><span class="n">i</span><span class="p">)</span>
 
-<span class="c1"># Add hydrogenes</span>
+<span class="c1"># Add hydrogens</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
         <span class="n">tms</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bond</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;ch&quot;</span><span class="p">],</span> <span class="n">theta</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="s2">&quot;cch&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">compress</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">60</span><span class="o">+</span><span class="mi">120</span><span class="o">*</span><span class="n">j</span><span class="p">)</span>
@@ -162,7 +162,7 @@ can be used as a base.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Parametrization has to be carried out by the user. Topology generation should
+<p class="last">Parametrization must be carried out by the user. Topology generation should
 be performed for both a singular binding site and a geminal binding site.</p>
 </div>
 </div>
@@ -186,7 +186,7 @@ surface group.</p>
 <a class="reference internal image-reference" href="_images/pore.png"><img alt="_images/pore.png" src="_images/pore.png" style="width: 50%;" /></a>
 </div>
 <p>Once the generation is done, store the structure and preferably the object for
-future analysis. Furthermore a master topology with the number of residues and
+future analysis. Furthermore, a master topology with the number of residues and
 a topology containing grid molecule parameters should be created using the
 <a class="reference internal" href="generated/porems.store.Store.top.html#porems.store.Store.top" title="porems.store.Store.top"><code class="xref py py-func docutils literal"><span class="pre">porems.store.Store.top()</span></code></a> and <a class="reference internal" href="generated/porems.store.Store.grid.html#porems.store.Store.grid" title="porems.store.Store.grid"><code class="xref py py-func docutils literal"><span class="pre">porems.store.Store.grid()</span></code></a> functions.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">gro</span><span class="p">(</span><span class="s2">&quot;pore.gro&quot;</span><span class="p">)</span>
@@ -217,7 +217,7 @@ a topology containing grid molecule parameters should be created using the
 </li>
 <li><strong>_mdp</strong> - Folder containing simulation parameter files<ul>
 <li><strong>min.mdp</strong> - Energy minimization parameter file</li>
-<li><strong>nvt.mdp</strong> - NVT equlibration parameter file</li>
+<li><strong>nvt.mdp</strong> - NVT equilibration parameter file</li>
 <li><strong>run.mdp</strong> - Production parameter file</li>
 </ul>
 </li>
@@ -229,20 +229,20 @@ a topology containing grid molecule parameters should be created using the
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Topologies provided are from the General AMBER ForceField (GAFF).</p>
-<p class="last">Furthermore the excess charge which might arise from surface molecule
+<p>Topologies provided are from the General AMBER Force Field (GAFF).</p>
+<p class="last">Furthermore, the excess charge which might arise from surface molecule
 parametrization can be distributed among the grid molecules.</p>
 </div>
 </div>
-<div class="section" id="fixiating-surface-molecules-and-grid">
-<h2>Fixiating surface molecules and grid<a class="headerlink" href="#fixiating-surface-molecules-and-grid" title="Permalink to this headline">¶</a></h2>
-<p>The grid is fixiated by removing specified atoms from the energy calculation of
+<div class="section" id="fixating-surface-molecules-and-grid">
+<h2>Fixating surface molecules and grid<a class="headerlink" href="#fixating-surface-molecules-and-grid" title="Permalink to this headline">¶</a></h2>
+<p>The grid is fixated by removing specified atoms from the energy calculation of
 GROMACS. This can be done by first defining an index group</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>gmx make_ndx -f _gro/box.gro -o _gro/index.ndx
 </pre></div>
 </div>
 <p>and choosing the specified atoms. Since <code class="docutils literal"><span class="pre">make_ndx</span></code> works iterativaly, first
-the silicon atoms of of the surface groups, silanol and TMS, are chosen for both
+the silicon atoms of the surface groups, silanol and TMS, are chosen for both
 geminal and singular binding sites, and then the grid molecules. In the case of
 the generated pore system, the call would be</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span><span class="m">5</span> <span class="p">|</span> <span class="m">6</span> <span class="p">|</span> <span class="m">7</span> <span class="p">|</span> <span class="m">8</span> <span class="p">&amp;</span> a SI1 <span class="p">|</span> <span class="m">2</span> <span class="p">|</span> <span class="m">3</span> <span class="p">|</span> <span class="m">4</span>
@@ -255,7 +255,7 @@ the generated pore system, the call would be</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To make sure all fixiated atoms were added to the index group, a simple
+<p class="last">To make sure all fixated atoms were added to the index group, a simple
 calculation should be performed before simulation.</p>
 </div>
 </div>
@@ -264,13 +264,13 @@ calculation should be performed before simulation.</p>
 <p>The pore system is simulated in the NVT ensample, since NPT in GROMACS displaces
 the grid molecules in the simulation while adjusting the box-size to the pressure.
 Nonetheless, the system needs to be simulated at a specified density. This is
-done by iterativaly filling the box with the solute molecules, here water, until
+done by iteratively filling the box with the solute molecules, here water, until
 achieving the reference density as in an NPT simulation at the desired pressure.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If the GROMACS filling functions, like <code class="docutils literal"><span class="pre">solvate</span></code> or <code class="docutils literal"><span class="pre">insert-molecules</span></code>
 are used with small molecules, it may happen that molecules are placed within
-the grid. Naturally these molecules have to be removed from the grid before
+the grid. Naturally these molecules must be removed from the grid before
 running the simulation.</p>
 </div>
 </div>
@@ -280,26 +280,26 @@ running the simulation.</p>
 the number density <span class="math">\(\rho_n\)</span> and using the molar mass <span class="math">\(M\)</span> of the
 molecule to determine the mass density <span class="math">\(\rho\)</span>.</p>
 <p>The basic idea is counting the number of molecules <span class="math">\(N_i\)</span> in volume slices
-<span class="math">\(V_i\)</span>, thus getting the number densitiy <span class="math">\(\rho_{n,i}\)</span> in these
-subvolumes. Inside the pore this is done by creating a radial slicing,
-similar to the radial distribution function. These subvolumes are calculated by</p>
+<span class="math">\(V_i\)</span>, thus getting the number density <span class="math">\(\rho_{n,i}\)</span> in these
+sub volumes. Inside the pore this is done by creating a radial slicing,
+similar to the radial distribution function. These sub volumes are calculated by</p>
 <div class="math">
 \[V_i^\text{radial}=\pi z_\text{pore}(r_i^2-r_{i-1}^2).\]</div>
-<p>with pore length <span class="math">\(z_\text{pore}\)</span> and radius <span class="math">\(r_i\)</span> of subvolume
+<p>with pore length <span class="math">\(z_\text{pore}\)</span> and radius <span class="math">\(r_i\)</span> of sub volume
 <span class="math">\(i\)</span>. This yields</p>
 <div class="math">
 \[\rho_{n,i}^\text{radial}=\frac{N_i}{V_i^\text{radial}}=\frac{N_i}{\pi z_\text{pore}}\frac{1}{r_i^2-r_{i-1}^2}.\]</div>
-<p>Outside the pore, the subvolumes are given by</p>
+<p>Outside the pore, the sub volumes are given by</p>
 <div class="math">
 \[V_j^\text{out}=(x_\text{pore}\cdot y_\text{pore}-\pi r^2)z_j\]</div>
 <p>with pore width <span class="math">\(x_\text{pore}\)</span>, height <span class="math">\(y_\text{pore}\)</span>, pore radius
 <span class="math">\(r\)</span> and slice width <span class="math">\(z_j\)</span>. Thus</p>
 <div class="math">
 \[\rho_{n,j}^\text{out}=\frac{N_j}{V_j^\text{out}}=\frac{N_j}{x_\text{pore}\cdot y_\text{pore}-\pi r^2}\frac{1}{z_j}.\]</div>
-<p>Note that the outside referes to the reservoirs of the pore simulation.
+<p>Note that the outside refers to the reservoirs of the pore simulation.
 Therefore the slices add up to the reservoir length <span class="math">\(z_{res}\)</span>.
 Since there is a reservoir on each side, they are brought together
-by translating the atomcoordinates to one of the reservoirs. Since the
+by translating the atom coordinates to one of the reservoirs. Since the
 outside density refers to the density of the outside surface, it does
 not contain the cylindrical extension of the pore inside the reservoirs.</p>
 <p>Finally the mass density is calculated by</p>
@@ -311,13 +311,13 @@ not contain the cylindrical extension of the pore inside the reservoirs.</p>
 \[[\rho]=\frac{[M]\frac{\text{g}}{\text{mol}}}{[N_A]10^{23}\frac{\#}{\text{mol}}}[\rho_n]\frac{\#}{\text{nm}^3}
        =\frac{[M]}{[N_A]}[\rho_n]\cdot10\frac{\text{kg}}{\text m^3}\]</div>
 <p>where the square brackets mean, that only the variables value is taken.
-Since finding full molecules in a subvolume is difficult, the atoms
-of the specified molecule are counted in the subvolumes and the result
+Since finding full molecules in a sub volume is difficult, the atoms
+of the specified molecule are counted in the sub volumes and the result
 is then divided by the number of atoms the molecule consists of.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Neecessary parameters like reservoir length and pore diameter can be imported
-from the backed up pore object.</p>
+<p class="last">Necessary parameters like reservoir length and pore diameter can be imported
+from the backed-up pore object.</p>
 </div>
       </div>
     </div>

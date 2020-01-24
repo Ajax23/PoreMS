@@ -15,11 +15,11 @@ Operating principle
 ===================
 
 A pore generation package for molecular simulations (PoreMS) has been programmed in an object-oriented manner using python 3. The main idea was maximizing individual customizational possibilities without obscuring usability.
-For this purpose the core piece of this tool is a molecule construction set containing functions to place, translate, and rotate atoms in a three dimensional space. Hence custom molecules and systems can be created in the required specification, for example moving a molecule into the binding pocket of an enzyme as a starting configuration of a simulation.
+For this purpose, the core piece of this tool is a molecule construction set containing functions to place, translate, and rotate atoms in a three-dimensional space. Hence custom molecules and systems can be created in the required specification, for example moving a molecule into the binding pocket of an enzyme as a starting configuration of a simulation.
 
 The pore generator is a class, inheriting all functionalities from the mentioned molecule builder. Accelerating optimization logic has been separated into custom classes in order to reduce clutter and simplify readability.
 
-Finally a storage class was implemented which translates the generated data construct into the most popular structure file-formats to be used in molecular simulations.
+Finally, a storage class was implemented which translates the generated data construct into the most popular structure file-formats to be used in molecular simulations.
 
 
 Molecule class
@@ -51,19 +51,19 @@ In order to create an ideal pore structure with the desired dimensions and diame
 
   \alpha_\text{O-Si-O}=\frac{2\cdot180}{\pi}\tan^{-1}\sqrt2=109.47^\circ,\ \ \ l_\text{Si-O}=0.155\ \text{nm}.
 
-This is necessary to assure the requested system size is achieved by multiplying this minimal structure in all dimensions. The resulting :math:`\beta`-cryistobalite block has bond lengths and angles between all silicon and oxygen atoms that are identical, and is thus feasible to be called an ideal crystal. Out of this crystal, a pore is carved out by removing all atoms within a hypothetical cylinder with the desired diameter placed inside this block.
+This is necessary to assure the requested system size is achieved by multiplying this minimal structure in all dimensions. The resulting :math:`\beta`-cristobalite block has bond lengths and angles between all silicon and oxygen atoms that are identical, and is thus feasible to be called an ideal crystal. Out of this crystal, a pore is carved out by removing all atoms within a hypothetical cylinder with the desired diameter placed inside this block.
 
 .. figure::  /pics/struct.svg
   :align: center
   :width: 70%
   :name: fig1
-  :alt: Minimal structure viewed from different perscpectives.
+  :alt: Minimal structure viewed from different perspectives.
 
-**Figure 1:** Minimal structure viewed (a) from the :math:`xy`-plane, (b) from the :math:`yz`-plane (c) and from the :math:`xz`-plane. Silicon atoms are colored yellow and oxygen atoms orange.
+**Figure 1:** Minimal structure viewed (a) from the :math:`xy`-plane, (b) from the :math:`yz`-plane (c) and from the :math:`xz`-plane. Silicon atoms are coloured yellow and oxygen atoms orange.
 
-For the purpose of ensuring chemical propriety, the carved out surface needs to be processed based on a set of rules as proposed by Coasne et al. \cite{Coasne:2008}. First, all unsaturated silicon atoms are to be removed. Next, silicon atoms with three unsaturated oxygen bonds are eliminated. Finally, now unbound oxygen atoms have to be deleted. The resulting surface has fully saturated silicon atoms with a maximum of two unsaturated oxygen bonds, the latter will be used as binding sites to connect molecules that are to be placed on the surface.
+For the purpose of ensuring chemical propriety, the carved out surface needs to be processed based on a set of rules as proposed by Coasne et al. \cite{Coasne:2008}. First, all unsaturated silicon atoms are to be removed. Next, silicon atoms with three unsaturated oxygen bonds are eliminated. Finally, now unbound oxygen atoms must be deleted. The resulting surface has fully saturated silicon atoms with a maximum of two unsaturated oxygen bonds, the latter will be used as binding sites to connect molecules that are to be placed on the surface.
 
-However each processing step involves a high computational effort. In every step, the number of bonds for all atoms has to be determined by comparing the distances of each atom to all other atoms. Typically this effort scales quadratically with the number of atoms
+However, each processing step involves a high computational effort. In every step, the number of bonds for all atoms must be determined by comparing the distances of each atom to all other atoms. Typically, this effort scales quadratically with the number of atoms
 
 .. math::
 
@@ -71,9 +71,9 @@ However each processing step involves a high computational effort. In every step
 
 An effort, that is adverse for highly scalable systems. The optimization itself will be discussed in the subsequent sections. A convenient by-product of the implemented optimization is the ability to carve out the cristobalite crystal in every orientational axis with an arbitrary pore shape not being limited to a cylindrical shape.
 
-Once the surface is prepared and binding sites are determined, it is possible to attach molecules on the surface using implemented functions that automatically rotate the groups towards the central axis of the pore on the inside and orient them perpendicular to the surface on the outside. The molecules have to be defined using said molecule builder.
+Once the surface is prepared and binding sites are determined, it is possible to attach molecules on the surface using implemented functions that automatically rotate the groups towards the central axis of the pore on the inside and orient them perpendicular to the surface on the outside. The molecules must be defined using said molecule builder.
 
-At the end the system is finalized by saturating empty bonds with hydrogen, creating silanol groups, calculating the excess charge and positionally centering the pore system.
+At the end the system is finalized by saturating empty bonds with hydrogen, creating silanol groups, calculating the excess charge and positionally centring the pore system.
 
 Store class
 -----------
@@ -83,22 +83,22 @@ Molecules and pores generated using the described classes, can be converted to a
 Verlet class
 ------------
 
-As mentioned before the effort for determining the bonds of each atom is unpractical, since it scales quadratically. An excellent solution is provided by the algorithms used in molecular simulations when considering short ranged interactions. These have a converging error when introducing a cutoff radius to the potential function. Atoms farther than the cutoff radius are neglected from the calculation. Similarly bond lengths are constant. Therefore it is only necessary to search for bonds in the close vicinity of an atom.
+As mentioned before the effort for determining the bonds of each atom is unpractical, since it scales quadratically. An excellent solution is provided by the algorithms used in molecular simulations when considering short ranged interactions. These have a converging error when introducing a cut-off radius to the potential function. Atoms farther than the cut-off radius are neglected from the calculation. Similarly, bond lengths are constant. Therefore, it is only necessary to search for bonds in the close vicinity of an atom.
 
-The implemented algorithm splits the whole system into smaller cubes of the same size which contain intersecting atoms. A scan for the bonds of an atom is then performed solely in the cube that contains the atom and the immediate neighboring cubes, a total of 27 cubes. The computational effort for each atom is thus a constant
+The implemented algorithm splits the whole system into smaller cubes of the same size which contain intersecting atoms. A scan for the bonds of an atom is then performed solely in the cube that contains the atom and the immediate neighbouring cubes, a total of 27 cubes. The computational effort for each atom is thus a constant
 
 .. math::
 
   \mathcal{O}(27\cdot b^2)
 
-since due to the ideal nature of the crystal, the number of atoms :math:`b` in a cube is constant. Therefore the computational effort for an entire search scales linear with the number of cubes. For example doubling the cristobalite block size only increases the effort eightfold.
+since due to the ideal nature of the crystal, the number of atoms :math:`b` in a cube is constant. Therefore, the computational effort for an entire search scales linear with the number of cubes. For example, doubling the cristobalite block size only increases the effort eightfold.
 
-Furthermore the search is easily parallelizable, since no communication is needed between the subprocesses that each cover a set of cubes. The effort therefore has an ideal speedup.
+Furthermore, the search is easily parallelizable, since no communication is needed between the subprocesses that each cover a set of cubes. The effort therefore has an ideal speedup.
 
 Bonding class
 -------------
 
-Although the search can be parallelized, still multiple iterations are needed to cover the surface preparations. Additionally due to machine inaccuracy there is the risk of bonds not being detected as such, leading to artifacts, and it is also not possible to ensure that all bonds were found when deleting atoms because all systems are shaped differently. Therefore another optimization, or rather supporting algorithm, was implemented to bypass these issues.
+Although the search can be parallelized, still multiple iterations are needed to cover the surface preparations. Additionally, due to machine inaccuracy there is the risk of bonds not being detected as such, leading to artefacts, and it is also not possible to ensure that all bonds were found when deleting atoms because all systems are shaped differently. Therefore, another optimization, or rather supporting algorithm, was implemented to bypass these issues.
 
 The idea was reducing the number of iterations to a single search by creating a connectivity matrix of all oxygen and silicon atoms. Therefore two matrices :math:`\boldsymbol{O}` for oxygen and :math:`\boldsymbol{S}` for silicon were defined
 
@@ -125,7 +125,7 @@ The idea was reducing the number of iterations to a single search by creating a 
 
 with atom ids of oxygen :math:`o` and silicon :math:`s` in the data matrix of the pore, list id pointer :math:`p_s` of the silicon entry in matrix :math:`\boldsymbol{S}` and pointer :math:`p_o` of the oxygen entry in matrix :math:`\boldsymbol{O}`. Thus each entry of the matrix presents the atom and all its binding partners. These matrices are filled after creating the cristobalite block. This way it is possible to check whether all bonds were found, since all entries need to have the same size when considering periodic boundary conditions.
 
-Using this implementation, it is no longer required to physically delete atoms when carving out the pore, it is sufficient to remove binding partners from the matrices. Thus the surface preparation conditions only need to consider the number of bonds remaining in each entry and thereby determine whether an atom needs to be removed or not, resulting into an effort scaling linear with the number of atoms
+Using this implementation, it is no longer required to physically delete atoms when carving out the pore, it is enough to remove binding partners from the matrices. Thus, the surface preparation conditions only need to consider the number of bonds remaining in each entry and thereby determine whether an atom needs to be removed or not, resulting into an effort scaling linear with the number of atoms
 
 .. math::
 
