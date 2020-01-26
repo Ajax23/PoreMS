@@ -118,18 +118,18 @@
 <dd><p>Add a molecule to the pore binding site.</p>
 <p>The input <code class="docutils literal"><span class="pre">si_o</span></code> defines the silicon atom id and <code class="docutils literal"><span class="pre">orient</span></code> consists of
 two atom ids that determine which molecule bond should be oriented
-towords the center.</p>
+towards the centre.</p>
 <p>The binding sites are chosen randomly using function <a class="reference internal" href="porems.pore.Pore._random.html#porems.pore.Pore._random" title="porems.pore.Pore._random"><code class="xref py py-func docutils literal"><span class="pre">_random()</span></code></a>.
 Available input types are noted in the mentioned function.</p>
 <p>First the molecule is rotated around its directional vector randomly to
-simulate a state closer to reality. Second the molecule is rotated so that
-its directional vector and the binding site vector match. One final rotation
-is applied for molecules on the inside, so the directional vector
-points towards the center of the pore.</p>
-<p>The molecule is then moved in order to place its silicon atom on the silicon
-of the binding site. The oxygen is then placed ontop of the binding
-site oxygen, in order to keep the sites geometry.</p>
-<p>Finally the atoms of the binding sites are added to the list of atoms
+simulate a state closer to reality. Second the molecule is rotated so
+that its directional vector and the binding site vector match. One final
+rotation is applied for molecules on the inside, so the directional
+vector points towards the centre of the pore.</p>
+<p>The molecule is then moved in order to place its silicon atom on the
+silicon of the binding site. The oxygen is then placed on top of the
+binding site oxygen, in order to keep the sites geometry.</p>
+<p>Finally, the atoms of the binding sites are added to the list of atoms
 to be deleted at the end of the construction.</p>
 <p>These molecules are then added to the global molecule list.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -145,7 +145,7 @@ to be deleted at the end of the construction.</p>
 </dd>
 <dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">Two atom ids that determine which molecule bond should be oriented
-towords the center</p>
+towards the centre</p>
 </dd>
 <dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer</span></dt>
 <dd><p class="first last">Type of the sites <strong>inside-0</strong>, <strong>outside-1</strong></p>
@@ -157,10 +157,10 @@ towords the center</p>
 <dd><p class="first last">Input type of the rate</p>
 </dd>
 <dt><strong>sites</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, list, optional</span></dt>
-<dd><p class="first last">Listindex of binding sites</p>
+<dd><p class="first last">List index of binding sites</p>
 </dd>
 <dt><strong>counter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
-<dd><p class="first last">Number of attempts before breaking the randoming loop</p>
+<dd><p class="first last">Number of attempts before breaking the loop</p>
 </dd>
 <dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to randomly rotate molecules on the surface</p>

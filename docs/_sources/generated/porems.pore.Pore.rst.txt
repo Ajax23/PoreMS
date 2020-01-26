@@ -53,7 +53,7 @@ Pore
 
     ~Pore.attach
     ~Pore.attach_dual
-    ~Pore.siloxan
+    ~Pore.siloxane
     ~Pore.special
 
 

@@ -115,12 +115,12 @@
 <dl class="method">
 <dt id="porems.verlet.Verlet._find_bond">
 <code class="descclassname">Verlet.</code><code class="descname">_find_bond</code><span class="sig-paren">(</span><em>self</em>, <em>box_list</em>, <em>atom_type</em>, <em>distance</em>, <em>error</em>, <em>condition</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.verlet.Verlet._find_bond" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search for a bond in the given verlet boxes. This function automatically
-searches for the surrounding boxes and checks in all 27 of them for the
-defined bond (atomtypes and bond length). If the bond length is within a
-given error, then the atoms will be added to an output.
-The user can also define an additional and stricter condition for adding
-the atoms.</p>
+<dd><p>Search for a bond in the given verlet boxes. This function
+automatically searches for the surrounding boxes and checks in all 27 of
+them for the defined bond (atom types and bond length). If the bond
+length is within a given error, then the atoms will be added to an
+output. The user can also define an additional and stricter condition
+for adding the atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -136,10 +136,10 @@ the atoms.</p>
 <dd><p class="first last">Bond length</p>
 </dd>
 <dt><strong>error</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tollerated deviation of the bondlength</p>
+<dd><p class="first last">Tolerated deviation of the bond length</p>
 </dd>
-<dt><strong>condition</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None, func</span></dt>
-<dd><p class="first last">None or a function f(Molecule,bond) with a boolean output</p>
+<dt><strong>condition</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None, function</span></dt>
+<dd><p class="first last">None or a function f(Molecule, bond) with a boolean output</p>
 </dd>
 </dl>
 </td>

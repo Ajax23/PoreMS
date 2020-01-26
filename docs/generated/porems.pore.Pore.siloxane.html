@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Pore.siloxan &#8212; PoreMS 0.1.1 documentation</title>
+    <title>Pore.siloxane &#8212; PoreMS 0.1.1 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -79,7 +79,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Pore.siloxan</a></li>
+<li><a class="reference internal" href="#">Pore.siloxane</a></li>
 </ul>
 </ul>
 </li>
@@ -110,13 +110,13 @@
     <div class="body col-md-12 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="pore-siloxan">
-<h1>Pore.siloxan<a class="headerlink" href="#pore-siloxan" title="Permalink to this headline">¶</a></h1>
+<div class=col-md-9 content><div class="section" id="pore-siloxane">
+<h1>Pore.siloxane<a class="headerlink" href="#pore-siloxane" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="porems.pore.Pore.siloxan">
-<code class="descclassname">Pore.</code><code class="descname">siloxan</code><span class="sig-paren">(</span><em>self</em>, <em>rate</em>, <em>inp='percent'</em>, <em>counter=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add siloxan bridges to the pore by selecting two binding sites in
-proximity removing both oxygens and placing one at center of
+<dt id="porems.pore.Pore.siloxane">
+<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>rate</em>, <em>inp='percent'</em>, <em>counter=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add siloxane bridges to the pore by selecting two binding sites in
+proximity removing both oxygens and placing one at centre of
 the two removed atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -124,13 +124,13 @@ the two removed atoms.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>rate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Rate of binding sites to be editied</p>
+<dd><p class="first last">Rate of binding sites to be edited</p>
 </dd>
 <dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">Rate input type</p>
 </dd>
 <dt><strong>counter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
-<dd><p class="first last">Number of attempts before breaking the randoming loop</p>
+<dd><p class="first last">Number of attempts before breaking the loop</p>
 </dd>
 </dl>
 </td>
@@ -138,10 +138,10 @@ the two removed atoms.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pore</span><span class="o">.</span><span class="n">siloxan</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">pore</span><span class="o">.</span><span class="n">siloxan</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;precent&quot;</span><span class="p">)</span>
-<span class="n">pore</span><span class="o">.</span><span class="n">siloxan</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;num&quot;</span><span class="p">)</span>
-<span class="n">pore</span><span class="o">.</span><span class="n">siloxan</span><span class="p">(</span><span class="mf">2.4</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;molar&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pore</span><span class="o">.</span><span class="n">siloxane</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">pore</span><span class="o">.</span><span class="n">siloxane</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;precent&quot;</span><span class="p">)</span>
+<span class="n">pore</span><span class="o">.</span><span class="n">siloxane</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;num&quot;</span><span class="p">)</span>
+<span class="n">pore</span><span class="o">.</span><span class="n">siloxane</span><span class="p">(</span><span class="mf">2.4</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;molar&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

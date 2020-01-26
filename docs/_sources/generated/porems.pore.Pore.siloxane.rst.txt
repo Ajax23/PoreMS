@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Pore\.\siloxan
-==============
+Pore\.\siloxane
+===============
 
 .. currentmodule:: porems.pore
 
-.. automethod:: Pore.siloxan
+.. automethod:: Pore.siloxane

@@ -123,23 +123,23 @@ atom pairs. Normally the effort would be</p>
 <p>with the number of atoms <span class="math">\(n\)</span>, since each atom has to be compared with
 each atom if their bond length is within the search distance.
 Since this distance is however confined, the idea is reducing
-the search space by dividing the molecule box into small verlet boxes. Thus the
-atom pairs have to only be checked in the box containing the starting atom
-and the small boxes surrounding the main box. In the three dimensional case,
+the search space by dividing the molecule box into small verlet boxes. Thus
+the atom pairs must only be checked in the box containing the starting atom
+and the small boxes surrounding the main box. In the three-dimensional case,
 the effort reduces to</p>
 <div class="math">
 \[\begin{array}{cc}
     \mathcal O(n\cdot N),&amp;N=\sum_{j=0}^ma_j
 \end{array}\]</div>
-<p>with the number of boxes m, in the three dimensional case this is <span class="math">\(3^3=27\)</span>,
-the number of atoms <span class="math">\(a_j\)</span> of box <span class="math">\(j\)</span> and the number of surround
-atoms <span class="math">\(N\)</span>. This is considerably less and of course depending on the
-verlet box size. Note that the verlet size <span class="math">\(v\)</span> has to be greater than the
-specified bond length <span class="math">\(l\)</span> for the search</p>
+<p>with the number of boxes m, in the three dimensional case this is
+<span class="math">\(3^3=27\)</span>, the number of atoms <span class="math">\(a_j\)</span> of box <span class="math">\(j\)</span> and the
+number of surround atoms <span class="math">\(N\)</span>. This is considerably less and of course
+depending on the verlet box size. Note that the verlet size <span class="math">\(v\)</span> has to
+be greater than the specified bond length <span class="math">\(l\)</span> for the search</p>
 <div class="math">
 \[v &gt; l.\]</div>
 <p>Since molecular simulation considers periodic
-boundary conditions, these have to also be applied for the surround box search.</p>
+boundary conditions, these must also be applied for the surround box search.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -152,7 +152,7 @@ boundary conditions, these have to also be applied for the surround box search.<
 <dd><p class="first last">Verlet box edge size</p>
 </dd>
 <dt><strong>is_pbc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True if periodic boundry conditions are needed</p>
+<dd><p class="first last">True if periodic boundary conditions are needed</p>
 </dd>
 </dl>
 </td>
@@ -218,7 +218,7 @@ boundary conditions, these have to also be applied for the surround box search.<
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="porems.verlet.Verlet.set_pbc.html#porems.verlet.Verlet.set_pbc" title="porems.verlet.Verlet.set_pbc"><code class="xref py py-obj docutils literal"><span class="pre">set_pbc</span></code></a>(self,&nbsp;pbc)</td>
-<td>Turn the periodic boundary consitions on and off.</td>
+<td>Turn the periodic boundary conditions on and off.</td>
 </tr>
 </tbody>
 </table>

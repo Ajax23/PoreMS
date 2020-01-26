@@ -119,23 +119,24 @@
 <a class="reference internal" href="porems.molecule.Molecule.html#porems.molecule.Molecule" title="porems.molecule.Molecule"><code class="xref py py-class docutils literal"><span class="pre">porems.molecule.Molecule</span></code></a> and the core class for creating
 silicon pores. Note that this class can therefore use all methods of the
 Molecule class.</p>
-<p>At the beginning a silicon-oxygene grid is genreated from the smallest
+<p>At the beginning a silicon-oxygen grid is generated from the smallest
 possible grid unit by duplication. Using the verlet list
 <a class="reference internal" href="porems.verlet.Verlet.html#porems.verlet.Verlet" title="porems.verlet.Verlet"><code class="xref py py-class docutils literal"><span class="pre">porems.verlet.Verlet</span></code></a> and bonding classes
 <a class="reference internal" href="porems.bonding.Bonding.html#porems.bonding.Bonding" title="porems.bonding.Bonding"><code class="xref py py-class docutils literal"><span class="pre">porems.bonding.Bonding</span></code></a>, this silicon grid is prepared rapidly
-and binnding sites are provided.</p>
+and binding sites are provided.</p>
 <p>Here methods are provided for adding molecule groups to the
-surface of the generated pore. Furhermore a method is added to fill all
-unused binding sites with silanol and siloxan groups.</p>
-<p>All bound molecules are added to a global molecule list, in order to preserve
-individual molecule properties.</p>
+surface of the generated pore. Furthermore, a method is added to fill all
+unused binding sites with silanol and siloxane groups.</p>
+<p>All bound molecules are added to a global molecule list, in order to
+preserve individual molecule properties.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, float</span></dt>
-<dd><p class="first last">Size of the silicon-oxygene-grid, can be a float, if same size in all dimensions</p>
+<dd><p class="first last">Size of the silicon-oxygen-grid, can be a float, if same size in all
+dimensions</p>
 </dd>
 <dt><strong>diam</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">Pore diameter</p>
@@ -144,13 +145,14 @@ individual molecule properties.</p>
 <dd><p class="first last">Axis for the pore drilling</p>
 </dd>
 <dt><strong>res</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Value to extend and translate the pore by on the drill side creating reservoirs</p>
+<dd><p class="first last">Value to extend and translate the pore by on the drill side creating
+reservoirs</p>
 </dd>
 <dt><strong>vs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Verlet-list box size</p>
 </dd>
 <dt><strong>proxi_dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Minimal distance between two groups attatched to the surface</p>
+<dd><p class="first last">Minimal distance between two groups attached to the surface</p>
 </dd>
 <dt><strong>is_pbc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True if periodic boundary conditions are needed</p>
@@ -164,7 +166,8 @@ individual molecule properties.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<p>Following example generates a pore with TMS molecules on the inside and outside surface</p>
+<p>Following example generates a pore with TMS molecules on the inside and
+outside surface</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.pore</span> <span class="kn">import</span> <span class="n">Pore</span>
 <span class="kn">from</span> <span class="nn">porems.essentials</span> <span class="kn">import</span> <span class="n">TMS</span>
 
@@ -184,7 +187,7 @@ individual molecule properties.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._block.html#porems.pore.Pore._block" title="porems.pore.Pore._block"><code class="xref py py-obj docutils literal"><span class="pre">_block</span></code></a>(self,&nbsp;dim,&nbsp;block)</td>
-<td>Reculsively duplicate and translate a given molecule block in all given dimensions.</td>
+<td>Recursively duplicate and translate a given molecule block in all given dimensions.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._foundation.html#porems.pore.Pore._foundation" title="porems.pore.Pore._foundation"><code class="xref py py-obj docutils literal"><span class="pre">_foundation</span></code></a>(self)</td>
 <td>In this method the smallest possible grid unit is created in a way, that duplication is simply done by copying the molecule without the need of deleting atoms in the end.</td>
@@ -211,7 +214,7 @@ individual molecule properties.</p>
 <td>This function closes the specified site by setting the used value to 1 and the used value of all sites in proximity to 2 in the given site list.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._proxi.html#porems.pore.Pore._proxi" title="porems.pore.Pore._proxi"><code class="xref py py-obj docutils literal"><span class="pre">_proxi</span></code></a>(self)</td>
-<td>Using verlet lists, search for binding sites that are in proximity, by looking for oxygene atoms that are near each other.</td>
+<td>Using verlet lists, search for binding sites that are in proximity, by looking for oxygen atoms that are near each other.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._random.html#porems.pore.Pore._random" title="porems.pore.Pore._random"><code class="xref py py-obj docutils literal"><span class="pre">_random</span></code></a>(self,&nbsp;site_type,&nbsp;rate,&nbsp;inp,&nbsp;counter)</td>
 <td>Get a random binding site list for a given percentage of the available binding sites.</td>
@@ -226,7 +229,7 @@ individual molecule properties.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._calc_props.html#porems.pore.Pore._calc_props" title="porems.pore.Pore._calc_props"><code class="xref py py-obj docutils literal"><span class="pre">_calc_props</span></code></a>(self)</td>
-<td>This function calculates all necessary properties of the system and retruns a dictionary.</td>
+<td>This function calculates all necessary properties of the system and returns a dictionary.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._connect.html#porems.pore.Pore._connect" title="porems.pore.Pore._connect"><code class="xref py py-obj docutils literal"><span class="pre">_connect</span></code></a>(self)</td>
 <td>Concatenate two geminal molecules to one molecule.</td>
@@ -241,10 +244,10 @@ individual molecule properties.</p>
 <td>Parallelized function <a class="reference internal" href="porems.pore.Pore._objectify.html#porems.pore.Pore._objectify" title="porems.pore.Pore._objectify"><code class="xref py py-func docutils literal"><span class="pre">_objectify()</span></code></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._overlap.html#porems.pore.Pore._overlap" title="porems.pore.Pore._overlap"><code class="xref py py-obj docutils literal"><span class="pre">_overlap</span></code></a>(self)</td>
-<td>Method for checking of silicon or oxygene atoms are overlapping using verlet lists.</td>
+<td>Method for checking of silicon or oxygen atoms are overlapping using verlet lists.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore._position.html#porems.pore.Pore._position" title="porems.pore.Pore._position"><code class="xref py py-obj docutils literal"><span class="pre">_position</span></code></a>(self)</td>
-<td>Tranlate the pore into position, and consider the periodic repeat gap.</td>
+<td>Translate the pore into position and consider the periodic repeat gap.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore._silanol.html#porems.pore.Pore._silanol" title="porems.pore.Pore._silanol"><code class="xref py py-obj docutils literal"><span class="pre">_silanol</span></code></a>(self[,&nbsp;sites])</td>
 <td>Convert the remaining binding sites to silanol groups using function <a class="reference internal" href="porems.pore.Pore.attach.html#porems.pore.Pore.attach" title="porems.pore.Pore.attach"><code class="xref py py-func docutils literal"><span class="pre">attach()</span></code></a>.</td>
@@ -270,8 +273,8 @@ individual molecule properties.</p>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore.attach_dual.html#porems.pore.Pore.attach_dual" title="porems.pore.Pore.attach_dual"><code class="xref py py-obj docutils literal"><span class="pre">attach_dual</span></code></a>(self,&nbsp;mol,&nbsp;si_o,&nbsp;orient,&nbsp;rate[,&nbsp;…])</td>
 <td>Add a molecule to two pore binding sites.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore.siloxan.html#porems.pore.Pore.siloxan" title="porems.pore.Pore.siloxan"><code class="xref py py-obj docutils literal"><span class="pre">siloxan</span></code></a>(self,&nbsp;rate[,&nbsp;inp,&nbsp;counter])</td>
-<td>Add siloxan bridges to the pore by selecting two binding sites in proximity removing both oxygens and placing one at center of the two removed atoms.</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore.siloxane.html#porems.pore.Pore.siloxane" title="porems.pore.Pore.siloxane"><code class="xref py py-obj docutils literal"><span class="pre">siloxane</span></code></a>(self,&nbsp;rate[,&nbsp;inp,&nbsp;counter])</td>
+<td>Add siloxane bridges to the pore by selecting two binding sites in proximity removing both oxygens and placing one at centre of the two removed atoms.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore.special.html#porems.pore.Pore.special" title="porems.pore.Pore.special"><code class="xref py py-obj docutils literal"><span class="pre">special</span></code></a>(self,&nbsp;mol,&nbsp;si_o,&nbsp;orient,&nbsp;num,&nbsp;symmetry)</td>
 <td>Add a molecule in a specified orientation with a specific amount.</td>
@@ -286,7 +289,7 @@ individual molecule properties.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="porems.pore.Pore.finalize.html#porems.pore.Pore.finalize" title="porems.pore.Pore.finalize"><code class="xref py py-obj docutils literal"><span class="pre">finalize</span></code></a>(self[,&nbsp;is_rand])</td>
-<td>Finalize pore by adding siloxan bridges, filling empty bond with silanol groups, connecting geminal molecules, removing marked atoms, converting the grid to individual molecules and finally moving the pore into position.</td>
+<td>Finalize pore by filling empty bond with silanol groups, connecting geminal molecules, removing marked atoms, converting the grid to individual molecules and finally moving the pore into position.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.pore.Pore.table_props.html#porems.pore.Pore.table_props" title="porems.pore.Pore.table_props"><code class="xref py py-obj docutils literal"><span class="pre">table_props</span></code></a>(self[,&nbsp;decimals])</td>
 <td>This functions creates readable pandas DataFrames of all properties data.</td>

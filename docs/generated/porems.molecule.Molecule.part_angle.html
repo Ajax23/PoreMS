@@ -115,14 +115,14 @@
 <dl class="method">
 <dt id="porems.molecule.Molecule.part_angle">
 <code class="descclassname">Molecule.</code><code class="descname">part_angle</code><span class="sig-paren">(</span><em>self</em>, <em>bond_a</em>, <em>bond_b</em>, <em>atoms</em>, <em>angle</em>, <em>zero</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule.part_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the bond angle of two bond vectors. Variable <code class="docutils literal"><span class="pre">atoms</span></code> specifies
-which atoms or rather which part of the molecule needs rotated to change
-the specified bond angle. First however the system needs to be set to
-zero. Therefore the atom id to define the new coordinate system has to be
-given for the set of specified atoms. Normally this is the atom that
-touches the angle.</p>
+<dd><p>Change the bond angle of two bond vectors. Variable <code class="docutils literal"><span class="pre">atoms</span></code>
+specifies which atoms or rather which part of the molecule needs to be
+rotated in order to change the specified bond angle. First however the
+system needs to be set to zero. Therefore, the atom id to define the new
+coordinate system has to be given for the set of specified atoms.
+Normally this is the atom that touches the angle.</p>
 <p>The rotation axis is determined by creating the cross product
-of the two bond vectors. Thus getting the normal vector of a surface
+of the two bond vectors. Thus, getting the normal vector of a surface
 that contains both bond vectors.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

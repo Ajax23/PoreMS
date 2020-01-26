@@ -116,7 +116,7 @@
 <dt id="porems.pore.Pore._calc_props">
 <code class="descclassname">Pore.</code><code class="descname">_calc_props</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore._calc_props" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function calculates all necessary properties of the system and
-retruns a dictionary. Note that most of the properties can only be
+returns a dictionary. Note that most of the properties can only be
 calculated after the pore is finalized in function <a class="reference internal" href="porems.pore.Pore.finalize.html#porems.pore.Pore.finalize" title="porems.pore.Pore.finalize"><code class="xref py py-func docutils literal"><span class="pre">finalize()</span></code></a>.</p>
 <p>The output dictionary contains following properties which will be
 explained further down</p>
@@ -133,24 +133,25 @@ explained further down</p>
 <li><strong>System_Size</strong> - Total system size including reservoirs</li>
 <li><strong>Volume</strong> - Inner pore volume</li>
 </ul>
-<p>The <strong>roughness</strong> is calculated as the standard deviation of the peaks and
-valles of a surface.</p>
-<p>In the case of a pore one can visualize pulling it appart, creating a
+<p>The <strong>roughness</strong> is calculated as the standard deviation of the peaks
+and valleys of a surface.</p>
+<p>In the case of a pore one can visualize pulling it apart, creating a
 flat surface out of the interior. The roughness is thus determined by
 calculating the standard deviation of the binding site silicon peaks and
 valleys.</p>
 <p>The only difference in the pore is therefore the definition of the axis,
-which is going to be the centeral axis. The mean value <span class="math">\(\bar r\)</span>
+which is going to be the central axis. The mean value <span class="math">\(\bar r\)</span>
 of the silicon distances <span class="math">\(r_i\)</span> of silicon <span class="math">\(i\)</span> towards the
-pore center, is calculated by</p>
+pore centre, is calculated by</p>
 <div class="math">
 \[\bar r=\frac1n\sum_{i=1}^nr_i\]</div>
 <p>with the number of silicon atoms <span class="math">\(n\)</span>. This mean value is used in
-the sqareroot roughness calculation</p>
+the square root roughness calculation</p>
 <div class="math">
 \[R_q = \sqrt{\frac1n\sum_{i=1}^n\|r_i-\bar r\|^2}.\]</div>
-<p>The <strong>diameter</strong> is the mean value <span class="math">\(\bar r\)</span> of the silicon distances
-<span class="math">\(r_i\)</span> of binding site silicon <span class="math">\(i\)</span> towards the pore center</p>
+<p>The <strong>diameter</strong> is the mean value <span class="math">\(\bar r\)</span> of the silicon
+distances <span class="math">\(r_i\)</span> of binding site silicon <span class="math">\(i\)</span> towards the pore
+centre</p>
 <div class="math">
 \[d=2\bar r=\frac2n\sum_{i=1}^nr_i.\]</div>
 <p>The <strong>surface</strong> inside the pore is calculated by</p>
@@ -166,12 +167,12 @@ and the <strong>volume</strong> by</p>
 \[V_\text{pore}=\pi r^2\cdot l_\text{drill}.\]</div>
 <p>Using these surfaces, the <strong>allocation</strong> rates can be determined by
 counting the number of used sites and free sites from the binding
-site list. Thus it is possible to determine the maximal possible allocation
-<span class="math">\(c_\text{tot}\)</span> also called hydroxylation, the rate for the
-molecule modification <span class="math">\(c_\text{mod}\)</span> and the rate for the silanol
-modification <span class="math">\(c_\text{oh}\)</span>. For better overview, the relative
-allocation for the molecule modification <span class="math">\(c_\text{rel}\)</span> has been
-calculated</p>
+site list. Thus, it is possible to determine the maximal possible
+allocation <span class="math">\(c_\text{tot}\)</span> also called hydroxylation, the rate for
+the molecule modification <span class="math">\(c_\text{mod}\)</span> and the rate for the
+silanol modification <span class="math">\(c_\text{oh}\)</span>. For better overview, the
+relative allocation for the molecule modification <span class="math">\(c_\text{rel}\)</span>
+has been calculated</p>
 <div class="math">
 \[\begin{array}{cccc}
 c_\text{tot} = \dfrac{s_\text{tot}}{A},&amp;
@@ -182,8 +183,8 @@ c_\text{rel} = \dfrac{s_\text{mod}}{s_\text{tot}}
 <p>with the corresponding surface <span class="math">\(A\)</span> for either inside or outside
 the pore, the total number of binding sites <span class="math">\(s_\text{tot}\)</span>,
 number of sites used for the modification <span class="math">\(s_\text{mod}\)</span>
-and number of sites used for the silanol modification <span class="math">\(s_\text{oh}\)</span>.
-The resulting units are</p>
+and number of sites used for the silanol modification
+<span class="math">\(s_\text{oh}\)</span>. The resulting units are</p>
 <div class="math">
 \[[c_{i}]=\frac{\text{Number of molecules}}{nm^2}
 =\frac{1}{N_A}\frac{mol}{nm^2}

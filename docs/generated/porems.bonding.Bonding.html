@@ -116,14 +116,14 @@
 <dt id="porems.bonding.Bonding">
 <em class="property">class </em><code class="descclassname">porems.bonding.</code><code class="descname">Bonding</code><span class="sig-paren">(</span><em>verlet</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.bonding.Bonding" title="Permalink to this definition">¶</a></dt>
 <dd><p>The aim of this class is preserving all information of the silicon grid
-bonds. This is needed since firstly, verlet searches get costly the more often
-they are needed and secondly, multiple searches deteriorate the bond information,
-due to numeric errors thus resulting in bonds beeing lost.</p>
-<p>The idea here was reducing the verlet searches to a single search by creating
-a connection matrix of all oxygene and silicon atoms.
-In fact two matrices <span class="math">\(ox\in\mathbb{N}^{no\times2}\)</span> for oxygene and
+bonds. This is needed since firstly, verlet searches get costly the more
+often they are needed and secondly, multiple searches deteriorate the bond
+information, due to numeric errors thus resulting in bonds being lost.</p>
+<p>The idea here was reducing the verlet searches to a single search by
+creating a connection matrix of all oxygen and silicon atoms.
+In fact two matrices <span class="math">\(ox\in\mathbb{N}^{no\times2}\)</span> for oxygen and
 <span class="math">\(si\in\mathbb{N}^{ns\times2}\)</span> were created with numbers of
-oxygene atoms <span class="math">\(no\)</span> and silicon atoms <span class="math">\(ns\)</span></p>
+oxygen atoms <span class="math">\(no\)</span> and silicon atoms <span class="math">\(ns\)</span></p>
 <div class="math">
 \[\begin{split}\begin{array}{cc}
     ox = \left[
@@ -143,18 +143,19 @@ oxygene atoms <span class="math">\(no\)</span> and silicon atoms <span class="ma
         \end{array}
     \right]
 \end{array}\end{split}\]</div>
-<p>with oxygene <span class="math">\(o_{i=0,\dots,no}\)</span> and silicon <span class="math">\(s_{j=0,\dots,ns}\)</span>.
-The entries next to the main atoms are the silicon atoms <span class="math">\(s_{i,ko=0,\dots,so}\)</span>
-bound to oxygene <span class="math">\(i\)</span> and oxygene atoms <span class="math">\(o_{j,ks=0,\dots,os}\)</span> bound to
-silicon <span class="math">\(j\)</span>, which are found using the verlet search algorithm.
-As an optimization, these values are not the atom ids, but the list pointers
-of the specific atoms in their corresponfing connection matrices <span class="math">\(si\)</span>
-and <span class="math">\(ox\)</span>. Due to chemical properties, the maximal possible silca atoms
-bound to one oxegene is <span class="math">\(so=2\)</span> and the maximal possible number of
-oxygene atoms bound to one silicon is <span class="math">\(os=4\)</span>.</p>
+<p>with oxygen <span class="math">\(o_{i=0,\dots,no}\)</span> and silicon <span class="math">\(s_{j=0,\dots,ns}\)</span>.
+The entries next to the main atoms are the silicon atoms
+<span class="math">\(s_{i,ko=0,\dots,so}\)</span> bound to oxygen <span class="math">\(i\)</span> and oxygen atoms
+<span class="math">\(o_{j,ks=0,\dots,os}\)</span> bound to silicon <span class="math">\(j\)</span>, which are found
+using the verlet search algorithm. As an optimization, these values are not
+the atom ids, but the list pointers of the specific atoms in their
+corresponding connection matrices <span class="math">\(si\)</span> and <span class="math">\(ox\)</span>. Due to chemical
+properties, the maximal possible silicon atoms bound to one oxygen is
+<span class="math">\(so=2\)</span> and the maximal possible number of oxygen atoms bound to one
+silicon is <span class="math">\(os=4\)</span>.</p>
 <p>In the beginning, considering periodic boundary conditions and before
-removing any atoms, every atom should be saturated with partners. This means,
-That every silicon has a set of four oxygenes and every oxygene has two
+removing any atoms, every atom should be saturated with partners. This
+means that every silicon has a set of four oxygens and every oxygen has two
 silicon bonds.</p>
 <p>With this connection matrix, bonds can be easily deleted and their number
 for specific atoms can be easily determined without needing another search
@@ -180,10 +181,10 @@ call.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="porems.bonding.Bonding._geminal.html#porems.bonding.Bonding._geminal" title="porems.bonding.Bonding._geminal"><code class="xref py py-obj docutils literal"><span class="pre">_geminal</span></code></a>(self)</td>
-<td>Get the list silicon that have gmeinal bonds - two binding sites.</td>
+<td>Get the list silicon that have geminal bonds - two binding sites.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.bonding.Bonding._unbind.html#porems.bonding.Bonding._unbind" title="porems.bonding.Bonding._unbind"><code class="xref py py-obj docutils literal"><span class="pre">_unbind</span></code></a>(self,&nbsp;silicon,&nbsp;oxygene)</td>
-<td>Remove the bond between a silicon and an oxygene atom from the connection matrix.</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.bonding.Bonding._unbind.html#porems.bonding.Bonding._unbind" title="porems.bonding.Bonding._unbind"><code class="xref py py-obj docutils literal"><span class="pre">_unbind</span></code></a>(self,&nbsp;silicon,&nbsp;oxygen)</td>
+<td>Remove the bond between a silicon and an oxygen atom from the connection matrix.</td>
 </tr>
 </tbody>
 </table>
@@ -201,7 +202,7 @@ call.</p>
 <td>Delete all atoms without any bonds and the atoms in the remove list.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="porems.bonding.Bonding.drill.html#porems.bonding.Bonding.drill" title="porems.bonding.Bonding.drill"><code class="xref py py-obj docutils literal"><span class="pre">drill</span></code></a>(self,&nbsp;focal,&nbsp;diam)</td>
-<td>Drill through a pore through the silicon-ogygene-grid.</td>
+<td>Drill through a pore through the silicon-oxygen-grid.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.bonding.Bonding.prepare.html#porems.bonding.Bonding.prepare" title="porems.bonding.Bonding.prepare"><code class="xref py py-obj docutils literal"><span class="pre">prepare</span></code></a>(self)</td>
 <td>Prepare binding site in the pore.</td>

@@ -115,13 +115,14 @@
 <dl class="method">
 <dt id="porems.verlet.Verlet._verlet">
 <code class="descclassname">Verlet.</code><code class="descname">_verlet</code><span class="sig-paren">(</span><em>self</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.verlet.Verlet._verlet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Here the possible number of verlet boxes is calculated for each dimension
-for the given size and molecule dimensions. The given size is adjusted,
-since only whole numbered box number are reasonable.
+<dd><p>Here the possible number of verlet boxes is calculated for each
+dimension for the given size and molecule dimensions. The given size is
+adjusted, since only whole numbered box number are reasonable.
 A list of boxes is generated containing the coordinates of the zero
-point of each box. Furthermore an empty list for each box added, that will
-contain pointer to the atoms.</p>
-<p>The boxes are numbered as follows for the example of a <span class="math">\(3\times3\)</span> block</p>
+point of each box. Furthermore, an empty list for each box added, that
+will contain pointer to the atoms.</p>
+<p>The boxes are numbered as follows for the example of a <span class="math">\(3\times3\)</span>
+block</p>
 <div class="math">
 \[\begin{split}\begin{array}{ccc}
     \begin{bmatrix}

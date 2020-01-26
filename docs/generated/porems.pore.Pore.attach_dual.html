@@ -116,15 +116,15 @@
 <dt id="porems.pore.Pore.attach_dual">
 <code class="descclassname">Pore.</code><code class="descname">attach_dual</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>si_o</em>, <em>orient</em>, <em>rate</em>, <em>inp='percent'</em>, <em>counter=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.attach_dual" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a molecule to two pore binding sites.</p>
-<p>The <code class="docutils literal"><span class="pre">si_o</span></code> input defines the silicon and oxygen atom pair in two seperate
-lists.</p>
-<p>First the molecule is rotated, so that the oxygens are ontop of the
-binding site oxygenes. Second the molecule is rotated so that the
-directional vector points to the center of the pore.</p>
-<p>The molecule is then moved, so that its oxygen atom is placed on the oxygen
-of the first binding site then translated, so the molecule is in the center
-of both sites.</p>
-<p>Finally the atoms of the binding sites are added to the list of atoms
+<p>The <code class="docutils literal"><span class="pre">si_o</span></code> input defines the silicon and oxygen atom pair in two
+separate lists.</p>
+<p>First the molecule is rotated, so that the oxygens are on top of the
+binding site oxygens. Second the molecule is rotated so that the
+directional vector points to the centre of the pore.</p>
+<p>The molecule is then moved, so that its oxygen atom is placed on the
+oxygen of the first binding site then translated, so the molecule is in
+the centre of both sites.</p>
+<p>Finally, the atoms of the binding sites are added to the list of atoms
 to be deleted at the end of the construction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -147,7 +147,7 @@ to be deleted at the end of the construction.</p>
 <dd><p class="first last">Input type of the rate</p>
 </dd>
 <dt><strong>counter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
-<dd><p class="first last">Number of attempts before breaking the randoming loop</p>
+<dd><p class="first last">Number of attempts before breaking the loop</p>
 </dd>
 </dl>
 </td>
