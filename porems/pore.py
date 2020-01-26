@@ -23,15 +23,15 @@ class Pore(Molecule):
     silicon pores. Note that this class can therefore use all methods of the
     Molecule class.
 
-    At the beginning a silicon-oxygene grid is genreated from the smallest
+    At the beginning a silicon-oxygen grid is generated from the smallest
     possible grid unit by duplication. Using the verlet list
     :class:`porems.verlet.Verlet` and bonding classes
     :class:`porems.bonding.Bonding`, this silicon grid is prepared rapidly
-    and binnding sites are provided.
+    and binding sites are provided.
 
     Here methods are provided for adding molecule groups to the
-    surface of the generated pore. Furhermore a method is added to fill all
-    unused binding sites with silanol and siloxan groups.
+    surface of the generated pore. Furthermore, a method is added to fill all
+    unused binding sites with silanol and siloxane groups.
 
     All bound molecules are added to a global molecule list, in order to preserve
     individual molecule properties.
@@ -39,7 +39,7 @@ class Pore(Molecule):
     Parameters
     ----------
     size : list, float
-        Size of the silicon-oxygene-grid, can be a float, if same size in all dimensions
+        Size of the silicon-oxygen-grid, can be a float, if same size in all dimensions
     diam : float
         Pore diameter
     drill : string
@@ -49,7 +49,7 @@ class Pore(Molecule):
     vs : float, optional
         Verlet-list box size
     proxi_dist : float
-        Minimal distance between two groups attatched to the surface
+        Minimal distance between two groups attached to the surface
     is_pbc : bool, optional
         True if periodic boundary conditions are needed
     is_time : bool, optional
@@ -131,7 +131,7 @@ class Pore(Molecule):
         # Prepare pore
         t = utils.tic()
         self._box = self.get_box()                     # Set box
-        self._bonding.attach()                         # Preperare sites
+        self._bonding.attach()                         # Prepare sites
         self._bonding.drill(self._center, self._diam)  # Drill pore
         self._bonding.prepare()                        # Prepare pore surface
         self._t_tot["Prepare"] = utils.toc(t, "Prepare ", is_time)
@@ -246,7 +246,7 @@ class Pore(Molecule):
         return block
 
     def _block(self, dim, block):
-        """Reculsively duplicate and translate a given molecule block in all
+        """Recursively duplicate and translate a given molecule block in all
         given dimensions. The duplication stops if the next added block would
         create the pore longer than specified in the constructor.
 
@@ -320,7 +320,7 @@ class Pore(Molecule):
         0. Oxygen atom id :math:`o_{k=0,\\dots,b}`
         1. Silica atom id :math:`s_k`
         2. List of pointers :math:`p_k` to binding sites that are in proximity
-        3. State :math:`u_k`: avilable - 0, used - 1, is in proximity - 2
+        3. State :math:`u_k`: available - 0, used - 1, is in proximity - 2
         4. Type :math:`t_k`: inside the pore - 0, outsite the pore - 1
         5. Pointer :math:`g_k` to geminal binding site
         6. Molecule position :math:`m_k` in the global molecule list
@@ -339,7 +339,7 @@ class Pore(Molecule):
 
     def _proxi(self):
         """Using verlet lists, search for binding sites that are in proximity,
-        by looking for oxygene atoms that are near each other.
+        by looking for oxygen atoms that are near each other.
 
         Fill the result in the binding site matrix in the proximity entry.
         """
@@ -350,7 +350,7 @@ class Pore(Molecule):
         atoms = [o[0] for o in site]
         verlet = Verlet(self._temp(atoms), self._o_proxi, self._is_pbc)
 
-        # Find oxygenes in proximity
+        # Find oxygens in proximity
         box_list = [i for i in range(len(verlet.get_box()[1]))]
         oo = verlet.find_parallel(box_list, ["O", "O"], 0.0, self._o_proxi)
         oo_col = utils.column(oo)
@@ -371,9 +371,9 @@ class Pore(Molecule):
         Then the states of all binding sites in the proximity list are set to 2.
 
         In case the random site is not available, this run is repeated.
-        A break-counter prevents the occurance of an endless loop.
+        A break-counter prevents the occurrence of an endless loop.
 
-        The ``site_type`` determines wether the search is done on the inside of
+        The ``site_type`` determines whether the search is done on the inside of
         the pore **0** or on the outside surface **1**.
 
         Currently following rate types for input ``inp`` are available
@@ -396,7 +396,7 @@ class Pore(Molecule):
         inp : string
             Input type of the rate
         counter : integer
-            Number of attempts before breaking the randoming loop
+            Number of attempts before breaking the loop
         is_proxi : bool, optional
             True to search for site pairs in proximity
 
@@ -524,7 +524,7 @@ class Pore(Molecule):
 
         The input ``si_o`` defines the silicon atom id and ``orient`` consists of
         two atom ids that determine which molecule bond should be oriented
-        towords the center.
+        towards the centre.
 
         The binding sites are chosen randomly using function :func:`_random`.
         Available input types are noted in the mentioned function.
@@ -533,13 +533,13 @@ class Pore(Molecule):
         simulate a state closer to reality. Second the molecule is rotated so that
         its directional vector and the binding site vector match. One final rotation
         is applied for molecules on the inside, so the directional vector
-        points towards the center of the pore.
+        points towards the centre of the pore.
 
         The molecule is then moved in order to place its silicon atom on the silicon
-        of the binding site. The oxygen is then placed ontop of the binding
+        of the binding site. The oxygen is then placed on top of the binding
         site oxygen, in order to keep the sites geometry.
 
-        Finally the atoms of the binding sites are added to the list of atoms
+        Finally, the atoms of the binding sites are added to the list of atoms
         to be deleted at the end of the construction.
 
         These molecules are then added to the global molecule list.
@@ -552,7 +552,7 @@ class Pore(Molecule):
             Silicon and oxygen id of the grid atoms of the molecule
         orient : list
             Two atom ids that determine which molecule bond should be oriented
-            towords the center
+            towards the centre
         site_type : integer
             Type of the sites **inside-0**, **outside-1**
         rate : float
@@ -560,9 +560,9 @@ class Pore(Molecule):
         inp : string, optional
             Input type of the rate
         sites : integer, list, optional
-            Listindex of binding sites
+            List index of binding sites
         counter : integer, optional
-            Number of attempts before breaking the randoming loop
+            Number of attempts before breaking the loop
         is_rotate : bool, optional
             True to randomly rotate molecules on the surface
 
@@ -593,10 +593,10 @@ class Pore(Molecule):
         # Molecule orientation vector
         vec_m = mol.bond(orient[0], orient[1])[0]
 
-        # Center vector independet of z-axis
+        # Centre vector independent of z-axis
         center = self._center[:-1]
 
-        # Add molcule
+        # Add molecule
         mol_list = []
         remove_list = []
         for i in sorted(site_list, reverse=True):
@@ -623,7 +623,7 @@ class Pore(Molecule):
                 # Set vector of binding site silicon atom to central position
                 vec_c = self._vector(self.pos(site[1]), pos_c)
 
-                # Rotate molecule towards center
+                # Rotate molecule towards centre
                 temp.rotate(self._cross(vec_c, vec_o), -self.angle(vec_c, vec_o))
 
             # Adjust orientation perpendicular to surface on the outside
@@ -666,7 +666,7 @@ class Pore(Molecule):
             key_name = mol.get_short()
             location = "in" if site_type==0 else "out"
 
-            # Add to time dict
+            # Add to time dictionary
             self._t_tot["Attach_"+key_name+"_"+location] = utils.toc(t, "Attach  ", self._is_time)
 
             # Add number of bonds to allocation
@@ -693,7 +693,7 @@ class Pore(Molecule):
             Silicon and oxygen id of the grid atoms of the molecule
         orient : list
             Two atom ids that determine which molecule bond should be oriented
-            towords the center
+            towards the centre
         num : integer
             Number of molecules to be added
         symmetry : string
@@ -713,7 +713,7 @@ class Pore(Molecule):
             return
 
         elif not symmetry == "random" and not num == 0:
-            # Calculate placment points
+            # Calculate geometrical positions
             pos_list = []
             length = self._center[2]*2
             dist = length/num
@@ -766,7 +766,7 @@ class Pore(Molecule):
         # Initialize
         center = self._center[:-1]
 
-        # Set siterange
+        # Set site range
         site_list = [i for i in range(len(self._site))] if sites is None else sites
         site_list = [x for x in site_list if not self._site[x][3] == 1]
 
@@ -824,18 +824,18 @@ class Pore(Molecule):
     def attach_dual(self, mol, si_o, orient, rate, inp="percent", counter=1000):
         """Add a molecule to two pore binding sites.
 
-        The ``si_o`` input defines the silicon and oxygen atom pair in two seperate
+        The ``si_o`` input defines the silicon and oxygen atom pair in two separate
         lists.
 
-        First the molecule is rotated, so that the oxygens are ontop of the
-        binding site oxygenes. Second the molecule is rotated so that the
-        directional vector points to the center of the pore.
+        First the molecule is rotated, so that the oxygens are on top of the
+        binding site oxygens. Second the molecule is rotated so that the
+        directional vector points to the centre of the pore.
 
         The molecule is then moved, so that its oxygen atom is placed on the oxygen
-        of the first binding site then translated, so the molecule is in the center
+        of the first binding site then translated, so the molecule is in the centre
         of both sites.
 
-        Finally the atoms of the binding sites are added to the list of atoms
+        Finally, the atoms of the binding sites are added to the list of atoms
         to be deleted at the end of the construction.
 
         Parameters
@@ -851,7 +851,7 @@ class Pore(Molecule):
         inp : string, optional
             Input type of the rate
         counter : integer, optional
-            Number of attempts before breaking the randoming loop
+            Number of attempts before breaking the loop
 
         Examples
         --------
@@ -864,13 +864,13 @@ class Pore(Molecule):
         # Get random list
         site_list = self._random(0, rate, inp, counter, is_proxi=True)
 
-        # Molecule and center vector
+        # Molecule and centre vector
         center = self._center[:-1]
 
         # Stop time
         t = utils.tic()
 
-        # Add molcule
+        # Add molecule
         for i in sorted(site_list, reverse=True):
             # Initialize
             sites = [self._site[i[0]], self._site[i[1]]]
@@ -879,8 +879,8 @@ class Pore(Molecule):
             temp = copy.deepcopy(mol)
 
             # Rotate towards binding site
-            vec_mo = temp.bond(si_o[0][1], si_o[1][1])[0]   # Molecule oxygenes
-            vec_so = self._vector(sites[0][0], sites[1][0]) # Binding site oxygenes
+            vec_mo = temp.bond(si_o[0][1], si_o[1][1])[0]   # Molecule oxygens
+            vec_so = self._vector(sites[0][0], sites[1][0]) # Binding site oxygens
             vec_m = temp.bond(orient[0], orient[1])[0]      # Molecule orientation
 
             temp.rotate(vec_m, self.angle(vec_mo, vec_so))
@@ -894,10 +894,10 @@ class Pore(Molecule):
 
             temp.rotate(self._cross(vec_m, vec_c), self.angle(vec_m, vec_c))
 
-            # Put oxygenes ontop of each other
+            # Put oxygens on top of each other
             temp.move(si_o[0][1], self.pos(sites[0][0]))
 
-            # Move to center
+            # Move to centre
             cent_m = [(temp.pos(si_o[0][1])[x]+temp.pos(si_o[1][1])[x])/2 for x in range(self._dim)]
             temp.translate(self._vector(cent_m, cent_o))
 
@@ -917,7 +917,7 @@ class Pore(Molecule):
         # Finalize
         key_name = mol.get_name()+"_0"
 
-        # Add to time dict
+        # Add to time dictionary
         self._t_tot["Attach_"+key_name] = utils.toc(t, "Attach  ", self._is_time)
 
         # Add number of bonds to allocation
@@ -925,28 +925,28 @@ class Pore(Molecule):
             self._props["Allocation"][key_name] = 0
         self._props["Allocation"][key_name] += len(site_list)*2
 
-    def siloxan(self, rate, inp="percent", counter=1000):
-        """Add siloxan bridges to the pore by selecting two binding sites in
-        proximity removing both oxygens and placing one at center of
+    def siloxane(self, rate, inp="percent", counter=1000):
+        """Add siloxane bridges to the pore by selecting two binding sites in
+        proximity removing both oxygens and placing one at centre of
         the two removed atoms.
 
         Parameters
         ----------
         rate : float
-            Rate of binding sites to be editied
+            Rate of binding sites to be edited
         inp : string, optional
             Rate input type
         counter : integer, optional
-            Number of attempts before breaking the randoming loop
+            Number of attempts before breaking the loop
 
         Examples
         --------
         .. code-block:: python
 
-            pore.siloxan(10)
-            pore.siloxan(10, inp="precent")
-            pore.siloxan(15, inp="num")
-            pore.siloxan(2.4, inp="molar")
+            pore.siloxane(10)
+            pore.siloxane(10, inp="precent")
+            pore.siloxane(15, inp="num")
+            pore.siloxane(2.4, inp="molar")
         """
         # Exit if rate is zero
         if rate == 0:
@@ -956,7 +956,7 @@ class Pore(Molecule):
         site_list = self._random(0, rate, inp, counter, is_proxi=True)
         self._slx += len(site_list)
 
-        # Molecule and center vector
+        # Molecule and centre vector
         center = self._center[:-1]
 
         # Define temporary molecule object
@@ -967,12 +967,12 @@ class Pore(Molecule):
         mol.add("O", 0, r=0.1)
         mol.add("O", 0, r=0.1)
 
-        # Add molcule
+        # Add molecule
         for i in sorted(site_list, reverse=True):
             # Initialize
             site = [self._site[i[0]], self._site[i[1]]]
 
-            # Get center position
+            # Get centre position
             cent_o = [(self.pos(site[0][0])[x]+self.pos(site[1][0])[x])/2 for x in range(self._dim)]
             cent_s = [(self.pos(site[0][1])[x]+self.pos(site[1][1])[x])/2 for x in range(self._dim)]
 
@@ -991,7 +991,7 @@ class Pore(Molecule):
 
             temp.rotate(self._cross(vec_m, vec_c), self.angle(vec_m, vec_c))
 
-            # Put oxygenes ontop of each other
+            # Put oxygens on top of each other
             temp.move(1, self.pos(site[0][0]))
 
             # Remove temporary oxygen atoms
@@ -1064,7 +1064,7 @@ class Pore(Molecule):
         Returns
         -------
         mol_list : list
-            Molecule list to be added to globale molecule list
+            Molecule list to be added to global molecule list
         """
         # Define temporary molecule object
         temp_mol = Molecule()
@@ -1075,7 +1075,7 @@ class Pore(Molecule):
         for i in range(data_range[0], data_range[1]):
             temp = copy.deepcopy(temp_mol)
 
-            # Check if oxygene
+            # Check if oxygen
             is_oxy = self.get_type(i) == "O"
 
             # Set temporary vars
@@ -1089,7 +1089,7 @@ class Pore(Molecule):
                 atom = "R"
                 name = "test"
 
-            # Creat unique object
+            # Create unique object
             temp.add(atom, self.pos(i))
             temp.set_name(name)
             temp.set_short(short)
@@ -1122,7 +1122,7 @@ class Pore(Molecule):
             else:
                 data_list.append([data_len*i, data_len*(i+1)])
 
-        # Paralellize
+        # Parallelize
         pool = mp.Pool(processes=np)
         results = pool.map_async(self._objectify, data_list)
         pool.close()
@@ -1140,11 +1140,11 @@ class Pore(Molecule):
         self._mol_list.pop(0)
 
     def _position(self):
-        """Tranlate the pore into position, and consider the periodic repeat gap.
-        Hereby the coordinates are moved by halve the gap distance and box box is
+        """Translate the pore into position and consider the periodic repeat gap.
+        Hereby the coordinates are moved by halve the gap distance and box is
         extended by the other halve. Additionally, to prevent molecule overlap and
-        perodic movement, the drill side is extended and translated by a fixed value,
-        thus creating reservoirs.
+        periodic movement, the drill side is extended and translated by a fixed value,
+        thus, creating reservoirs.
         """
         # Get vector to coordinate zero
         vec = Molecule(inp=[mol for mol in self._mol_list if mol.get_name() in ["si", "om"]]).zero()
@@ -1162,7 +1162,7 @@ class Pore(Molecule):
         self._box[2] += self._res
 
     def _overlap(self):
-        """Method for checking of silicon or oxygene atoms are overlapping
+        """Method for checking of silicon or oxygen atoms are overlapping
         using verlet lists. Duplicate atoms will be printed.
         """
         # Initialize
@@ -1171,7 +1171,7 @@ class Pore(Molecule):
         # Create verlet
         verlet = Verlet(temp, self._vs, True)
 
-        # Check silicon and oxygene
+        # Check silicon and oxygen
         si = verlet.find_parallel(None, ["Si", "Si"], 0, 10e-3)
         oo = verlet.find_parallel(None, ["O", "O"], 0, 10e-3)
 
@@ -1233,13 +1233,13 @@ class Pore(Molecule):
 
         # Randomly distribute balancing oxygens
         if is_rand:
-            # Get list of oxygenes
+            # Get list of oxygens
             oxy = {}
             for i in range(len(mols)):
                 if mols[i].get_name() == "om":
                     oxy[i] = mols[i]
 
-            # Get random oxygenes and set name and charge
+            # Get random oxygens and set name and charge
             oxy_r = random.sample([x for x in oxy], num_oxy)
             for o in oxy_r:
                 oxy[o].set_name("ox")
@@ -1297,11 +1297,11 @@ class Pore(Molecule):
 
 
     ###########
-    # Analyze #
+    # Analyse #
     ###########
     def _calc_props(self):
         """This function calculates all necessary properties of the system and
-        retruns a dictionary. Note that most of the properties can only be
+        returns a dictionary. Note that most of the properties can only be
         calculated after the pore is finalized in function :func:`finalize`.
 
         The output dictionary contains following properties which will be
@@ -1320,24 +1320,24 @@ class Pore(Molecule):
         * **Volume** - Inner pore volume
 
         The **roughness** is calculated as the standard deviation of the peaks and
-        valles of a surface.
+        valleys of a surface.
 
-        In the case of a pore one can visualize pulling it appart, creating a
+        In the case of a pore one can visualize pulling it apart, creating a
         flat surface out of the interior. The roughness is thus determined by
         calculating the standard deviation of the binding site silicon peaks and
         valleys.
 
         The only difference in the pore is therefore the definition of the axis,
-        which is going to be the centeral axis. The mean value :math:`\\bar r`
+        which is going to be the central axis. The mean value :math:`\\bar r`
         of the silicon distances :math:`r_i` of silicon :math:`i` towards the
-        pore center, is calculated by
+        pore centre, is calculated by
 
         .. math::
 
             \\bar r=\\frac1n\\sum_{i=1}^nr_i
 
         with the number of silicon atoms :math:`n`. This mean value is used in
-        the sqareroot roughness calculation
+        the square root roughness calculation
 
         .. math::
 
@@ -1345,7 +1345,7 @@ class Pore(Molecule):
 
 
         The **diameter** is the mean value :math:`\\bar r` of the silicon distances
-        :math:`r_i` of binding site silicon :math:`i` towards the pore center
+        :math:`r_i` of binding site silicon :math:`i` towards the pore centre
 
         .. math::
 
@@ -1373,7 +1373,7 @@ class Pore(Molecule):
 
         Using these surfaces, the **allocation** rates can be determined by
         counting the number of used sites and free sites from the binding
-        site list. Thus it is possible to determine the maximal possible allocation
+        site list. Thus, it is possible to determine the maximal possible allocation
         :math:`c_\\text{tot}` also called hydroxylation, the rate for the
         molecule modification :math:`c_\\text{mod}` and the rate for the silanol
         modification :math:`c_\\text{oh}`. For better overview, the relative
@@ -1468,7 +1468,7 @@ class Pore(Molecule):
             oh = [num_oh[0]/props["Surface"][0], num_oh[1]/props["Surface"][1]]
             props["Allocation"]["OH"] = {"in": [int(num_oh[0]), oh[0], oh[0]*molar], "out": [int(num_oh[1]), oh[1], oh[1]*molar]}
 
-            # Siloxan allocation
+            # Siloxane allocation
             slx = self._slx/props["Surface"][0]
             props["Allocation"]["SLX"] = {"in": [self._slx, slx, slx*molar], "out": [0, 0.0, 0.0]}
 
@@ -1484,7 +1484,7 @@ class Pore(Molecule):
     # Finalization #
     ################
     def finalize(self, is_rand=True):
-        """Finalize pore by adding siloxan bridges, filling empty bond with
+        """Finalize pore by filling empty bond with
         silanol groups, connecting geminal molecules, removing marked atoms,
         converting the grid to individual molecules and finally moving the pore
         into position.
@@ -1509,7 +1509,7 @@ class Pore(Molecule):
         self._bonding.delete()
         self._t_tot["Delete"] = utils.toc(t, "Delete  ", self._is_time)
 
-        # Move all silicon and oxygenes into unique mols
+        # Move all silicon and oxygens into unique mols
         t = utils.tic()
         self._objectify_parallel()
         self._t_tot["Objects"] = utils.toc(t, "Objects ", self._is_time)
@@ -1544,7 +1544,7 @@ class Pore(Molecule):
             print()
 
         # Print finalization note
-        print("Pore is finalized. Attachement functions should not be called anymore.")
+        print("Pore is finalized. Attachment functions should not be called anymore.")
 
     def table_props(self, decimals=3):
         """This functions creates readable pandas DataFrames of all properties

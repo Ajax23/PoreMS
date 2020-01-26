@@ -11,7 +11,7 @@ from porems.molecule import Molecule
 
 class Alkane(Molecule):
     """Using this class linear alkane molecules can be easily constructed with
-    the only input of the carbon atom number. Hydrogenes are then automatically
+    the only input of the carbon atom number. Hydrogens are then automatically
     added.
 
     This class extends the molecule class :class:`porems.molecule.Molecule`.
@@ -25,7 +25,7 @@ class Alkane(Molecule):
     short : string, None, optional
         Molecule short name
     is_h : bool, optional
-        True if hydrogenes are needed
+        True if hydrogens are needed
     """
     def __init__(self, length, name=None, short=None, is_h=True):
         # Call super class
@@ -49,7 +49,7 @@ class Alkane(Molecule):
             angle *= -1
             self.add("C", self.get_num()-1, r=b["cc"], theta=angle)
 
-        # Add hydrogenes
+        # Add hydrogens
         if is_h:
             if length > 1:
                 # Boundaries
@@ -78,7 +78,7 @@ class Alkane(Molecule):
 
 class Alcohol(Molecule):
     """Using this class linear alcohol molecules can be easily constructed with
-    the only input of the carbon atom number. Hydrogenes and the hydroxy group
+    the only input of the carbon atom number. Hydrogens and the hydroxy group
     are then automatically added.
 
     This class extends the molecule class :class:`porems.molecule.Molecule`.
@@ -92,7 +92,7 @@ class Alcohol(Molecule):
     short : string, None, optional
         Molecule short name
     is_h : bool, optional
-        True if hydrogenes are needed
+        True if hydrogens are needed
     """
     def __init__(self, length, name=None, short=None, is_h=True):
         # Call super class
@@ -120,7 +120,7 @@ class Alcohol(Molecule):
         self.add("O", self.get_num()-1, r=b["co"], theta=-angle)
         self.add("H", self.get_num()-1, r=b["oh"], theta=angle)
 
-        # Add hydrogenes
+        # Add hydrogens
         if is_h:
             if length > 1:
                 # Boundary
@@ -145,8 +145,8 @@ class Alcohol(Molecule):
 
 class Ketone(Molecule):
     """Using this class linear ketone molecules can be easily constructed with
-    the only input of the carbon atom number and oxygene position.
-    Hydrogenes are then automatically added.
+    the only input of the carbon atom number and oxygen position.
+    Hydrogens are then automatically added.
 
     This class extends the molecule class :class:`porems.molecule.Molecule`.
 
@@ -155,13 +155,13 @@ class Ketone(Molecule):
     length : integer
         Number of carbon atoms
     pos : integer
-        Position of the oxygene atom
+        Position of the oxygen atom
     name : string, None, optional
         Molecule name
     short : string, None, optional
         Molecule short name
     is_h : bool
-        True if hydrogenes are needed
+        True if hydrogens are needed
     """
     def __init__(self, length, pos, name=None, short=None, is_h=True):
         # Call super class
@@ -190,11 +190,11 @@ class Ketone(Molecule):
             angle *= -1
             self.add("C", self.get_num()-1, r=b["cc"], theta=angle)
 
-        # Add oxygene
+        # Add oxygen
         angle = -90 if pos % 2 == 0 else 90
         self.add("O", pos-1, r=b["co"], theta=angle)
 
-        # Add hydrogenes
+        # Add hydrogens
         if is_h:
             # Boundaries
             end = self.get_num()-1
@@ -257,7 +257,7 @@ class TMS(Molecule):
         for i in range(3):
             self.add("C", 2, bond=[2, 1], r=b["sic"], theta=a["cch"]+compress, phi=60+120*i)
 
-        # Add hydrogenes
+        # Add hydrogens
         for i in range(3, 5+1):
             for j in range(3):
                 self.add("H", i, bond=[i, 2], r=b["ch"], theta=a["cch"]+compress, phi=60+120*j)

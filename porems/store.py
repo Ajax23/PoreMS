@@ -1,7 +1,7 @@
 ################################################################################
 # Store Class                                                                  #
 #                                                                              #
-"""Contains function for creating simululation files."""
+"""Contains function for creating simulation files."""
 ################################################################################
 
 
@@ -22,9 +22,9 @@ class Store:
 
     For pore objects two additional methods are available for generating the
     main topology file and a topology file containing grid molecule
-    parameters and charges. Currently only the gromacs format is supported.
+    parameters and charges. Currently only the GROMACS format is supported.
 
-    Furthermore there is an automized rountine for generating topologies
+    Furthermore, there is an automized routine for generating topologies
     with Antechamber where job-file for this tool are created.
 
     Parameters
@@ -65,15 +65,15 @@ class Store:
     ################################
     def job(self, is_master=False):
         """Create job file to run with Antechamber. A shell file and a tleap file
-        are created with all necesarry commands to create a topology from a pdb file.
-        For the conversion to gromacs file format the python package **ParmED**
+        are created with all necessary commands to create a topology from a pdb file.
+        For the conversion to GROMACS file format the python package **ParmED**
         needs to be installed.
 
         Parameters
         ----------
         is_master : bool, optional
             True if the jobfile call should be added to a master run file
-            (pracitcall for running multiple topology genrations)
+            (practical for running multiple topology generations)
         """
         # Initialize
         name = self._name.lower()
@@ -168,11 +168,11 @@ class Store:
                     out_string += " "
                     out_string += "   "                          # 28-30 (3)    -
 
-                    for j in range(dim):                         # 31-54 (3*8)  Corrdinates
+                    for j in range(dim):                         # 31-54 (3*8)  Coordinates
                         out_string += "%8.3f" % (data[j][i]*10)
 
                     out_string += "%6.2f" % 1                    # 55-60 (6)    Occupancy
-                    out_string += "%6.2f" % 0                    # 61-66 (6)    Temperatur factor
+                    out_string += "%6.2f" % 0                    # 61-66 (6)    Temperature factor
                     out_string += "           "                  # 67-77 (11)   -
                     out_string += "%2s" % atom                   # 78-79 (2)    Element symbol
                     out_string += "  "                           # 80-81 (2)    Charge on the atom
@@ -329,7 +329,7 @@ class Store:
             file_out.write(mols[-1].get_short()+" "+str(counter)+"\n")
 
     def grid(self, name=None):
-        """Store the grid.itp file containing the necesarry parameters and
+        """Store the grid.itp file containing the necessary parameters and
         charges of the grid molecules.
 
         Parameters

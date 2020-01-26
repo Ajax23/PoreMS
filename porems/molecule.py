@@ -14,9 +14,9 @@ class Molecule:
     """This class defines a molecule object, which is basically a data matrix
     that contains atom information of positions and type.
 
-    Be Molecule :math:`\\boldsymbol{D}\\in\\mathbb{R}^{(n+1)\\times m}` with spatial dimensions
-    :math:`i=1,\\dots,n` and atom number :math:`j=1,\\dots,m`.
-    The data matrix then has following structure
+    Be Molecule :math:`\\boldsymbol{D}\\in\\mathbb{R}^{(n+1)\\times m}` with
+    spatial dimensions :math:`i=1,\\dots,n` and atom number
+    :math:`j=1,\\dots,m`. The data matrix then has following structure
 
     .. math::
 
@@ -28,16 +28,17 @@ class Molecule:
         \\begin{pmatrix}d_{t1}\\\\d_{t2}\\\\\\vdots\\\\d_{tm}\\end{pmatrix}
         \\end{bmatrix}
 
-    with atom data :math:`d_{ij}` of atom :math:`j` and chemical atom type entry :math:`t:=n+1`.
+    with atom data :math:`d_{ij}` of atom :math:`j` and chemical atom type entry
+    :math:`t:=n+1`.
 
     The requested dimension is defined in the parameter module.
     Most of the following functions have been written for :math:`n`-dimensions.
-    However they only have been tested for the three-dimnesional case.
+    However, they only have been tested for the three-dimensional case.
 
     Functions have been provided for editing, moving and transforming the
-    entries of the data matrix either for the whole matrix or for specified atoms.
-    Private functions are solely needed for internal puposes,
-    whereas the public functions are inteded to be used for the editingself.
+    entries of the data matrix either for the whole matrix or for specified
+    atoms. Private functions are solely needed for internal purposes,
+    whereas the public functions are intended to be used for the editing.
 
     Parameters
     ----------
@@ -47,7 +48,7 @@ class Molecule:
         Molecule short name
     inp : None, string, list, optional
         None for empty Molecule, string to read a molecule from a
-        specified filelink or a list of either molecules to concatenate these
+        specified file link or a list of either molecules to concatenate these
         into one object, or a data list in the earlier discussed format
 
     Examples
@@ -103,7 +104,7 @@ class Molecule:
     def _read(self, file_path, file_type):
         """Read a molecule from a file. Currently only **GRO**, **PFB** and
         **MOL2** files are supported. In case the ``file_type`` is **OBJ**, the
-        function will attempt unpickling the object file. Note that laoding the
+        function will attempt unpickling the object file. Note that loading the
         object this way, only the data will be imported.
 
         Parameters
@@ -247,7 +248,7 @@ class Molecule:
     # Private Methods - Geometry #
     ##############################
     def _dotproduct(self, vec_a, vec_b):
-        """Calculate the dotproduct of two vectors
+        """Calculate the dot product of two vectors
         :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^n`
 
         .. math::
@@ -267,16 +268,18 @@ class Molecule:
         Returns
         -------
         dot : float
-            Dotproduct value
+            Dot product value
         """
         return sum((a*b) for a, b in zip(vec_a, vec_b))
 
     def _length(self, vec):
-        """Calculate the length of a vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`
+        """Calculate the length of a vector
+        :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`
 
         .. math::
 
-            \\text{length}(\\boldsymbol{a})=|\\boldsymbol{a}|=\\sqrt{\\boldsymbol{a}\cdot\\boldsymbol{a}}
+            \\text{length}(\\boldsymbol{a})=|\\boldsymbol{a}|
+            =\\sqrt{\\boldsymbol{a}\cdot\\boldsymbol{a}}
 
         Parameters
         ----------
@@ -296,9 +299,10 @@ class Molecule:
 
         .. math::
 
-            \\text{vec}(\\boldsymbol{a},\\boldsymbol{b})=\\begin{pmatrix}b_1-a_1\\\\\\vdots\\\\b_n-a_n\\end{pmatrix}
+            \\text{vec}(\\boldsymbol{a},\\boldsymbol{b})
+            =\\begin{pmatrix}b_1-a_1\\\\\\vdots\\\\b_n-a_n\\end{pmatrix}
 
-        The two inputs can either be atom indices or to vectorial positions.
+        The two inputs can either be atom indices or to vectoral positions.
 
         Parameters
         ----------
@@ -329,11 +333,13 @@ class Molecule:
         return [pos_b[i]-pos_a[i] for i in range(self._dim)]
 
     def _unit(self, vec):
-        """Transform a vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^n` into a unit vactor
+        """Transform a vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^n` into a
+        unit vector
 
         .. math::
 
-            \\text{unit}(\\boldsymbol{a})=\\frac{\\boldsymbol{a}}{|\\boldsymbol{a}|}
+            \\text{unit}(\\boldsymbol{a})
+            =\\frac{\\boldsymbol{a}}{|\\boldsymbol{a}|}
 
         Parameters
         ----------
@@ -350,7 +356,7 @@ class Molecule:
         return [vec[i]/length if not length == 0 else vec[i] for i in range(self._dim)]
 
     def _cross(self, vec_a, vec_b):
-        """Calculate the crossproduct of two three-dimensional vectors
+        """Calculate the cross product of two three-dimensional vectors
         :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^3`
 
         .. math::
@@ -371,7 +377,7 @@ class Molecule:
         Returns
         -------
         vec : list
-            Crossproduct
+            Cross product vector
         """
         vec = []
         vec.append(vec_a[1]*vec_b[2]-vec_a[2]*vec_b[1])
@@ -426,7 +432,8 @@ class Molecule:
 
         .. math::
 
-            \\text{azimut}(\\boldsymbol{a})=\\cos^{-1}\\frac{y}{|\\boldsymbol{a}|}
+            \\text{azimut}(\\boldsymbol{a})
+            =\\cos^{-1}\\frac{y}{|\\boldsymbol{a}|}
 
         with :math:`y` as the second vector entry.
 
@@ -450,7 +457,7 @@ class Molecule:
         return angle*180/math.pi if is_deg else angle
 
     def _axis(self, inp):
-        """Return the three dimensional unit-vector of the main axes.
+        """Return the three-dimensional unit-vector of the main axes.
         Input is either integer or string
 
         * 1 or "x" for the x-axis
@@ -468,7 +475,7 @@ class Molecule:
             Unit vector
         """
         # Error message
-        axisError = "Wrong axis definition..."
+        axis_error = "Wrong axis definition..."
 
         # Process input
         if isinstance(inp, str):
@@ -479,14 +486,14 @@ class Molecule:
             elif inp == "z":
                 axis = 3
             else:
-                return axisError
+                return axis_error
         elif isinstance(inp, int):
             if inp == 1 or inp == 2 or inp == 3:
                 axis = inp
             else:
-                return axisError
+                return axis_error
         else:
-            return axisError
+            return axis_error
 
         # Return vector
         return [1 if i == axis-1 else 0 for i in range(self._dim)]
@@ -529,8 +536,9 @@ class Molecule:
 
 
         where :math:`n_i` are the entries for the unit vector
-        :math:`\\boldsymbol{n}` of the axis. The new coordinates :math:`\\boldsymbol{c}`
-        are then calculated using a matrix-vector multiplication
+        :math:`\\boldsymbol{n}` of the axis. The new coordinates
+        :math:`\\boldsymbol{c}` are then calculated using a matrix-vector
+        multiplication
 
         .. math::
 
@@ -589,14 +597,15 @@ class Molecule:
         return [data[0]*r[i][0]+data[1]*r[i][1]+data[2]*r[i][2] for i in range(self._dim)]
 
     def _box_size(self):
-        """Calculate the boxsize of the current molecule. This is done by
+        """Calculate the box size of the current molecule. This is done by
         determining the maximal coordinate value of all atoms in all dimensions
 
         .. math::
 
             \\boldsymbol{b}=\\begin{pmatrix}\\max(\\boldsymbol{d}_1)&max(\\boldsymbol{d}_1)&\\dots&max(\\boldsymbol{d}_n)\\end{pmatrix}^T
 
-        where :math:`\\boldsymbol{d}_i` is the dimension-vector of the data matrix.
+        where :math:`\\boldsymbol{d}_i` is the dimension-vector of the data
+        matrix.
 
         Returns
         -------
@@ -666,7 +675,8 @@ class Molecule:
         Parameters
         ----------
         atom : integer, string
-            Atom-id whose position will be changed, use **"last"** for the newest atom
+            Atom-id whose position will be changed, use **"last"** for the
+            newest atom
         pos : list
             New position vector
         """
@@ -684,7 +694,8 @@ class Molecule:
         Parameters
         ----------
         atom : integer, string
-            Main atom-id whose position will be changed, use **"last"** for the newest atom
+            Main atom-id whose position will be changed, use **"last"** for the
+            newest atom
         pos : list
             New position vector
         """
@@ -725,7 +736,7 @@ class Molecule:
         return vec
 
     def box(self, size, is_extend=True):
-        """Create a molecule box around a centered molecule, where the
+        """Create a molecule box around a centred molecule, where the
         coordinate systems zero point is set to the positional focal point of
         the molecule. The resulting box has the edge length of the given size
         value. If ``is_extend`` is set to True, then the maximal molecule
@@ -760,8 +771,8 @@ class Molecule:
         this specific bond. The given length is going to be the new bond length,
         not by how much the bond length is changed.
 
-        The move vector is determined automatically by the given length and atom bond.
-        This vector can also be given manually with no regards to length,
+        The move vector is determined automatically by the given length and atom
+        bond. This vector can also be given manually with no regards to length,
         by setting the vector ``vec``.
 
         Parameters
@@ -769,7 +780,8 @@ class Molecule:
         bond : list
             List of two atom ids of the bond to be adjusted
         atoms : integer, list
-            List of atoms that need to be moved by changing the bond length (can also be one id)
+            List of atoms that need to be moved by changing the bond length
+            (can also be one id)
         length : float
             New bond length
         vec : list, optional
@@ -803,7 +815,7 @@ class Molecule:
     def part_rotate(self, bond, atoms, angle, zero):
         """Rotate a set of specified atoms around a given bond as the rotation
         axis. First however the system needs to be set to zero. Therefore the
-        atom id to define the new coordinate system has to be given for the set
+        atom id to define the new coordinate system must be given for the set
         of specified atoms. Normally this is the atoms that lies at on an end
         of the given bond axis.
 
@@ -838,15 +850,15 @@ class Molecule:
         self._update(temp.get_data(), atoms)
 
     def part_angle(self, bond_a, bond_b, atoms, angle, zero):
-        """Change the bond angle of two bond vectors. Variable ``atoms`` specifies
-        which atoms or rather which part of the molecule needs rotated to change
-        the specified bond angle. First however the system needs to be set to
-        zero. Therefore the atom id to define the new coordinate system has to be
-        given for the set of specified atoms. Normally this is the atom that
-        touches the angle.
+        """Change the bond angle of two bond vectors. Variable ``atoms``
+        specifies which atoms or rather which part of the molecule needs to be
+        rotated in order to change the specified bond angle. First however the
+        system needs to be set to zero. Therefore, the atom id to define the new
+        coordinate system has to be given for the set of specified atoms.
+        Normally this is the atom that touches the angle.
 
         The rotation axis is determined by creating the cross product
-        of the two bond vectors. Thus getting the normal vector of a surface
+        of the two bond vectors. Thus, getting the normal vector of a surface
         that contains both bond vectors.
 
         Parameters
@@ -896,12 +908,12 @@ class Molecule:
         Variable ``atoms`` specifies which atoms or rather which part of the
         molecule needs moved and rotated to change the specified bond length.
 
-        First however the system needs to be set to zero. Therefore the atom id
-        to define the new coordinate system has to be given for the set of
+        First however the system needs to be set to zero. Therefore, the atom id
+        to define the new coordinate system must be given for the set of
         specified atoms. Normally this is the atom that touches the angle.
 
         The rotation axis is determined by creating the cross product
-        of the two bond vectors. Thus getting the normal vector of a surface
+        of the two bond vectors. Thus, getting the normal vector of a surface
         that contains both bond vectors.
 
         The new length is determined, by rotating the specified molecule part in
@@ -952,9 +964,9 @@ class Molecule:
                 break
 
 
-    #############################
-    # Public Methods - Calulate #
-    #############################
+    ##############################
+    # Public Methods - Calculate #
+    ##############################
     def angle(self, vec_a, vec_b, is_deg=True):
         """Calculate the angle between two vectors
         :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^n`
@@ -999,7 +1011,7 @@ class Molecule:
 
     def bond(self, inp_a, inp_b):
         """Return the bond length and vector of a specified bond. The two inputs
-        can either be atom indices or to vectorial positions.
+        can either be atom indices or to vectoral positions.
 
         Parameters
         ----------
@@ -1032,7 +1044,7 @@ class Molecule:
         an atom id, that determines is the bond-start,
         or a vector for a specific position.
 
-        Bond has to be given, if the polar coordinates are dependet on the bond
+        Bond has to be given, if the polar coordinates are dependent on the bond
         vector as the basic axis. The coordinate system is then transformed
         to the new bond axis. If set to None, then the given coordinates are
         thought to be dependent on the basic axes.
@@ -1069,7 +1081,7 @@ class Molecule:
         phi *= math.pi/180 if is_deg else 1
         theta *= math.pi/180 if is_deg else 1
 
-        # Transform sphercial to cartesian coordinates
+        # Transform spherical to cartesian coordinates
         x = r*math.sin(theta)*math.cos(phi)
         y = r*math.sin(theta)*math.sin(phi)
         z = r*math.cos(theta)
@@ -1293,7 +1305,7 @@ class Molecule:
         Parameters
         ----------
         com : list, None, optional
-            Center of mass coordinates
+            Centre of mass coordinates
         """
         if com is not None:
             self._com = com
@@ -1431,12 +1443,12 @@ class Molecule:
         return self._mass
 
     def get_com(self):
-        """Return the center of mass of the molecule.
+        """Return the centre of mass of the molecule.
 
         Returns
         -------
         com : list
-            center of mass coordinates
+            centre of mass coordinates
         """
         if self._com is None:
             self.set_com()

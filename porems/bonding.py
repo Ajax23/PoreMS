@@ -14,13 +14,13 @@ class Bonding:
     """The aim of this class is preserving all information of the silicon grid
     bonds. This is needed since firstly, verlet searches get costly the more often
     they are needed and secondly, multiple searches deteriorate the bond information,
-    due to numeric errors thus resulting in bonds beeing lost.
+    due to numeric errors thus resulting in bonds being lost.
 
     The idea here was reducing the verlet searches to a single search by creating
-    a connection matrix of all oxygene and silicon atoms.
-    In fact two matrices :math:`ox\\in\\mathbb{N}^{no\\times2}` for oxygene and
+    a connection matrix of all oxygen and silicon atoms.
+    In fact two matrices :math:`ox\\in\\mathbb{N}^{no\\times2}` for oxygen and
     :math:`si\\in\\mathbb{N}^{ns\\times2}` were created with numbers of
-    oxygene atoms :math:`no` and silicon atoms :math:`ns`
+    oxygen atoms :math:`no` and silicon atoms :math:`ns`
 
     .. math::
 
@@ -43,19 +43,19 @@ class Bonding:
             \\right]
         \\end{array}
 
-    with oxygene :math:`o_{i=0,\\dots,no}` and silicon :math:`s_{j=0,\\dots,ns}`.
+    with oxygen :math:`o_{i=0,\\dots,no}` and silicon :math:`s_{j=0,\\dots,ns}`.
     The entries next to the main atoms are the silicon atoms :math:`s_{i,ko=0,\\dots,so}`
-    bound to oxygene :math:`i` and oxygene atoms :math:`o_{j,ks=0,\\dots,os}` bound to
+    bound to oxygen :math:`i` and oxygen atoms :math:`o_{j,ks=0,\\dots,os}` bound to
     silicon :math:`j`, which are found using the verlet search algorithm.
     As an optimization, these values are not the atom ids, but the list pointers
-    of the specific atoms in their corresponfing connection matrices :math:`si`
-    and :math:`ox`. Due to chemical properties, the maximal possible silca atoms
-    bound to one oxegene is :math:`so=2` and the maximal possible number of
-    oxygene atoms bound to one silicon is :math:`os=4`.
+    of the specific atoms in their corresponding connection matrices :math:`si`
+    and :math:`ox`. Due to chemical properties, the maximal possible silicon atoms
+    bound to one oxygen is :math:`so=2` and the maximal possible number of
+    oxygen atoms bound to one silicon is :math:`os=4`.
 
     In the beginning, considering periodic boundary conditions and before
     removing any atoms, every atom should be saturated with partners. This means,
-    That every silicon has a set of four oxygenes and every oxygene has two
+    That every silicon has a set of four oxygens and every oxygen has two
     silicon bonds.
 
     With this connection matrix, bonds can be easily deleted and their number
@@ -116,16 +116,16 @@ class Bonding:
     ###################
     # Private Methods #
     ###################
-    def _unbind(self, silicon, oxygene):
-        """Remove the bond between a silicon and an oxygene atom from the
+    def _unbind(self, silicon, oxygen):
+        """Remove the bond between a silicon and an oxygen atom from the
         connection matrix.
 
         Parameters
         ----------
         silicon : integer
             Silica atom id
-        oxygene : integer
-            Oxygene atom id
+        oxygen : integer
+            Oxygen atom id
         """
         # initialize
         sio = self._sio
@@ -134,14 +134,14 @@ class Bonding:
 
         # Get pointer
         id_s = pointer[silicon]
-        id_o = pointer[oxygene]
+        id_o = pointer[oxygen]
 
         # Remove bond
         sio[1][id_s].pop(sio[1][id_s].index(id_o))
         osi[1][id_o].pop(osi[1][id_o].index(id_s))
 
     def _geminal(self):
-        """Get the list silicon that have gmeinal bonds - two binding sites.
+        """Get the list silicon that have geminal bonds - two binding sites.
 
         Returns
         -------
@@ -149,9 +149,9 @@ class Bonding:
             List of silicon with geminal bonds
         """
         # Get list of geminal silicon
-        oxygene = [o[0] for o in self._osi[1] if len(o) == 1]
-        silicon = list(set(oxygene))
-        geminal = [self._sio[0][s] for s in silicon if oxygene.count(s) == 2]
+        oxygen = [o[0] for o in self._osi[1] if len(o) == 1]
+        silicon = list(set(oxygen))
+        geminal = [self._sio[0][s] for s in silicon if oxygen.count(s) == 2]
 
         return geminal
 
@@ -220,7 +220,7 @@ class Bonding:
         Parameters
         ----------
         is_list : bool, optional
-            True to return the atom list to be deleted, False to delte the atoms with no return value.
+            True to return the atom list to be deleted, False to delete the atoms with no return value.
 
         Returns
         -------
@@ -254,7 +254,7 @@ class Bonding:
     def attach(self):
         """The bonds in drilling direction are broken, since on these sites the
         reservoirs containing molecules are appended and binding sites
-        are needed. After breaking the bonds, oxygenes are added to the unsaturated
+        are needed. After breaking the bonds, oxygens are added to the unsaturated
         silicon on the outer surface.
         """
         # Initialize
@@ -280,7 +280,7 @@ class Bonding:
             if not isinstance(theta, list):
                 theta = [theta]
 
-            # Run through oxygenes
+            # Run through oxygens
             for i in range(len(o)):
                 # Break bond
                 self._unbind(sio[0][si], osi[0][o[i]])
@@ -340,13 +340,13 @@ class Bonding:
                     ox = []
                     theta = []
                     for o in sio[1][i]:
-                        # Single oxygene
+                        # Single oxygen
                         if abs(data[2][osi[0][o]]-box[2]+y_grid) < 10e-3:
                             add_oxy(i, o, -si_grid)
                             adjust(o, si_grid)
                             break
 
-                        # Double oxygenes
+                        # Double oxygens
                         if abs(data[2][osi[0][o]]-box[2]) < 10e-3:
                             # Find second silicon and get positions
                             si = osi[1][o][0] if not osi[1][o][0] == i else osi[1][o][1]
@@ -356,7 +356,7 @@ class Bonding:
                             # Add to list
                             ox.append(o)
 
-                            # Left, boundary left and right oxygene (this order)
+                            # Left, boundary left and right oxygen (this order)
                             theta.append(angle-180) if sP > oP or abs(sP -
                                                                       oP) > box[2]/2 else theta.append(180-angle)
 
@@ -371,7 +371,7 @@ class Bonding:
                             add_oxy(i, o, -si_grid)
 
     def drill(self, focal, diam):
-        """Drill through a pore through the silicon-ogygene-grid. This function
+        """Drill through a pore through the silicon-oxygen-grid. This function
         does not delete any atoms but rather unlinks all bonds of atoms
         within the pore diameter.
 
@@ -380,7 +380,7 @@ class Bonding:
         focal : list
             Focal point of the grid
         diam : float
-            Pore diamter
+            Pore diameter
         """
         # Initialize
         data = self._data
@@ -399,7 +399,7 @@ class Bonding:
                     self.unlink(target)
 
     def prepare(self):
-        """Prepare binding site in the pore. These are oxygene atoms with only
+        """Prepare binding site in the pore. These are oxygen atoms with only
         one bond to a grid silicon and another loose end directed to the pore.
 
         Inspired by earlier work, the pore is then prepared in the steps

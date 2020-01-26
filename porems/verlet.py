@@ -25,8 +25,8 @@ class Verlet:
     each atom if their bond length is within the search distance.
     Since this distance is however confined, the idea is reducing
     the search space by dividing the molecule box into small verlet boxes. Thus the
-    atom pairs have to only be checked in the box containing the starting atom
-    and the small boxes surrounding the main box. In the three dimensional case,
+    atom pairs must only be checked in the box containing the starting atom
+    and the small boxes surrounding the main box. In the three-dimensional case,
     the effort reduces to
 
     .. math::
@@ -46,7 +46,7 @@ class Verlet:
         v > l.
 
     Since molecular simulation considers periodic
-    boundary conditions, these have to also be applied for the surround box search.
+    boundary conditions, these must also be applied for the surround box search.
 
     Parameters
     ----------
@@ -55,7 +55,7 @@ class Verlet:
     size : float
         Verlet box edge size
     is_pbc : bool
-        True if periodic boundry conditions are needed
+        True if periodic boundary conditions are needed
     """
     def __init__(self, mol, size, is_pbc):
         # Initialize
@@ -78,7 +78,7 @@ class Verlet:
         for the given size and molecule dimensions. The given size is adjusted,
         since only whole numbered box number are reasonable.
         A list of boxes is generated containing the coordinates of the zero
-        point of each box. Furthermore an empty list for each box added, that will
+        point of each box. Furthermore, an empty list for each box added, that will
         contain pointer to the atoms.
 
         The boxes are numbered as follows for the example of a :math:`3\\times3` block
@@ -317,7 +317,7 @@ class Verlet:
     def _find_bond(self, box_list, atom_type, distance, error, condition):
         """Search for a bond in the given verlet boxes. This function automatically
         searches for the surrounding boxes and checks in all 27 of them for the
-        defined bond (atomtypes and bond length). If the bond length is within a
+        defined bond (atom types and bond length). If the bond length is within a
         given error, then the atoms will be added to an output.
         The user can also define an additional and stricter condition for adding
         the atoms.
@@ -331,9 +331,9 @@ class Verlet:
         distance : float
             Bond length
         error : float
-            Tollerated deviation of the bondlength
-        condition : None, func
-            None or a function f(Molecule,bond) with a boolean output
+            Tolerated deviation of the bond length
+        condition : None, function
+            None or a function f(Molecule, bond) with a boolean output
 
         Returns
         -------
@@ -410,9 +410,9 @@ class Verlet:
         distance : float
             Bond length
         error : float
-            Tollerated deviation of the bondlength
+            Tolerated deviation of the bond length
         condition : None, function, optional
-            None or a function f(Molecule,bond) with a boolean output
+            None or a function f(Molecule, bond) with a boolean output
         is_time : bool, optional
             True to print the used search time
 
@@ -447,7 +447,7 @@ class Verlet:
         results = [pool.apply_async(self._find_bond, args=(
             x, atom_type, distance, error, condition)) for x in boxes]
 
-        # Concat processes
+        # Concatenate processes
         output = []
         for p in results:
             output.extend(p.get())
@@ -512,7 +512,7 @@ class Verlet:
     # Setter methods #
     ##################
     def set_pbc(self, pbc):
-        """Turn the periodic boundary consitions on and off.
+        """Turn the periodic boundary conditions on and off.
 
         Parameters
         ----------

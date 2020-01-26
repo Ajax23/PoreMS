@@ -20,11 +20,11 @@ Pore Generator for Molecular Simulations
   :width: 100%
 
 This python package generates pore structures to be used in molecular
-simulations. Visit the `porcess <process.html>`_ page for an overview of the
-programs operating principle. Additionally tutorials for generating
+simulations. Visit the `process <process.html>`_ page for an overview of the
+programs operating principle. Additionally, tutorials for generating
 `molecules <molecule.html>`_ and `pores <pore.html>`_ are provided.
 
-Check out an examplary `workflow <workflow.html>`_ for using the PoreMS package
+Check out an exemplary `workflow <workflow.html>`_ for using the PoreMS package
 to create a pore system and run molecular dynamics simulation using
 `Gromacs <http://www.gromacs.org/>`_.
 

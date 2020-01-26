@@ -1,8 +1,7 @@
 ################################################################################
 # Utils                                                                        #
 #                                                                              #
-"""Here popular basic methods are noted. Furthermore terminal commands are
-specified depending on the operating system."""
+"""Here popular basic methods are noted."""
 ################################################################################
 
 
@@ -79,7 +78,7 @@ def copy_dir(source, target):
 
 
 def tic():
-    """Matlab tic reproduction - return current time.
+    """MATLAB tic reproduction - return current time.
 
     Returns
     -------
@@ -90,7 +89,7 @@ def tic():
 
 
 def toc(t, message=None, is_print=True):
-    """Matlab toc reproduction - return time difference to tic and alternatively
+    """MATLAB toc reproduction - return time difference to tic and alternatively
     print a message.
 
     Parameters
