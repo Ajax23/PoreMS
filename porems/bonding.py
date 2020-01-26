@@ -12,12 +12,12 @@ import porems.utils as utils
 
 class Bonding:
     """The aim of this class is preserving all information of the silicon grid
-    bonds. This is needed since firstly, verlet searches get costly the more often
-    they are needed and secondly, multiple searches deteriorate the bond information,
-    due to numeric errors thus resulting in bonds being lost.
+    bonds. This is needed since firstly, verlet searches get costly the more
+    often they are needed and secondly, multiple searches deteriorate the bond
+    information, due to numeric errors thus resulting in bonds being lost.
 
-    The idea here was reducing the verlet searches to a single search by creating
-    a connection matrix of all oxygen and silicon atoms.
+    The idea here was reducing the verlet searches to a single search by
+    creating a connection matrix of all oxygen and silicon atoms.
     In fact two matrices :math:`ox\\in\\mathbb{N}^{no\\times2}` for oxygen and
     :math:`si\\in\\mathbb{N}^{ns\\times2}` were created with numbers of
     oxygen atoms :math:`no` and silicon atoms :math:`ns`
@@ -44,18 +44,19 @@ class Bonding:
         \\end{array}
 
     with oxygen :math:`o_{i=0,\\dots,no}` and silicon :math:`s_{j=0,\\dots,ns}`.
-    The entries next to the main atoms are the silicon atoms :math:`s_{i,ko=0,\\dots,so}`
-    bound to oxygen :math:`i` and oxygen atoms :math:`o_{j,ks=0,\\dots,os}` bound to
-    silicon :math:`j`, which are found using the verlet search algorithm.
-    As an optimization, these values are not the atom ids, but the list pointers
-    of the specific atoms in their corresponding connection matrices :math:`si`
-    and :math:`ox`. Due to chemical properties, the maximal possible silicon atoms
-    bound to one oxygen is :math:`so=2` and the maximal possible number of
-    oxygen atoms bound to one silicon is :math:`os=4`.
+    The entries next to the main atoms are the silicon atoms
+    :math:`s_{i,ko=0,\\dots,so}` bound to oxygen :math:`i` and oxygen atoms
+    :math:`o_{j,ks=0,\\dots,os}` bound to silicon :math:`j`, which are found
+    using the verlet search algorithm. As an optimization, these values are not
+    the atom ids, but the list pointers of the specific atoms in their
+    corresponding connection matrices :math:`si` and :math:`ox`. Due to chemical
+    properties, the maximal possible silicon atoms bound to one oxygen is
+    :math:`so=2` and the maximal possible number of oxygen atoms bound to one
+    silicon is :math:`os=4`.
 
     In the beginning, considering periodic boundary conditions and before
-    removing any atoms, every atom should be saturated with partners. This means,
-    That every silicon has a set of four oxygens and every oxygen has two
+    removing any atoms, every atom should be saturated with partners. This
+    means that every silicon has a set of four oxygens and every oxygen has two
     silicon bonds.
 
     With this connection matrix, bonds can be easily deleted and their number
@@ -199,8 +200,8 @@ class Bonding:
             list_a[1][id_a] = []
 
     def remove(self, atoms):
-        """Add an atom to a list of atoms to be deleted. This method is important,
-        since by this call no bonds are removed.
+        """Add an atom to a list of atoms to be deleted. This method is
+        important since by this call no bonds are removed.
 
         Parameters
         ----------
@@ -220,7 +221,8 @@ class Bonding:
         Parameters
         ----------
         is_list : bool, optional
-            True to return the atom list to be deleted, False to delete the atoms with no return value.
+            True to return the atom list to be deleted, False to delete the
+            atoms with no return value.
 
         Returns
         -------
@@ -253,8 +255,8 @@ class Bonding:
     ##############################
     def attach(self):
         """The bonds in drilling direction are broken, since on these sites the
-        reservoirs containing molecules are appended and binding sites
-        are needed. After breaking the bonds, oxygens are added to the unsaturated
+        reservoirs containing molecules are appended and binding sites are
+        needed. After breaking the bonds, oxygens are added to the unsaturated
         silicon on the outer surface.
         """
         # Initialize
@@ -443,10 +445,10 @@ class Bonding:
                 o_b&s_{b,0}&t_b&g_b
             \\end{bmatrix}
 
-        with number of binding sites :math:`b`. The type :math:`t_{k=0,\\dots,b}`
-        is 0 for binding sites inside the pore and 1 for sites on the outside.
-        Geminal entries :math:`g_k` contain pointers to binding sites in
-        the binding matrix :math:`\\boldsymbol{B}`.
+        with number of binding sites :math:`b`. The type
+        :math:`t_{k=0,\\dots,b}` is 0 for binding sites inside the pore and 1
+        for sites on the outside. Geminal entries :math:`g_k` contain pointers
+        to binding sites in the binding matrix :math:`\\boldsymbol{B}`.
 
         Returns
         -------

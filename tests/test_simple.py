@@ -72,7 +72,7 @@ if __name__ == "__main__":
     pore = Pore(size=[10, 10, 10], diam=6, drill="z", res=5, is_time=True)
     pore.set_name("pore")
 
-    pore.siloxan(10, "num")
+    pore.siloxane(10, "num")
     pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 3, inp="percent")
     pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 0.67, inp="molar")
     pore.attach(TMS(compress=30), [0, 1], [1, 2], 1, 10, inp="num")

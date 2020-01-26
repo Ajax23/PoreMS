@@ -64,10 +64,10 @@ class Store:
     # Public Methods - Antechamber #
     ################################
     def job(self, is_master=False):
-        """Create job file to run with Antechamber. A shell file and a tleap file
-        are created with all necessary commands to create a topology from a pdb file.
-        For the conversion to GROMACS file format the python package **ParmED**
-        needs to be installed.
+        """Create job file to run with Antechamber. A shell file and a tleap
+        file are created with all necessary commands to create a topology from a
+        pdb file. For the conversion to GROMACS file format the python package
+        **ParmED** needs to be installed.
 
         Parameters
         ----------
@@ -129,7 +129,8 @@ class Store:
         utils.save(self._mol, link)
 
     def pdb(self, name=None):
-        """Generate the structure file for the defined molecule in the **PDB** format.
+        """Generate the structure file for the defined molecule in the **PDB**
+        format.
 
         Parameters
         ----------
@@ -221,11 +222,11 @@ class Store:
                     atom = data[dim][i]
                     atom_name = atom+str(ids[atom])
 
-                    out_string = "%5i" % num_m  # 1- 5 (5)    Residue number
-                    out_string += "%-5s" % short  # 6-10 (5)    Residue short name
+                    out_string = "%5i" % num_m       # 1- 5 (5)    Residue number
+                    out_string += "%-5s" % short     # 6-10 (5)    Residue short name
                     out_string += "%5s" % atom_name  # 11-15 (5)    Atom name
                     out_string += "%5i" % num_a      # 16-20 (5)    Atom number
-                    for j in range(dim):            # 21-44 (3*8)  Coordinates
+                    for j in range(dim):             # 21-44 (3*8)  Coordinates
                         out_string += "%8.3f" % data[j][i]
 
                     file_out.write(out_string+"\n")

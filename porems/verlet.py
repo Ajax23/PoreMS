@@ -24,8 +24,8 @@ class Verlet:
     with the number of atoms :math:`n`, since each atom has to be compared with
     each atom if their bond length is within the search distance.
     Since this distance is however confined, the idea is reducing
-    the search space by dividing the molecule box into small verlet boxes. Thus the
-    atom pairs must only be checked in the box containing the starting atom
+    the search space by dividing the molecule box into small verlet boxes. Thus
+    the atom pairs must only be checked in the box containing the starting atom
     and the small boxes surrounding the main box. In the three-dimensional case,
     the effort reduces to
 
@@ -35,11 +35,11 @@ class Verlet:
             \\mathcal O(n\\cdot N),&N=\\sum_{j=0}^ma_j
         \\end{array}
 
-    with the number of boxes m, in the three dimensional case this is :math:`3^3=27`,
-    the number of atoms :math:`a_j` of box :math:`j` and the number of surround
-    atoms :math:`N`. This is considerably less and of course depending on the
-    verlet box size. Note that the verlet size :math:`v` has to be greater than the
-    specified bond length :math:`l` for the search
+    with the number of boxes m, in the three dimensional case this is
+    :math:`3^3=27`, the number of atoms :math:`a_j` of box :math:`j` and the
+    number of surround atoms :math:`N`. This is considerably less and of course
+    depending on the verlet box size. Note that the verlet size :math:`v` has to
+    be greater than the specified bond length :math:`l` for the search
 
     .. math::
 
@@ -74,14 +74,15 @@ class Verlet:
     # Private Methods - Definition #
     ################################
     def _verlet(self, size):
-        """Here the possible number of verlet boxes is calculated for each dimension
-        for the given size and molecule dimensions. The given size is adjusted,
-        since only whole numbered box number are reasonable.
+        """Here the possible number of verlet boxes is calculated for each
+        dimension for the given size and molecule dimensions. The given size is
+        adjusted, since only whole numbered box number are reasonable.
         A list of boxes is generated containing the coordinates of the zero
-        point of each box. Furthermore, an empty list for each box added, that will
-        contain pointer to the atoms.
+        point of each box. Furthermore, an empty list for each box added, that
+        will contain pointer to the atoms.
 
-        The boxes are numbered as follows for the example of a :math:`3\\times3` block
+        The boxes are numbered as follows for the example of a :math:`3\\times3`
+        block
 
         .. math::
 
@@ -132,8 +133,9 @@ class Verlet:
         self._count = count
 
     def _fill(self):
-        """Atoms are so to say filled in the verlet boxes depending on their position.
-        This is done by adding atom ids to specific boxes in the box array.
+        """Atoms are so to say filled in the verlet boxes depending on their
+        position. This is done by adding atom ids to specific boxes in the box
+        array.
         """
         # Initialize
         data = self._data
@@ -160,7 +162,8 @@ class Verlet:
     # Private Methods - Iterator #
     ##############################
     def _index(self, pos):
-        """Get the box id from a given box position which is a list of x, y and z values.
+        """Get the box id from a given box position which is a list of x, y and
+        z values.
 
         Parameters
         ----------
@@ -315,12 +318,12 @@ class Verlet:
     # Parallelization methods #
     ###########################
     def _find_bond(self, box_list, atom_type, distance, error, condition):
-        """Search for a bond in the given verlet boxes. This function automatically
-        searches for the surrounding boxes and checks in all 27 of them for the
-        defined bond (atom types and bond length). If the bond length is within a
-        given error, then the atoms will be added to an output.
-        The user can also define an additional and stricter condition for adding
-        the atoms.
+        """Search for a bond in the given verlet boxes. This function
+        automatically searches for the surrounding boxes and checks in all 27 of
+        them for the defined bond (atom types and bond length). If the bond
+        length is within a given error, then the atoms will be added to an
+        output. The user can also define an additional and stricter condition
+        for adding the atoms.
 
         Parameters
         ----------
