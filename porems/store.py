@@ -189,7 +189,8 @@ class Store:
             file_out.write("TER\nEND\n")
 
     def gro(self, name=None):
-        """Generate the structure file for the defined molecule in the **GRO** format.
+        """Generate the structure file for the defined molecule in the **GRO**
+        format.
 
         Parameters
         ----------
@@ -245,7 +246,7 @@ class Store:
             file_out.write(out_string)
 
     def xyz(self, name=None):
-        """Generate the structure file for the defined molecule in the xyz
+        """Generate the structure file for the defined molecule in the **XYZ**
         format for running qm-simulations.
 
         Parameters
@@ -278,10 +279,9 @@ class Store:
     # Topology #
     ############
     def top(self, name=None):
-        """Store the topology file for a pore. A top file is created containing
-        the itp-include for all molecules and the count of the different groups
-        of the pore. If parameter ``link`` is given, parameter ``name`` will be
-        ignored.
+        """Store the **topology** file for a pore. A top file is created
+        containing the itp-include for all molecules and the count of the
+        different groups of the pore.
 
         Parameters
         ----------
@@ -330,7 +330,7 @@ class Store:
             file_out.write(mols[-1].get_short()+" "+str(counter)+"\n")
 
     def grid(self, name=None):
-        """Store the grid.itp file containing the necessary parameters and
+        """Store the **grid.itp** file containing the necessary parameters and
         charges of the grid molecules.
 
         Parameters
