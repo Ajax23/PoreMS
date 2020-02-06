@@ -1592,7 +1592,7 @@ class Pore(Molecule):
         data_props["Silanol_Out"] = "%i"%props["Silanol_Geminal"]["out"]+"/"+"%i"%props["Silanol_Geminal"]["out_g"]
         data_props["Time"] = form%sum([props["Generation_Time"][x] for x in props["Generation_Time"]])
 
-        tables["props"] = pd.DataFrame.from_dict(data_props, orient="index", columns={self._drill+"-Axis - "+"%.0f"%self._diam+"nm"})
+        tables["props"] = pd.DataFrame.from_dict(data_props, orient="index", columns={self._drill+"-Axis - d="+"%.0f"%self._diam+"nm"})
 
         # Allocation table
         data_alloc = {}
