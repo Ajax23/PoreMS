@@ -299,12 +299,12 @@ class Store:
             if not mol.get_name() in unique_mols:
                 unique_mols.append(mol.get_name())
 
+        # Copy master topology file
+        utils.copy(os.path.split(__file__)[0]+"/templates/topol.top", link)
+
         # Open file
-        with open(link, "w") as file_out:
+        with open(link, "a") as file_out:
             # Store header
-            file_out.write("[ defaults ]\n")
-            file_out.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
-            file_out.write("1               2               yes             0.5     0.833333\n")
             file_out.write("\n")
             file_out.write("#include \"grid.itp\"\n")
 
@@ -312,9 +312,6 @@ class Store:
                 if mol_name not in ["si", "om", "ox", "sl", "slg", "slx"]:
                     file_out.write("#include \""+mol_name+".itp\"\n")
 
-            file_out.write("\n")
-            file_out.write("[ system ]\n")
-            file_out.write("A pore used in molecular simulation plus reservoir\n")
             file_out.write("\n")
             file_out.write("[ molecules ]\n")
 
