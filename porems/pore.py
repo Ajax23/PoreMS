@@ -1600,7 +1600,7 @@ class Pore(Molecule):
             data_alloc[mol] = {}
             for location in props["Allocation"][mol]:
                 data_alloc[mol][location+" - Count"] = props["Allocation"][mol][location][0]
-                data_alloc[mol][location+" - mol/nm^2"] = form%props["Allocation"][mol][location][1]
+                data_alloc[mol][location+" - mols/nm^2"] = form%props["Allocation"][mol][location][1]
                 data_alloc[mol][location+" - mumol/m^2"] = form%props["Allocation"][mol][location][2]
 
         tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
