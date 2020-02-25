@@ -1584,6 +1584,7 @@ class Pore(Molecule):
         data_props = {}
         data_props["Dimension"] = "["+form%props["Dimension"][0]+", "+form%props["Dimension"][1]+", "+form%props["Dimension"][2]+"]"
         data_props["Diameter"] = form%props["Diameter"]
+        data_props["Reservoir"] = form%self.get_reservoir()
         data_props["Roughness"] = form%props["Roughness"]
         data_props["Surface"] = form%props["Surface"][0]
         data_props["Volume"] = form%props["Volume"]
