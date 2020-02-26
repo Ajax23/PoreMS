@@ -1477,7 +1477,8 @@ class Pore(Molecule):
 
             # Siloxane allocation
             slx = self._slx/props["Surface"][0]
-            props["Allocation"]["SLX"] = {"in": [self._slx, slx, slx*molar], "out": [0, 0.0, 0.0]}
+            if slx>0:
+                props["Allocation"]["SLX"] = {"in": [self._slx, slx, slx*molar], "out": [0, 0.0, 0.0]}
 
             # Calculate properties
             props["Charge"] = self._charge
