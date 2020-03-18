@@ -232,8 +232,10 @@ class TMS(Molecule):
         Compress molecule sidechain angles
     is_si : bool, optional
         True if the terminus should be a lone silicon, False for a CH3 group
+    is_hydro : bool, optional
+        True if the hydrogen atoms should be added
     """
-    def __init__(self, name="tms", short="TMS", charge=1.070428, compress=0, is_si=True):
+    def __init__(self, name="tms", short="TMS", charge=1.070428, compress=0, is_si=True, is_hydro=True):
         # Call super class
         super(TMS, self).__init__()
 
@@ -257,15 +259,16 @@ class TMS(Molecule):
         for i in range(3):
             self.add("C", 2, bond=[2, 1], r=b["sic"], theta=a["cch"]+compress, phi=60+120*i)
 
-        # Add hydrogens
-        for i in range(3, 5+1):
-            for j in range(3):
-                self.add("H", i, bond=[i, 2], r=b["ch"], theta=a["cch"]+compress, phi=60+120*j)
+        if is_hydro:
+            # Add hydrogens
+            for i in range(3, 5+1):
+                for j in range(3):
+                    self.add("H", i, bond=[i, 2], r=b["ch"], theta=a["cch"]+compress, phi=60+120*j)
 
-        # If not silicon ending
-        for i in range(3):
-            if not is_si:
-                self.add("H", 0, bond=[0, 1], r=b["ch"], theta=a["cch"], phi=60+120*i)
+            # If not silicon ending
+            for i in range(3):
+                if not is_si:
+                    self.add("H", 0, bond=[0, 1], r=b["ch"], theta=a["cch"], phi=60+120*i)
 
         # Set charge
         self.set_charge(charge)
