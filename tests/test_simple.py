@@ -4,10 +4,13 @@ import sys
 # Run test
 if __name__ == "__main__":
     # Install package
-    os.system("pip install ../. &> /dev/null")
+    if sys.platform == "win32":
+        os.system("pip install ../.")
+    else:
+        os.system("pip install ../. &> /dev/null")
     print("Finished inistalling package...")
 
-    # import package
+    # Import package
     from porems import *
     from porems.essentials import Alkane
     from porems.essentials import Alcohol

@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="porems2",
+    name="porems",
     version="0.2.0",
     author="Hamzeh Kraus",
     author_email="kraus@itt.uni-stuttgart.de",
