@@ -3,7 +3,12 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = python3 -msphinx
+ifdef OS
+   SPHINXBUILD   = python -msphinx
+else
+   SPHINXBUILD   = python3 -msphinx
+endif
+# SPHINXBUILD   = python3 -msphinx
 SPHINXPROJ    = PoreMS
 SOURCEDIR     = .
 BUILDDIR      = _build
