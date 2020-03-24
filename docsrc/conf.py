@@ -27,7 +27,10 @@ import sphinx_bootstrap_theme
 # sys.path.append(os.path.abspath('../'))
 
 # Install package
-os.system("pip install ../. &> /dev/null")
+if sys.platform == "win32":
+    os.system("pip install ../.")
+else:
+    os.system("pip install ../. &> /dev/null")
 print("Finished inistalling package...")
 
 
