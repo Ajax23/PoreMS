@@ -44,6 +44,9 @@ Volume
 .. autosummary::
     :toctree: generated/
 
+    volume.Volume
+    volume.Cylinder
+
 
 Optimization
 ~~~~~~~~~~~~

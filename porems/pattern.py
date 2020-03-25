@@ -53,7 +53,7 @@ class Pattern():
 
 
 class BetaCristobalit(Pattern):
-    """This class defines the minimal structure of a :math:`\\beta`-crystobalit
+    """This class defines the minimal structure of a :math:`\\beta`-cristobalite
     molecule.
     """
     def __init__(self):
@@ -145,7 +145,7 @@ class BetaCristobalit(Pattern):
         block[5].move(6, block[1].pos(16))
         block[5].delete([21, 19, 15, 20, 14, 12, 10, 2, 11, 1, 0])
 
-        # Delete overlaping molecules
+        # Delete overlapping molecules
         block = Molecule(inp=block)
         overlap = block.overlap()
         block.delete(sum([overlap[x] for x in overlap], []))

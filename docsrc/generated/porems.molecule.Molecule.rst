@@ -54,13 +54,13 @@ Molecule
   .. autosummary::
 
     ~Molecule.move
-    ~Molecule.part_angle
-    ~Molecule.part_move
-    ~Molecule.part_rotate
     ~Molecule.put
     ~Molecule.rotate
     ~Molecule.translate
     ~Molecule.zero
+    ~Molecule.part_angle
+    ~Molecule.part_move
+    ~Molecule.part_rotate
 
 
   .. rubric:: Atoms
@@ -69,11 +69,11 @@ Molecule
 
     ~Molecule.add
     ~Molecule.delete
-    ~Molecule.get_atom_type
     ~Molecule.overlap
+    ~Molecule.switch_atom_order
     ~Molecule.set_atom_name
     ~Molecule.set_atom_type
-    ~Molecule.switch_atom_order
+    ~Molecule.get_atom_type
 
 
   .. rubric:: Setter Methods

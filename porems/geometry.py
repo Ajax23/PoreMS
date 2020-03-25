@@ -290,10 +290,8 @@ def main_axis(inp, dim=3):
 def rotate(data, axis, angle, is_deg, dim=3):
     """Rotate a vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^3`
     along an axis :math:`\\boldsymbol{b}\\in\\mathbb{R}^3` with angle
-    :math:`\\alpha\\in\\mathbb{R}`.
-    Input for the axis is either a vector or the input for
-    function :func:`vector`.
-    The rotation is performed using the rotation-matrix
+    :math:`\\alpha\\in\\mathbb{R}`. The rotation is performed using the
+    rotation-matrix
 
     .. math::
 

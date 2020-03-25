@@ -78,7 +78,7 @@ def copy_dir(source, target):
 
 
 def tic():
-    """MATLAB tic reproduction - return current time.
+    """MATLAB tic replica - return current time.
 
     Returns
     -------
@@ -89,7 +89,7 @@ def tic():
 
 
 def toc(t, message=None, is_print=True):
-    """MATLAB toc reproduction - return time difference to tic and alternatively
+    """MATLAB toc replica - return time difference to tic and alternatively
     print a message.
 
     Parameters

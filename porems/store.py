@@ -10,10 +10,10 @@ import shutil
 
 from decimal import Decimal
 
+import porems.utils as utils
+
 from porems.molecule import Molecule
 from porems.pore import Pore
-
-import porems.utils as utils
 
 
 class Store:
@@ -30,7 +30,7 @@ class Store:
     Parameters
     ----------
     construct : Molecule, Pore
-        Molecule or Pore object object
+        Molecule or Pore object
     link : string, optional
         Folder link for output
 
