@@ -9,7 +9,9 @@ creating pore structures."""
 import math
 import copy
 
-from porems.molecule import Molecule
+import porems.geometry as geometry
+
+from porems.molecule2 import Molecule
 
 
 class Pattern():
@@ -77,22 +79,22 @@ class BetaCristobalit(Pattern):
         hex = Molecule()
 
         hex.add("Si", [0, 0, 0])
-        hex.add("O",   0, r=self._b, theta=self._a, phi=60)
-        hex.add("Si",  1, r=self._b, bond=[0, 1])
-        hex.add("O",   2, r=self._b, theta=180,  phi=0)
-        hex.add("Si",  3, r=self._b, bond=[2, 3])
-        hex.add("O",   4, r=self._b, theta=self._a, phi=300)
-        hex.add("Si",  5, r=self._b, bond=[4, 5])
+        hex.add("O",   0, r= self._b, theta=self._a, phi=60)
+        hex.add("Si",  1, r= self._b, bond=[0, 1])
+        hex.add("O",   2, r= self._b, theta=180,  phi=0)
+        hex.add("Si",  3, r= self._b, bond=[2, 3])
+        hex.add("O",   4, r= self._b, theta=self._a, phi=300)
+        hex.add("Si",  5, r= self._b, bond=[4, 5])
         hex.add("O",   6, r=-self._b, theta=self._a, phi=60)
-        hex.add("Si",  7, r=self._b, bond=[6, 7])
+        hex.add("Si",  7, r= self._b, bond=[6, 7])
         hex.add("O",   8, r=-self._b, theta=180,  phi=0)
-        hex.add("Si",  9, r=self._b, bond=[8, 9])
+        hex.add("Si",  9, r= self._b, bond=[8, 9])
         hex.add("O",  10, r=-self._b, theta=self._a, phi=300)
 
         hex.rotate("y", 90)
         hex.rotate("z", 90)
         hex.rotate("y", 180)
-        hex.rotate("x", hex.angle(hex.bond(8, 6)[0], [0, 1, 0]))
+        hex.rotate("x", geometry.angle(hex.bond(8, 6)[0], [0, 1, 0]))
         hex.rotate("x", -90)
 
         return hex
@@ -124,7 +126,7 @@ class BetaCristobalit(Pattern):
         # Build block
         block = []
         for i in range(11):
-            block.append(Molecule(inp=mols))
+            block.append(Molecule(inp=copy.deepcopy(mols)))
 
         block[1].rotate("x", 180)
         block[1].move(18, block[0].pos(18))
@@ -143,17 +145,23 @@ class BetaCristobalit(Pattern):
         block[5].move(6, block[1].pos(16))
         block[5].delete([21, 19, 15, 20, 14, 12, 10, 2, 11, 1, 0])
 
-        # Delete overlaping molecules for repetition
+        # Delete overlaping molecules
         block = Molecule(inp=block)
-        block.overlap()
+        overlap = block.overlap()
+        block.delete(sum([overlap[x] for x in overlap], []))
 
-        # Determine number of needed blocks
-        block.zero()
+        # Check overlapping atoms due to repetition
+        for dim in range(3):
+            for pm in range(2):
+                # Define translate vector
+                translate = [0, 0, 0]
+                translate[dim] = self._repeat[dim]
+                translate[dim] *= -1 if pm == 1 else 1
 
-        # Delete overlapping atoms
-        block.delete([4, 3, 2, 12, 15, 45, 46, 55, 57, 63, 26, 25, 24, 34, 37, 61])  # x-Axis
-        block.delete([50, 48, 36, 40, 41])  # y-Axis
-        block.delete([45, 20, 19, 21, 22, 23, 24, 25, 17, 18])  # z-Axis
+                # Remove atoms
+                mol_repeat = copy.deepcopy(block)
+                mol_repeat.translate(translate)
+                block.delete([x for x in  Molecule(inp=[block, mol_repeat]).overlap() if x < block.get_num()])
 
         # Move to zero
         block.zero()

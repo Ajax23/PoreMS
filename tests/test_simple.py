@@ -16,6 +16,7 @@ from porems.molecule2 import Molecule
 from porems.pore2 import Pore
 from porems.store2 import Store
 from porems.pattern import BetaCristobalit
+from porems.essentials import *
 
 
 class UserModelCase(unittest.TestCase):
@@ -96,7 +97,7 @@ class UserModelCase(unittest.TestCase):
         mol.delete(2)
         self.assertEqual([round(x, 4) for x in mol.pos(2)], [0.0500, 0.0500, 0.0293])
         mol.add("C", [0, 0.1, 0.2])
-        self.assertEqual(mol.overlap(), [[0, 3]])
+        self.assertEqual(mol.overlap(), {0: [3]})
         mol.switch_atom_order(0, 2)
         self.assertEqual([round(x, 4) for x in mol.pos(0)], [0.0500, 0.0500, 0.0293])
         mol.set_atom_type(0, "R")
@@ -105,23 +106,39 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(mol.get_atom_list()[0].get_name(), "RuX")
 
 
+    ##############
+    # Essentails #
+    ##############
+    def test_essentials(self):
+        self.assertEqual([round(x, 4) for x in Alkane(10).pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in Alcohol(10).pos(5)], [0.0363, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in Ketone(10, 5).pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in TMS(separation=30).pos(5)], [0.0273, 0.0472, 0.4525])
+
+
+    ###########
+    # Pattern #
+    ###########
+    def test_pattern(self):
+        self.skipTest("Temporary")
+
+        self.assertEqual(BetaCristobalit().pattern().get_num(), 36)
+
+        Store(BetaCristobalit().pattern(), "output").gro()
+
+
     #########
     # Store #
     #########
-    # def test_store(self):
-    #     mol = Molecule(inp="data/benzene.gro")
-    #     mol.set_name("molecule2")
-    #
-    #     Store(mol, "output").gro()
-    #     Store(mol, "output").pdb()
-    #     Store(mol, "output").xyz()
+    def test_store(self):
+        self.skipTest("Temporary")
 
+        mol = Molecule(inp="data/benzene.gro")
 
-    # ###########
-    # # Pattern #
-    # ###########
-    # def test_pattern(self):
-    #     Store(BetaCristobalit().pattern(), "output").gro()
+        Store(mol, "output").gro()
+        Store(mol, "output").pdb()
+        Store(mol, "output").xyz()
+
 
     # ########
     # # Pore #
