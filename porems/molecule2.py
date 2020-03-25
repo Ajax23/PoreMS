@@ -674,19 +674,27 @@ class Molecule:
 
         Returns
         -------
-        duplicate : list
-            List of duplicate atoms
+        duplicate : dictionary
+            Dictionary of duplicate lists
         """
         # Initialize
-        duplicates = []
+        atom_list = {x: False for x in range(self.get_num())}
+        duplicates = {}
 
         # Run through complete atoms list
-        for id_a, atom_a in enumerate(self._atom_list):
-            # Run through atom list after first loop
-            for id_b, atom_b in enumerate(self._atom_list[id_a+1:]):
-                # Check if overlapping
-                if sum([error > abs(x) for x in geometry.vector(atom_a.get_pos(), atom_b.get_pos())]) == 3:
-                    duplicates.append([id_a, id_a+id_b+1])
+        for atom_a in atom_list:
+            # Ignore duplicate items
+            if not atom_list[atom_a]:
+                # Run through atom list after first loop
+                for atom_b in [x for x in atom_list if x>atom_a]:
+                    # Check if overlapping
+                    if sum([error > abs(x) for x in geometry.vector(self.pos(atom_a), self.pos(atom_b))]) == 3:
+                        if not atom_a in duplicates:
+                            duplicates[atom_a] = []
+                        duplicates[atom_a].append(atom_b)
+                        # Set to false
+                        atom_list[atom_a] = True
+                        atom_list[atom_b] = True
 
         # Return duplicates
         return duplicates

@@ -6,7 +6,7 @@ molecule generation process."""
 ################################################################################
 
 
-from porems.molecule import Molecule
+from porems.molecule2 import Molecule
 
 
 class Alkane(Molecule):
@@ -52,19 +52,19 @@ class Alkane(Molecule):
         # Add hydrogens
         if is_h:
             if length > 1:
-                # Boundaries
-                end = self.get_num()-1
-
-                for i in range(3):
-                    self.add("H", 0, bond=[0, 1], r=b["ch"], theta=a["cch"], phi=60+120*i)
-                    self.add("H", end, bond=[end, end-1], r=b["ch"], theta=a["cch"], phi=60+120*i)
-
-                # Interior
                 angle = -90
-                for i in range(1, length-1):
+                for i in range(length):
+                    # Boundary
+                    if i==0 or i==length-1:
+                        for j in range(3):
+                            self.add("H", i, r=b["ch"], theta=angle-30, phi=120*j)
+                    # Inner
+                    else:
+                        self.add("H", i, r=b["ch"], theta=angle, phi=a["cch"])
+                        self.add("H", i, r=b["ch"], theta=angle, phi=-a["cch"])
+
+                    # Switch orientation
                     angle *= -1
-                    self.add("H", i, r=b["ch"], theta=angle, phi=a["cch"])
-                    self.add("H", i, r=b["ch"], theta=angle, phi=-a["cch"])
 
             # Methane
             else:
@@ -123,16 +123,19 @@ class Alcohol(Molecule):
         # Add hydrogens
         if is_h:
             if length > 1:
-                # Boundary
-                for i in range(3):
-                    self.add("H", 0, bond=[0, 1], r=b["ch"], theta=a["cch"], phi=120*i)
-
-                # Interior
                 angle = -90
-                for i in range(1, length):
+                for i in range(length):
+                    # Boundary
+                    if i==0:
+                        for j in range(3):
+                            self.add("H", i, r=b["ch"], theta=angle-30, phi=120*j)
+                    # Inner
+                    else:
+                        self.add("H", i, r=b["ch"], theta=angle, phi=a["cch"])
+                        self.add("H", i, r=b["ch"], theta=angle, phi=-a["cch"])
+
+                    # Switch orientation
                     angle *= -1
-                    self.add("H", i, r=b["ch"], theta=angle, phi=a["cch"])
-                    self.add("H", i, r=b["ch"], theta=angle, phi=-a["cch"])
 
             # Methanol
             else:
@@ -196,20 +199,19 @@ class Ketone(Molecule):
 
         # Add hydrogens
         if is_h:
-            # Boundaries
-            end = self.get_num()-1
-
-            for i in range(3):
-                self.add("H", 0, bond=[0,  1], r=b["ch"], theta=a["cch"], phi=60+120*i)
-                self.add("H", end-1, bond=[end-1, end-2], r=b["ch"], theta=a["cch"], phi=60+120*i)
-
-            # Interior
             angle = -90
-            for i in range(1, length-1):
-                angle *= -1
-                if not i == pos-1:
+            for i in range(length):
+                # Boundary
+                if i==0 or i==length-1:
+                    for j in range(3):
+                        self.add("H", i, r=b["ch"], theta=angle-30, phi=120*j)
+                # Inner
+                elif not i == pos-1:
                     self.add("H", i, r=b["ch"], theta=angle, phi=a["cch"])
                     self.add("H", i, r=b["ch"], theta=angle, phi=-a["cch"])
+
+                # Switch orientation
+                angle *= -1
 
         # Move to zero
         self.zero()
@@ -228,14 +230,14 @@ class TMS(Molecule):
         Molecule short name
     charge : float, optional
         Excess charge of the entire grid molecule
-    compress : float, optional
-        Compress molecule sidechain angles
+    separation : float, optional
+        Sparation of carbon and hydrogen atoms
     is_si : bool, optional
         True if the terminus should be a lone silicon, False for a CH3 group
     is_hydro : bool, optional
         True if the hydrogen atoms should be added
     """
-    def __init__(self, name="tms", short="TMS", charge=1.070428, compress=0, is_si=True, is_hydro=True):
+    def __init__(self, name="tms", short="TMS", charge=1.070428, separation=30, is_si=True, is_hydro=True):
         # Call super class
         super(TMS, self).__init__()
 
@@ -245,30 +247,35 @@ class TMS(Molecule):
 
         # Check silicon
         si = "Si" if is_si else "Ci"
+        sio = "sio" if is_si else "co"
+        sic = "sic" if is_si else "cc"
 
         # Define bond lengths and angles
-        b = {"sio": 0.155, "sic": 0.186, "ch": 0.109}
+        b = {"sio": 0.155, "sic": 0.186, "ch": 0.109, "co": 0.143, "cc": 0.153}
         a = {"ccc": 30.00, "cch": 109.47, "siosi": 126.12}
 
         # Build silyl chain
         self.add(si, [0, 0, 0])
-        self.add("O", 0, r=b["sio"])
-        self.add(si, 1, bond=[1, 0], r=b["sio"], theta=a["siosi"])
+        self.add("O", 0, r=b[sio])
+        self.add(si, 1, r=b[sio])
 
         # Add methyl
         for i in range(3):
-            self.add("C", 2, bond=[2, 1], r=b["sic"], theta=a["cch"]+compress, phi=60+120*i)
+            self.add("C", 2, r=b[sic], theta=separation+10, phi=120*i)
 
         if is_hydro:
             # Add hydrogens
             for i in range(3, 5+1):
                 for j in range(3):
-                    self.add("H", i, bond=[i, 2], r=b["ch"], theta=a["cch"]+compress, phi=60+120*j)
+                    self.add("H", i, r=b["ch"], theta=separation, phi=120*j)
 
             # If not silicon ending
             for i in range(3):
                 if not is_si:
-                    self.add("H", 0, bond=[0, 1], r=b["ch"], theta=a["cch"], phi=60+120*i)
+                    self.add("H", 0, r=b["ch"], theta=180-separation, phi=120*i)
 
         # Set charge
         self.set_charge(charge)
+
+        # Move to zero
+        self.zero()
