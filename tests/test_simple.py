@@ -1,101 +1,137 @@
 import os
 import sys
 
-# Run test
-if __name__ == "__main__":
-    # Install package
-    if sys.platform == "win32":
-        os.system("pip install ../.")
-    else:
-        os.system("pip install ../. &> /dev/null")
-    print("Finished inistalling package...")
+import unittest
 
-    # Import package
-    from porems import *
-    from porems.essentials import Alkane
-    from porems.essentials import Alcohol
-    from porems.essentials import Ketone
-    from porems.essentials import TMS
+# Install package
+if sys.platform == "win32":
+    os.system("pip install ../.")
+else:
+    os.system("pip install ../. &> /dev/null")
+print("Finished inistalling package...")
 
-    # Generate molecules
-    mol_gro = Molecule(inp="data/benzene.gro")
-    mol_pdb = Molecule(inp="data/benzene.pdb")
-    mol_mol = Molecule(inp="data/benzene.mol2")
+# Import package
+from porems.atom import Atom
+from porems.molecule2 import Molecule
+from porems.pore2 import Pore
+from porems.store2 import Store
+from porems.pattern import BetaCristobalit
+
+
+class UserModelCase(unittest.TestCase):
+    ########
+    # Atom #
+    ########
+    def test_atom(self):
+        atom = Atom([0.0, 0.1, 0.2], "H", "HO1")
+
+        self.assertEqual(atom.__str__(), "  Name Type    x    y    z\n0  HO1    H  0.0  0.1  0.2")
 
 
     ############
     # Molecule #
     ############
-    # _read
-    for i in range(4):
-        print(mol_gro.get_data()[i])
-        print(mol_pdb.get_data()[i])
-        print(mol_mol.get_data()[i])
+    def test_molecule_loading(self):
+        mol_gro = Molecule(inp="data/benzene.gro")
+        mol_pdb = Molecule(inp="data/benzene.pdb")
+        mol_mol2 = Molecule(inp="data/benzene.mol2")
 
-    # _concat
-    for x in Molecule(inp=[mol_gro, mol_gro]).get_data(): print(x)
+        mol_atom = Molecule(inp=mol_mol2.get_atom_list())
+        mol_concat = Molecule(inp=[mol_gro, mol_pdb])
 
-    # set_masses
-    print(mol_gro.get_masses())
+        mol_append = Molecule(inp="data/benzene.gro")
+        mol_append.append(mol_gro)
 
-    # table
-    print(mol_gro.table())
+        pos_gro = [[round(x, 4) for x in col] for col in mol_gro.column_pos()]
+        pos_pdb = [[round(x, 4) for x in col] for col in mol_pdb.column_pos()]
+        pos_mol2 = [[round(x, 4) for x in col] for col in mol_mol2.column_pos()]
+        pos_atom = [[round(x, 4) for x in col] for col in mol_atom.column_pos()]
+        pos_concat = [[round(x, 4) for x in col] for col in mol_concat.column_pos()]
+        pos_append = [[round(x, 4) for x in col] for col in mol_append.column_pos()]
+
+        self.assertEqual(pos_gro, pos_pdb)
+        self.assertEqual(pos_gro, pos_mol2)
+        self.assertEqual(pos_gro, pos_atom)
+        self.assertEqual([col+col for col in pos_gro], pos_concat)
+        self.assertEqual([col+col for col in pos_gro], pos_append)
+
+    def test_molecule_properties(self):
+        mol = Molecule(inp="data/benzene.gro")
+
+        self.assertEqual(mol.pos(0), [0.0935, 0.0000, 0.3143])
+        self.assertEqual([[round(x, 4) for x in mol.bond(0, 1)[0]], round(mol.bond(0, 1)[1], 4)], [[0.1191, 0.0, 0.0687], 0.1375])
+        self.assertEqual(mol.bond([1, 0, 0], [0, 0, 0]), [[-1, 0, 0], 1.0])
+        self.assertEqual(mol.get_box(), [0.4252, 0.001, 0.491])
+        self.assertEqual([round(x, 4) for x in mol.centroid()], [0.2126, 0.0, 0.2455])
+        self.assertEqual([round(x, 4) for x in mol.com()], [0.2126, 0.0, 0.2455])
+
+    def test_molecule_editing(self):
+        mol = Molecule(inp="data/benzene.gro")
+
+        mol.translate([0, 0.1, 0.2])
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.3317, 0.1000, 0.3768])
+        mol.rotate("x", 45)
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.3317, -0.1957, 0.3371])
+        mol.move(0, [1, 1, 1])
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [1.2382, 1.0972, 0.9028])
+        mol.zero()
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.3317, 0.2222, 0.1250])
+        mol.put(3, [0, 0, 0])
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.0000, 0.0000, 0.0000])
+        mol.part_move([0, 1], [1, 2, 3, 4], 0.5)
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.3140, -0.1281, 0.1281])
+        mol.part_rotate([0, 1], [1, 2, 3, 4], 45, 1)
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [-0.1277, 0.0849, -0.3176])
+        mol.part_angle([0, 1], [1, 2], [1, 2, 3, 4], 45, 1)
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [-0.1360, -0.1084, -0.3068])
+
+    def test_molecule_creation(self):
+        mol = Molecule()
+
+        mol.add("C", [0, 0.1, 0.2])
+        mol.add("C", 0, r=0.1, theta=90)
+        mol.add("C", 1, [0, 1], r=0.1, theta=90)
+        mol.add("C", 2, [0, 2], r=0.1, theta=90, phi=45)
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.0500, 0.0500, 0.0293])
+        mol.delete(2)
+        self.assertEqual([round(x, 4) for x in mol.pos(2)], [0.0500, 0.0500, 0.0293])
+        mol.add("C", [0, 0.1, 0.2])
+        self.assertEqual(mol.overlap(), [[0, 3]])
+        mol.switch_atom_order(0, 2)
+        self.assertEqual([round(x, 4) for x in mol.pos(0)], [0.0500, 0.0500, 0.0293])
+        mol.set_atom_type(0, "R")
+        self.assertEqual(mol.get_atom_list()[0].get_atom_type(), "R")
+        mol.set_atom_name(0, "RuX")
+        self.assertEqual(mol.get_atom_list()[0].get_name(), "RuX")
 
 
     #########
     # Store #
     #########
-    Store(mol_gro, "output").job()
-    Store(mol_gro, "output").obj()
-    Store(mol_gro, "output").gro()
-    Store(mol_gro, "output").pdb()
-    Store(mol_gro, "output").xyz()
-
-    print(Molecule(inp="output/Molecule.obj").get_data())
-
-
-    ##############
-    # Essentials #
-    ##############
-    alkane = Alkane(10, "alkane")
-    alcohol = Alcohol(10, "alcohol")
-    ketone = Ketone(10,5, "ketone")
-    tms = TMS(compress=30)
-
-    Store(alkane, "output").gro()
-    Store(alcohol, "output").gro()
-    Store(ketone, "output").gro()
-    Store(tms, "output").gro()
+    # def test_store(self):
+    #     mol = Molecule(inp="data/benzene.gro")
+    #     mol.set_name("molecule2")
+    #
+    #     Store(mol, "output").gro()
+    #     Store(mol, "output").pdb()
+    #     Store(mol, "output").xyz()
 
 
-    ########
-    # Pore #
-    ########
-    # Generation
-    pore = Pore(size=[10, 10, 10], diam=6, drill="z", res=5, is_time=True)
-    pore.set_name("pore")
+    # ###########
+    # # Pattern #
+    # ###########
+    # def test_pattern(self):
+    #     Store(BetaCristobalit().pattern(), "output").gro()
 
-    pore.siloxane(10, "num")
-    pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 3, inp="percent")
-    pore.attach(TMS(compress=30), [0, 1], [1, 2], 0, 0.67, inp="molar")
-    pore.attach(TMS(compress=30), [0, 1], [1, 2], 1, 10, inp="num")
+    # ########
+    # # Pore #
+    # ########
+    # def test_pore(self):
+    #     pore = Pore([10, 10, 10], "z")
+    #     pore.generate()
+    #
+    #     Store(pore.get_pore(), "output").gro()
 
-    pore.finalize()
 
-    # Analysis
-    props = pore.get_props()
-
-    for prop in props:
-        print(prop,":",props[prop])
-
-    # Tables
-    tables = pore.table_props()
-    print(tables["props"])
-    print(tables["alloc"])
-    print(tables["time"])
-
-    # Structure
-    Store(pore, "output").obj()
-    Store(pore, "output").gro()
-    Store(pore, "output").top()
-    Store(pore, "output").grid()
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
