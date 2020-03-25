@@ -139,11 +139,13 @@ class UserModelCase(unittest.TestCase):
     # ########
     # # Pore #
     # ########
-    # def test_pore(self):
-    #     pore = Pore([10, 10, 10], "z")
-    #     pore.generate()
-    #
-    #     Store(pore.get_pore(), "output").gro()
+    def test_pore(self):
+        pore = Pore([10, 10, 10], "z")
+        pore.generate()
+
+        Store(pore.get_pore(), "output").gro()
+
+        print(pore.get_pore().overlap())
 
 
 if __name__ == '__main__':

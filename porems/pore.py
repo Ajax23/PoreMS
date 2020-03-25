@@ -139,7 +139,7 @@ class Pore():
         self._orientation(self._pore)                  # Rotate drill axis
         self._pore.translate(self._gap)                # Translate gap
         self._pore.set_name("pore")                    # Set pore name
-        self._t_tot["Build"] = utils.toc(t, "Build   ", is_time)
+        self._t_tot["Build"] = utils.toc(t, "Build   ", False)
 
     ##################
     # Setter Methods #
