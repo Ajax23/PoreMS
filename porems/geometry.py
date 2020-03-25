@@ -142,6 +142,34 @@ def cross_product(vec_a, vec_b):
     return vec
 
 
+def angle(vec_a, vec_b, is_deg=True):
+    """Calculate the angle between two vectors
+    :math:`\\boldsymbol{a},\\boldsymbol{b}\\in\\mathbb{R}^n`
+
+    .. math::
+
+        \\text{angle}=\\cos^{-1}\\frac{\\boldsymbol{a}\cdot\\boldsymbol{b}}
+        {|\\boldsymbol{a}||\\boldsymbol{a}|}
+
+    Parameters
+    ----------
+    vec_a : list
+        First vector :math:`\\boldsymbol{a}`
+    vec_b : list
+        Second vector :math:`\\boldsymbol{b}`
+    is_deg : bool, optional
+        True if the output should be in degree
+
+    Returns
+    -------
+    angle : float
+        Angle
+    """
+    angle = math.acos(dot_product(vec_a, vec_b)/(length(vec_a)*length(vec_b)))
+
+    return angle*180/math.pi if is_deg else angle
+
+
 def angle_polar(pos, is_deg=False):
     """Calculate the polar angle of a position vector
     :math:`\\boldsymbol{a}\\in\\mathbb{R}^3`, which is the angle of the
