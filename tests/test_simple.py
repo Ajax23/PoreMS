@@ -12,9 +12,9 @@ print("Finished inistalling package...")
 
 # Import package
 from porems.atom import Atom
-from porems.molecule2 import Molecule
-from porems.pore2 import Pore
-from porems.store2 import Store
+from porems.molecule import Molecule
+from porems.pore import Pore
+from porems.store import Store
 from porems.pattern import BetaCristobalit
 from porems.essentials import *
 
@@ -120,8 +120,6 @@ class UserModelCase(unittest.TestCase):
     # Pattern #
     ###########
     def test_pattern(self):
-        self.skipTest("Temporary")
-
         self.assertEqual(BetaCristobalit().pattern().get_num(), 36)
 
         Store(BetaCristobalit().pattern(), "output").gro()
@@ -131,8 +129,6 @@ class UserModelCase(unittest.TestCase):
     # Store #
     #########
     def test_store(self):
-        self.skipTest("Temporary")
-
         mol = Molecule(inp="data/benzene.gro")
 
         Store(mol, "output").gro()

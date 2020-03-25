@@ -11,7 +11,7 @@ import copy
 
 import porems.geometry as geometry
 
-from porems.molecule2 import Molecule
+from porems.molecule import Molecule
 
 
 class Pattern():
