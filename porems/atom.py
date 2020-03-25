@@ -34,7 +34,13 @@ class Atom:
     # Representation #
     ##################
     def __repr__(self):
-        """Create a pandas table of the molecule data."""
+        """Create a pandas table of the atom data.
+
+        Returns
+        -------
+        repr : DataFrame
+            Pandas data frame of the molecule object
+        """
         # Create data table from atom list
         atom_data = [[self._name], [self._atom_type]]
         atom_data.extend([[self._pos[i]] for i in range(len(self._pos))])
@@ -50,7 +56,13 @@ class Atom:
         return pd.DataFrame(data)
 
     def __str__(self):
-        """Convert a pandas table of the molecule data to string format."""
+        """Convert a pandas table of the atom data to string format.
+
+        Returns
+        -------
+        repr : string
+            Pandas data frame of the molecule object converted to a string
+        """
         return self.__repr__().to_string()
 
 

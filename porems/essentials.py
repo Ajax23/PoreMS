@@ -6,7 +6,7 @@ molecule generation process."""
 ################################################################################
 
 
-from porems.molecule2 import Molecule
+from porems.molecule import Molecule
 
 
 class Alkane(Molecule):
