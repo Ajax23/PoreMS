@@ -5,6 +5,7 @@
 ################################################################################
 
 
+import math
 import pandas as pd
 
 import porems.utils as utils
@@ -176,17 +177,7 @@ class Molecule:
         mol : Molecule
             Molecule object
         """
-        return Molecule(inp=[self.get_atom_list[x] for x in atoms])
-
-    def _column_pos(self):
-        """Create column list of atom positions
-
-        Returns
-        -------
-        column : list
-            Columns of all atom positions in all dimensions
-        """
-        return utils.column([atom.get_pos() for atom in self._atom_list])
+        return Molecule(inp=[self._atom_list[x] for x in atoms])
 
 
     ###############################
@@ -200,13 +191,23 @@ class Molecule:
         mol : Molecule
             Molecule object
         """
-        self._atom_list += mol.get_atom_list
+        self._atom_list += mol.get_atom_list()
+
+    def column_pos(self):
+        """Create column list of atom positions
+
+        Returns
+        -------
+        column : list
+            Columns of all atom positions in all dimensions
+        """
+        return utils.column([atom.get_pos() for atom in self._atom_list])
 
 
     ##############################
     # Private Methods - Geometry #
     ##############################
-    def _vector(pos_a, pos_b):
+    def _vector(self, pos_a, pos_b):
         """Calculate the vector between to two positions as defined in
         :class:`porems.geometry.vector` with the addition to define the inputs
         as atom indices.
@@ -255,7 +256,7 @@ class Molecule:
         box : list
             Box length of the current molecule
         """
-        data = self._column_pos()
+        data = self.column_pos()
         return [max(data[i]) if max(data[i]) > 0 else 0.001 for i in range(self._dim)]
 
 
@@ -325,7 +326,7 @@ class Molecule:
             Geometrical center of mass
         """
         # Calculate the centroid
-        data = self._column_pos()
+        data = self.column_pos()
         return [sum(data[i])/len(data[i]) for i in range(self._dim)]
 
     def com(self):
@@ -350,7 +351,7 @@ class Molecule:
             Center of mass
         """
         # Calculate the center of mass
-        data = self._column_pos()
+        data = self.column_pos()
         masses = self.get_masses()
         return [sum([data[i][j]*masses[j] for j in range(self.get_num())])/sum(masses) for i in range(self._dim)]
 
@@ -396,19 +397,6 @@ class Molecule:
         for atom in self._atom_list:
             atom.set_pos(geometry.rotate(atom.get_pos(), axis, angle, is_deg))
 
-    def put(self, atom, pos):
-        """Change the position of an atom to a given position vector
-        :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`.
-
-        Parameters
-        ----------
-        atom : integer
-            Atom-id whose position will be changed
-        pos : list
-            New position vector
-        """
-        self._atom_list[atom].set_pos(pos)
-
     def move(self, atom, pos):
         """Move whole the molecule to a new position, where the dragging point
         is a given atom that is moved to a specified position.
@@ -439,7 +427,7 @@ class Molecule:
             Vector used for the translation
         """
         # Calculate translation vector
-        data = self._column_pos()
+        data = self.column_pos()
         vec = [pos[i]-min(data[i]) for i in range(self._dim)]
 
         # Reset box size
@@ -449,6 +437,19 @@ class Molecule:
         self.translate(vec)
 
         return vec
+
+    def put(self, atom, pos):
+        """Change the position of an atom to a given position vector
+        :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`.
+
+        Parameters
+        ----------
+        atom : integer
+            Atom-id whose position will be changed
+        pos : list
+            New position vector
+        """
+        self._atom_list[atom].set_pos(pos)
 
 
     #####################################
@@ -627,7 +628,13 @@ class Molecule:
         """
         # Process input
         pos = self.pos(pos) if isinstance(pos, int) else pos
-        vec = self._axis("z") if bond is None else self._vector(*bond)
+        vec = geometry.main_axis("z") if bond is None else self._vector(*bond)
+
+        # Add coordinate transformation when given a bond
+        phi += geometry.angle_polar(vec, is_deg)
+        theta += geometry.angle_azi(vec, is_deg)
+
+        # Process angles
         phi *= math.pi/180 if is_deg else 1
         theta *= math.pi/180 if is_deg else 1
 
@@ -636,21 +643,6 @@ class Molecule:
         y = r*math.sin(theta)*math.sin(phi)
         z = r*math.cos(theta)
         coord = [x, y, z]
-
-        # Calculate angles for rotation :TODO:
-        print(phi, theta)
-
-        phi = self._angle_polar(vec)
-        theta = self._angle_azi(vec)
-
-        print(phi, theta)
-
-        # Rotate towards axis
-        normal = self._cross([0, 0, 1], vec)
-        if sum(normal) == 0:
-            normal = "y"
-
-        coord = self._rotate(coord, normal, theta, is_deg=False)
 
         # Create new atom
         self._atom_list.append(Atom([pos[i]+coord[i] for i in range(self._dim)], atom_type, name))
@@ -666,10 +658,10 @@ class Molecule:
             Atom id or list to be deleted
         """
         # Process input
-        atoms = [atoms] if isinstance(atom, int) else atoms
+        atoms = [atoms] if isinstance(atoms, int) else atoms
 
         # Remove atoms
-        for atom in sorted(atom, reverse=True):
+        for atom in sorted(atoms, reverse=True):
             self._atom_list.pop(atom)
 
     def overlap(self, error=0.005):
@@ -693,10 +685,8 @@ class Molecule:
             # Run through atom list after first loop
             for id_b, atom_b in enumerate(self._atom_list[id_a+1:]):
                 # Check if overlapping
-                for i in range(self._dim):
-                    if atom_a.get_pos()[i]-atom_b.get_pos()[i] <= error:
-                        duplicates.append([id_a, id_b])
-                        break
+                if sum([error > abs(x) for x in geometry.vector(atom_a.get_pos(), atom_b.get_pos())]) == 3:
+                    duplicates.append([id_a, id_a+id_b+1])
 
         # Return duplicates
         return duplicates
@@ -739,7 +729,7 @@ class Molecule:
 
 
     def get_atom_type(self, atom):
-        """Return the atomtype of the given atom id.
+        """Return the atom type of the given atom id.
 
         Parameters
         ----------
@@ -805,7 +795,7 @@ class Molecule:
         masses : list, None, optional
             List of molar masses in :math:`\\frac g{mol}`
         """
-        self._masses = [db.get_mass(self.get_atom_type(atom)) for atom in self._atom_list] if masses is None else masses
+        self._masses = [db.get_mass(atom.get_atom_type()) for atom in self._atom_list] if masses is None else masses
 
 
     def set_mass(self, mass=None):

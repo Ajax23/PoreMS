@@ -528,7 +528,6 @@ class Verlet:
     ##################
     # Getter methods #
     ##################
-
     def get_box(self):
         """Return the box list.
 

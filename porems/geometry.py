@@ -105,9 +105,9 @@ def unit(vec):
     vec : list
         Vector
     """
-    length = length(vec)
+    vec_length = length(vec)
 
-    return [x/length if not length == 0 else x for x in vec]
+    return [x/vec_length if not vec_length == 0 else x for x in vec]
 
 
 def cross_product(vec_a, vec_b):
@@ -242,7 +242,7 @@ def angle_azi(pos, is_deg=False):
     return angle*180/math.pi if is_deg else angle
 
 
-def axis(inp, dim=3):
+def main_axis(inp, dim=3):
     """Return the three-dimensional unit-vector of the main axes.
     Input is either integer or string
 
@@ -344,7 +344,7 @@ def rotate(data, axis, angle, is_deg, dim=3):
             print("Wrong vector dimensions.")
             return
     else:
-        n = axis(axis)
+        n = main_axis(axis)
         if isinstance(n, str):
             print(n)
             return
