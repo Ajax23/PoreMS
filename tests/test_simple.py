@@ -145,8 +145,6 @@ class UserModelCase(unittest.TestCase):
 
         Store(pore.get_pore(), "output").gro()
 
-        print(pore.get_pore().overlap())
-
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
