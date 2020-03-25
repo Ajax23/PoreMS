@@ -17,13 +17,11 @@ from porems.atom import Atom
 
 class Molecule:
     """This class defines a molecule object, which is basically a collection of
-    Atom objects.
-
-    Each atom object has a specific cartesian position and atom type creating
-    the construct of a molecule.
+    Atom objects. Each atom object has a specific cartesian position and atom
+    type, creating the construct of a molecule.
 
     Functions have been provided for editing, moving and transforming the
-    atom objects, either as a collective or specific parts of the molecule.
+    atom objects, either as a collective or specific part of the molecule.
 
     Parameters
     ----------
@@ -107,11 +105,12 @@ class Molecule:
         # Create dictionary
         data = {column_names[i]: atom_data[i] for i in range(self._dim+2)}
 
-        # Create dataframe
+        # Create data frame
         return pd.DataFrame(data)
 
     def __str__(self):
-        """Convert a pandas table of the molecule data to string format.
+        """Convert the pandas table from the :func:`__repr__` function to a
+        string.
 
         Returns
         -------
@@ -133,7 +132,7 @@ class Molecule:
         file_path : string
             Link to requested file
         file_type : string
-            Int for types list id or str for file extension name
+            File extension name
 
         Returns
         -------
@@ -202,7 +201,7 @@ class Molecule:
         Parameters
         ----------
         atoms : list
-            List of atoms to be duplicated
+            List of atoms to be included
 
         Returns
         -------
@@ -278,7 +277,7 @@ class Molecule:
 
         .. math::
 
-            \\boldsymbol{b}=\\begin{pmatrix}\\max(\\boldsymbol{d}_1)&max(\\boldsymbol{d}_1)&\\dots&max(\\boldsymbol{d}_n)\\end{pmatrix}^T
+            \\boldsymbol{b}=\\begin{pmatrix}\\max(\\boldsymbol{d}_1)&\\max(\\boldsymbol{d}_1)&\\dots&\\max(\\boldsymbol{d}_n)\\end{pmatrix}^T
 
         where :math:`\\boldsymbol{d}_i` is the dimension-vector of the data
         matrix.
@@ -392,8 +391,8 @@ class Molecule:
     # Public Methods - Basic Editing #
     ##################################
     def translate(self, vec):
-        """Translate data matrix :math:`\\boldsymbol{D}` along a vector
-        :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`.
+        """Translate the atoms data matrix :math:`\\boldsymbol{D}` along a
+        vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`.
 
         .. math::
 
@@ -436,7 +435,7 @@ class Molecule:
         Parameters
         ----------
         atom : integer
-            Main atom-id whose position will be changed
+            Main atom id whose position will be changed
         pos : list
             New position vector
         """
@@ -477,7 +476,7 @@ class Molecule:
         Parameters
         ----------
         atom : integer
-            Atom-id whose position will be changed
+            Atom id whose position will be changed
         pos : list
             New position vector
         """
@@ -626,10 +625,10 @@ class Molecule:
         an atom id, that determines is the bond-start,
         or a vector for a specific position.
 
-        Bond has to be given, if the polar coordinates are dependent on the bond
-        vector as the basic axis. The coordinate system is then transformed
-        to the bond axis. If set to None, then the given coordinates are
-        thought to be dependent on the basic axes.
+        If the polar coordinates are dependent on a bond vector as an axis,
+        the ``bond`` variable has to be set. The coordinate system is then
+        transformed to the bond axis. If this variabel is set to None, then the
+        given coordinates are assumed to be dependent on the z-axis.
 
         Parameters
         ----------
@@ -702,7 +701,7 @@ class Molecule:
         Parameters
         ----------
         error : float, optional
-            Error tollerance
+            Error tolerance
 
         Returns
         -------
@@ -883,7 +882,7 @@ class Molecule:
         return self._short
 
     def get_box(self):
-        """Return the boxsize of the molecule.
+        """Return the box size of the molecule.
 
         Returns
         -------

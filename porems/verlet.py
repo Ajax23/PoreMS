@@ -35,7 +35,7 @@ class Verlet:
             \\mathcal O(n\\cdot N),&N=\\sum_{j=0}^ma_j
         \\end{array}
 
-    with the number of boxes m, in the three dimensional case this is
+    with the number of boxes m, in the three-dimensional case this is
     :math:`3^3=27`, the number of atoms :math:`a_j` of box :math:`j` and the
     number of surround atoms :math:`N`. This is considerably less and of course
     depending on the verlet box size. Note that the verlet size :math:`v` has to
@@ -162,7 +162,7 @@ class Verlet:
     # Private Methods - Iterator #
     ##############################
     def _index(self, pos):
-        """Get the box id from a given box position which is a list of x, y and
+        """Get the box id from a given box position, which is a list of x, y and
         z values.
 
         Parameters
@@ -212,7 +212,7 @@ class Verlet:
         return pos
 
     def _input(self, inp):
-        """Check if input is a box id or a position. If it is an id then
+        """Check if input is a box id or a position. If it is an id, then
         the id is transformed to a position list.
 
         Parameters
@@ -336,7 +336,7 @@ class Verlet:
         error : float
             Tolerated deviation of the bond length
         condition : None, function
-            None or a function f(Molecule, bond) with a boolean output
+            None or a function f(Molecule, bond) with a Boolean output
 
         Returns
         -------
@@ -415,7 +415,7 @@ class Verlet:
         error : float
             Tolerated deviation of the bond length
         condition : None, function, optional
-            None or a function f(Molecule, bond) with a boolean output
+            None or a function f(Molecule, bond) with a Boolean output
         is_time : bool, optional
             True to print the used search time
 

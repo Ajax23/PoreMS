@@ -9,14 +9,15 @@ import pandas as pd
 
 
 class Atom:
-    """This class defines an atom object, containing position and atom_type.
+    """This class defines an atom object containing the position, the atom type
+    and optionally a specific name.
 
     Parameters
     ----------
     pos : list
         Atom position
     atom_type : string
-        Atom type as in PEM
+        Atom type as in the periodic table of elements
     name : string, None, optional
         Atom name
 
@@ -52,11 +53,12 @@ class Atom:
         # Create dictionary
         data = {column_names[i]: atom_data[i] for i in range(len(self._pos)+2)}
 
-        # Create dataframe
+        # Create data frame
         return pd.DataFrame(data)
 
     def __str__(self):
-        """Convert a pandas table of the atom data to string format.
+        """Convert the pandas table from the :func:`__repr__` function to a
+        string.
 
         Returns
         -------
@@ -85,7 +87,7 @@ class Atom:
         Parameters
         ----------
         atom_type : string
-            Atom type as in PEM
+            Atom type as in the periodic table of elements
         """
         self._atom_type = atom_type
 
