@@ -12,11 +12,12 @@ import multiprocessing as mp
 
 import porems.utils as utils
 
-from porems.pattern import *
-
 from porems.molecule import Molecule
-from porems.verlet import Verlet
+from porems.pattern import BetaCristobalit
+
+from porems.cube import Cube
 from porems.bonding import Bonding
+
 
 
 class Pore():
@@ -42,63 +43,7 @@ class Pore():
     ############
     # Building #
     ############
-    def _block(self, dim, block):
-        """Recursively duplicate and translate a given molecule block in all
-        given dimensions. The duplication stops if the next added block would
-        create the pore longer than specified in the constructor.
 
-        Parameters
-        ----------
-        dim : integer
-            Repeat dimensions
-        block : Molecule
-            Molecule unit to be duplicated
-        """
-        if dim < self._dim:
-            p = []
-
-            for i in range(self._num_rep[dim]):
-                temp = copy.deepcopy(block)
-                vec = [(i+1)*self._repeat[dim] if j == dim else 0 for j in range(self._dim)]
-
-                temp.translate(vec)
-
-                p.append(temp)
-
-            self._block(dim+1, Molecule(inp=p))
-        else:
-            self._pore = block
-
-    def _orientation(self, pore):
-        """Rotate pore orientation, so that the specified drill axis becomes
-        the z-axis.
-
-        Parameters
-        ----------
-        pore : Molecule
-            Pore object to rotate
-        """
-        # Initialize
-        drill = self._drill
-        gap = self._gap
-        size = self._size
-
-        # Rotate pore
-        if drill == "x":
-            pore.rotate("y", 90)
-        elif drill == "y":
-            pore.rotate("x", 90)
-
-        # Set zero
-        pore.zero()
-
-        # Update gap and size lists
-        if drill == "x":
-            self._gap = [gap[2], gap[1], gap[0]]
-            self._size = [size[2], size[1], size[0]]
-        elif drill == "y":
-            self._gap = [gap[0], gap[2], gap[1]]
-            self._size = [size[0], size[2], size[1]]
 
 
     #################
@@ -125,46 +70,62 @@ class Pore():
 
 
 
-    ################
-    # Finalization #
-    ################
-    def generate(self):
-        # Set pattern
-        if self._pattern is None:
-            self.set_pattern(BetaCristobalit())
+    ##############
+    # Generation #
+    ##############
+    def generate(self, cube_size=0.4, is_time=True):
+        """Run pore generation.
 
+        Parameters
+        ----------
+        cube_size : float, optional
+            Cube size
+        is_time : bool
+            True to print time usage
+        """
         # Create block structure
         t = utils.tic()
-        self._block(0, self._pattern)                  # Build block
-        self._orientation(self._pore)                  # Rotate drill axis
-        self._pore.translate(self._gap)                # Translate gap
-        self._pore.set_name("pore")                    # Set pore name
-        self._t_tot["Build"] = utils.toc(t, "Build   ", False)
+        self._pore = self.get_pattern().generate(self._size, self._drill)
+        self._pore.set_name("pore")
+        self._t_tot["Block"] = utils.toc(t, "Block   ", is_time)
+
+        # Cube and bonding
+        t = utils.tic()
+        self._cube = Cube(self._pore, cube_size, True) # Create cubes
+        #self._bonding = Bonding(self._verlet)          # Create bond matrix
+        self._t_tot["Matrix"] = utils.toc(t, "Matrix  ", is_time)
+
 
     ##################
     # Setter Methods #
     ##################
-    def set_pattern(self, pattern):
+    def set_pattern(self, pattern=None):
         """Set the block pattern.
 
         Parameters
         ----------
-        pattern : Pattern
+        pattern : Pattern, None, optional
             Pattern object
         """
-        # Get information
-        self._repeat = pattern.get_repeat()
-        self._gap = pattern.get_gap()
-        self._pattern = pattern.pattern()
-
-        # Calculate repetition and size
-        self._num_rep = [round(self._size[i]/self._repeat[i]) for i in range(self._dim)]
-        self._size = [self._repeat[i]*self._num_rep[i]+self._gap[i] for i in range(self._dim)]
+        self._pattern = BetaCristobalit() if pattern is None else pattern
 
 
     ##################
     # Getter Methods #
     ##################
+    def get_pattern(self):
+        """Return the pattern object.
+
+        Returns
+        -------
+        pattern : Pattern
+            Pattern object
+        """
+        if self._pattern is None:
+            self.set_pattern()
+
+        return self._pattern
+
     def get_pore(self):
         """Return the finished pore.
 

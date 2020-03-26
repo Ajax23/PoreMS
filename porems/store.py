@@ -159,7 +159,7 @@ class Store:
             for mol in self._mols:
                 atom_types = {}
                 # Run through atoms
-                for atom in mol.get_atom_list():
+                for atom_id, atom in sorted(mol.get_atom_dict().items()):
                     # Get atom type
                     atom_type = atom.get_atom_type()
 
@@ -225,7 +225,7 @@ class Store:
             file_out.write("Molecule generated using the PoreMS package\n")
 
             # Number of atoms
-            file_out.write("%i" % sum([len(x.get_atom_list()) for x in self._mols])+"\n")
+            file_out.write("%i" % sum([x.get_num() for x in self._mols])+"\n")
 
             # Set counter
             num_a = 1
@@ -235,7 +235,7 @@ class Store:
             for mol in self._mols:
                 atom_types = {}
                 # Run through atoms
-                for atom in mol.get_atom_list():
+                for atom_id, atom in sorted(mol.get_atom_dict().items()):
                     # Get atom type
                     atom_type = atom.get_atom_type()
 
@@ -291,13 +291,13 @@ class Store:
         # Open output file and set title
         with open(link, "w") as file_out:
             # Header
-            file_out.write("%i" % sum([len(x.get_atom_list()) for x in self._mols])+"\n"+"Energy = \n")
+            file_out.write("%i" % sum([x.get_num() for x in self._mols])+"\n"+"Energy = \n")
 
             # Run through molecules
             for mol in self._mols:
                 atom_types = {}
                 # Run through atoms
-                for atom in mol.get_atom_list():
+                for atom_id, atom in sorted(mol.get_atom_dict().items()):
                     # Write file
                     out_string = "%-2s" % atom.get_atom_type()  # 1- 2 (2)     Atom name
                     for i in range(self._dim):                  # 3-41 (3*13)  Coordinates

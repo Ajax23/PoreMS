@@ -17,9 +17,61 @@ from porems.molecule import Molecule
 class Pattern():
     """This class is a container for individual pattern classes."""
     def __init__(self):
+        self._dim = 3
         self._repeat = [0, 0, 0]
         self._gap = [0, 0, 0]
+        self._size = [0, 0, 0]
 
+
+    ###################
+    # Private Methods #
+    ###################
+    def _block(self, dim, block):
+        """Recursively duplicate and translate a given molecule block in all
+        given dimensions. The duplication stops if the next added block would
+        create the pore longer than specified in the constructor.
+
+        Parameters
+        ----------
+        dim : integer
+            Repeat dimensions
+        block : Molecule
+            Molecule unit to be duplicated
+        """
+        if dim < self._dim:
+            p = []
+
+            for i in range(self._num[dim]):
+                temp = copy.deepcopy(block)
+                vec = [(i+1)*self._repeat[dim] if j == dim else 0 for j in range(self._dim)]
+                temp.translate(vec)
+                p.append(temp)
+            self._block(dim+1, Molecule(inp=p))
+        else:
+            self._structure = block
+
+    def _orientation(self, orient):
+        """Rotate pore orientation, so that the specified axis becomes the
+        z-axis.
+
+        Parameters
+        ----------
+        orient : string
+            Axis that will be oriented towards the z-axis
+        """
+        if orient == "x":
+            self._structure.rotate("y", 90)
+            self._gap[0], self._gap[2] = self._gap[2], self._gap[0]
+            self._size[0], self._size[2] = self._size[2], self._size[0]
+        elif orient == "y":
+            self._structure.rotate("x", 90)
+            self._gap[1], self._gap[2] = self._gap[2], self._gap[1]
+            self._size[1], self._size[2] = self._size[2], self._size[1]
+
+
+    ##################
+    # Public Methods #
+    ##################
     def pattern(self):
         """Construct minimal block structure.
 
@@ -30,6 +82,41 @@ class Pattern():
         """
         return Molecule()
 
+    def generate(self, size, orient):
+        """Generate full block structure.
+
+        Parameters
+        ----------
+        size : list
+            Desired block dimensions
+        orient : string
+            Orientation of the block that should be drilled
+
+        Returns
+        -------
+        structure : Molecule
+            Full block structure
+        """
+        # Calculate repetition and size
+        self._num = [round(size[i]/self._repeat[i]) for i in range(self._dim)]
+        self._size = [self._repeat[i]*self._num[i]+self._gap[i] for i in range(self._dim)]
+
+        # Generate block
+        self._block(0, self.pattern())
+
+        # Rotate block towards desired orientation
+        self._orientation(orient)
+
+        # Translate gap
+        self._structure.zero()
+        self._structure.translate(self._gap)
+
+        return self._structure
+
+
+    ##################
+    # Getter Methods #
+    ##################
     def get_repeat(self):
         """Return the repeat distances in all dimensions.
 
@@ -51,11 +138,30 @@ class Pattern():
         """
         return self._gap
 
+    def get_size(self):
+        """Return the size of the generated block structure.
+
+        Returns
+        -------
+        size : list
+            List of molecule dimentsions
+        """
+        return self._size
+
+    def get_block(self):
+        """Return the generated molecule object.
+
+        Returns
+        -------
+        block : Molecule
+            Generated block molecule
+        """
+        return self._structure
+
 
 class BetaCristobalit(Pattern):
     """This class defines the minimal structure of a :math:`\\beta`-cristobalite
-    molecule.
-    """
+    molecule."""
     def __init__(self):
         # Call super class
         super(BetaCristobalit, self).__init__()
@@ -159,6 +265,7 @@ class BetaCristobalit(Pattern):
                 translate[dim] *= -1 if pm == 1 else 1
 
                 # Remove atoms
+                block = Molecule(inp=[block])
                 mol_repeat = copy.deepcopy(block)
                 mol_repeat.translate(translate)
                 block.delete([x for x in  Molecule(inp=[block, mol_repeat]).overlap() if x < block.get_num()])
