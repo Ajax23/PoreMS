@@ -224,7 +224,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(len(cube.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
         self.assertEqual(len(cube.find_parallel(None, ["O", "Si"], 0.155, 0.005)), 384)
 
-    
+
 
 
     ########

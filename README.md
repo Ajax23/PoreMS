@@ -20,7 +20,7 @@ An examplary [workflow](https://ajax23.github.io/PoreMS/workflow.html) has been 
 
 ## Dependencies
 
-PoreMS supports Python 3.5+.
+PoreMS supports Python 3.6+.
 
 Installation requires [pandas](https://pandas.pydata.org/).
 
