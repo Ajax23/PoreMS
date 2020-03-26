@@ -105,6 +105,24 @@ class UserModelCase(unittest.TestCase):
         mol.set_atom_name(0, "RuX")
         self.assertEqual(mol.get_atom_list()[0].get_name(), "RuX")
 
+    def test_molecule_set_get(self):
+        mol = Molecule()
+
+        mol.set_name("test_mol")
+        mol.set_short("TMOL")
+        mol.set_box([1, 1, 1])
+        mol.set_charge(1.5)
+        mol.set_masses([1, 2, 3])
+        mol.set_mass(6)
+
+        self.assertEqual(mol.get_name(), "test_mol")
+        self.assertEqual(mol.get_short(), "TMOL")
+        self.assertEqual(mol.get_box(), [1, 1, 1])
+        self.assertEqual(mol.get_num(), 0)
+        self.assertEqual(mol.get_charge(), 1.5)
+        self.assertEqual(mol.get_masses(), [1, 2, 3])
+        self.assertEqual(mol.get_mass(), 6)
+
 
     ##############
     # Essentails #
@@ -140,6 +158,8 @@ class UserModelCase(unittest.TestCase):
     # # Pore #
     # ########
     def test_pore(self):
+        self.skipTest("Temporary")
+
         pore = Pore([10, 10, 10], "z")
         pore.generate()
 
