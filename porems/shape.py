@@ -1,19 +1,19 @@
 ################################################################################
-# Volume Pack                                                                  #
+# Shape Pack                                                                   #
 #                                                                              #
-"""This file contains volume definitions to be cut out from the crystal block.
+"""This file contains shape definitions to be cut out from the crystal block.
 """
 ################################################################################
 
 
-class Volume():
-    """This class is a container for individual volume classes."""
+class Shape():
+    """This class is a container for individual shape classes."""
     def __init__(self):
         return
 
 
-class Cylinder(Volume):
-    """This class defines a cylindric volume."""
+class Cylinder(Shape):
+    """This class defines a cylindric shape."""
     def __init__(self):
         # Call super class
         super(Cylinder, self).__init__()

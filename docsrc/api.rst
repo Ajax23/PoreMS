@@ -38,14 +38,14 @@ Pattern
     pattern.Pattern
     pattern.BetaCristobalit
 
-Volume
+Shape
 ~~~~~~
 
 .. autosummary::
     :toctree: generated/
 
-    volume.Volume
-    volume.Cylinder
+    shape.Shape
+    shape.Cylinder
 
 
 Optimization
