@@ -16,7 +16,7 @@ from porems.atom import Atom
 
 
 class Molecule:
-    """This class defines a molecule object, which is basically a collection of
+    """This class defines a molecule object, which is basically a dictionary of
     Atom objects. Each atom object has a specific cartesian position and atom
     type, creating the construct of a molecule.
 
@@ -65,19 +65,19 @@ class Molecule:
 
         # Check data input
         if inp is None:
-            self._atom_list = []
-        else:
-            # Read from file
-            if isinstance(inp, str):
-                self._atom_list = self._read(inp, inp.split(".")[-1].upper())
-            # Concat multiple molecules
-            elif isinstance(inp, list):
-                # Atom list is provided
-                if(isinstance(inp[0], Atom)):
-                    self._atom_list = inp
-                # List of molecules is provided
-                else:
-                    self._atom_list = self._concat(inp)
+            self._atom_dict = {}
+        # Read from file
+        elif isinstance(inp, str):
+            self._atom_dict = self._read(inp, inp.split(".")[-1].upper())
+        # Concat multiple molecules
+        elif isinstance(inp, list):
+            if isinstance(inp[0], Molecule):
+                self._atom_dict = self._concat(inp)
+            else:
+                print("Unsupported object type...")
+        # Set list of atoms
+        elif isinstance(inp, dict):
+            self._atom_dict = inp
 
 
     ##################
@@ -93,7 +93,7 @@ class Molecule:
         """
         # Create data table from atom list
         atom_data = []
-        for atom in self._atom_list:
+        for atom_id, atom in sorted(self._atom_dict.items()):
             atom_data.append([atom.get_name(), atom.get_atom_type()])
             atom_data[-1].extend([atom.get_pos()[i] for i in range(self._dim)])
         atom_data = utils.column(atom_data)
@@ -136,8 +136,8 @@ class Molecule:
 
         Returns
         -------
-        atom_list : list
-            Atom list
+        atom_dict : dictionary
+            Atom dictionary
         """
         # Process input
         if not file_type in ["GRO", "PDB", "MOL2"]:
@@ -145,10 +145,11 @@ class Molecule:
             return
 
         # Read molecule
-        atom_list = []
+        atom_dict = {}
         with open(file_path, "r") as file_in:
             for line_idx, line in enumerate(file_in):
                 line_val = line.split()
+                is_add = False
 
                 # Gro file
                 if file_type == "GRO":
@@ -156,8 +157,7 @@ class Molecule:
                         pos = [float(line_val[i]) for i in range(3, 5+1)]
                         name = line_val[1]
                         atom_type = ''.join([i for i in line_val[1] if not i.isdigit()])
-
-                        atom_list.append(Atom(pos, atom_type, name))
+                        is_add = True
 
                 # Pdb file
                 elif file_type == "PDB":
@@ -165,8 +165,7 @@ class Molecule:
                         pos = [float(line_val[i])/10 for i in range(6, 8+1)]
                         name = line_val[11]
                         atom_type = line_val[11]
-
-                        atom_list.append(Atom(pos, atom_type, name))
+                        is_add = True
 
                 # Mol2 file
                 elif file_type == "MOL2":
@@ -174,11 +173,13 @@ class Molecule:
                         pos = [float(line_val[i])/10 for i in range(2, 4+1)]
                         name = line_val[1]
                         atom_type = ''.join([i for i in line_val[1] if not i.isdigit()])
+                        is_add = True
 
-                        atom_list.append(Atom(pos, atom_type, name))
+                if is_add:
+                    atom_dict[len(atom_dict)] = Atom(pos, atom_type, name)
 
         # Transform to column
-        return atom_list
+        return atom_dict
 
     def _concat(self, mol_list):
         """Concatenate a molecule list into one molecule object.
@@ -190,10 +191,15 @@ class Molecule:
 
         Returns
         -------
-        atom_list : list
-            Atom list
+        atom_dict : dictionary
+            Atom dictionary
         """
-        return sum([mol.get_atom_list() for mol in mol_list], [])
+        atom_dict = {}
+        for mol in mol_list:
+            for atom in mol.get_atom_dict().values():
+                atom_dict[len(atom_dict)] = atom
+
+        return atom_dict
 
     def _temp(self, atoms):
         """Create a temporary molecule of specified atom ids.
@@ -208,7 +214,7 @@ class Molecule:
         mol : Molecule
             Molecule object
         """
-        return Molecule(inp=[self._atom_list[x] for x in atoms])
+        return Molecule(inp={idx: self._atom_dict[x] for idx, x in enumerate(atoms)})
 
 
     ###############################
@@ -222,7 +228,8 @@ class Molecule:
         mol : Molecule
             Molecule object
         """
-        self._atom_list += mol.get_atom_list()
+        for atom in mol.get_atom_dict().values():
+            self.add(atom_type=atom.get_atom_type(), pos=atom.get_pos(), name=atom.get_name())
 
     def column_pos(self):
         """Create column list of atom positions
@@ -232,7 +239,7 @@ class Molecule:
         column : list
             Columns of all atom positions in all dimensions
         """
-        return utils.column([atom.get_pos() for atom in self._atom_list])
+        return utils.column([atom.get_pos() for atom_id, atom in sorted(self._atom_dict.items())])
 
 
     ##############################
@@ -307,7 +314,7 @@ class Molecule:
         pos : list
             Position vector of the specified atom
         """
-        return self._atom_list[atom].get_pos()
+        return self._atom_dict[atom].get_pos()
 
     def bond(self, inp_a, inp_b):
         """Return the bond vector and length of a specified bond. The two inputs
@@ -407,7 +414,7 @@ class Molecule:
         vec : list
             Vector a
         """
-        for atom in self._atom_list:
+        for atom in self._atom_dict.values():
             atom.set_pos([atom.get_pos()[i]+vec[i] for i in range(self._dim)])
 
     def rotate(self, axis, angle, is_deg=True):
@@ -425,7 +432,7 @@ class Molecule:
         is_deg : bool, optional
             True if the input is in degree
         """
-        for atom in self._atom_list:
+        for atom in self._atom_dict.values():
             atom.set_pos(geometry.rotate(atom.get_pos(), axis, angle, is_deg))
 
     def move(self, atom, pos):
@@ -480,7 +487,7 @@ class Molecule:
         pos : list
             New position vector
         """
-        self._atom_list[atom].set_pos(pos)
+        self._atom_dict[atom].set_pos(pos)
 
 
     #####################################
@@ -676,7 +683,7 @@ class Molecule:
         coord = [x, y, z]
 
         # Create new atom
-        self._atom_list.append(Atom([pos[i]+coord[i] for i in range(self._dim)], atom_type, name))
+        self._atom_dict[0 if self.get_num()==0 else self.get_max()+1] = Atom([pos[i]+coord[i] for i in range(self._dim)], atom_type, name)
 
     # Delete an atom
     def delete(self, atoms):
@@ -693,7 +700,7 @@ class Molecule:
 
         # Remove atoms
         for atom in sorted(atoms, reverse=True):
-            self._atom_list.pop(atom)
+            del self._atom_dict[atom]
 
     def overlap(self, error=0.005):
         """Search for overlapping atoms.
@@ -709,23 +716,23 @@ class Molecule:
             Dictionary of duplicate lists
         """
         # Initialize
-        atom_list = {x: False for x in range(self.get_num())}
+        atom_dict = {x: False for x in self._atom_dict.keys()}
         duplicates = {}
 
         # Run through complete atoms list
-        for atom_a in atom_list:
+        for atom_a in atom_dict:
             # Ignore duplicate items
-            if not atom_list[atom_a]:
+            if not atom_dict[atom_a]:
                 # Run through atom list after first loop
-                for atom_b in [x for x in atom_list if x>atom_a]:
+                for atom_b in [x for x in atom_dict if x>atom_a]:
                     # Check if overlapping
                     if sum([error > abs(x) for x in geometry.vector(self.pos(atom_a), self.pos(atom_b))]) == 3:
                         if not atom_a in duplicates:
                             duplicates[atom_a] = []
                         duplicates[atom_a].append(atom_b)
                         # Set to false
-                        atom_list[atom_a] = True
-                        atom_list[atom_b] = True
+                        atom_dict[atom_a] = True
+                        atom_dict[atom_b] = True
 
         # Return duplicates
         return duplicates
@@ -740,7 +747,7 @@ class Molecule:
         atom_b : integer
             Atom id of the second atom
         """
-        self._atom_list[atom_a], self._atom_list[atom_b] = self._atom_list[atom_b], self._atom_list[atom_a]
+        self._atom_dict[atom_a], self._atom_dict[atom_b] = self._atom_dict[atom_b], self._atom_dict[atom_a]
 
     def set_atom_type(self, atom, atom_type):
         """Change the atom type of a specified atom.
@@ -752,7 +759,7 @@ class Molecule:
         atom_type : string
             New atom type
         """
-        self._atom_list[atom].set_atom_type(atom_type)
+        self._atom_dict[atom].set_atom_type(atom_type)
 
     def set_atom_name(self, atom, name):
         """Change the atom name of a specified atom.
@@ -764,8 +771,7 @@ class Molecule:
         name : string
             New atom name
         """
-        self._atom_list[atom].set_name(name)
-
+        self._atom_dict[atom].set_name(name)
 
     def get_atom_type(self, atom):
         """Return the atom type of the given atom id.
@@ -780,7 +786,7 @@ class Molecule:
         atom_type : string
             Atom type
         """
-        return self._atom_list[atom].get_atom_type()
+        return self._atom_dict[atom].get_atom_type()
 
 
     ##################
@@ -834,7 +840,7 @@ class Molecule:
         masses : list, None, optional
             List of molar masses in :math:`\\frac g{mol}`
         """
-        self._masses = [db.get_mass(atom.get_atom_type()) for atom in self._atom_list] if masses is None else masses
+        self._masses = [db.get_mass(atom.get_atom_type()) for atom_id, atom in sorted(self._atom_dict.items())] if masses is None else masses
 
 
     def set_mass(self, mass=None):
@@ -851,15 +857,15 @@ class Molecule:
     ##################
     # Getter Methods #
     ##################
-    def get_atom_list(self):
+    def get_atom_dict(self):
         """Return the atoms list.
 
         Returns
         -------
-        atom_list : list
-            Atom list
+        atom_dict : dictionary
+            Atom dictionary
         """
-        return self._atom_list
+        return self._atom_dict
 
     def get_name(self):
         """Return the molecule name.
@@ -899,7 +905,17 @@ class Molecule:
         num : integer
             Number of atoms
         """
-        return len(self._atom_list)
+        return len(self._atom_dict)
+
+    def get_max(self):
+        """Return the maximum atom id.
+
+        Returns
+        -------
+        num : integer
+            Number of atoms
+        """
+        return max(self._atom_dict.keys()) if self.get_num() > 0 else 0
 
     def get_charge(self):
         """Return the total charge of the molecule.

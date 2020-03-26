@@ -13,8 +13,8 @@ import multiprocessing as mp
 import porems.utils as utils
 
 from porems.molecule_backup import Molecule
-from porems.verlet import Verlet
-from porems.bonding import Bonding
+from porems.verlet_backup import Verlet
+from porems.bonding_backup import Bonding
 
 
 class Pore(Molecule):
