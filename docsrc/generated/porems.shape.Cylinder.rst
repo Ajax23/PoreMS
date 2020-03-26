@@ -6,6 +6,6 @@
 Cylinder
 ========
 
-.. currentmodule:: porems.volume
+.. currentmodule:: porems.shape
 
 .. autoclass:: Cylinder
