@@ -19,8 +19,10 @@ install:
 
 script:
   - cd tests
+  - coverage erase
   - coverage run test_simple.py
   - coverage run test_parallel.py
+  - coverage report
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
