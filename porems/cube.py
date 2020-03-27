@@ -321,12 +321,12 @@ class Cube:
                     for atom_id_b in atoms:
                         if self._atom_data[atom_id_b][0] == atom_type[1] and not atom_id_a == atom_id_b:
                             # Calculate bond vector
-                            bond_vector = []
+                            bond_vector = [0, 0, 0]
                             for dim in range(self._dim):
                                 # Nearest image convention
-                                delta_pos = self._atom_data[atom_id_a][1][dim]-self._atom_data[atom_id_b][1][dim]
-                                # if abs(delta_pos) > 3*self._size:
-                                bond_vector.append(delta_pos - self._mol_box[dim]*round(delta_pos/self._mol_box[dim]))
+                                bond_vector[dim] = self._atom_data[atom_id_a][1][dim]-self._atom_data[atom_id_b][1][dim]
+                                if abs(bond_vector[dim]) > 3*self._size:
+                                    bond_vector[dim] -= self._mol_box[dim]*round(bond_vector[dim]/self._mol_box[dim])
                             # Calculate bond length
                             length = geometry.length(bond_vector)
                             # Check if bond distance is within error
