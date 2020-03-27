@@ -15,7 +15,7 @@ import porems.utils as utils
 from porems.molecule import Molecule
 from porems.pattern import BetaCristobalit
 
-from porems.cube import Cube
+from porems.dice import Dice
 from porems.matrix import Matrix
 
 
@@ -336,7 +336,7 @@ class Pore():
 
         # Cube and bonding
         t = utils.tic()
-        self._cube = Cube(self._pore, cube_size, True) # Create cubes
+        self._dice = Dice(self._pore, cube_size, True) # Create cubes
 
         # # Consistency check
         # if not len(bond[1])==atom_type[0][1]:
