@@ -1,5 +1,5 @@
 ################################################################################
-# Cube Class                                                                   #
+# Dice Class                                                                   #
 #                                                                              #
 """Separation of a molecule object into smaller cubes for pair-search."""
 ################################################################################
@@ -12,7 +12,7 @@ import porems.utils as utils
 import porems.geometry as geometry
 
 
-class Cube:
+class Dice:
     """This class splits the molecule into smaller subboxes and provides
     parallelized functions for pair-search.
 

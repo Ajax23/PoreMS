@@ -16,7 +16,7 @@ from porems.molecule import Molecule
 from porems.essentials import *
 from porems.store import Store
 from porems.pattern import *
-from porems.cube import Cube
+from porems.dice import Dice
 from porems.matrix import Matrix
 from porems.pore import Pore
 
@@ -189,33 +189,33 @@ class UserModelCase(unittest.TestCase):
 
 
     ########
-    # Cube #
+    # Dice #
     ########
-    def test_cube(self):
+    def test_dice(self):
         block = BetaCristobalit().generate([2, 2, 2], "z")
-        block.set_name("cube")
+        block.set_name("dice")
         Store(block, "output").gro()
-        cube = Cube(block, 0.4, True)
+        dice = Dice(block, 0.4, True)
 
         # Splitting and filling
-        self.assertEqual(len(cube.get_origin()), 120)
-        self.assertEqual(cube.get_origin()[(1, 1, 1)], [0.4, 0.4, 0.4])
-        self.assertEqual(cube.get_pointer()[(1, 1, 1)], [14, 46, 51, 52, 65])
+        self.assertEqual(len(dice.get_origin()), 120)
+        self.assertEqual(dice.get_origin()[(1, 1, 1)], [0.4, 0.4, 0.4])
+        self.assertEqual(dice.get_pointer()[(1, 1, 1)], [14, 46, 51, 52, 65])
 
         # Iterator
-        self.assertEqual(cube._right((1, 1, 1)), (2, 1, 1))
-        self.assertEqual(cube._left((1, 1, 1)),  (0, 1, 1))
-        self.assertEqual(cube._top((1, 1, 1)),   (1, 2, 1))
-        self.assertEqual(cube._bot((1, 1, 1)),   (1, 0, 1))
-        self.assertEqual(cube._front((1, 1, 1)), (1, 1, 2))
-        self.assertEqual(cube._back((1, 1, 1)),  (1, 1, 0))
-        self.assertEqual(len(cube.neighbour((1, 1, 1))), 27)
+        self.assertEqual(dice._right((1, 1, 1)), (2, 1, 1))
+        self.assertEqual(dice._left((1, 1, 1)),  (0, 1, 1))
+        self.assertEqual(dice._top((1, 1, 1)),   (1, 2, 1))
+        self.assertEqual(dice._bot((1, 1, 1)),   (1, 0, 1))
+        self.assertEqual(dice._front((1, 1, 1)), (1, 1, 2))
+        self.assertEqual(dice._back((1, 1, 1)),  (1, 1, 0))
+        self.assertEqual(len(dice.neighbour((1, 1, 1))), 27)
 
         # Search
-        self.assertEqual(cube.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [14, 46, 52, 65]]])
-        self.assertEqual(cube.find_bond([(1, 1, 1)], ["O", "Si"], 0.155, 0.005), [[14, [51, 13]], [46, [43, 51]], [52, [51, 49]], [65, [64, 51]]])
-        self.assertEqual(cube.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 2, 174, 9]], [5, [306, 110, 4, 6]]])
-        self.assertEqual(cube.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]]])
+        self.assertEqual(dice.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [14, 46, 52, 65]]])
+        self.assertEqual(dice.find_bond([(1, 1, 1)], ["O", "Si"], 0.155, 0.005), [[14, [51, 13]], [46, [43, 51]], [52, [51, 49]], [65, [64, 51]]])
+        self.assertEqual(dice.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 2, 174, 9]], [5, [306, 110, 4, 6]]])
+        self.assertEqual(dice.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]]])
 
 
     ##########
@@ -226,8 +226,8 @@ class UserModelCase(unittest.TestCase):
         block = BetaCristobalit().generate([1, 1, 1], orient)
         block.set_name("matrix")
         Store(block, "output").gro()
-        cube = Cube(block, 0.2, True)
-        bonds = cube.find_bond(None, ["Si", "O"], 0.155, 10e-2)
+        dice = Dice(block, 0.2, True)
+        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 10e-2)
 
         matrix = Matrix(bonds)
         connect = matrix.get_matrix()
