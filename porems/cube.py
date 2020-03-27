@@ -66,7 +66,7 @@ class Cube:
         self._size = size
         self._is_pbc = is_pbc
 
-        self._atom_data = {atom_id: [atom.get_atom_type(), atom.get_pos()] for atom_id, atom in self._mol.get_atom_dict().items()}
+        self._atom_data = {atom_id: [atom.get_atom_type(), atom.get_pos()] for atom_id, atom in enumerate(self._mol.get_atom_list())}
         self._mol_box = self._mol.get_box()
 
         # Split molecule box into cubes and fill them with atom ids
@@ -79,31 +79,25 @@ class Cube:
     ##############
     def _split(self):
         """Here the number of cubes is calculated for each dimension for the
-        given cube size and molecule dimensions. A list of boxes is generated
-        containing the coordinates of the origin point of each box. Furthermore,
-        an empty list for each box is added, that will contain pointer to the
-        atom objects.
+        given cube size and molecule dimensions. A list of cubes is generated
+        containing the coordinates of the origin point of each cube.
+        Furthermore, an empty list for each cube is added, that will contain
+        atom ids of atom objects.
 
         For numbering, the x-axis is the first dictionary entry, below it the
         y-axis and the final dictionary key refers to the z-axis.
         """
         # Calculate number of cubes in each dimension
-        self._count = [math.floor(box/self._size) for box in self._mol.get_box()]
+        self._count = [math.floor(box/self._size) for box in self._mol_box]
 
         # Fill cube origins
-        self._index = []
         self._origin = {}
         self._pointer = {}
         for i in range(self._count[0]):
-            self._origin[i] = {}
-            self._pointer[i] = {}
             for j in range(self._count[1]):
-                self._origin[i][j] = {}
-                self._pointer[i][j] = {}
                 for k in range(self._count[2]):
-                    self._index.append([i, j, k])
-                    self._origin[i][j][k] = [self._size*x for x in [i, j, k]]
-                    self._pointer[i][j][k] = []
+                    self._origin[(i, j, k)] = [self._size*x for x in [i, j, k]]
+                    self._pointer[(i, j, k)] = []
 
     def _pos_to_index(self, position):
         """Calculate the cube index for a given position
@@ -115,18 +109,17 @@ class Cube:
 
         Returns
         -------
-        index : list
+        index : tuple
             Cube index
         """
-        return [math.floor(pos/self._size) if math.floor(pos/self._size)<self._count[dim] else self._count[dim]-1 for dim, pos in enumerate(position)]
+        return tuple([math.floor(pos/self._size) if math.floor(pos/self._size)<self._count[dim] else self._count[dim]-1 for dim, pos in enumerate(position)])
 
     def _fill(self):
         """Based on their coordinates, the atom ids, as defined in the molecule
         object, are filled into the cubes.
         """
-        for atom_id, atom in self._mol.get_atom_dict().items():
-            idx = self._pos_to_index(atom.get_pos())
-            self._pointer[idx[0]][idx[1]][idx[2]].append(atom_id)
+        for atom_id, atom in enumerate(self._mol.get_atom_list()):
+            self._pointer[self._pos_to_index(atom.get_pos())].append(atom_id)
 
 
     ############
@@ -150,19 +143,20 @@ class Cube:
         index : list
             New cube index
         """
-        # Step forward
-        index = index[:]
+        # Step in intended dimension
+        index = list(index)
         index[dim] += step
 
+        # Perodicity
         if index[dim] >= self._count[dim]:
             index[dim] = 0 if self._is_pbc else None
         elif index[dim] < 0:
             index[dim] = self._count[dim]-1 if self._is_pbc else None
 
-        return index
+        return tuple(index)
 
     def _right(self, index):
-        """Step one box to the right in relation to the x-axis.
+        """Step one cube to the right in relation to the x-axis.
 
         Parameters
         ----------
@@ -177,7 +171,7 @@ class Cube:
         return self._step(0, 1, index)
 
     def _left(self, index):
-        """Step one box to the left in relation to the x-axis.
+        """Step one cube to the left in relation to the x-axis.
 
         Parameters
         ----------
@@ -192,7 +186,7 @@ class Cube:
         return self._step(0, -1, index)
 
     def _top(self, index):
-        """Step one box to the top in relation to the y-axis.
+        """Step one cube to the top in relation to the y-axis.
 
         Parameters
         ----------
@@ -207,7 +201,7 @@ class Cube:
         return self._step(1, 1, index)
 
     def _bot(self, index):
-        """Step one box to the bottom in relation to the y-axis.
+        """Step one cube to the bottom in relation to the y-axis.
 
         Parameters
         ----------
@@ -222,7 +216,7 @@ class Cube:
         return self._step(1, -1, index)
 
     def _front(self, index):
-        """Step one box to the front in relation to the z-axis.
+        """Step one cube to the front in relation to the z-axis.
 
         Parameters
         ----------
@@ -237,7 +231,7 @@ class Cube:
         return self._step(2, 1, index)
 
     def _back(self, index):
-        """Step one box to the back in relation to the z-axis.
+        """Step one cube to the back in relation to the z-axis.
 
         Parameters
         ----------
@@ -296,7 +290,7 @@ class Cube:
         Parameters
         ----------
         cube_list : list, None
-            List of cube indices to search in, use None for all boxes
+            List of cube indices to search in, use None for all cubes
         atom_type : list
             List of two atom types
         distance : float
@@ -310,19 +304,16 @@ class Cube:
             Bond array containing lists of two atom ids
         """
         # Process input
-        cube_list = self._index if cube_list is None else cube_list
+        cube_list = list(self._pointer.keys()) if cube_list is None else cube_list
 
         # Loop through all given cubes
         bond_list = []
-        for cube in cube_list:
-            # Get surrounding cubes
-            neighbour = self.neighbour(cube)
-            atoms = []
-            for n in neighbour:
-                atoms.extend(self._pointer[n[0]][n[1]][n[2]])
+        for cube_id in cube_list:
+            # Get atom ids of surrounding cubes
+            atoms = sum([self._pointer[x] for x in self.neighbour(cube_id)], [])
 
             # Run through atoms in the main cube
-            for atom_id_a in self._pointer[cube[0]][cube[1]][cube[2]]:
+            for atom_id_a in self._pointer[cube_id]:
                 # Check type
                 if self._atom_data[atom_id_a][0] == atom_type[0]:
                     entry = [atom_id_a, []]
@@ -334,6 +325,7 @@ class Cube:
                             for dim in range(self._dim):
                                 # Nearest image convention
                                 delta_pos = self._atom_data[atom_id_a][1][dim]-self._atom_data[atom_id_b][1][dim]
+                                # if abs(delta_pos) > 3*self._size:
                                 bond_vector.append(delta_pos - self._mol_box[dim]*round(delta_pos/self._mol_box[dim]))
                             # Calculate bond length
                             length = geometry.length(bond_vector)
@@ -352,7 +344,7 @@ class Cube:
         Parameters
         ----------
         cube_list : list, None
-            List of cube indices to search in, use None for all boxes
+            List of cube indices to search in, use None for all cubes
         atom_type : list
             List of two atom types
         distance : float
@@ -366,7 +358,7 @@ class Cube:
             Bond array containing lists of two atom ids
         """
         # Process input
-        cube_list = self._index if cube_list is None else cube_list
+        cube_list = list(self._pointer.keys()) if cube_list is None else cube_list
 
         # Divide cubes on processors
         cube_num = math.floor(len(cube_list)/self._np)
@@ -406,8 +398,8 @@ class Cube:
 
         Returns
         -------
-        origin : list
-            Origin positions
+        origin : dictionary
+            Dictionary of origin positions for each cube
         """
         return self._origin
 
@@ -416,20 +408,10 @@ class Cube:
 
         Returns
         -------
-        pointer : list
-            Pointer list
+        pointer : dictionary
+            Pointer dictionary
         """
         return self._pointer
-
-    def get_index(self):
-        """Return the list of cube indices.
-
-        Returns
-        -------
-        index : list
-            List of cube indices
-        """
-        return self._index
 
     def get_count(self):
         """Return the number of cubes in each dimension.
@@ -437,7 +419,7 @@ class Cube:
         Returns
         -------
         count : list
-            Box number
+            Number of cubes
         """
         return self._count
 

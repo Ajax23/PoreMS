@@ -38,7 +38,7 @@ class UserModelCase(unittest.TestCase):
         mol_pdb = Molecule(inp="data/benzene.pdb")
         mol_mol2 = Molecule(inp="data/benzene.mol2")
 
-        mol_atom = Molecule(inp=mol_mol2.get_atom_dict())
+        mol_atom = Molecule(inp=mol_mol2.get_atom_list())
         mol_concat = Molecule(inp=[mol_gro, mol_pdb])
 
         mol_append = Molecule(inp="data/benzene.gro")
@@ -96,15 +96,15 @@ class UserModelCase(unittest.TestCase):
         mol.add("C", 2, [0, 2], r=0.1, theta=90, phi=45)
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.0500, 0.0500, 0.0293])
         mol.delete(2)
-        self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.0500, 0.0500, 0.0293])
+        self.assertEqual([round(x, 4) for x in mol.pos(2)], [0.0500, 0.0500, 0.0293])
         mol.add("C", [0, 0.1, 0.2])
-        self.assertEqual(mol.overlap(), {0: [4]})
-        mol.switch_atom_order(0, 3)
+        self.assertEqual(mol.overlap(), {0: [3]})
+        mol.switch_atom_order(0, 2)
         self.assertEqual([round(x, 4) for x in mol.pos(0)], [0.0500, 0.0500, 0.0293])
         mol.set_atom_type(0, "R")
-        self.assertEqual(mol.get_atom_dict()[0].get_atom_type(), "R")
+        self.assertEqual(mol.get_atom_list()[0].get_atom_type(), "R")
         mol.set_atom_name(0, "RuX")
-        self.assertEqual(mol.get_atom_dict()[0].get_name(), "RuX")
+        self.assertEqual(mol.get_atom_list()[0].get_name(), "RuX")
 
     def test_molecule_set_get(self):
         mol = Molecule()
@@ -120,7 +120,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(mol.get_short(), "TMOL")
         self.assertEqual(mol.get_box(), [1, 1, 1])
         self.assertEqual(mol.get_num(), 0)
-        self.assertEqual(mol.get_max(), 0)
         self.assertEqual(mol.get_charge(), 1.5)
         self.assertEqual(mol.get_masses(), [1, 2, 3])
         self.assertEqual(mol.get_mass(), 6)
@@ -197,24 +196,24 @@ class UserModelCase(unittest.TestCase):
         cube = Cube(block, 0.4, True)
 
         # Splitting and filling
-        self.assertEqual(len(cube.get_index()), 120)
-        self.assertEqual(cube.get_origin()[1][1][1], [0.4, 0.4, 0.4])
-        self.assertEqual(cube.get_pointer()[1][1][1], [14, 46, 51, 52, 65])
+        self.assertEqual(len(cube.get_origin()), 120)
+        self.assertEqual(cube.get_origin()[(1, 1, 1)], [0.4, 0.4, 0.4])
+        self.assertEqual(cube.get_pointer()[(1, 1, 1)], [14, 46, 51, 52, 65])
 
         # Iterator
-        self.assertEqual(cube._right([1, 1, 1]), [2, 1, 1])
-        self.assertEqual(cube._left([1, 1, 1]),  [0, 1, 1])
-        self.assertEqual(cube._top([1, 1, 1]),   [1, 2, 1])
-        self.assertEqual(cube._bot([1, 1, 1]),   [1, 0, 1])
-        self.assertEqual(cube._front([1, 1, 1]), [1, 1, 2])
-        self.assertEqual(cube._back([1, 1, 1]),  [1, 1, 0])
-        self.assertEqual(len(cube.neighbour([0, 0, 0])), 27)
+        self.assertEqual(cube._right((1, 1, 1)), (2, 1, 1))
+        self.assertEqual(cube._left((1, 1, 1)),  (0, 1, 1))
+        self.assertEqual(cube._top((1, 1, 1)),   (1, 2, 1))
+        self.assertEqual(cube._bot((1, 1, 1)),   (1, 0, 1))
+        self.assertEqual(cube._front((1, 1, 1)), (1, 1, 2))
+        self.assertEqual(cube._back((1, 1, 1)),  (1, 1, 0))
+        self.assertEqual(len(cube.neighbour((1, 1, 1))), 27)
 
         # Search
-        self.assertEqual(len(cube.find_bond([[1, 1, 1]], ["Si", "O"], 0.155, 0.005)), 1)
-        self.assertEqual(len(cube.find_bond([[1, 1, 1]], ["O", "Si"], 0.155, 0.005)), 4)
-        self.assertEqual(len(cube.find_bond([[0, 0, 0]], ["Si", "O"], 0.155, 0.005)), 2)
-        self.assertEqual(len(cube.find_bond([[0, 0, 0]], ["O", "Si"], 0.155, 0.005)), 2)
+        self.assertEqual(cube.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [14, 46, 52, 65]]])
+        self.assertEqual(cube.find_bond([(1, 1, 1)], ["O", "Si"], 0.155, 0.005), [[14, [51, 13]], [46, [43, 51]], [52, [51, 49]], [65, [64, 51]]])
+        self.assertEqual(cube.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 2, 174, 9]], [5, [306, 110, 4, 6]]])
+        self.assertEqual(cube.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]]])
 
     def test_cube_parallel(self):
         self.skipTest("Parallel")
@@ -223,8 +222,6 @@ class UserModelCase(unittest.TestCase):
 
         self.assertEqual(len(cube.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
         self.assertEqual(len(cube.find_parallel(None, ["O", "Si"], 0.155, 0.005)), 384)
-
-
 
 
     ########
