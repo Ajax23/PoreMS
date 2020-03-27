@@ -16,7 +16,7 @@ from porems.molecule import Molecule
 from porems.pattern import BetaCristobalit
 
 from porems.cube import Cube
-from porems.bonding import Bonding
+from porems.matrix import Matrix
 
 
 

@@ -1,7 +1,7 @@
 ################################################################################
-# Bonding Class                                                                #
+# Matric Class                                                                 #
 #                                                                              #
-"""Bonding search structure."""
+"""Matrix class for preserving bond information."""
 ################################################################################
 
 
@@ -10,136 +10,104 @@ import math
 import porems.utils as utils
 
 
-class Bonding:
-    """The aim of this class is preserving all information of the silicon grid
-    bonds. This is needed since firstly, verlet searches get costly the more
-    often they are needed and secondly, multiple searches deteriorate the bond
-    information, due to numeric errors thus resulting in bonds being lost.
+class Matrix:
+    """The aim of this class is preserving all information of the grid bonds.
 
-    The idea here was reducing the verlet searches to a single search by
-    creating a connection matrix of all oxygen and silicon atoms.
-    In fact two matrices :math:`ox\\in\\mathbb{N}^{no\\times2}` for oxygen and
-    :math:`si\\in\\mathbb{N}^{ns\\times2}` were created with numbers of
-    oxygen atoms :math:`no` and silicon atoms :math:`ns`
+    Although the search can be parallelized, still multiple iterations are
+    needed to cover the surface preparations. Additionally, due to machine
+    inaccuracy there is the risk of bonds not being detected as such, leading
+    to artefacts. Also it is not possible to ensure that all bonds were  found
+    when deleting atoms because all systems are shaped differently.  Therefore,
+    another optimization, or rather supporting algorithm, was implemented to
+    bypass these issues.
+
+    The idea was reducing the number of iterations to a single search by
+    creating a connectivity matrix of all oxygen and silicon atoms. Therefore
+    two matrices :math:`\\boldsymbol{O}` for oxygen and :math:`\\boldsymbol{S}`
+    for silicon were defined
 
     .. math::
 
         \\begin{array}{cc}
-            ox = \\left[
-                \\begin{array}{ll}
-                    o_0&[s_{0,0},s_{0,1}]\\\\
-                    o_1&[s_{1,0},s_{1,1}]\\\\
-                    &\\vdots\\\\
-                    o_{no}&[s_{no,0},s_{no,1}]
-                \\end{array}
-            \\right],&
-            si = \\left[
-                \\begin{array}{ll}
-                    s_0&[o_{0,0},o_{0,1},o_{0,2},o_{0,3}]\\\\
-                    s_1&[o_{1,0},o_{1,1},o_{1,2},o_{1,3}]\\\\
-                    &\\vdots\\\\
-                    s_{ns}&[o_{ns,0},o_{ns,1},o_{ns,2},o_{ns,3}]
-                \\end{array}
-            \\right]
+            \\boldsymbol{O}=
+            \\begin{bmatrix}
+                o_0&\\begin{pmatrix}p_{s,0,0}&p_{s,0,1}\\end{pmatrix}\\\\
+                o_1&\\begin{pmatrix}p_{s,1,0}&p_{s,1,1}\\end{pmatrix}\\\\
+                \\vdots&\\vdots\\\\
+                o_k&\\begin{pmatrix}p_{s,k,0}&p_{s,k,1}\\end{pmatrix}
+            \\end{bmatrix}
+            ,&
+            \\boldsymbol{S}=
+            \\begin{bmatrix}
+                s_0&\\begin{pmatrix}p_{o,0,0}&p_{o,0,1}&p_{o,0,2}&p_{o,0,3}\\end{pmatrix}\\\\
+                s_1&\\begin{pmatrix}p_{o,1,0}&p_{o,1,1}&p_{o,1,2}&p_{o,1,3}\\end{pmatrix}\\\\
+                \\vdots&\\vdots\\\\
+                s_l&\\begin{pmatrix}p_{o,l,0}&p_{o,l,1}&p_{o,l,2}&p_{o,l,3}\\end{pmatrix}
+            \\end{bmatrix}
         \\end{array}
 
-    with oxygen :math:`o_{i=0,\\dots,no}` and silicon :math:`s_{j=0,\\dots,ns}`.
-    The entries next to the main atoms are the silicon atoms
-    :math:`s_{i,ko=0,\\dots,so}` bound to oxygen :math:`i` and oxygen atoms
-    :math:`o_{j,ks=0,\\dots,os}` bound to silicon :math:`j`, which are found
-    using the verlet search algorithm. As an optimization, these values are not
-    the atom ids, but the list pointers of the specific atoms in their
-    corresponding connection matrices :math:`si` and :math:`ox`. Due to chemical
-    properties, the maximal possible silicon atoms bound to one oxygen is
-    :math:`so=2` and the maximal possible number of oxygen atoms bound to one
-    silicon is :math:`os=4`.
+    with atom ids of oxygen :math:`o` and silicon :math:`s` in the data matrix
+    of  the pore, list id pointer :math:`p_s` of the silicon entry in matrix
+    :math:`\\boldsymbol{S}` and pointer :math:`p_o` of the oxygen entry in
+    matrix :math:`\\boldsymbol{O}`. Thus each entry of the matrix presents the
+    atom and all  its binding partners. These matrices are filled after creating
+    the cristobalite  block. This way it is possible to check whether all bonds
+    were found, since all  entries need to have the same size when considering
+    periodic boundary conditions.
 
-    In the beginning, considering periodic boundary conditions and before
-    removing any atoms, every atom should be saturated with partners. This
-    means that every silicon has a set of four oxygens and every oxygen has two
-    silicon bonds.
+    Using this implementation, it is no longer required to physically delete
+    atoms when carving out the pore, it is enough to remove binding partners
+    from the matrices. Thus, the surface preparation conditions only need to
+    consider the number of bonds remaining in each entry and thereby determine
+    whether an atom needs to be removed or not, resulting into an effort scaling
+    linear with the number of atoms
 
-    With this connection matrix, bonds can be easily deleted and their number
-    for specific atoms can be easily determined without needing another search
-    call.
+    .. math::
+
+      \\mathcal{O}(n).
 
     Parameters
     ----------
-    verlet : Verlet
-        Verlet list object
+    mol : Molecule
+        Molecule grid object
+    orient : string
+        Orientation of the molecule block
+    bonds : list
+        List of all pairwise bonds in the grid with only two different atom
+        types
     """
-
-    def __init__(self, verlet):
+    def __init__(self, mol, orient, bonds):
         # Initialize
-        osi = []
-        sio = []
-        pointer = []
-
-        self._mol = verlet.get_mol()
-        self._data = self._mol.get_data()
         self._dim = 3
-        self._si_grid = 0.155
-        self._y_grid = 0.073
+        self._mol = mol
 
-        # Search for bounds
-        bonds = verlet.find_parallel(None, ["Si", "O"], self._si_grid, 10e-2)
-
-        # Fill atoms in list
-        for i in range(self._mol.get_num()):
-            atom_type = self._mol.get_type(i)
-            if atom_type == "Si":
-                pointer.append(len(sio))
-                sio.append([i, []])
-            elif atom_type == "O":
-                pointer.append(len(osi))
-                osi.append([i, []])
-
-        # Transform to column
-        sio = utils.column(sio)
-        osi = utils.column(osi)
-
-        # Add bonds to lists
-        for i in range(len(bonds)):
-            ids = pointer[bonds[i][0]]
-            ido = [pointer[bonds[i][1][j]] for j in range(len(bonds[i][1]))]
-
-            sio[1][ids] = ido
-            for o in ido:
-                osi[1][o].append(ids)
-
-        # Make global
-        self._sio = sio
-        self._osi = osi
-        self._pointer = pointer
-        self._remove = []
+        # Create bond dictionary
+        self._matrix = {}
+        for bond in bonds:
+            # Fill bond as given
+            self._matrix[bond[0]] = bond[1]
+            # Fill reverse bonds
+            for atom_b in bond[1]:
+                if not atom_b in self._matrix:
+                    self._matrix[atom_b] = []
+                self._matrix[atom_b].append(bond[0])
 
 
     ###################
     # Private Methods #
     ###################
-    def _unbind(self, silicon, oxygen):
-        """Remove the bond between a silicon and an oxygen atom from the
-        connection matrix.
+    def _unbind(self, atom_a, atom_b):
+        """Remove the bond from the connectivity matrix.
 
         Parameters
         ----------
-        silicon : integer
-            Silica atom id
-        oxygen : integer
-            Oxygen atom id
+        atom_a : integer
+            Atom A
+        atom_b : integer
+            Atom B
         """
-        # initialize
-        sio = self._sio
-        osi = self._osi
-        pointer = self._pointer
-
-        # Get pointer
-        id_s = pointer[silicon]
-        id_o = pointer[oxygen]
-
-        # Remove bond
-        sio[1][id_s].pop(sio[1][id_s].index(id_o))
-        osi[1][id_o].pop(osi[1][id_o].index(id_s))
+        self._matrix[atom_a].remove(atom_b)
+        self._matrix[atom_b].remove(atom_a)
 
     def _geminal(self):
         """Get the list silicon that have geminal bonds - two binding sites.
@@ -266,7 +234,7 @@ class Bonding:
         data = self._data
         mol = self._mol
         si_grid = self._si_grid
-        y_grid = self._y_grid
+        y_grid = 0.073
 
         drill = mol.get_drill()
         gap = mol.get_gap()
@@ -359,8 +327,7 @@ class Bonding:
                             ox.append(o)
 
                             # Left, boundary left and right oxygen (this order)
-                            theta.append(angle-180) if sP > oP or abs(sP -
-                                                                      oP) > box[2]/2 else theta.append(180-angle)
+                            theta.append(angle-180) if sP > oP or abs(sP - oP) > box[2]/2 else theta.append(180-angle)
 
                     add_oxy(i, ox, -si_grid, theta)
                     adjust(ox)

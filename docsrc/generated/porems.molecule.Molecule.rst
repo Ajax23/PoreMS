@@ -97,7 +97,6 @@ Molecule
     ~Molecule.get_charge
     ~Molecule.get_mass
     ~Molecule.get_masses
-    ~Molecule.get_max
     ~Molecule.get_name
     ~Molecule.get_num
     ~Molecule.get_short

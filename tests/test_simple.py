@@ -17,6 +17,7 @@ from porems.essentials import *
 from porems.store import Store
 from porems.pattern import *
 from porems.cube import Cube
+from porems.matrix import Matrix
 from porems.pore import Pore
 
 
@@ -176,7 +177,8 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(beta_cristobalit.get_size(), [2.150, 1.827, 2.635])
 
         # Overlap and output
-        block = beta_cristobalit.get_block()
+        block = BetaCristobalit().generate([2, 2, 2], "z")
+        block.set_name("beta_cristobalit")
         Store(block, "output").gro()
         self.assertEqual(block.get_num(), 576)
         self.assertEqual(block.overlap(), {})
@@ -222,6 +224,19 @@ class UserModelCase(unittest.TestCase):
 
         self.assertEqual(len(cube.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
         self.assertEqual(len(cube.find_parallel(None, ["O", "Si"], 0.155, 0.005)), 384)
+
+
+    ##########
+    # Matrix #
+    ##########
+    def test_matrix(self):
+        orient = "z"
+        block = BetaCristobalit().generate([1, 1, 1], orient)
+        block.set_name("matrix")
+        Store(block, "output").gro()
+        cube = Cube(block, 0.2, True)
+        bonds = cube.find_bond(None, ["Si", "O"], 0.155, 10e-2)
+        matrix = Matrix(block, orient, bonds)
 
 
     ########
