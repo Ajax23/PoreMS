@@ -50,33 +50,6 @@ def column(data):
     return data_col
 
 
-def copy(source, target):
-    """Copy a specified file to a specified location.
-
-    Parameters
-    ----------
-    source : string
-        Link to requested file
-    target : string
-        Link to requested new file
-    """
-    copyfile(source, target)
-
-
-def copy_dir(source, target):
-    """Copy a specified folder to a specified location if it does not exist.
-
-    Parameters
-    ----------
-    source : string
-        Link to requested folder
-    target : string
-        Link to requested new folder
-    """
-    if not os.path.isdir(target):
-        copytree(source, target)
-
-
 def tic():
     """MATLAB tic replica - return current time.
 
@@ -162,4 +135,5 @@ def load(link):
     obj : Object
         Loaded object
     """
-    return pickle.load(open(link, "rb"))
+    with open(link, 'rb') as f:
+        return pickle.load(f)
