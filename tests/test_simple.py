@@ -217,14 +217,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(cube.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 2, 174, 9]], [5, [306, 110, 4, 6]]])
         self.assertEqual(cube.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]]])
 
-    def test_cube_parallel(self):
-        # self.skipTest("Parallel")
-
-        cube = Cube(BetaCristobalit().generate([2, 2, 2], "z"), 0.4, True)
-
-        self.assertEqual(len(cube.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
-        self.assertEqual(len(cube.find_parallel(None, ["O", "Si"], 0.155, 0.005)), 384)
-
 
     ##########
     # Matrix #
@@ -236,7 +228,18 @@ class UserModelCase(unittest.TestCase):
         Store(block, "output").gro()
         cube = Cube(block, 0.2, True)
         bonds = cube.find_bond(None, ["Si", "O"], 0.155, 10e-2)
-        matrix = Matrix(block, orient, bonds)
+
+        matrix = Matrix(bonds)
+        connect = matrix.get_matrix()
+        matrix.split(0, 17)
+        self.assertEqual(connect[0], [30, 8, 1])
+        self.assertEqual(connect[17], [19])
+        matrix.strip(0)
+        self.assertEqual(connect[0], [])
+        self.assertEqual(connect[1], [43])
+        self.assertEqual(connect[8], [7])
+        self.assertEqual(connect[30], [3])
+        self.assertEqual(matrix.unbound(), [0])
 
 
     ########
