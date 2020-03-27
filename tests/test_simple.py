@@ -11,6 +11,9 @@ else:
 print("Finished inistalling package...")
 
 # Import package
+import porems.utils as utils
+import porems.geometry as geometry
+
 from porems.atom import Atom
 from porems.molecule import Molecule
 from porems.essentials import *
@@ -22,11 +25,62 @@ from porems.pore import Pore
 
 
 class UserModelCase(unittest.TestCase):
+    #########
+    # Utils #
+    #########
+    def test_utils(self):
+        file_link = "output/test/test.txt"
+
+        utils.mkdirp("output/test")
+
+        with open(file_link, "w") as file_out:
+            file_out.write("TEST")
+        utils.replace(file_link, "TEST", "DOTA")
+        with open(file_link, "r") as file_in:
+            for line in file_in:
+                self.assertEqual(line, "DOTA\n")
+
+        self.assertEqual(utils.column([[1, 1, 1], [2, 2, 2]]), [[1, 2], [1, 2], [1, 2]])
+
+        utils.save([1, 1, 1], file_link)
+        self.assertEqual(utils.load(file_link), [1, 1, 1])
+
+        self.assertEqual(round(utils.toc(utils.tic(), is_print=False)), 0)
+
+
+    ############
+    # Geometry #
+    ############
+    def test_geometry(self):
+        vec_a = [1, 1, 2]
+        vec_b = [0, 3, 2]
+
+        self.assertEqual(round(geometry.dot_product(vec_a, vec_b), 4), 7)
+        self.assertEqual(round(geometry.length(vec_a), 4), 2.4495)
+        self.assertEqual([round(x, 4) for x in geometry.vector(vec_a, vec_b)], [-1, 2, 0])
+        self.assertEqual([round(x, 4) for x in geometry.unit(vec_a)], [0.4082, 0.4082, 0.8165])
+        self.assertEqual([round(x, 4) for x in geometry.cross_product(vec_a, vec_b)], [-4, -2, 3])
+        self.assertEqual(round(geometry.angle(vec_a, vec_b), 4), 37.5714)
+        self.assertEqual(round(geometry.angle_polar(vec_a), 4), 0.7854)
+        self.assertEqual(round(geometry.angle_azi(vec_b), 4), 0.9828)
+        self.assertEqual([round(x, 4) for x in geometry.main_axis(1)], [1, 0, 0])
+        self.assertEqual([round(x, 4) for x in geometry.main_axis(2)], [0, 1, 0])
+        self.assertEqual([round(x, 4) for x in geometry.main_axis(3)], [0, 0, 1])
+        self.assertEqual([round(x, 4) for x in geometry.main_axis("x")], [1, 0, 0])
+        self.assertEqual([round(x, 4) for x in geometry.main_axis("y")], [0, 1, 0])
+        self.assertEqual([round(x, 4) for x in geometry.main_axis("z")], [0, 0, 1])
+        self.assertEqual([round(x, 4) for x in geometry.rotate(vec_a, "x", 90, True)], [1.0, -2.0, 1.0])
+
+
     ########
     # Atom #
     ########
     def test_atom(self):
         atom = Atom([0.0, 0.1, 0.2], "H", "HO1")
+
+        self.assertEqual(atom.get_pos(), [0.0, 0.1, 0.2])
+        self.assertEqual(atom.get_atom_type(), "H")
+        self.assertEqual(atom.get_name(), "HO1")
 
         self.assertEqual(atom.__str__(), "  Name Type    x    y    z\n0  HO1    H  0.0  0.1  0.2")
 
