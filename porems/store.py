@@ -159,7 +159,7 @@ class Store:
             for mol in self._mols:
                 atom_types = {}
                 # Run through atoms
-                for atom_id, atom in sorted(mol.get_atom_dict().items()):
+                for atom in mol.get_atom_list():
                     # Get atom type
                     atom_type = atom.get_atom_type()
 
@@ -235,7 +235,7 @@ class Store:
             for mol in self._mols:
                 atom_types = {}
                 # Run through atoms
-                for atom_id, atom in sorted(mol.get_atom_dict().items()):
+                for atom in mol.get_atom_list():
                     # Get atom type
                     atom_type = atom.get_atom_type()
 
@@ -297,7 +297,7 @@ class Store:
             for mol in self._mols:
                 atom_types = {}
                 # Run through atoms
-                for atom_id, atom in sorted(mol.get_atom_dict().items()):
+                for atom in mol.get_atom_list():
                     # Write file
                     out_string = "%-2s" % atom.get_atom_type()  # 1- 2 (2)     Atom name
                     for i in range(self._dim):                  # 3-41 (3*13)  Coordinates
