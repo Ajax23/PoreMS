@@ -216,7 +216,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(cube.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]]])
 
     def test_cube_parallel(self):
-        self.skipTest("Parallel")
+        # self.skipTest("Parallel")
 
         cube = Cube(BetaCristobalit().generate([2, 2, 2], "z"), 0.4, True)
 
