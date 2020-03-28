@@ -3,12 +3,12 @@ import sys
 
 import unittest
 
-# Install package
-if sys.platform == "win32":
-    os.system("pip install ../.")
-else:
-    os.system("pip install ../. &> /dev/null")
-print("Finished inistalling package...")
+# # Install package
+# if sys.platform == "win32":
+#     os.system("pip install ../.")
+# else:
+#     os.system("pip install ../. &> /dev/null")
+# print("Finished inistalling package...")
 
 # Import package
 import porems.utils as utils
@@ -21,6 +21,7 @@ from porems.store import Store
 from porems.pattern import *
 from porems.dice import Dice
 from porems.matrix import Matrix
+from porems.shape import *
 from porems.pore import Pore
 
 
@@ -271,6 +272,10 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(dice.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 2, 174, 9]], [5, [306, 110, 4, 6]]])
         self.assertEqual(dice.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]]])
 
+        # Parallel search
+        self.assertEqual(len(dice.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
+        self.assertEqual(len(dice.find_parallel(None, ["O", "Si"], 0.155, 0.005)), 384)
+
 
     ##########
     # Matrix #
@@ -293,7 +298,39 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(connect[1], [43])
         self.assertEqual(connect[8], [7])
         self.assertEqual(connect[30], [3])
-        self.assertEqual(matrix.unbound(), [0])
+        self.assertEqual(matrix.bound(0), [0])
+
+
+    #########
+    # Shape #
+    #########
+    def test_shape(self):
+        # cylinder = Cylinder([1, 1, 1], [1, 1, 1], input={"length": 10, "diameter": 6})
+        #
+        # cylinder.rim(0)
+        # cylinder.surf()
+        #
+        # cylinder.normal([1.07065866, 2.80244358e+00, 0])
+        #
+        # cylinder.plot()
+
+        pore = BetaCristobalit().generate([6, 6, 6], "z")
+        pore.set_name("shape")
+
+        dice = Dice(pore, 0.4, True)
+        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        cylinder = Cylinder({"length": 3, "diameter": 4})
+
+        # cylinder.plot()
+
+        del_input = {"start": pore.centroid()[:2]+[0], "central": [0, 0, 1], "length": 6}
+        for atom_id, atom in enumerate(pore.get_atom_list()):
+            if cylinder.is_in(del_input, atom.get_pos()):
+                matrix.strip(atom_id)
+
+        pore.delete(matrix.bound(0))
+
+        Store(pore, "output").gro()
 
 
     ########
@@ -302,11 +339,10 @@ class UserModelCase(unittest.TestCase):
     def test_pore(self):
         self.skipTest("Temporary")
 
-        pore = Pore([2, 2, 2], "z")
+        pore = Pore([6, 6, 6], "z")
         pore.generate(is_time=False)
 
         Store(pore.get_pore(), "output").gro()
-
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
