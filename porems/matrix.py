@@ -99,15 +99,15 @@ class Matrix:
             for atom_b in atoms_b:
                 self. split(atom_a, atom_b)
 
-    def unbound(self):
-        """Return a list of all atoms unbound atoms.
+    def bound(self, num_bonds):
+        """Return a list of atoms with the specified number of bonds.
 
-        Returns
-        -------
-        unbound : list
-            List of atoms to be deleted
+        Parameters
+        ----------
+        num_bonds : int
+            Number of bonds to search for
         """
-        return [atom for atom in self._matrix if len(self._matrix[atom])==0]
+        return [atom for atom in self._matrix if len(self._matrix[atom])==num_bonds]
 
 
     ##################
