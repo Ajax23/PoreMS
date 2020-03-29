@@ -19,16 +19,50 @@ class Shape():
 
     Parameters
     ----------
-    input : dictionary
+    inp : dictionary
         Dictionary of necessary inputs
     """
-    def __init__(self, input):
-        self._input = input
+    def __init__(self, inp):
+        self._inp = inp
+
+        # Calculate angle and normal vector for rotation
+        self._angle = geometry.angle(inp["central"], geometry.main_axis("z"))
+        self._normal = geometry.cross_product(inp["central"], geometry.main_axis("z"))
+
+        # Calculate distance towards central axis start
+        self._dist_start = geometry.vector(self._centroid, inp["centroid"])
+        self._dist_zero = geometry.vector(geometry.rotate(inp["centroid"], self._normal, -self._angle, True), self._centroid)
 
 
     ##################
     # Helper Methods #
     ##################
+    def convert(self, data, to_zero=True):
+        """This helper method converts the given data to match the global
+        cenrtal axis and its start.
+
+        Parameters
+        ----------
+        data : list
+            Data input
+        to_zero : bool
+            True to convert data towards zero axis, False to convert data from
+            zero axis to central axis.
+
+        Returns
+        -------
+        data : list
+            Converted input
+        """
+        # Rotate towards main axis ot to zero axis
+        data = geometry.rotate(data, self._normal, -self._angle if to_zero else self._angle, True)
+
+        # Translate to zero or to start
+        dist = self._dist_zero if to_zero else self._dist_start
+        data = [data[i]+dist[i] for i in range(3)]
+
+        return data
+
     def plot(self, z=0, num=100):
         """Plot surface and rim.
 
@@ -51,29 +85,35 @@ class Shape():
 
         # Normal
         # import porems.utils as utils
-        # vec = [1.07065866, 2.80244358e+00, 0]
-        # line = [[0, 0, 0], self.convert(vec), self.normal(vec), [x*6 for x in geometry.unit(self.normal(vec))]]
+        # vec = [3.17290646, 4.50630614, 0.22183271]
+        # line = [self.convert([0, 0, 0], False), vec,
+        #         self.convert(self.normal(vec), False),
+        #         self.convert([x*6 for x in geometry.unit(self.normal(vec))], False)]
         # ax.plot3D(*utils.column(line))
 
         plt.show()
 
 
 class Cylinder(Shape):
-    """This class defines a cylindric shape.
+    """This class defines a cylindric shape. Needed inputs are
 
-    Needed inputs are
-
-    * **length** - Cylinder length
+    * **central** - Central axis
+    * **centroid** - Centroid of block
+    * **len_block** - Length of block
+    * **len_cyl** - Cylinder length
     * **diameter** - Cylinder diameter
 
     Parameters
     ----------
-    input : dictionary
+    inp : dictionary
         Dictionary of necessary inputs
     """
-    def __init__(self, start):
+    def __init__(self, inp):
+        # Set centroid
+        self._centroid = [0, 0, inp["len_cyl"]/2]
+
         # Call super class
-        super(Cylinder, self).__init__(start)
+        super(Cylinder, self).__init__(inp)
 
 
     ############
@@ -102,7 +142,7 @@ class Cylinder(Shape):
         z = z if isinstance(z, list) else [z]
         z = np.outer(z, np.ones(len(z)))
 
-        return [x, y, z]
+        return self.convert([x, y, z], False)
 
     def d_Phi_phi(self, r, phi, z):
         """Derivative of the surface function considering the polar angle.
@@ -168,7 +208,7 @@ class Cylinder(Shape):
             Unit normal vector
         """
         # Initialize
-        x, y, z = pos
+        x, y, z = self.convert(pos)
 
         # Cartesian to polar
         r = math.sqrt(x**2+y**2)
@@ -182,17 +222,11 @@ class Cylinder(Shape):
         # Calculate normal vector
         return geometry.cross_product(d_Phi_phi, d_Phi_z)
 
-    def is_in(self, input, pos):
+    def is_in(self, pos):
         """Check if given position is inside of shape. Needed inputs are
-
-        * **start** - Starting point in block
-        * **central** - Central axis
-        * **length** - Length of block
 
         Parameters
         ----------
-        input : dictionary
-            Dictionary of needed inputs
         pos : list
             Position
 
@@ -201,18 +235,10 @@ class Cylinder(Shape):
         is_in : bool
             True if position is inside of shape
         """
-        # Rotate towards main axis
-        angle = geometry.angle(input["central"], geometry.main_axis("z"))
-        normal = geometry.cross_product(input["central"], geometry.main_axis("z"))
-        pos = geometry.rotate(pos, normal, -angle, True)
-
-        # Translate to zero
-        dist = geometry.vector([0, 0, 0], input["start"])
-        pos = [pos[i]-dist[i] for i in range(3)]
-
         # Check if within shape
-        if geometry.length(self.normal(pos)) < self._input["diameter"]/2:
-            return pos[2]>(input["length"]-self._input["length"])/2 and pos[2]<=input["length"]-self._input["length"]/2
+        if geometry.length(self.normal(pos)) < self._inp["diameter"]/2:
+            pos_zero = self.convert(pos)
+            return pos_zero[2]>0 and pos_zero[2]<self._inp["len_cyl"]
         else:
             return False
 
@@ -236,7 +262,7 @@ class Cylinder(Shape):
             x and y arrays of the surface rim on the z-position
         """
         phi = np.linspace(0, 2*np.pi, num)
-        r = self._input["diameter"]/2
+        r = self._inp["diameter"]/2
 
         return self.Phi(r, phi, z)
 
@@ -254,8 +280,8 @@ class Cylinder(Shape):
             x, y and z arrays of the surface rim
         """
         phi = np.linspace(0, 2*np.pi, num)
-        r = np.ones(num)*self._input["diameter"]/2
-        z = np.linspace(0, self._input["length"], num)
+        r = np.ones(num)*self._inp["diameter"]/2
+        z = np.linspace(0, self._inp["len_cyl"], num)
 
         return self.Phi(r, phi, z)
 
@@ -271,7 +297,7 @@ class Cylinder(Shape):
         volume : float
             Volume
         """
-        return math.pi*(self._input()["length"]/2)**2*self._input()["length"]
+        return math.pi*(self._inp["len_cyl"]/2)**2*self._inp["len_cyl"]
 
     def surface(self):
         """Calculate inner surface.
@@ -281,4 +307,4 @@ class Cylinder(Shape):
         surface : float
             Inner surface
         """
-        return 2*math.pi*self._input()["length"]/2*self._input()["length"]
+        return 2*math.pi*self._inp["len_cyl"]/2*self._inp["len_cyl"]
