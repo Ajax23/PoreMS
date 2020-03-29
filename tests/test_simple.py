@@ -305,32 +305,33 @@ class UserModelCase(unittest.TestCase):
     # Shape #
     #########
     def test_shape(self):
-        # cylinder = Cylinder([1, 1, 1], [1, 1, 1], input={"length": 10, "diameter": 6})
-        #
-        # cylinder.rim(0)
-        # cylinder.surf()
-        #
-        # cylinder.normal([1.07065866, 2.80244358e+00, 0])
-        #
-        # cylinder.plot()
-
-        pore = BetaCristobalit().generate([6, 6, 6], "z")
-        pore.set_name("shape")
-
-        dice = Dice(pore, 0.4, True)
+        block = BetaCristobalit().generate([6, 6, 6], "z")
+        block.set_name("shape")
+        dice = Dice(block, 0.4, True)
         matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
-        cylinder = Cylinder({"length": 3, "diameter": 4})
+        centroid = block.centroid()
+        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 45, True))
+        cylinder = Cylinder({"centroid": centroid, "central": central, "len_block": 6, "len_cyl": 3, "diameter": 4})
 
-        # cylinder.plot()
+        # Test vector
+        vec = [3.6716, 4.4441, 0.2840]
 
-        del_input = {"start": pore.centroid()[:2]+[0], "central": [0, 0, 1], "length": 6}
-        for atom_id, atom in enumerate(pore.get_atom_list()):
-            if cylinder.is_in(del_input, atom.get_pos()):
-                matrix.strip(atom_id)
+        # Surface
+        self.assertEqual([round(x[0][20], 4) for x in cylinder.surf(num=100)], vec)
+        self.assertEqual([round(x[0][20], 4) for x in cylinder.rim(0, num=100)], vec)
 
-        pore.delete(matrix.bound(0))
+        # Normal
+        self.assertEqual([round(x, 4) for x in cylinder.convert([0, 0, 0], False)], [3.0777, 3.0937, 1.6344])
+        self.assertEqual([round(x, 4) for x in cylinder.normal(vec)], [0.5939, 2.9704, 0.0000])
 
-        Store(pore, "output").gro()
+        # Positioning
+        del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder.is_in(atom.get_pos())]
+        matrix.strip(del_list)
+        block.delete(matrix.bound(0))
+        self.assertEqual(block.get_num(), 12650)
+
+        # Store molecule
+        Store(block, "output").gro()
 
 
     ########
