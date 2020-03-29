@@ -36,8 +36,9 @@ class UserModelCase(unittest.TestCase):
 
         with open(file_link, "w") as file_out:
             file_out.write("TEST")
-        utils.replace(file_link, "TEST", "DOTA")
-        with open(file_link, "r") as file_in:
+        utils.copy(file_link, file_link+"t")
+        utils.replace(file_link+"t", "TEST", "DOTA")
+        with open(file_link+"t", "r") as file_in:
             for line in file_in:
                 self.assertEqual(line, "DOTA\n")
 
@@ -203,9 +204,13 @@ class UserModelCase(unittest.TestCase):
     def test_store(self):
         mol = Molecule(inp="data/benzene.gro")
 
+        Store(mol, "output").job()
+        Store(mol, "output").obj()
         Store(mol, "output").gro()
         Store(mol, "output").pdb()
         Store(mol, "output").xyz()
+        Store(mol, "output").top()
+        Store(mol, "output").grid()
 
 
     ###########
@@ -311,7 +316,12 @@ class UserModelCase(unittest.TestCase):
         matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
         centroid = block.centroid()
         central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 45, True))
+
         cylinder = Cylinder({"centroid": centroid, "central": central, "len_block": 6, "len_cyl": 3, "diameter": 4})
+
+        # Properties
+        self.assertEqual(round(cylinder.volume(), 4), 37.6991)
+        self.assertEqual(round(cylinder.surface(), 4), 37.6991)
 
         # Test vector
         vec = [3.6716, 4.4441, 0.2840]
@@ -338,7 +348,7 @@ class UserModelCase(unittest.TestCase):
     # Pore #
     ########
     def test_pore(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         pore = Pore([6, 6, 6], "z")
         pore.generate(is_time=False)

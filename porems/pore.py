@@ -94,18 +94,18 @@ class Pore():
 
         # Cube and bonding
         # t = utils.tic()
-        dice = Dice(self._pore, cube_size, True)
-        bonds = dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2)
-        matrix = Matrix(bonds)
-        shape = Cylinder(self._pore.centroid()[:2]+[0], [1, 1, 1], {"length": 6, "diameter": 4})
-
-        shape.plot()
-
-        for atom_id, atom in enumerate(self._pore.get_atom_list()):
-            if shape.is_in(atom.get_pos()):
-                matrix.strip(atom_id)
-
-        self._pore.delete(matrix.bound(0))
+        # dice = Dice(self._pore, cube_size, True)
+        # bonds = dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2)
+        # matrix = Matrix(bonds)
+        # shape = Cylinder(self._pore.centroid()[:2]+[0], [1, 1, 1], {"length": 6, "diameter": 4})
+        #
+        # shape.plot()
+        #
+        # for atom_id, atom in enumerate(self._pore.get_atom_list()):
+        #     if shape.is_in(atom.get_pos()):
+        #         matrix.strip(atom_id)
+        #
+        # self._pore.delete(matrix.bound(0))
 
         # # Consistency check
         # if not len(bond[1])==atom_type[0][1]:

@@ -372,7 +372,8 @@ class Store:
         link += "grid.itp" if name is None else name
 
         # Calculate excess charge
-        charges = self._mol.get_q()
+        # charges = self._mol.get_q()
+        charges = {"ox": -0.64, "om": -0.64, "si": 1.28}
 
         # Copy grid file
         utils.copy(os.path.split(__file__)[0]+"/templates/grid.itp", link)
