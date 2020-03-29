@@ -10,7 +10,7 @@ import time
 import pickle
 import fileinput
 
-from shutil import copyfile, copytree
+from shutil import copyfile
 
 
 def mkdirp(directory):
@@ -23,6 +23,19 @@ def mkdirp(directory):
     """
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
+def copy(source, target):
+    """Copy a specified file to a specified location.
+
+    Parameters
+    ----------
+    source : string
+        Link to requested file
+    target : string
+        Link to requested new file
+    """
+    copyfile(source, target)
 
 
 def column(data):

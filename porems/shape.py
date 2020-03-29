@@ -297,7 +297,7 @@ class Cylinder(Shape):
         volume : float
             Volume
         """
-        return math.pi*(self._inp["len_cyl"]/2)**2*self._inp["len_cyl"]
+        return math.pi*(self._inp["diameter"]/2)**2*self._inp["len_cyl"]
 
     def surface(self):
         """Calculate inner surface.
@@ -307,4 +307,4 @@ class Cylinder(Shape):
         surface : float
             Inner surface
         """
-        return 2*math.pi*self._inp["len_cyl"]/2*self._inp["len_cyl"]
+        return 2*math.pi*self._inp["diameter"]/2*self._inp["len_cyl"]
