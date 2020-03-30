@@ -13,7 +13,7 @@ import porems.geometry as geometry
 
 
 class Dice:
-    """This class splits the molecule into smaller subboxes and provides
+    """This class splits the molecule into smaller sub boxes and provides
     parallelized functions for pair-search.
 
     The aim is reducing the workload on search algorithms for atom pairs.
@@ -28,8 +28,8 @@ class Dice:
 
     Since a bond distance is fixed, the idea is reducing the search space by
     dividing the molecule box into cubes and only performing the  pair-search
-    within these smaller boxes and their 26 immediate neighbours. Assuming that
-    the gridstructure is ideal in a geometrical sense, that all bond length and
+    within these smaller boxes and their 26 immediate neighbors. Assuming that
+    the grid structure is ideal in a geometrical sense, that all bond length and
     angles are constant, the number of atoms in each cube are a constant
     :math:`b`. The computational effort for each atom is thus a constant
 
@@ -45,7 +45,7 @@ class Dice:
     needed between the subprocesses that each cover a set of cubes. The effort
     therefore has an ideal speedup.
 
-    Note that the cube size has to be strictly greater than the intended
+    Note that the cube size must be strictly greater than the intended
     bond length searches.
 
     Parameters
@@ -79,13 +79,19 @@ class Dice:
     ##############
     def _split(self):
         """Here the number of cubes is calculated for each dimension for the
-        given cube size and molecule dimensions. A list of cubes is generated
-        containing the coordinates of the origin point of each cube.
+        defined cube size and molecule dimension. A dictionary of cubes is
+        generated containing the coordinates of the origin point of each cube.
         Furthermore, an empty list for each cube is added, that will contain
         atom ids of atom objects.
 
-        For numbering, the x-axis is the first dictionary entry, below it the
-        y-axis and the final dictionary key refers to the z-axis.
+        Cube ids are tuples containing three elements with the x-axis as the
+        first entry, y-axis as the second entry and the z-axis as the third
+        entry
+
+        .. math::
+
+            \\text{id}=\\begin{pmatrix}x&y&z\\end{pmatrix}.
+
         """
         # Calculate number of cubes in each dimension
         self._count = [math.floor(box/self._size) for box in self._mol_box]
@@ -100,7 +106,7 @@ class Dice:
                     self._pointer[(i, j, k)] = []
 
     def _pos_to_index(self, position):
-        """Calculate the cube index for a given position
+        """Calculate the cube index for a given position.
 
         Parameters
         ----------
@@ -126,7 +132,7 @@ class Dice:
     # Iterator #
     ############
     def _step(self, dim, step, index):
-        """Helper function for stepping forward with the iterator. Optionally,
+        """Helper function for iterating through the cubes. Optionally,
         periodic boundary conditions are applied.
 
         Parameters
@@ -147,7 +153,7 @@ class Dice:
         index = list(index)
         index[dim] += step
 
-        # Perodicity
+        # Periodicity
         if index[dim] >= self._count[dim]:
             index[dim] = 0 if self._is_pbc else None
         elif index[dim] < 0:
@@ -156,7 +162,7 @@ class Dice:
         return tuple(index)
 
     def _right(self, index):
-        """Step one cube to the right in relation to the x-axis.
+        """Step one cube to the right considering the x-axis.
 
         Parameters
         ----------
@@ -171,7 +177,7 @@ class Dice:
         return self._step(0, 1, index)
 
     def _left(self, index):
-        """Step one cube to the left in relation to the x-axis.
+        """Step one cube to the left considering the x-axis.
 
         Parameters
         ----------
@@ -186,7 +192,7 @@ class Dice:
         return self._step(0, -1, index)
 
     def _top(self, index):
-        """Step one cube to the top in relation to the y-axis.
+        """Step one cube to the top considering the y-axis.
 
         Parameters
         ----------
@@ -201,7 +207,7 @@ class Dice:
         return self._step(1, 1, index)
 
     def _bot(self, index):
-        """Step one cube to the bottom in relation to the y-axis.
+        """Step one cube to the bottom considering the y-axis.
 
         Parameters
         ----------
@@ -216,7 +222,7 @@ class Dice:
         return self._step(1, -1, index)
 
     def _front(self, index):
-        """Step one cube to the front in relation to the z-axis.
+        """Step one cube to the front considering the z-axis.
 
         Parameters
         ----------
@@ -231,7 +237,7 @@ class Dice:
         return self._step(2, 1, index)
 
     def _back(self, index):
-        """Step one cube to the back in relation to the z-axis.
+        """Step one cube to the back considering the z-axis.
 
         Parameters
         ----------
@@ -245,7 +251,7 @@ class Dice:
         """
         return self._step(2, -1, index)
 
-    def neighbour(self, cube_id, is_self=True):
+    def neighbor(self, cube_id, is_self=True):
         """Get the ids of the cubes surrounding the given one.
 
         Parameters
@@ -257,26 +263,26 @@ class Dice:
 
         Returns
         -------
-        neighbour : list
-            List of surrounding
+        neighbor : list
+            List of surrounding cube ids, optionally including given cube id
         """
         # Initialize
-        neighbour = []
+        neighbor = []
 
-        # Find neighbours
+        # Find neighbors
         z = [self._back(cube_id), cube_id, self._front(cube_id)]
         y = [[self._top(i), i, self._bot(i)] for i in z]
 
         for i in range(len(z)):
             for j in range(len(y[i])):
-                neighbour.append(self._left(y[i][j]))
-                neighbour.append(y[i][j])
-                neighbour.append(self._right(y[i][j]))
+                neighbor.append(self._left(y[i][j]))
+                neighbor.append(y[i][j])
+                neighbor.append(self._right(y[i][j]))
 
         if not is_self:
-            neighbour.pop(13)
+            neighbor.pop(13)
 
-        return [n for n in neighbour if n is not None]
+        return [n for n in neighbor if n is not None]
 
 
     ##########
@@ -310,7 +316,7 @@ class Dice:
         bond_list = []
         for cube_id in cube_list:
             # Get atom ids of surrounding cubes
-            atoms = sum([self._pointer[x] for x in self.neighbour(cube_id)], [])
+            atoms = sum([self._pointer[x] for x in self.neighbor(cube_id)], [])
 
             # Run through atoms in the main cube
             for atom_id_a in self._pointer[cube_id]:
@@ -372,7 +378,7 @@ class Dice:
         # Destroy object
         del results
 
-        # Return resutls
+        # Return results
         return bond_list
 
 
@@ -385,7 +391,7 @@ class Dice:
         Parameters
         ----------
         bond : bool
-            PBC mode
+            True to turn on periodic boundary conditions
         """
         self._is_pbc = pbc
 

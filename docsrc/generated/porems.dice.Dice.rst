@@ -31,7 +31,7 @@ Dice
     ~Dice._front
     ~Dice._back
     ~Dice._step
-    ~Dice.neighbour
+    ~Dice.neighbor
 
 
   .. rubric:: Search

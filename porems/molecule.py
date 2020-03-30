@@ -569,7 +569,7 @@ class Molecule:
         specifies which atoms or rather which part of the molecule needs to be
         rotated in order to change the specified bond angle. First however the
         system needs to be set to zero. Therefore, the atom id to define the new
-        coordinate system has to be given for the set of specified atoms.
+        coordinate system must be given for the set of specified atoms.
         Normally this is the atom that touches the angle.
 
         The rotation axis is determined by creating the cross product
@@ -627,8 +627,8 @@ class Molecule:
         or a vector for a specific position.
 
         If the polar coordinates are dependent on a bond vector as an axis,
-        the ``bond`` variable has to be set. The coordinate system is then
-        transformed to the bond axis. If this variabel is set to None, then the
+        the ``bond`` variable must be set. The coordinate system is then
+        transformed to the bond axis. If this variable is set to None, then the
         given coordinates are assumed to be dependent on the z-axis.
 
         Parameters
