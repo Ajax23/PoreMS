@@ -9,3 +9,11 @@ BetaCristobalit
 .. currentmodule:: porems.pattern
 
 .. autoclass:: BetaCristobalit
+
+
+  .. rubric:: Minimal structure
+
+  .. autosummary::
+
+      ~BetaCristobalit._hexagonal
+      ~BetaCristobalit.pattern

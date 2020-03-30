@@ -11,16 +11,20 @@ Pattern
 .. autoclass:: Pattern
 
 
-  .. rubric:: Public Methods
+  .. rubric:: Block Generation
 
   .. autosummary::
 
-    ~Pattern.pattern
+    ~Pattern._block
+    ~Pattern._orientation
+    ~Pattern.generate
 
 
   .. rubric:: Getter Methods
 
   .. autosummary::
 
+    ~Pattern.get_block
     ~Pattern.get_gap
     ~Pattern.get_repeat
+    ~Pattern.get_size

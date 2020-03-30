@@ -9,7 +9,6 @@ porems\.utils
 
     column
     copy
-    copy_dir
     load
     mkdirp
     replace
