@@ -441,6 +441,34 @@ class UserModelCase(unittest.TestCase):
         sphere.plot(inp=3.14, vec=[1.08001048, 3.09687610, 1.72960828])
         # plt.show()
 
+    def test_shape_capsule(self):
+        pattern = BetaCristobalit()
+        block = pattern.generate([6, 6, 12], "z")
+        block.set_name("shape_capsule")
+        dice = Dice(block, 0.4, True)
+        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 0, True))
+        centroid = block.centroid()
+        centroid_cyl_l = centroid[:2]+[0]
+        centroid_cyl_r = centroid[:2]+[pattern.get_size()[2]]
+        centroid_sph_l = centroid[:2]+[3]
+        centroid_sph_r = centroid[:2]+[pattern.get_size()[2]-3]
+
+        cylinder_l = Cylinder({"centroid": centroid_cyl_l, "central": central, "length": 6, "diameter": 4})
+        cylinder_r = Cylinder({"centroid": centroid_cyl_r, "central": central, "length": 6, "diameter": 4})
+        sphere_l = Sphere({"centroid": centroid_sph_l, "central": central, "diameter": 4})
+        sphere_r = Sphere({"centroid": centroid_sph_r, "central": central, "diameter": 4})
+
+        del_list = []
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_l.is_in(atom.get_pos())])
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_r.is_in(atom.get_pos())])
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_l.is_in(atom.get_pos())])
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_r.is_in(atom.get_pos())])
+        matrix.strip(del_list)
+        block.delete(matrix.bound(0))
+
+        Store(block, "output").gro()
+
 
     ########
     # Pore #
