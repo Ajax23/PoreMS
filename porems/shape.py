@@ -117,7 +117,15 @@ class Cylinder(Shape):
     # Function #
     ############
     def Phi(self, r, phi, z):
-        """Surface function.
+        """Surface function of a cylinder
+
+        .. math::
+
+            \\Phi(r,\\phi,z)=
+            \\begin{bmatrix}r\\cos(\\phi)\\\\r\\sin(\\phi)\\\\z\\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and cylinder length
+        :math:`z`.
 
         Parameters
         ----------
@@ -135,13 +143,20 @@ class Cylinder(Shape):
         """
         x = np.outer(r, np.cos(phi))
         y = np.outer(r, np.sin(phi))
-        z = z if isinstance(z, list) else [z]
         z = np.outer(z, np.ones(len(z)))
 
         return self.convert([x, y, z], False)
 
     def d_Phi_phi(self, r, phi, z):
-        """Derivative of the surface function considering the polar angle.
+        """Derivative of the surface function considering the polar angle
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial\\phi}(r,\\phi,z)=
+            \\begin{bmatrix}-r\\sin(\\phi)\\\\r\\cos(\\phi)\\\\0\\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and cylinder length
+        :math:`z`.
 
         Parameters
         ----------
@@ -164,7 +179,15 @@ class Cylinder(Shape):
         return [x, y, z]
 
     def d_Phi_z(self, r, phi, z):
-        """Derivative of the surface function considering the z-axis.
+        """Derivative of the surface function considering the z-axis
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial z}(r,\\phi,z)=
+            \\begin{bmatrix}0\\\\0\\\\1\\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and cylinder length
+        :math:`z`.
 
         Parameters
         ----------
@@ -191,7 +214,16 @@ class Cylinder(Shape):
     # Features #
     ############
     def normal(self, pos):
-        """Calculate unit normal vector on surface for given position.
+        """Calculate unit normal vector on surface for a given position
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial\\phi}(r,\\phi,z)\\times
+            \\frac{\\partial\\Phi}{\\partial z}(r,\\phi,z)=
+            \\begin{bmatrix}r\\cos(\\phi)\\\\r\\sin(\\phi)\\\\0\\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and cylinder length
+        :math:`z`.
 
         Parameters
         ----------
@@ -260,7 +292,7 @@ class Cylinder(Shape):
         phi = np.linspace(0, 2*np.pi, num)
         r = self._inp["diameter"]/2
 
-        return self.Phi(r, phi, z)
+        return self.Phi(r, phi, [z])
 
     def surf(self, num=100):
         """Return x, y and z values for the shape.
@@ -286,7 +318,13 @@ class Cylinder(Shape):
     # Properties #
     ##############
     def volume(self):
-        """Calculate volume.
+        """Calculate volume
+
+        .. math::
+
+            V=\\pi r^2l
+
+        with radius :math:`r` and cylinder length :math:`l`.
 
         Returns
         -------
@@ -296,7 +334,13 @@ class Cylinder(Shape):
         return math.pi*(self._inp["diameter"]/2)**2*self._inp["length"]
 
     def surface(self):
-        """Calculate inner surface.
+        """Calculate inner surface
+
+        .. math::
+
+            S=2\\pi rl
+
+        with radius :math:`r` and cylinder length :math:`l`.
 
         Returns
         -------
@@ -330,7 +374,15 @@ class Sphere(Shape):
     # Function #
     ############
     def Phi(self, r, theta, phi):
-        """Surface function.
+        """Surface function of a sphere
+
+        .. math::
+
+            \\Phi(r,\\phi,\\theta)=
+            \\begin{bmatrix}r\\cos(\\phi)\\sin(\\theta)\\\\r\\sin(\\phi)\\sin(\\theta)\\\\r\\cos(\\theta)\\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and azimuthal angle
+        :math:`\\theta`.
 
         Parameters
         ----------
@@ -353,7 +405,16 @@ class Sphere(Shape):
         return self.convert([x, y, z], False)
 
     def d_Phi_phi(self, r, theta, phi):
-        """Derivative of the surface function considering the polar angle.
+        """Derivative of the surface function considering the polar angle
+        :math:`\\phi`
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial\\phi}(r,\\phi,\\theta)=
+            \\begin{bmatrix}-r\\sin(\\phi)\\sin(\\theta)\\\\r\\cos(\\phi)\\sin(\\theta)\\\\0\\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and azimuthal angle
+        :math:`\\theta`.
 
         Parameters
         ----------
@@ -376,7 +437,16 @@ class Sphere(Shape):
         return [x, y, z]
 
     def d_Phi_theta(self, r, theta, phi):
-        """Derivative of the surface function considering the z-axis.
+        """Derivative of the surface function considering the azimuthal angle
+        :math:`\\theta`
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial\\theta}(r,\\phi,\\theta)=
+            \\begin{bmatrix}r\\cos(\\phi)\\cos(\\theta)\\\\r\\sin(\\phi)\\cos(\\theta)\\\\-r\\sin(\\theta)\\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and azimuthal angle
+        :math:`\\theta`.
 
         Parameters
         ----------
@@ -403,7 +473,20 @@ class Sphere(Shape):
     # Features #
     ############
     def normal(self, pos):
-        """Calculate unit normal vector on surface for given position.
+        """Calculate unit normal vector on surface for a given position
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial\\theta}(r,\\phi,\\theta)\\times
+            \\frac{\\partial\\Phi}{\\partial\\phi}(r,\\phi,\\theta)=
+            \\begin{bmatrix}
+            -r^2\\cos(\\phi)\\sin(\\theta)^2\\\\
+            r^2\\sin(\\phi)\\sin(\\theta)^2\\\\
+            -r^2\\sin(\\theta)\\cos(\\theta)\\left[\\sin(\\phi)^2-\\cos(\\phi)^2\\right]\\\\
+            \\end{bmatrix}
+
+        with radius :math:`r`, polar angle :math:`\\phi` and cylinder length
+        :math:`z`.
 
         Parameters
         ----------
@@ -455,7 +538,7 @@ class Sphere(Shape):
     # Shape #
     #########
     def rim(self, phi, num=100):
-        """Return x and y values for given theta angle.
+        """Return x and y values for given polar angle.
 
         Parameters
         ----------
@@ -498,7 +581,13 @@ class Sphere(Shape):
     # Properties #
     ##############
     def volume(self):
-        """Calculate volume.
+        """Calculate volume
+
+        .. math::
+
+            V=\\frac43\\pi r^3
+
+        with radius :math:`r`.
 
         Returns
         -------
@@ -508,7 +597,13 @@ class Sphere(Shape):
         return 4/3*math.pi*(self._inp["diameter"]/2)**3
 
     def surface(self):
-        """Calculate inner surface.
+        """Calculate inner surface
+
+        .. math::
+
+            S=4\\pi r^2
+
+        with radius :math:`r`.
 
         Returns
         -------
