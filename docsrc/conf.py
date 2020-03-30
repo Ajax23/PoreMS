@@ -26,12 +26,13 @@ import sphinx_bootstrap_theme
 
 # sys.path.append(os.path.abspath('../'))
 
-# Install package
-if sys.platform == "win32":
-    os.system("pip install ../.")
-else:
-    os.system("pip install ../. &> /dev/null")
-print("Finished inistalling package...")
+# # Install package
+# if sys.platform == "win32":
+#     # os.system("pip install ../.")
+#     os.system("..\tests\venv\Scripts\activate")
+# else:
+#     # os.system("pip install ../. &> /dev/null")
+#     os.system("source ../tests/venv/bin/activate")
 
 
 # -- General configuration ------------------------------------------------

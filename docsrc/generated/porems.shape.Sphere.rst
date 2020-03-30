@@ -17,7 +17,7 @@ Sphere
 
     ~Sphere.Phi
     ~Sphere.d_Phi_phi
-    ~Sphere.d_Phi_z
+    ~Sphere.d_Phi_theta
 
 
   .. rubric:: Shape
