@@ -134,4 +134,5 @@ def get_mass(symbol):
     if symbol in masses:
         return masses[symbol]
     else:
-        print("Atom name not found.")
+        print("DB: Atom name not found.")
+        return

@@ -349,7 +349,7 @@ class Store:
 
             # Atoms
             counter = 1
-            for i in range(1, len(mols)):
+            for i in range(0, len(mols)):
                 if mols[i].get_name() == mols[i-1].get_name():
                     counter += 1
                 else:

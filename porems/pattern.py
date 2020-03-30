@@ -72,16 +72,6 @@ class Pattern():
     ##################
     # Public Methods #
     ##################
-    def pattern(self):
-        """Construct minimal block structure.
-
-        Returns
-        -------
-        block : Molecule
-            Minimal block structure
-        """
-        return Molecule()
-
     def generate(self, size, orient):
         """Generate full block structure.
 

@@ -202,10 +202,7 @@ def angle_polar(pos, is_deg=False):
     angle : float
         Polar angle
     """
-    try:
-        angle = math.atan2(pos[1], pos[0])
-    except:
-        angle = math.atan(0)
+    angle = math.atan2(pos[1], pos[0])
 
     return angle*180/math.pi if is_deg else angle
 
@@ -339,12 +336,12 @@ def rotate(data, axis, angle, is_deg, dim=3):
         elif len(axis) == 2:
             n = vector(axis[0], axis[1])
         else:
-            print("Wrong vector dimensions.")
+            print("Rotate: Wrong vector dimensions.")
             return
     else:
         n = main_axis(axis)
         if isinstance(n, str):
-            print(n)
+            print("Rotate: "+n)
             return
 
     # Unit vector

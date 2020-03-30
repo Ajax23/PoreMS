@@ -173,6 +173,7 @@ class Ketone(Molecule):
         # Check input
         if length < 3:
             print("Specified length is too small for ketones ...")
+            self.set_name("ERROR")
             return
 
         # Define molecule names

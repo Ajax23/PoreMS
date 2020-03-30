@@ -260,7 +260,7 @@ class Molecule:
         if isinstance(pos_a, int) and isinstance(pos_b, int):
             pos_a = self.pos(pos_a)
             pos_b = self.pos(pos_b)
-        elif not isinstance(pos_a, list) and isinstance(pos_b, list):
+        elif not (isinstance(pos_a, list) and isinstance(pos_b, list)):
             print("Vector: Wrong input...")
             return
 
@@ -606,12 +606,12 @@ class Molecule:
             if len(bond_a) == 2:
                 vec = geometry.cross_product(self._vector(*bond_a), self._vector(*bond_b))
             elif len(bond_a) == self._dim:
-                vec = self._cross(bond_a, bond_b)
+                vec = geometry.cross_product(bond_a, bond_b)
             else:
-                print("Wrong bond input...")
+                print("Part_Angle : Wrong bond input...")
                 return
         else:
-            print("Wrong bond dimensions...")
+            print("Part_Angle : Wrong bond dimensions...")
             return
 
         # Rotate molecule

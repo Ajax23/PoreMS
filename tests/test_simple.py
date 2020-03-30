@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 # Import package
 import porems.utils as utils
+import porems.database as db
 import porems.geometry as geometry
 
 from porems.atom import Atom
@@ -66,7 +67,7 @@ class UserModelCase(unittest.TestCase):
         utils.save([1, 1, 1], file_link)
         self.assertEqual(utils.load(file_link), [1, 1, 1])
 
-        self.assertEqual(round(utils.toc(utils.tic(), is_print=False)), 0)
+        self.assertEqual(round(utils.toc(utils.tic(), is_print=True)), 0)
 
 
     ############
@@ -79,18 +80,33 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(geometry.dot_product(vec_a, vec_b), 4), 7)
         self.assertEqual(round(geometry.length(vec_a), 4), 2.4495)
         self.assertEqual([round(x, 4) for x in geometry.vector(vec_a, vec_b)], [-1, 2, 0])
+        self.assertIsNone(geometry.vector([0, 1], [0, 0, 0]))
         self.assertEqual([round(x, 4) for x in geometry.unit(vec_a)], [0.4082, 0.4082, 0.8165])
         self.assertEqual([round(x, 4) for x in geometry.cross_product(vec_a, vec_b)], [-4, -2, 3])
         self.assertEqual(round(geometry.angle(vec_a, vec_b), 4), 37.5714)
         self.assertEqual(round(geometry.angle_polar(vec_a), 4), 0.7854)
         self.assertEqual(round(geometry.angle_azi(vec_b), 4), 0.9828)
+        self.assertEqual(round(geometry.angle_azi([0, 0, 0]), 4), 1.5708)
         self.assertEqual([round(x, 4) for x in geometry.main_axis(1)], [1, 0, 0])
         self.assertEqual([round(x, 4) for x in geometry.main_axis(2)], [0, 1, 0])
         self.assertEqual([round(x, 4) for x in geometry.main_axis(3)], [0, 0, 1])
         self.assertEqual([round(x, 4) for x in geometry.main_axis("x")], [1, 0, 0])
         self.assertEqual([round(x, 4) for x in geometry.main_axis("y")], [0, 1, 0])
         self.assertEqual([round(x, 4) for x in geometry.main_axis("z")], [0, 0, 1])
+        self.assertEqual(geometry.main_axis("h"), "Wrong axis definition...")
+        self.assertEqual(geometry.main_axis(100), "Wrong axis definition...")
+        self.assertEqual(geometry.main_axis(0.1), "Wrong axis definition...")
         self.assertEqual([round(x, 4) for x in geometry.rotate(vec_a, "x", 90, True)], [1.0, -2.0, 1.0])
+        self.assertIsNone(geometry.rotate(vec_a, [0, 1, 2, 3], 90, True))
+        self.assertIsNone(geometry.rotate(vec_a, "h", 90, True))
+
+
+    ############
+    # Database #
+    ############
+    def test_database(self):
+        self.assertEqual(db.get_mass("H"), 1.0079)
+        self.assertIsNone(db.get_mass("DOTA"))
 
 
     ########
@@ -133,6 +149,8 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([col+col for col in pos_gro], pos_concat)
         self.assertEqual([col+col for col in pos_gro], pos_append)
 
+        self.assertEqual(Molecule(inp="data/benzene.DOTA").get_atom_list(), None)
+
     def test_molecule_properties(self):
         mol = Molecule(inp="data/benzene.gro")
 
@@ -156,12 +174,22 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.3317, 0.2222, 0.1250])
         mol.put(3, [0, 0, 0])
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.0000, 0.0000, 0.0000])
-        mol.part_move([0, 1], [1, 2, 3, 4], 0.5)
+        mol.part_move([0, 1], [2, 3, 4], 0.5)
+        mol.part_move([0, 1], 1, 0.5)
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.3140, -0.1281, 0.1281])
-        mol.part_rotate([0, 1], [1, 2, 3, 4], 45, 1)
+        mol.part_rotate([0, 1], [2, 3, 4], 45, 1)
+        mol.part_rotate([0, 1], 1, 45, 1)
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [-0.1277, 0.0849, -0.3176])
         mol.part_angle([0, 1], [1, 2], [1, 2, 3, 4], 45, 1)
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [-0.1360, -0.1084, -0.3068])
+        mol.part_angle([0, 0, 1], [0, 1, 0], 1, 45, 1)
+        self.assertEqual([round(x, 4) for x in mol.pos(3)], [-0.1360, -0.1084, -0.3068])
+
+        self.assertIsNone(mol._vector(0.1, 0.1))
+        self.assertIsNone(mol._vector([0, 0], [0, 0]))
+
+        self.assertIsNone(mol.part_angle([0, 0, 1, 0], [0, 1, 0, 0], 1, 45, 1))
+        self.assertIsNone(mol.part_angle([0, 0], [0, 1, 2], 1, 45, 1))
 
     def test_molecule_creation(self):
         mol = Molecule()
@@ -179,6 +207,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in mol.pos(0)], [0.0500, 0.0500, 0.0293])
         mol.set_atom_type(0, "R")
         self.assertEqual(mol.get_atom_list()[0].get_atom_type(), "R")
+        self.assertEqual(mol.get_atom_type(0), "R")
         mol.set_atom_name(0, "RuX")
         self.assertEqual(mol.get_atom_list()[0].get_name(), "RuX")
 
@@ -190,7 +219,6 @@ class UserModelCase(unittest.TestCase):
         mol.set_box([1, 1, 1])
         mol.set_charge(1.5)
         mol.set_masses([1, 2, 3])
-        mol.set_mass(6)
 
         self.assertEqual(mol.get_name(), "test_mol")
         self.assertEqual(mol.get_short(), "TMOL")
@@ -211,10 +239,14 @@ class UserModelCase(unittest.TestCase):
     # Essentails #
     ##############
     def test_essentials(self):
-        self.assertEqual([round(x, 4) for x in Alkane(10).pos(5)], [0.0472, 0.1028, 0.7170])
-        self.assertEqual([round(x, 4) for x in Alcohol(10).pos(5)], [0.0363, 0.1028, 0.7170])
-        self.assertEqual([round(x, 4) for x in Ketone(10, 5).pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in Alkane(10, "decane", "DEC").pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in Alkane(1, "methane", "MET").pos(0)], [0.0514, 0.0890, 0.0363])
+        self.assertEqual([round(x, 4) for x in Alcohol(10, "decanol", "DCOL").pos(5)], [0.0363, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in Alcohol(1, "methanol", "MEOL").pos(0)], [0.0715, 0.0890, 0.0363])
+        self.assertEqual([round(x, 4) for x in Ketone(10, 5, "decanone", "DCON").pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual(Ketone(2, 0).get_name(), "ERROR")
         self.assertEqual([round(x, 4) for x in TMS(separation=30).pos(5)], [0.0273, 0.0472, 0.4525])
+        self.assertEqual([round(x, 4) for x in TMS(is_si=False).pos(5)], [0.0273, 0.0472, 0.4976])
 
 
     #########
@@ -223,10 +255,10 @@ class UserModelCase(unittest.TestCase):
     def test_store(self):
         mol = Molecule(inp="data/benzene.gro")
 
-        Store(mol, "output").job()
+        Store(mol, "output").job(True)
         Store(mol, "output").obj()
-        Store(mol, "output").gro()
-        Store(mol, "output").pdb()
+        Store(mol, "output").gro(use_atom_names=True)
+        Store(mol, "output").pdb(use_atom_names=True)
         Store(mol, "output").xyz()
         Store(mol, "output").top()
         Store(mol, "output").grid()
@@ -265,6 +297,7 @@ class UserModelCase(unittest.TestCase):
         # Getter
         self.assertEqual(beta_cristobalit.get_repeat(), [0.506, 0.877, 1.240])
         self.assertEqual(beta_cristobalit.get_gap(), [0.126, 0.073, 0.155])
+        self.assertEqual(beta_cristobalit.get_block().get_name(), "molecule")
 
 
     ########
@@ -289,6 +322,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(dice._front((1, 1, 1)), (1, 1, 2))
         self.assertEqual(dice._back((1, 1, 1)),  (1, 1, 0))
         self.assertEqual(len(dice.neighbour((1, 1, 1))), 27)
+        self.assertEqual(len(dice.neighbour((1, 1, 1), False)), 26)
 
         # Search
         self.assertEqual(dice.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [14, 46, 52, 65]]])
@@ -299,6 +333,12 @@ class UserModelCase(unittest.TestCase):
         # Parallel search
         self.assertEqual(len(dice.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
         self.assertEqual(len(dice.find_parallel(None, ["O", "Si"], 0.155, 0.005)), 384)
+
+        # Setter Getter
+        dice.set_pbc(True)
+        self.assertEqual(dice.get_count(), [5, 4, 6])
+        self.assertEqual(dice.get_size(), 0.4)
+        self.assertEqual(dice.get_mol().get_name(), "dice")
 
 
     ##########
