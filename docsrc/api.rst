@@ -122,7 +122,7 @@ Shape
     shape.Sphere
     shape.Sphere.Phi
     shape.Sphere.d_Phi_phi
-    shape.Sphere.d_Phi_z
+    shape.Sphere.d_Phi_theta
     shape.Sphere.rim
     shape.Sphere.surf
     shape.Sphere.is_in
