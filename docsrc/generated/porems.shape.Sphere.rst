@@ -3,36 +3,36 @@
     </div>
     <div class=col-md-9 content>
 
-Cylinder
-========
+Sphere
+======
 
 .. currentmodule:: porems.shape
 
-.. autoclass:: Cylinder
+.. autoclass:: Sphere
 
 
   .. rubric:: Surface Function
 
   .. autosummary::
 
-    ~Cylinder.Phi
-    ~Cylinder.d_Phi_phi
-    ~Cylinder.d_Phi_z
+    ~Sphere.Phi
+    ~Sphere.d_Phi_phi
+    ~Sphere.d_Phi_z
 
 
   .. rubric:: Shape
 
   .. autosummary::
 
-    ~Cylinder.rim
-    ~Cylinder.surf
+    ~Sphere.rim
+    ~Sphere.surf
 
 
   .. rubric:: Properties
 
   .. autosummary::
 
-    ~Cylinder.is_in
-    ~Cylinder.normal
-    ~Cylinder.surface
-    ~Cylinder.volume
+    ~Sphere.is_in
+    ~Sphere.normal
+    ~Sphere.surface
+    ~Sphere.volume

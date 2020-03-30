@@ -72,6 +72,7 @@ Molecule
     ~Molecule.overlap
     ~Molecule.switch_atom_order
     ~Molecule.set_atom_name
+    ~Molecule.get_atom_list
     ~Molecule.set_atom_type
     ~Molecule.get_atom_type
 
@@ -92,7 +93,6 @@ Molecule
 
   .. autosummary::
 
-    ~Molecule.get_atom_list
     ~Molecule.get_box
     ~Molecule.get_charge
     ~Molecule.get_mass

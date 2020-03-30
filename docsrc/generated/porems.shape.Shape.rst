@@ -9,3 +9,11 @@ Shape
 .. currentmodule:: porems.shape
 
 .. autoclass:: Shape
+
+
+  .. rubric:: Helper Methods
+
+  .. autosummary::
+
+    ~Shape.convert
+    ~Shape.plot
