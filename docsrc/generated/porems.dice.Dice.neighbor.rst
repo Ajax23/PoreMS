@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Dice\.neighbour
-===============
+Dice\.neighbor
+==============
 
 .. currentmodule:: porems.dice
 
-.. automethod:: Dice.neighbour
+.. automethod:: Dice.neighbor

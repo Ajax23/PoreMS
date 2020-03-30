@@ -39,8 +39,8 @@ class Shape():
     # Helper Methods #
     ##################
     def convert(self, data, to_zero=True):
-        """This helper method converts the given data to match the global
-        cenrtal axis and its start.
+        """This helper method rotates the given data to match the global
+        central axis and translates it so that the center point are aligned.
 
         Parameters
         ----------
@@ -55,7 +55,7 @@ class Shape():
         data : list
             Converted input
         """
-        # Rotate towards main axis ot to zero axis
+        # Rotate towards main axis to to zero axis
         data = geometry.rotate(data, self._normal, -self._angle if to_zero else self._angle, True)
 
         # Translate to zero or to start

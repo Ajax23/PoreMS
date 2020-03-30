@@ -49,8 +49,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.todo',
               'sphinx.ext.mathjax',
               'sphinx.ext.autosummary',
-              'numpydoc',
-              'nbsphinx']
+              'numpydoc']
 
 # Generate the API documentation when building
 autosummary_generate = True

@@ -21,7 +21,7 @@ from porems.shape import Cylinder
 
 
 class Pore():
-    """
+    """Pore class
 
     Parameters
     ----------
@@ -68,7 +68,7 @@ class Pore():
 
 
     ###########
-    # Analyse #
+    # Analyze #
     ###########
 
 

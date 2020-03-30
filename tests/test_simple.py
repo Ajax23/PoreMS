@@ -321,8 +321,8 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(dice._bot((1, 1, 1)),   (1, 0, 1))
         self.assertEqual(dice._front((1, 1, 1)), (1, 1, 2))
         self.assertEqual(dice._back((1, 1, 1)),  (1, 1, 0))
-        self.assertEqual(len(dice.neighbour((1, 1, 1))), 27)
-        self.assertEqual(len(dice.neighbour((1, 1, 1), False)), 26)
+        self.assertEqual(len(dice.neighbor((1, 1, 1))), 27)
+        self.assertEqual(len(dice.neighbor((1, 1, 1), False)), 26)
 
         # Search
         self.assertEqual(dice.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [14, 46, 52, 65]]])

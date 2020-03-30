@@ -77,7 +77,7 @@ class Store:
         Parameters
         ----------
         is_master : bool, optional
-            True if the jobfile call should be added to a master run file
+            True if the job file call should be added to a master run file
             (practical for running multiple topology generations)
         """
         # Initialize

@@ -16,7 +16,7 @@ class Matrix:
     Although the search can be parallelized, still multiple iterations are
     needed to cover the surface preparations. Additionally, due to machine
     inaccuracy there is the risk of bonds not being detected as such, leading
-    to artefacts. Also it is not possible to ensure that all bonds were found
+    to artefacts. Also, it is not possible to ensure that all bonds were found
     when deleting atoms, because all systems are shaped differently. Therefore,
     another optimization, or rather supporting algorithm, was implemented to
     bypass these issues.
@@ -29,16 +29,16 @@ class Matrix:
     .. math::
 
         \\boldsymbol{C}=
-        \\begin{bmatrix}
-            \\text{atom}_1&\\begin{pmatrix}\\text{atom}_{1,1}&\\text{atom}_{1,2}&\\dots&\\text{atom}_{1,m_1}\\end{pmatrix}\\\\
-            \\text{atom}_2&\\begin{pmatrix}\\text{atom}_{2,1}&\\text{atom}_{2,2}&\\dots&\\text{atom}_{2,m_2}\\end{pmatrix}\\\\
+        \\begin{Bmatrix}
+            a_1:&\\begin{bmatrix}a_{1,1}&a_{1,2}&\\dots&a_{1,m_1}\\end{bmatrix}\\\\
+            a_2:&\\begin{bmatrix}a_{2,1}&a_{2,2}&\\dots&a_{2,m_2}\\end{bmatrix}\\\\
             \\vdots&\\vdots\\\\
-            \\text{atom}_n&\\begin{pmatrix}\\text{atom}_{n,1}&\\text{atom}_{n,2}&\\dots&\\text{atom}_{n,m_n}\\end{pmatrix}\\\\
-        \\end{bmatrix}
+            a_n:&\\begin{bmatrix}a_{n,1}&a_{n,2}&\\dots&a_{n,m_n}\\end{bmatrix}\\\\
+        \\end{Bmatrix}
 
     Using this implementation, it is no longer required to physically delete
     atoms when carving out a structure, it is enough to remove binding partners
-    from the matrix. For example conditions for the surface preparation only
+    from the matrix. For example, conditions for the surface preparation only
     need to consider the number of bonds remaining in each entry and thereby
     determine whether an atom needs to be removed or not, resulting into a
     negligible computational effort scaling linear with the number of atoms
@@ -88,7 +88,7 @@ class Matrix:
         Parameters
         ----------
         atoms : list, integer
-            List atoms or one atom id
+            List of atom ids or one atom id
         """
         # Porocess input
         atoms = [atoms] if isinstance(atoms, int) else atoms
@@ -106,6 +106,11 @@ class Matrix:
         ----------
         num_bonds : int
             Number of bonds to search for
+
+        Returns
+        -------
+        atoms : list
+            List of atom ids with the number of specified bonds
         """
         return [atom for atom in self._matrix if len(self._matrix[atom])==num_bonds]
 
