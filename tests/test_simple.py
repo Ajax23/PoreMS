@@ -1,7 +1,9 @@
 import os
 import sys
 
+import shutil
 import unittest
+import matplotlib.pyplot as plt
 
 # # Install package
 # if sys.platform == "win32":
@@ -26,6 +28,23 @@ from porems.pore import Pore
 
 
 class UserModelCase(unittest.TestCase):
+    #################
+    # Remove Output #
+    #################
+    @classmethod
+    def setUpClass(self):
+        folder = 'output'
+        if os.path.exists(folder):
+            for filename in os.listdir(folder):
+                file_path = os.path.join(folder, filename)
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+        else:
+            os.makedirs(folder)
+
+
     #########
     # Utils #
     #########
@@ -309,15 +328,15 @@ class UserModelCase(unittest.TestCase):
     #########
     # Shape #
     #########
-    def test_shape(self):
+    def test_shape_cylinder(self):
         block = BetaCristobalit().generate([6, 6, 6], "z")
-        block.set_name("shape")
+        block.set_name("shape_cylinder")
         dice = Dice(block, 0.4, True)
         matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
         centroid = block.centroid()
         central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 45, True))
 
-        cylinder = Cylinder({"centroid": centroid, "central": central, "len_block": 6, "len_cyl": 3, "diameter": 4})
+        cylinder = Cylinder({"centroid": centroid, "central": central, "length": 3, "diameter": 4})
 
         # Properties
         self.assertEqual(round(cylinder.volume(), 4), 37.6991)
@@ -342,6 +361,45 @@ class UserModelCase(unittest.TestCase):
 
         # Store molecule
         Store(block, "output").gro()
+
+        # Plot surface
+        cylinder.plot(vec=[3.17290646, 4.50630614, 0.22183271])
+        # plt.show()
+
+    def test_shape_sphere(self):
+        block = BetaCristobalit().generate([6, 6, 6], "z")
+        block.set_name("shape_sphere")
+        dice = Dice(block, 0.4, True)
+        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        centroid = block.centroid()
+        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 0, True))
+
+        sphere = Sphere({"centroid": centroid, "central": central, "diameter": 4})
+
+        # Properties
+        self.assertEqual(round(sphere.volume(), 4), 33.5103)
+        self.assertEqual(round(sphere.surface(), 4), 50.2655)
+
+        # Surface
+        self.assertEqual([round(x[0][20], 4) for x in sphere.surf(num=100)], [4.2636, 3.0937, 4.745])
+        self.assertEqual([round(x[0][20], 4) for x in sphere.rim(0, num=100)], [4.9875, 3.0937, 3.7283])
+
+        # Normal
+        self.assertEqual([round(x, 4) for x in sphere.convert([0, 0, 0], False)], [3.0777, 3.0937, 3.1344])
+        self.assertEqual([round(x, 4) for x in sphere.normal([4.2636, 3.0937, 4.745])], [1.4063, 0.0000, 1.9099])
+
+        # Positioning
+        del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere.is_in(atom.get_pos())]
+        matrix.strip(del_list)
+        block.delete(matrix.bound(0))
+        self.assertEqual(block.get_num(), 12934)
+
+        # Store molecule
+        Store(block, "output").gro()
+
+        # Plot surface
+        sphere.plot(inp=3.14, vec=[1.08001048, 3.09687610, 1.72960828])
+        # plt.show()
 
 
     ########
