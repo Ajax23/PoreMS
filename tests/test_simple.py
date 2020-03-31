@@ -67,6 +67,7 @@ class UserModelCase(unittest.TestCase):
         utils.save([1, 1, 1], file_link)
         self.assertEqual(utils.load(file_link), [1, 1, 1])
 
+        utils.toc(utils.tic(), message="Test", is_print=True)
         self.assertEqual(round(utils.toc(utils.tic(), is_print=True)), 0)
 
 
@@ -406,7 +407,7 @@ class UserModelCase(unittest.TestCase):
     # Shape #
     #########
     def test_shape_cylinder(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         block = BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cylinder")
@@ -446,7 +447,7 @@ class UserModelCase(unittest.TestCase):
         # plt.show()
 
     def test_shape_sphere(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         block = BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_sphere")
@@ -483,7 +484,7 @@ class UserModelCase(unittest.TestCase):
         # plt.show()
 
     def test_shape_capsule(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         pattern = BetaCristobalit()
         block = pattern.generate([6, 6, 12], "z")
