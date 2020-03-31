@@ -99,20 +99,35 @@ class Matrix:
             for atom_b in atoms_b:
                 self. split(atom_a, atom_b)
 
-    def bound(self, num_bonds):
-        """Return a list of atoms with the specified number of bonds.
+    def bound(self, num_bonds, logic="eq"):
+        """Return a list of atoms with the specified number of bonds. Possible
+        ``logic`` arguments are
+
+        * **eq** - Equals
+        * **lt** - Less than
+        * **gt** - Greater than
 
         Parameters
         ----------
         num_bonds : int
             Number of bonds to search for
+        logic : string, optional
+            Logic statement
 
         Returns
         -------
         atoms : list
             List of atom ids with the number of specified bonds
         """
-        return [atom for atom in self._matrix if len(self._matrix[atom])==num_bonds]
+        if logic=="eq":
+            return [atom for atom in self._matrix if len(self._matrix[atom])==num_bonds]
+        elif logic=="lt":
+            return [atom for atom in self._matrix if len(self._matrix[atom])<num_bonds]
+        elif logic=="gt":
+            return [atom for atom in self._matrix if len(self._matrix[atom])>num_bonds]
+        else:
+            print("Matrix: Wrong logic statement...")
+            return
 
 
     ##################
