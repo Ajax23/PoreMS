@@ -26,5 +26,6 @@ Pattern
 
     ~Pattern.get_block
     ~Pattern.get_gap
+    ~Pattern.get_orient
     ~Pattern.get_repeat
     ~Pattern.get_size

@@ -17,3 +17,10 @@ BetaCristobalit
 
       ~BetaCristobalit._hexagonal
       ~BetaCristobalit.pattern
+
+
+  .. rubric:: Editing
+
+  .. autosummary::
+
+      ~BetaCristobalit.exterior

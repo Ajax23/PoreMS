@@ -43,8 +43,10 @@ To see the code, report a bug or contribute, please visit the
           <div class="panel-body">
 
 * Molecule and Pore Generation :ref:`API <generation_api>`
+* Gridstructure Patterns :ref:`API <pattern_api>`
+* Three-Dimensional Shapes :ref:`API <shape_api>`
+* Runtime Optimization :ref:`API <optimization_api>`
 * Essential Molecules :ref:`API <essential_api>`
-* Pore Optimization Logic :ref:`API <pore_api>`
 * Utilities :ref:`API <utils_api>`
 
 .. raw:: html

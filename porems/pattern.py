@@ -68,6 +68,8 @@ class Pattern():
             self._gap[1], self._gap[2] = self._gap[2], self._gap[1]
             self._size[1], self._size[2] = self._size[2], self._size[1]
 
+        self._orient = orient
+
 
     ##################
     # Public Methods #
@@ -89,7 +91,7 @@ class Pattern():
         """
         # Calculate repetition and size
         self._num = [round(size[i]/self._repeat[i]) for i in range(self._dim)]
-        self._size = [self._repeat[i]*self._num[i]+self._gap[i] for i in range(self._dim)]
+        self._size = [self._repeat[i]*self._num[i] for i in range(self._dim)]
 
         # Generate block
         self._block(0, self.pattern())
@@ -147,6 +149,16 @@ class Pattern():
             Generated block molecule
         """
         return self._structure
+
+    def get_orient(self):
+        """Return the orientation of the block.
+
+        Returns
+        -------
+        orient : string
+            Block orientation
+        """
+        return self._orient
 
 
 class BetaCristobalit(Pattern):
@@ -264,3 +276,45 @@ class BetaCristobalit(Pattern):
         block.zero()
 
         return block
+
+    def exterior(self, error=10e-3):
+        """This function converts the exterior surface in direction of the
+        orientation to binding sites by adding oxygens to unsaturated silicon
+        atoms.
+
+        Parameters
+        ----------
+        error : float, optional
+            Tollerated error for position check
+        """
+        # Get silicon atoms
+        si_list = [atom_id for atom_id, atom in enumerate(self._structure.get_atom_list()) if atom.get_atom_type()=="Si"]
+        saturate = []
+
+        # Block oriented towards x-axis
+        if self._orient == "x":
+            is_left = False
+            for si in si_list:
+                if abs(self._structure.pos(si)[2]-self._size[2]) < error:
+                    saturate.append(si)
+
+        # Block oriented towards y-axis
+        elif self._orient == "y":
+            print("Pattern: Orientation is not yet supported...")
+            return
+
+        # Block oriented towards z-axis
+        elif self._orient == "z":
+            is_left = True
+            for si in si_list:
+                if abs(self._structure.pos(si)[2]-self._gap[2]) < error:
+                    saturate.append(si)
+
+        # Saturate silicon atoms
+        for si in saturate:
+            r = -0.155 if is_left else 0.155
+            self._structure.add("O", si, r=r)
+
+        # Move box to zero
+        self._structure.zero()
+        self._structure.translate(self._gap)

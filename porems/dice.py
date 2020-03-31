@@ -91,7 +91,6 @@ class Dice:
         .. math::
 
             \\text{id}=\\begin{pmatrix}x&y&z\\end{pmatrix}.
-
         """
         # Calculate number of cubes in each dimension
         self._count = [math.floor(box/self._size) for box in self._mol_box]
