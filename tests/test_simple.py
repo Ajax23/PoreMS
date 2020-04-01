@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 import porems.utils as utils
 import porems.database as db
 import porems.geometry as geometry
+import porems.essentials as essentials
 
 from porems.atom import Atom
 from porems.molecule import Molecule
-from porems.essentials import *
 from porems.store import Store
 from porems.pattern import *
 from porems.dice import Dice
@@ -156,8 +156,8 @@ class UserModelCase(unittest.TestCase):
         mol = Molecule(inp="data/benzene.gro")
 
         self.assertEqual(mol.pos(0), [0.0935, 0.0000, 0.3143])
-        self.assertEqual([[round(x, 4) for x in mol.bond(0, 1)[0]], round(mol.bond(0, 1)[1], 4)], [[0.1191, 0.0, 0.0687], 0.1375])
-        self.assertEqual(mol.bond([1, 0, 0], [0, 0, 0]), [[-1, 0, 0], 1.0])
+        self.assertEqual([round(x, 4) for x in mol.bond(0, 1)], [0.1191, 0.0, 0.0687])
+        self.assertEqual(mol.bond([1, 0, 0], [0, 0, 0]), [-1, 0, 0])
         self.assertEqual(mol.get_box(), [0.4252, 0.001, 0.491])
         self.assertEqual([round(x, 4) for x in mol.centroid()], [0.2126, 0.0, 0.2455])
         self.assertEqual([round(x, 4) for x in mol.com()], [0.2126, 0.0, 0.2455])
@@ -240,14 +240,15 @@ class UserModelCase(unittest.TestCase):
     # Essentails #
     ##############
     def test_essentials(self):
-        self.assertEqual([round(x, 4) for x in Alkane(10, "decane", "DEC").pos(5)], [0.0472, 0.1028, 0.7170])
-        self.assertEqual([round(x, 4) for x in Alkane(1, "methane", "MET").pos(0)], [0.0514, 0.0890, 0.0363])
-        self.assertEqual([round(x, 4) for x in Alcohol(10, "decanol", "DCOL").pos(5)], [0.0363, 0.1028, 0.7170])
-        self.assertEqual([round(x, 4) for x in Alcohol(1, "methanol", "MEOL").pos(0)], [0.0715, 0.0890, 0.0363])
-        self.assertEqual([round(x, 4) for x in Ketone(10, 5, "decanone", "DCON").pos(5)], [0.0472, 0.1028, 0.7170])
-        self.assertEqual(Ketone(2, 0).get_name(), "ERROR")
-        self.assertEqual([round(x, 4) for x in TMS(separation=30).pos(5)], [0.0273, 0.0472, 0.4525])
-        self.assertEqual([round(x, 4) for x in TMS(is_si=False).pos(5)], [0.0273, 0.0472, 0.4976])
+        self.assertEqual([round(x, 4) for x in essentials.alkane(10, "decane", "DEC").pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in essentials.alkane(1, "methane", "MET").pos(0)], [0.0514, 0.0890, 0.0363])
+        self.assertEqual([round(x, 4) for x in essentials.alcohol(10, "decanol", "DCOL").pos(5)], [0.0363, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in essentials.alcohol(1, "methanol", "MEOL").pos(0)], [0.0715, 0.0890, 0.0363])
+        self.assertEqual([round(x, 4) for x in essentials.ketone(10, 5, "decanone", "DCON").pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertIsNone(essentials.ketone(2, 0))
+        self.assertEqual([round(x, 4) for x in  essentials.tms(separation=30).pos(5)], [0.0273, 0.0472, 0.4525])
+        self.assertEqual([round(x, 4) for x in  essentials.tms(is_si=False).pos(5)], [0.0273, 0.0472, 0.4976])
+        self.assertEqual([round(x, 4) for x in  essentials.silanol().pos(0)], [0.000, 0.000, 0.000])
 
 
     #########
@@ -483,7 +484,7 @@ class UserModelCase(unittest.TestCase):
         sphere.plot(inp=3.14, vec=[1.08001048, 3.09687610, 1.72960828])
         # plt.show()
 
-    def test_shape_capsule(self):
+    def test_pore_capsule(self):
         # self.skipTest("Temporary")
 
         pattern = BetaCristobalit()
@@ -517,14 +518,14 @@ class UserModelCase(unittest.TestCase):
     ########
     # Pore #
     ########
-    def test_pore(self):
+    def test_pore_cylinder(self):
         orient = "z"
         pattern = BetaCristobalit()
         pattern.generate([6, 6, 6], orient)
         pattern.exterior()
 
         block = pattern.get_block()
-        block.set_name("pore")
+        block.set_name("pore_cylinder")
 
         dice = Dice(block, 0.4, True)
         matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
@@ -536,13 +537,95 @@ class UserModelCase(unittest.TestCase):
         del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder.is_in(atom.get_pos())]
         matrix.strip(del_list)
 
-        # Create pore object
+        # Normal funtion for exterior
+        def normal(pos):
+            return [0, 0, -1] if pos[2] < centroid[2] else [0, 0, 1]
+
+        # Process surface
         pore = Pore(block, matrix)
         pore.prepare()
+        pore.amorph()
         self.assertEqual(len(matrix.bound(1)), 710)
         pore.sites(oxygen_out)
+        site_list = pore.get_sites()
+        site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
-        sites = pore.get_sites()
+        # Attachment
+        mol = essentials.tms()
+
+        mol_list = pore.attach(mol, 0, [0, 1], site_in, 100, cylinder.normal, scale=1.2)
+        Store(Molecule(name="mol_list_cylinder_in", inp=mol_list), "output").gro()
+
+        mol_list = pore.fill_sites(site_in, cylinder.normal)
+        Store(Molecule(name="mol_list_cylinder_in_fill", inp=mol_list), "output").gro()
+
+        mol_list = pore.attach(mol, 0, [0, 1], site_ex, 20, normal, scale=1.2)
+        Store(Molecule(name="mol_list_cylinder_ex", inp=mol_list), "output").gro()
+
+        mol_list = pore.fill_sites(site_ex, normal)
+        Store(Molecule(name="mol_list_cylinder_ex_fill", inp=mol_list), "output").gro()
+
+        # Output
+        block.delete(matrix.bound(0))
+        Store(block, "output").gro()
+
+    def test_pore_capsule(self):
+        # self.skipTest("Temporary")
+
+        orient = "z"
+        pattern = BetaCristobalit()
+        pattern.generate([6, 6, 6], orient)
+        pattern.exterior()
+
+        block = pattern.generate([6, 6, 12], "z")
+        block.set_name("pore_capsule")
+
+        dice = Dice(block, 0.4, True)
+        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        oxygen_out = matrix.bound(1)
+
+        centroid = block.centroid()
+        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 0, True))
+        centroid_cyl_l = centroid[:2]+[0]
+        centroid_cyl_r = centroid[:2]+[pattern.get_size()[2]]
+        centroid_sph_l = centroid[:2]+[3]
+        centroid_sph_r = centroid[:2]+[pattern.get_size()[2]-3]
+
+        cylinder_l = Cylinder({"centroid": centroid_cyl_l, "central": central, "length": 6, "diameter": 4})
+        cylinder_r = Cylinder({"centroid": centroid_cyl_r, "central": central, "length": 6, "diameter": 4})
+        sphere_l = Sphere({"centroid": centroid_sph_l, "central": central, "diameter": 4})
+        sphere_r = Sphere({"centroid": centroid_sph_r, "central": central, "diameter": 4})
+
+        def normal(pos):
+            if pos[2] <= 3:
+                return cylinder_l.normal(pos)
+            elif pos[2] > 3 and pos[2] < centroid[2]:
+                return [x if i<2 else -x for i, x in enumerate(sphere_l.normal(pos))]
+            elif pos[2] > centroid[2] and pos[2] < pattern.get_size()[2]-3:
+                return [x if i<2 else -x for i, x in enumerate(sphere_r.normal(pos))]
+            elif pos[2] >= pattern.get_size()[2]-3:
+                return cylinder_r.normal(pos)
+
+        del_list = []
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_l.is_in(atom.get_pos())])
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_r.is_in(atom.get_pos())])
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_l.is_in(atom.get_pos())])
+        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_r.is_in(atom.get_pos())])
+        matrix.strip(del_list)
+
+        # Process surface
+        pore = Pore(block, matrix)
+        pore.prepare()
+        pore.sites(oxygen_out)
+        site_list = pore.get_sites()
+        site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
+        # Attachment
+        mol = essentials.tms()
+        mol_list = pore.attach(mol, 0, [0, 1], site_in, 100, normal, scale=1.2)
+        Store(Molecule(name="mol_list_capsule", inp=mol_list), "output").gro()
 
         # Output
         block.delete(matrix.bound(0))

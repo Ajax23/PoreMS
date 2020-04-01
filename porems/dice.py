@@ -335,7 +335,7 @@ class Dice:
                             # Calculate bond length
                             length = geometry.length(bond_vector)
                             # Check if bond distance is within error
-                            if abs(length-distance) < error:
+                            if abs(length-distance) <= error:
                                 entry[1].append(atom_id_b)
 
                     # Add pairs to bond list

@@ -202,7 +202,7 @@ class BetaCristobalit(Pattern):
         hex.rotate("y", 90)
         hex.rotate("z", 90)
         hex.rotate("y", 180)
-        hex.rotate("x", geometry.angle(hex.bond(8, 6)[0], [0, 1, 0]))
+        hex.rotate("x", geometry.angle(hex.bond(8, 6), [0, 1, 0]))
         hex.rotate("x", -90)
 
         return hex
