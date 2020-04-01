@@ -311,8 +311,8 @@ class Molecule:
         return self._atom_list[atom].get_pos()
 
     def bond(self, inp_a, inp_b):
-        """Return the bond vector and length of a specified bond. The two inputs
-        can either be atom indices or to vectoral positions.
+        """Return the bond vector of a specified bond. The two inputs can either
+        be atom indices or to vectoral positions.
 
         Parameters
         ----------
@@ -324,7 +324,7 @@ class Molecule:
         Returns
         -------
         bond : list
-            Bond vector and length
+            Bond vector
 
         Examples
         --------
@@ -334,7 +334,7 @@ class Molecule:
             mol.bond(*[0, 1])
             mol.bond([1, 0, 0], [0, 0, 0])
         """
-        return [self._vector(inp_a, inp_b), geometry.length(self._vector(inp_a, inp_b))]
+        return self._vector(inp_a, inp_b)
 
     def centroid(self):
         """Calculate the geometrical center of mass
@@ -521,7 +521,7 @@ class Molecule:
         temp = self._temp(atoms)
 
         # Set length
-        length = abs(length-self.bond(*bond)[1])
+        length = abs(length-geometry.length(self.bond(*bond)))
 
         # Set vector
         if vec == None:
