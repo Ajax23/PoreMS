@@ -8,22 +8,32 @@ API reference
 
 .. _generation_api:
 
-Generation
-----------
+Molecule
+--------
 
 .. autosummary::
     :toctree: generated/
 
-    pore.Pore
     molecule.Molecule
     atom.Atom
     store.Store
 
 
+.. _pore_api:
+
+Pore
+----
+
+.. autosummary::
+    :toctree: generated/
+
+    pore.Pore
+
+
 .. _pattern_api:
 
 Pattern
--------
+~~~~~~~
 
 .. autosummary::
     :toctree: generated/
@@ -35,7 +45,7 @@ Pattern
 .. _shape_api:
 
 Shape
------
+~~~~~
 
 .. autosummary::
     :toctree: generated/
@@ -48,27 +58,13 @@ Shape
 .. _optimization_api:
 
 Optimization
-------------
+~~~~~~~~~~~~
 
 .. autosummary::
     :toctree: generated/
 
     dice.Dice
     matrix.Matrix
-
-
-.. _essential_api:
-
-Essential Molecules
--------------------
-
-.. autosummary::
-    :toctree: generated/
-
-    essentials.Alkane
-    essentials.Alcohol
-    essentials.Ketone
-    essentials.TMS
 
 
 .. _utils_api:
@@ -80,5 +76,6 @@ Utilities
     :toctree: generated/
 
     utils
+    generic
     geometry
     database
