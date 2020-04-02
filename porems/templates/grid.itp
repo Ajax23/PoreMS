@@ -67,15 +67,6 @@
 
 [ moleculetype ]
 ; name nrexcl
-  OX        1
-
-[ atoms ]
-; nr  type  resnr  resid  atom  cgnr  charge
-   1    OM      1     OX   OM1     1  CHARGEOX   ; original -0.64
-
-
-[ moleculetype ]
-; name nrexcl
   SI        1
 
 [ atoms ]

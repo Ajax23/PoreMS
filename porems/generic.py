@@ -1,7 +1,7 @@
 ################################################################################
-# Essential Pack                                                               #
+# Generic Molecules Pack                                                       #
 #                                                                              #
-"""This file contains essential molecule functions and serves as an exemplary
+"""This file contains function for generic molecules  and serves as an exemplary
 molecule generation process."""
 ################################################################################
 
@@ -9,16 +9,16 @@ molecule generation process."""
 from porems.molecule import Molecule
 
 
-def alkane(length, name=None, short=None, is_h=True):
+def alkane(length, name="alkane", short="ALK", is_h=True):
     """This function generates linear alkane molecules.
 
     Parameters
     ----------
     length : integer
         Number of carbon atoms
-    name : string, None, optional
+    name : string, optional
         Molecule name
-    short : string, None, optional
+    short : string, optional
         Molecule short name
     is_h : bool, optional
         True if hydrogens are to be added
@@ -29,7 +29,7 @@ def alkane(length, name=None, short=None, is_h=True):
         Molecule object
     """
     # Initialize Molecule
-    mol = Molecule("alkane" if name is None else name, "ALK" if short is None else short)
+    mol = Molecule(name, short)
 
     # Define bond lengths and angles
     b = {"cc": 0.153, "ch": 0.109}
@@ -73,16 +73,16 @@ def alkane(length, name=None, short=None, is_h=True):
     return mol
 
 
-def alcohol(length, name=None, short=None, is_h=True):
+def alcohol(length, name="alcohol", short="ALC", is_h=True):
     """This function generates linear alcohol molecules.
 
     Parameters
     ----------
     length : integer
         Number of carbon atoms
-    name : string, None, optional
+    name : string, optional
         Molecule name
-    short : string, None, optional
+    short : string, optional
         Molecule short name
     is_h : bool, optional
         True if hydrogens are needed
@@ -93,7 +93,7 @@ def alcohol(length, name=None, short=None, is_h=True):
         Molecule object
     """
     # Initialize Molecule
-    mol = Molecule("alcohol" if name is None else name, "ALC" if short is None else short)
+    mol = Molecule(name, short)
 
     # Define bond lengths and angles
     b = {"cc": 0.153, "ch": 0.109, "co": 0.143, "oh": 0.098}
@@ -140,7 +140,7 @@ def alcohol(length, name=None, short=None, is_h=True):
     return mol
 
 
-def ketone(length, pos, name=None, short=None, is_h=True):
+def ketone(length, pos, name="ketone", short="KET", is_h=True):
     """This function generates linear ketone molecules.
 
     Parameters
@@ -149,9 +149,9 @@ def ketone(length, pos, name=None, short=None, is_h=True):
         Number of carbon atoms
     pos : integer
         Position of the oxygen atom
-    name : string, None, optional
+    name : string, optional
         Molecule name
-    short : string, None, optional
+    short : string, optional
         Molecule short name
     is_h : bool
         True if hydrogens are needed
@@ -167,7 +167,7 @@ def ketone(length, pos, name=None, short=None, is_h=True):
         return
 
     # Initialize Molecule
-    mol = Molecule("ketone" if name is None else name, "KET" if short is None else short)
+    mol = Molecule(name, short)
 
     # Define bond lengths and angles
     b = {"cc": 0.153, "ch": 0.109, "co": 0.123}

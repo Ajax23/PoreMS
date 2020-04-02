@@ -18,13 +18,13 @@ class Atom:
         Atom position
     atom_type : string
         Atom type as in the periodic table of elements
-    name : string, None, optional
+    name : string, optional
         Atom name
 
     Examples
     --------
     """
-    def __init__(self, pos, atom_type, name=None):
+    def __init__(self, pos, atom_type, name=""):
         # Initialize
         self._pos = pos
         self._atom_type = atom_type

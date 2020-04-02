@@ -58,10 +58,10 @@ class Molecule:
         self._name = name
         self._short = short
 
-        self._box = None
-        self._charge = None
-        self._masses = None
-        self._mass = None
+        self._box = []
+        self._charge = 0
+        self._masses = []
+        self._mass = 0
 
         # Check data input
         if inp is None:
@@ -463,7 +463,7 @@ class Molecule:
         vec = [pos[i]-min(data[i]) for i in range(self._dim)]
 
         # Reset box size
-        self._box = None
+        self._box = []
 
         # Translate molecule
         self.translate(vec)
@@ -487,7 +487,7 @@ class Molecule:
     #####################################
     # Public Methods - Advanced Editing #
     #####################################
-    def part_move(self, bond, atoms, length, vec=None):
+    def part_move(self, bond, atoms, length, vec=[]):
         """Change the length of a specified bond. Variable ``atoms`` specifies
         which atoms or rather which part of the molecule needs to be moved for
         this specific bond. The given length is going to be the new bond length,
@@ -524,7 +524,7 @@ class Molecule:
         length = abs(length-geometry.length(self.bond(*bond)))
 
         # Set vector
-        if vec == None:
+        if not vec:
             vec = self._vector(bond[0], bond[1])
         vec = [v*length for v in geometry.unit(vec)]
 
@@ -621,15 +621,15 @@ class Molecule:
     ##########################
     # Public Methods - Atoms #
     ##########################
-    def add(self, atom_type, pos, bond=None, r=0, theta=0, phi=0, is_deg=True, name=None):
+    def add(self, atom_type, pos, bond=[], r=0, theta=0, phi=0, is_deg=True, name=""):
         """Add a new atom in polar coordinates. The ``pos`` input is either
         an atom id, that determines is the bond-start,
         or a vector for a specific position.
 
         If the polar coordinates are dependent on a bond vector as an axis,
         the ``bond`` variable must be set. The coordinate system is then
-        transformed to the bond axis. If this variable is set to None, then the
-        given coordinates are assumed to be dependent on the z-axis.
+        transformed to the bond axis. If this variable is set to an empty list,
+        then the given coordinates are assumed to be dependent on the z-axis.
 
         Parameters
         ----------
@@ -637,7 +637,7 @@ class Molecule:
             Atom type
         pos : integer, list
             Position of the atom
-        bond : None, list, optional
+        bond : list, optional
             Bond axis
         r : float, optional
             Bond length
@@ -647,7 +647,7 @@ class Molecule:
             Polar angle
         is_deg : bool, optional
             True if the input of the angles in degree
-        name : string, None, optional
+        name : string, optional
             Optionally set a unique atom name
 
         Examples
@@ -660,7 +660,7 @@ class Molecule:
         """
         # Process input
         pos = self.pos(pos) if isinstance(pos, int) else pos
-        vec = geometry.main_axis("z") if bond is None else self._vector(*bond)
+        vec = self._vector(*bond) if bond else geometry.main_axis("z")
 
         # Add coordinate transformation when given a bond
         phi += geometry.angle_polar(vec, is_deg)
@@ -782,6 +782,16 @@ class Molecule:
         """
         return self._atom_list[atom].get_atom_type()
 
+    def get_atom_list(self):
+        """Return the atoms list.
+
+        Returns
+        -------
+        atom_list : list
+            Atom list
+        """
+        return self._atom_list
+
 
     ##################
     # Setter Methods #
@@ -826,41 +836,31 @@ class Molecule:
         """
         self._charge = charge
 
-    def set_masses(self, masses=None):
+    def set_masses(self, masses=[]):
         """Set the molar masses of the atoms.
 
         Parameters
         ----------
-        masses : list, None, optional
+        masses : list, optional
             List of molar masses in :math:`\\frac g{mol}`
         """
-        self._masses = [db.get_mass(atom.get_atom_type()) for atom in self._atom_list] if masses is None else masses
+        self._masses = masses if masses else [db.get_mass(atom.get_atom_type()) for atom in self._atom_list]
 
 
-    def set_mass(self, mass=None):
+    def set_mass(self, mass=0):
         """Set the molar mass of the molecule.
 
         Parameters
         ----------
-        mass : float, None, optional
+        mass : float, optional
             Molar mass in :math:`\\frac g{mol}`
         """
-        self._mass = sum(self.get_masses()) if mass is None else mass
+        self._mass = mass if mass else sum(self.get_masses())
 
 
     ##################
     # Getter Methods #
     ##################
-    def get_atom_list(self):
-        """Return the atoms list.
-
-        Returns
-        -------
-        atom_list : list
-            Atom list
-        """
-        return self._atom_list
-
     def get_name(self):
         """Return the molecule name.
 
@@ -889,7 +889,7 @@ class Molecule:
         box : list
             Box size in all dimensions
         """
-        return self._box_size() if self._box is None else self._box
+        return self._box if self._box else self._box_size()
 
     def get_num(self):
         """Return the number of atoms.
@@ -919,7 +919,7 @@ class Molecule:
         masses : list
             Masses in :math:`\\frac g{mol}`
         """
-        if self._masses is None:
+        if not self._masses:
             self.set_masses()
         return self._masses
 
@@ -931,6 +931,6 @@ class Molecule:
         mass : float
             Molar mass in :math:`\\frac g{mol}`
         """
-        if self._mass is None:
+        if not self._mass:
             self.set_mass()
         return self._mass

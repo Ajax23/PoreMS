@@ -29,10 +29,13 @@ class Store:
 
     Parameters
     ----------
-    construct : Molecule, Pore
+    inp : Molecule, Pore
         Molecule or Pore object
     link : string, optional
         Folder link for output
+    sort_list : list, optional
+        Optionally provide a sorting list in case a dictionary of molecules is
+        given
 
     Examples
     --------
@@ -41,25 +44,36 @@ class Store:
 
     .. code-block:: python
 
-        from porems.store import Store
-
-        Store(pore).gro()
         Store(mol).pdb()
+        Store(pore, "output").gro("pore.gro")
     """
-    def __init__(self, construct, link="./"):
-        # Get molecule properties
+    def __init__(self, inp, link="./", sort_list=[]):
+        # Initialize
         self._dim = 3
         self._link = link if link[-1] == "/" else link+"/"
-        self._obj = construct
-        self._name = self._obj.get_name()
-        self._box = self._obj.get_box()
+        self._inp = inp
 
-        if isinstance(construct, Molecule):
-            self._mols = [self._obj]
-        elif isinstance(self._obj, Pore):
-            self._mols = self._obj.get_mol_list()
+        # Process input
+        if isinstance(inp, Molecule):
+            self._mols = [self._inp]
+        elif isinstance(inp, Pore):
+            if sort_list:
+                if sorted(sort_list) == sorted(list(inp.get_mol_dict().keys())):
+                    self._mols = sum([inp.get_mol_dict()[x] for x in sort_list], [])
+                    self._short_list = sort_list
+                else:
+                    print("Store: Sorting list does not contain all keys...")
+                    return
+            else:
+                self._mols = sum([x for x in inp.get_mol_dict().values()], [])
+                self._short_list = list(x for x in inp.get_mol_dict().keys())
         else:
-            print("Unknown input type.")
+            print("Store: Unsupported input type...")
+            return
+
+        # Get properties after input checking type
+        self._name = inp.get_name() if inp.get_name() else "molecule"
+        self._box = inp.get_box() if inp.get_box() else [0 for x in range(self._dim)]
 
         # Create output folder
         utils.mkdirp(link)
@@ -82,7 +96,7 @@ class Store:
         """
         # Initialize
         name = self._name.lower()
-        short = self._obj.get_short()
+        short = self._inp.get_short()
         link = self._link
 
         # Template directory
@@ -118,28 +132,28 @@ class Store:
     ##############################
     # Public Methods - Structure #
     ##############################
-    def obj(self, name=None):
-        """Save the molecule object using pickle.
+    def obj(self, name=""):
+        """Save the molecule object or the dictionary of those using pickle.
 
         Parameters
         ----------
-        name : string, None, optional
+        name : string, optional
             Filename
         """
         # Initialize
         link = self._link
-        link += self._name+".obj" if name is None else name
+        link += name if name else self._name+".obj"
 
         # Save object
-        utils.save(self._obj, link)
+        utils.save(self._inp, link)
 
-    def pdb(self, name=None, use_atom_names=False):
+    def pdb(self, name="", use_atom_names=False):
         """Generate the structure file for the defined molecule in the **PDB**
         format.
 
         Parameters
         ----------
-        name : string, None, optional
+        name : string, optional
             Filename
         use_atom_names : bool, optional
             True to use atom names if they are defined, False to enumerate based
@@ -147,7 +161,7 @@ class Store:
         """
         # Initialize
         link = self._link
-        link += self._name+".pdb" if name is None else name
+        link += name if name else self._name+".pdb"
 
         # Open file
         with open(link, "w") as file_out:
@@ -168,7 +182,7 @@ class Store:
                         atom_types[atom_type] = 1
 
                     # Set atom name
-                    if use_atom_names and atom.get_name() is not None:
+                    if use_atom_names and atom.get_name():
                         atom_name = atom.get_name()
                     else:
                         atom_name = atom_type+str(atom_types[atom_type])
@@ -203,13 +217,13 @@ class Store:
             # End statement
             file_out.write("TER\nEND\n")
 
-    def gro(self, name=None, use_atom_names=False):
+    def gro(self, name="", use_atom_names=False):
         """Generate the structure file for the defined molecule in the **GRO**
         format.
 
         Parameters
         ----------
-        name : string, None, optional
+        name : string, optional
             Filename
         use_atom_names : bool, optional
             True to use atom names if they are defined, False to enumerate based
@@ -217,7 +231,7 @@ class Store:
         """
         # Initialize
         link = self._link
-        link += self._name+".gro" if name is None else name
+        link += name if name else self._name+".gro"
 
         # Open file
         with open(link, "w") as file_out:
@@ -244,7 +258,7 @@ class Store:
                         atom_types[atom_type] = 1
 
                     # Set atom name
-                    if use_atom_names and atom.get_name() is not None:
+                    if use_atom_names and atom.get_name():
                         atom_name = atom.get_name()
                     else:
                         atom_name = atom_type+str(atom_types[atom_type])
@@ -272,13 +286,13 @@ class Store:
 
             file_out.write(out_string)
 
-    def xyz(self, name=None, use_atom_names=False):
+    def xyz(self, name="", use_atom_names=False):
         """Generate the structure file for the defined molecule in the **XYZ**
         format for running qm-simulations.
 
         Parameters
         ----------
-        name : string, None, optional
+        name : string, optional
             Filename
         use_atom_names : bool, optional
             True to use atom names if they are defined, False to enumerate based
@@ -286,7 +300,7 @@ class Store:
         """
         # Initialize
         link = self._link
-        link += self._name+".xyz" if name is None else name
+        link += name if name else self._name+".xyz"
 
         # Open output file and set title
         with open(link, "w") as file_out:
@@ -309,36 +323,34 @@ class Store:
     ############
     # Topology #
     ############
-    def top(self, name=None):
+    def top(self, name=""):
         """Store the **topology** file for a pore. A top file is created
         containing the itp-include for all molecules and the count of the
         different groups of the pore.
 
         Parameters
         ----------
-        name : None, string, optional
+        name : string, optional
             Filename
         """
-        # Initialize
-        mols = self._mols
-        link = self._link
-        link += self._name+".top" if name is None else name
+        # Check input type
+        if not isinstance(self._inp, Pore):
+            print("Store: Unsupported input type for topology creation...")
+            return
 
-        # Get unique molecules
-        unique_mols = []
-        for mol in mols:
-            if not mol.get_name() in unique_mols:
-                unique_mols.append(mol.get_name())
+        # Initialize
+        link = self._link
+        link += name if name else self._name+".top"
 
         # Copy master topology file
         utils.copy(os.path.split(__file__)[0]+"/templates/topol.top", link)
 
         # Open file
         with open(link, "a") as file_out:
-            # Store header
-            for mol_name in unique_mols:
-                if mol_name not in ["si", "om", "ox", "sl", "slg", "slx"]:
-                    file_out.write("#include \""+mol_name+".itp\"\n")
+            # Include topology
+            for mol_short in self._short_list:
+                if mol_short not in ["SI", "OM", "SL", "SLG", "SLX"]:
+                    file_out.write("#include \""+mol_short+".itp\"\n")
 
             file_out.write("\n")
             file_out.write("[ system ]\n")
@@ -347,38 +359,28 @@ class Store:
             file_out.write("\n")
             file_out.write("[ molecules ]\n")
 
-            # Atoms
-            counter = 1
-            for i in range(0, len(mols)):
-                if mols[i].get_name() == mols[i-1].get_name():
-                    counter += 1
-                else:
-                    file_out.write(mols[i-1].get_short()+" "+str(counter)+"\n")
-                    counter = 1
+            # Number of atoms
+            for mol_short in self._short_list:
+                file_out.write(mol_short+" "+str(len(self._inp.get_mol_dict()[mol_short]))+"\n")
 
-            file_out.write(mols[-1].get_short()+" "+str(counter)+"\n")
-
-    def grid(self, name=None):
+    def grid(self, name="", charges={"si": 1.28, "om": -0.64}):
         """Store the **grid.itp** file containing the necessary parameters and
         charges of the grid molecules.
 
         Parameters
         ----------
-        name : None, string, optional
+        name : string, optional
             Filename
+        charges : dictionary, optional
+            Dictionary of charges for silicon and oxygen atoms
         """
         # Initialize
         link = self._link
-        link += "grid.itp" if name is None else name
-
-        # Calculate excess charge
-        # charges = self._mol.get_q()
-        charges = {"ox": -0.64, "om": -0.64, "si": 1.28}
+        link += name if name else "grid.itp"
 
         # Copy grid file
         utils.copy(os.path.split(__file__)[0]+"/templates/grid.itp", link)
 
         # Replace charges
-        utils.replace(link, "CHARGEOX", "%8.6f" % charges["ox"])
         utils.replace(link, "CHARGEO", "%8.6f" % charges["om"])
         utils.replace(link, "CHARGESI", "%8.6f" % charges["si"])
