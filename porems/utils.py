@@ -75,7 +75,7 @@ def tic():
     return time.time()
 
 
-def toc(t, message=None, is_print=True):
+def toc(t, message="", is_print=True):
     """MATLAB toc replica - return time difference to tic and alternatively
     print a message.
 
@@ -93,9 +93,7 @@ def toc(t, message=None, is_print=True):
     time : float
         Time difference
     """
-    if message == None:
-        message = ""
-    else:
+    if message:
         message += " - runtime = "
 
     t_diff = time.time()-t

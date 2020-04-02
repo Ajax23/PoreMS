@@ -294,8 +294,8 @@ class Dice:
 
         Parameters
         ----------
-        cube_list : list, None
-            List of cube indices to search in, use None for all cubes
+        cube_list : list
+            List of cube indices to search in, use an empty list for all cubes
         atom_type : list
             List of two atom types
         distance : float
@@ -309,7 +309,7 @@ class Dice:
             Bond array containing lists of two atom ids
         """
         # Process input
-        cube_list = list(self._pointer.keys()) if cube_list is None else cube_list
+        cube_list = cube_list if cube_list else list(self._pointer.keys())
 
         # Loop through all given cubes
         bond_list = []
@@ -348,8 +348,8 @@ class Dice:
 
         Parameters
         ----------
-        cube_list : list, None
-            List of cube indices to search in, use None for all cubes
+        cube_list : list
+            List of cube indices to search in, use an empty list for all cubes
         atom_type : list
             List of two atom types
         distance : float
@@ -363,7 +363,7 @@ class Dice:
             Bond array containing lists of two atom ids
         """
         # Process input
-        cube_list = list(self._pointer.keys()) if cube_list is None else cube_list
+        cube_list = cube_list if cube_list else list(self._pointer.keys())
 
         # Divide cubes on processors
         cube_num = math.floor(len(cube_list)/self._np)

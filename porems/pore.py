@@ -11,7 +11,7 @@ import random
 from collections import Counter
 
 import porems.geometry as geometry
-import porems.essentials as essentials
+import porems.generic as generic
 
 from porems.dice import Dice
 from porems.molecule import Molecule
@@ -31,8 +31,13 @@ class Pore():
         # Initialize
         self._dim = 3
 
+        self._name = ""
+        self._box = []
+
         self._block = block
         self._matrix = matrix
+
+        self._mol_dict = {}
 
 
     ###########
@@ -105,7 +110,7 @@ class Pore():
                     self._block.get_atom_list()[atom_id].set_pos(disp_pos)
                     break
 
-    def sites(self, exterior=None):
+    def sites(self, exterior=[]):
         """Create binding site dictionary of the format
 
         .. math::
@@ -128,7 +133,7 @@ class Pore():
 
         Parameters
         ----------
-        exterior : list, None, optional
+        exterior : list, optional
             List of oxygen atom ids that are on the exterior surface
         """
         # Get list of surface oxygen atoms
@@ -145,7 +150,7 @@ class Pore():
         # Fill other information
         for si, data in self._sites.items():
             # Site type
-            if exterior is not None:
+            if exterior:
                 for o in data["o"]:
                     if o in exterior:
                         site_type = "ex"
@@ -235,6 +240,8 @@ class Pore():
                 if len(self._sites[si]["o"])==2:
                     mol_temp.add("O", mount, r=0.164, theta=45)
                     mol_temp.add("H", mol_temp.get_num()-1, r=0.098)
+                    mol_temp.set_name(mol.get_name()+"g")
+                    mol_temp.set_short(mol.get_short()+"G")
 
                 # Rotate molecule towards surface normal vector
                 surf_axis = normal(self._block.pos(si))
@@ -243,8 +250,11 @@ class Pore():
                 # Move molecule to mounting position
                 mol_temp.move(mount, self._block.pos(si))
 
-                # Add molecule to molecule list
+                # Add molecule to molecule list and dict
                 mol_list.append(mol_temp)
+                if not mol_temp.get_short() in self._mol_dict:
+                    self._mol_dict[mol_temp.get_short()] = []
+                self._mol_dict[mol_temp.get_short()].append(mol_temp)
 
                 # Remove bonds of occupied binding site
                 self._matrix.strip([si]+self._sites[si]["o"])
@@ -253,7 +263,7 @@ class Pore():
                 if is_proxi:
                     proxi_list = [sites[x] for x in si_matrix[sites.index(si)]]
                     if len(proxi_list) > 0:
-                        mol_list.extend(self.attach(essentials.silanol(), 0, [0, 1], proxi_list, len(proxi_list), normal, is_proxi=False, is_random=False))
+                        mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), normal, is_proxi=False, is_random=False))
 
         return mol_list
 
@@ -294,26 +304,113 @@ class Pore():
         mol_list : list
             List of molecule objects that are attached on the surface
         """
-        mol_list = self.attach(essentials.silanol(), 0, [0, 1], sites, len(sites), normal, is_proxi=False, is_random=False)
+        mol_list = self.attach(generic.silanol(), 0, [0, 1], sites, len(sites), normal, is_proxi=False, is_random=False)
 
+        return mol_list
+
+    def reservoir(self):
+        """Create reservoir and center box.
+
+        TODO: Finish function
+        """
+        return
+
+    def objectify(self):
+        """Create molecule objects of remaining grid atoms.
+
+        Returns
+        -------
+        mol_list : list
+            List of molecule objects
+        """
+        # Initialize
+        mol_list = []
+
+        # Run through all remaining atoms with a bond or more
+        for atom_id in self._matrix.bound(0, "gt"):
+            # Get atom object
+            atom = self._block.get_atom_list()[atom_id]
+
+            # Create molecule object
+            if atom.get_atom_type() == "O":
+                mol = Molecule("om", "OM")
+                mol.add("O", atom.get_pos(), name="OM1")
+            elif atom.get_atom_type() == "Si":
+                mol = Molecule("si", "SI")
+                mol.add("Si", atom.get_pos(), name="SI1")
+            else:
+                print("Pore: Unknown atom type...")
+                return
+
+            # Add to molecule list and global dictionary
+            mol_list.append(mol)
+            if not mol.get_short() in self._mol_dict:
+                self._mol_dict[mol.get_short()] = []
+            self._mol_dict[mol.get_short()].append(mol)
+
+        # Output
         return mol_list
 
 
     ###########
     # Analyze #
     ###########
+    def properties(self):
+        """Calculate properties.
 
+        TODO: As own class with table representation? - Takes volume and surface
+        as inputs -> from shape class
+        """
+        return
 
 
     ##################
     # Setter Methods #
     ##################
+    def set_name(self, name):
+        """Set the pore name.
 
+        Parameters
+        ----------
+        name : string
+            Pore name
+        """
+        self._name = name
+
+    def set_box(self, box):
+        """Set the box size.
+
+        Parameters
+        ----------
+        box : list
+            Box size in all dimensions
+        """
+        self._box = box
 
 
     ##################
     # Getter Methods #
     ##################
+    def get_name(self):
+        """Return the pore name.
+
+        Returns
+        -------
+        name : string
+            Pore name
+        """
+        return self._name
+
+    def get_box(self):
+        """Return the box size of the pore.
+
+        Returns
+        -------
+        box : list
+            Box size in all dimensions
+        """
+        return self._box
+
     def get_block(self):
         """Return the block molecule.
 
@@ -333,3 +430,13 @@ class Pore():
             Binding sites dictionary
         """
         return self._sites
+
+    def get_mol_dict(self):
+        """Return the dictionary of all molecules.
+
+        Returns
+        -------
+        mol_dict : dictionary
+            Dictionary of all molecules
+        """
+        return self._mol_dict

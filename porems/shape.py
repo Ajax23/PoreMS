@@ -64,7 +64,7 @@ class Shape():
 
         return data
 
-    def plot(self, inp=0, num=100, vec=None):
+    def plot(self, inp=0, num=100, vec=[]):
         """Plot surface and rim.
 
         Parameters
@@ -73,7 +73,7 @@ class Shape():
             Position on the axis
         num : integer, optional
             Number of points
-        vec : list, None, optional
+        vec : list, optional
             Vector on surface to test normal vector
         """
         fig = plt.figure()
@@ -86,7 +86,7 @@ class Shape():
         ax.plot3D(*[x[0] for x in self.rim(inp, num)])
 
         # Normal
-        if vec is not None:
+        if vec:
             line = [self.convert([0, 0, 0], False), vec,
                     self.convert([x*5 for x in geometry.unit(self.normal(vec))], False)]
             ax.plot3D(*utils.column(line))

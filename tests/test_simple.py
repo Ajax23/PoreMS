@@ -5,27 +5,7 @@ import shutil
 import unittest
 import matplotlib.pyplot as plt
 
-# # Install package
-# if sys.platform == "win32":
-#     os.system("pip install ../.")
-# else:
-#     os.system("pip install ../. &> /dev/null")
-# print("Finished inistalling package...")
-
-# Import package
-import porems.utils as utils
-import porems.database as db
-import porems.geometry as geometry
-import porems.essentials as essentials
-
-from porems.atom import Atom
-from porems.molecule import Molecule
-from porems.store import Store
-from porems.pattern import *
-from porems.dice import Dice
-from porems.matrix import Matrix
-from porems.shape import *
-from porems.pore import Pore
+import porems as pms
 
 
 class UserModelCase(unittest.TestCase):
@@ -52,23 +32,24 @@ class UserModelCase(unittest.TestCase):
     def test_utils(self):
         file_link = "output/test/test.txt"
 
-        utils.mkdirp("output/test")
+        pms.utils.mkdirp("output/test")
 
         with open(file_link, "w") as file_out:
             file_out.write("TEST")
-        utils.copy(file_link, file_link+"t")
-        utils.replace(file_link+"t", "TEST", "DOTA")
+        pms.utils.copy(file_link, file_link+"t")
+        pms.utils.replace(file_link+"t", "TEST", "DOTA")
         with open(file_link+"t", "r") as file_in:
             for line in file_in:
                 self.assertEqual(line, "DOTA\n")
 
-        self.assertEqual(utils.column([[1, 1, 1], [2, 2, 2]]), [[1, 2], [1, 2], [1, 2]])
+        self.assertEqual(pms.utils.column([[1, 1, 1], [2, 2, 2]]), [[1, 2], [1, 2], [1, 2]])
 
-        utils.save([1, 1, 1], file_link)
-        self.assertEqual(utils.load(file_link), [1, 1, 1])
+        pms.utils.save([1, 1, 1], file_link)
+        self.assertEqual(pms.utils.load(file_link), [1, 1, 1])
 
-        utils.toc(utils.tic(), message="Test", is_print=True)
-        self.assertEqual(round(utils.toc(utils.tic(), is_print=True)), 0)
+        print()
+        pms.utils.toc(pms.utils.tic(), message="Test", is_print=True)
+        self.assertEqual(round(pms.utils.toc(pms.utils.tic(), is_print=True)), 0)
 
 
     ############
@@ -78,43 +59,46 @@ class UserModelCase(unittest.TestCase):
         vec_a = [1, 1, 2]
         vec_b = [0, 3, 2]
 
-        self.assertEqual(round(geometry.dot_product(vec_a, vec_b), 4), 7)
-        self.assertEqual(round(geometry.length(vec_a), 4), 2.4495)
-        self.assertEqual([round(x, 4) for x in geometry.vector(vec_a, vec_b)], [-1, 2, 0])
-        self.assertIsNone(geometry.vector([0, 1], [0, 0, 0]))
-        self.assertEqual([round(x, 4) for x in geometry.unit(vec_a)], [0.4082, 0.4082, 0.8165])
-        self.assertEqual([round(x, 4) for x in geometry.cross_product(vec_a, vec_b)], [-4, -2, 3])
-        self.assertEqual(round(geometry.angle(vec_a, vec_b), 4), 37.5714)
-        self.assertEqual(round(geometry.angle_polar(vec_a), 4), 0.7854)
-        self.assertEqual(round(geometry.angle_azi(vec_b), 4), 0.9828)
-        self.assertEqual(round(geometry.angle_azi([0, 0, 0]), 4), 1.5708)
-        self.assertEqual([round(x, 4) for x in geometry.main_axis(1)], [1, 0, 0])
-        self.assertEqual([round(x, 4) for x in geometry.main_axis(2)], [0, 1, 0])
-        self.assertEqual([round(x, 4) for x in geometry.main_axis(3)], [0, 0, 1])
-        self.assertEqual([round(x, 4) for x in geometry.main_axis("x")], [1, 0, 0])
-        self.assertEqual([round(x, 4) for x in geometry.main_axis("y")], [0, 1, 0])
-        self.assertEqual([round(x, 4) for x in geometry.main_axis("z")], [0, 0, 1])
-        self.assertEqual(geometry.main_axis("h"), "Wrong axis definition...")
-        self.assertEqual(geometry.main_axis(100), "Wrong axis definition...")
-        self.assertEqual(geometry.main_axis(0.1), "Wrong axis definition...")
-        self.assertEqual([round(x, 4) for x in geometry.rotate(vec_a, "x", 90, True)], [1.0, -2.0, 1.0])
-        self.assertIsNone(geometry.rotate(vec_a, [0, 1, 2, 3], 90, True))
-        self.assertIsNone(geometry.rotate(vec_a, "h", 90, True))
+        print()
+
+        self.assertEqual(round(pms.geom.dot_product(vec_a, vec_b), 4), 7)
+        self.assertEqual(round(pms.geom.length(vec_a), 4), 2.4495)
+        self.assertEqual([round(x, 4) for x in pms.geom.vector(vec_a, vec_b)], [-1, 2, 0])
+        self.assertIsNone(pms.geom.vector([0, 1], [0, 0, 0]))
+        self.assertEqual([round(x, 4) for x in pms.geom.unit(vec_a)], [0.4082, 0.4082, 0.8165])
+        self.assertEqual([round(x, 4) for x in pms.geom.cross_product(vec_a, vec_b)], [-4, -2, 3])
+        self.assertEqual(round(pms.geom.angle(vec_a, vec_b), 4), 37.5714)
+        self.assertEqual(round(pms.geom.angle_polar(vec_a), 4), 0.7854)
+        self.assertEqual(round(pms.geom.angle_azi(vec_b), 4), 0.9828)
+        self.assertEqual(round(pms.geom.angle_azi([0, 0, 0]), 4), 1.5708)
+        self.assertEqual([round(x, 4) for x in pms.geom.main_axis(1)], [1, 0, 0])
+        self.assertEqual([round(x, 4) for x in pms.geom.main_axis(2)], [0, 1, 0])
+        self.assertEqual([round(x, 4) for x in pms.geom.main_axis(3)], [0, 0, 1])
+        self.assertEqual([round(x, 4) for x in pms.geom.main_axis("x")], [1, 0, 0])
+        self.assertEqual([round(x, 4) for x in pms.geom.main_axis("y")], [0, 1, 0])
+        self.assertEqual([round(x, 4) for x in pms.geom.main_axis("z")], [0, 0, 1])
+        self.assertEqual(pms.geom.main_axis("h"), "Wrong axis definition...")
+        self.assertEqual(pms.geom.main_axis(100), "Wrong axis definition...")
+        self.assertEqual(pms.geom.main_axis(0.1), "Wrong axis definition...")
+        self.assertEqual([round(x, 4) for x in pms.geom.rotate(vec_a, "x", 90, True)], [1.0, -2.0, 1.0])
+        self.assertIsNone(pms.geom.rotate(vec_a, [0, 1, 2, 3], 90, True))
+        self.assertIsNone(pms.geom.rotate(vec_a, "h", 90, True))
 
 
     ############
     # Database #
     ############
     def test_database(self):
-        self.assertEqual(db.get_mass("H"), 1.0079)
-        self.assertIsNone(db.get_mass("DOTA"))
+        print()
+        self.assertEqual(pms.db.get_mass("H"), 1.0079)
+        self.assertIsNone(pms.db.get_mass("DOTA"))
 
 
     ########
     # Atom #
     ########
     def test_atom(self):
-        atom = Atom([0.0, 0.1, 0.2], "H", "HO1")
+        atom = pms.Atom([0.0, 0.1, 0.2], "H", "HO1")
 
         self.assertEqual(atom.get_pos(), [0.0, 0.1, 0.2])
         self.assertEqual(atom.get_atom_type(), "H")
@@ -127,14 +111,14 @@ class UserModelCase(unittest.TestCase):
     # Molecule #
     ############
     def test_molecule_loading(self):
-        mol_gro = Molecule(inp="data/benzene.gro")
-        mol_pdb = Molecule(inp="data/benzene.pdb")
-        mol_mol2 = Molecule(inp="data/benzene.mol2")
+        mol_gro = pms.Molecule(inp="data/benzene.gro")
+        mol_pdb = pms.Molecule(inp="data/benzene.pdb")
+        mol_mol2 = pms.Molecule(inp="data/benzene.mol2")
 
-        mol_atom = Molecule(inp=mol_mol2.get_atom_list())
-        mol_concat = Molecule(inp=[mol_gro, mol_pdb])
+        mol_atom = pms.Molecule(inp=mol_mol2.get_atom_list())
+        mol_concat = pms.Molecule(inp=[mol_gro, mol_pdb])
 
-        mol_append = Molecule(inp="data/benzene.gro")
+        mol_append = pms.Molecule(inp="data/benzene.gro")
         mol_append.append(mol_gro)
 
         pos_gro = [[round(x, 4) for x in col] for col in mol_gro.column_pos()]
@@ -150,10 +134,11 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([col+col for col in pos_gro], pos_concat)
         self.assertEqual([col+col for col in pos_gro], pos_append)
 
-        self.assertEqual(Molecule(inp="data/benzene.DOTA").get_atom_list(), None)
+        print()
+        self.assertEqual(pms.Molecule(inp="data/benzene.DOTA").get_atom_list(), None)
 
     def test_molecule_properties(self):
-        mol = Molecule(inp="data/benzene.gro")
+        mol = pms.Molecule(inp="data/benzene.gro")
 
         self.assertEqual(mol.pos(0), [0.0935, 0.0000, 0.3143])
         self.assertEqual([round(x, 4) for x in mol.bond(0, 1)], [0.1191, 0.0, 0.0687])
@@ -163,7 +148,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in mol.com()], [0.2126, 0.0, 0.2455])
 
     def test_molecule_editing(self):
-        mol = Molecule(inp="data/benzene.gro")
+        mol = pms.Molecule(inp="data/benzene.gro")
 
         mol.translate([0, 0.1, 0.2])
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [0.3317, 0.1000, 0.3768])
@@ -186,6 +171,8 @@ class UserModelCase(unittest.TestCase):
         mol.part_angle([0, 0, 1], [0, 1, 0], 1, 45, 1)
         self.assertEqual([round(x, 4) for x in mol.pos(3)], [-0.1360, -0.1084, -0.3068])
 
+        print()
+
         self.assertIsNone(mol._vector(0.1, 0.1))
         self.assertIsNone(mol._vector([0, 0], [0, 0]))
 
@@ -193,7 +180,7 @@ class UserModelCase(unittest.TestCase):
         self.assertIsNone(mol.part_angle([0, 0], [0, 1, 2], 1, 45, 1))
 
     def test_molecule_creation(self):
-        mol = Molecule()
+        mol = pms.Molecule()
 
         mol.add("C", [0, 0.1, 0.2])
         mol.add("C", 0, r=0.1, theta=90)
@@ -213,7 +200,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(mol.get_atom_list()[0].get_name(), "RuX")
 
     def test_molecule_set_get(self):
-        mol = Molecule()
+        mol = pms.Molecule()
 
         mol.set_name("test_mol")
         mol.set_short("TMOL")
@@ -230,100 +217,106 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(mol.get_mass(), 6)
 
     def test_molecule_representation(self):
-        mol = Molecule()
+        mol = pms.Molecule()
         mol.add("H", [0.0, 0.1, 0.2], name="HO1")
 
         self.assertEqual(mol.__str__(), "  Name Type    x    y    z\n0  HO1    H  0.0  0.1  0.2")
 
 
-    ##############
-    # Essentails #
-    ##############
-    def test_essentials(self):
-        self.assertEqual([round(x, 4) for x in essentials.alkane(10, "decane", "DEC").pos(5)], [0.0472, 0.1028, 0.7170])
-        self.assertEqual([round(x, 4) for x in essentials.alkane(1, "methane", "MET").pos(0)], [0.0514, 0.0890, 0.0363])
-        self.assertEqual([round(x, 4) for x in essentials.alcohol(10, "decanol", "DCOL").pos(5)], [0.0363, 0.1028, 0.7170])
-        self.assertEqual([round(x, 4) for x in essentials.alcohol(1, "methanol", "MEOL").pos(0)], [0.0715, 0.0890, 0.0363])
-        self.assertEqual([round(x, 4) for x in essentials.ketone(10, 5, "decanone", "DCON").pos(5)], [0.0472, 0.1028, 0.7170])
-        self.assertIsNone(essentials.ketone(2, 0))
-        self.assertEqual([round(x, 4) for x in  essentials.tms(separation=30).pos(5)], [0.0273, 0.0472, 0.4525])
-        self.assertEqual([round(x, 4) for x in  essentials.tms(is_si=False).pos(5)], [0.0273, 0.0472, 0.4976])
-        self.assertEqual([round(x, 4) for x in  essentials.silanol().pos(0)], [0.000, 0.000, 0.000])
+    ###########
+    # Generic #
+    ###########
+    def test_generic(self):
+        self.assertEqual([round(x, 4) for x in pms.gen.alkane(10, "decane", "DEC").pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in pms.gen.alkane(1, "methane", "MET").pos(0)], [0.0514, 0.0890, 0.0363])
+        self.assertEqual([round(x, 4) for x in pms.gen.alcohol(10, "decanol", "DCOL").pos(5)], [0.0363, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in pms.gen.alcohol(1, "methanol", "MEOL").pos(0)], [0.0715, 0.0890, 0.0363])
+        self.assertEqual([round(x, 4) for x in pms.gen.ketone(10, 5, "decanone", "DCON").pos(5)], [0.0472, 0.1028, 0.7170])
+        self.assertEqual([round(x, 4) for x in  pms.gen.tms(separation=30).pos(5)], [0.0273, 0.0472, 0.4525])
+        self.assertEqual([round(x, 4) for x in  pms.gen.tms(is_si=False).pos(5)], [0.0273, 0.0472, 0.4976])
+        self.assertEqual([round(x, 4) for x in  pms.gen.silanol().pos(0)], [0.000, 0.000, 0.000])
+
+        print()
+        self.assertIsNone(pms.gen.ketone(2, 0))
 
 
     #########
     # Store #
     #########
     def test_store(self):
-        mol = Molecule(inp="data/benzene.gro")
+        mol = pms.Molecule(inp="data/benzene.gro")
 
-        Store(mol, "output").job(True)
-        Store(mol, "output").obj()
-        Store(mol, "output").gro(use_atom_names=True)
-        Store(mol, "output").pdb(use_atom_names=True)
-        Store(mol, "output").xyz()
-        Store(mol, "output").top()
-        Store(mol, "output").grid()
+        pms.Store(mol, "output").job(True)
+        pms.Store(mol, "output").obj()
+        pms.Store(mol, "output").gro(use_atom_names=True)
+        pms.Store(mol, "output").pdb(use_atom_names=True)
+        pms.Store(mol, "output").xyz()
+        pms.Store(mol, "output").grid()
+
+        print()
+        pms.Store({})
+        self.assertIsNone(pms.Store(mol).top())
 
 
     ###########
     # Pattern #
     ###########
     def test_pattern_beta_cristobalit(self):
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
 
         # Pattern and output
         pattern = beta_cristobalit.pattern()
-        pattern.set_name("beta_cristobalit_pattern")
+        pattern.set_name("pattern_beta_cbt_minimal")
         self.assertEqual(pattern.get_num(), 36)
-        Store(pattern, "output").gro()
+        pms.Store(pattern, "output").gro()
 
         # Generation and Orientation
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "x")
-        beta_cristobalit.get_block().set_name("beta_cristobalit_x")
+        beta_cristobalit.get_block().set_name("pattern_beta_cbt_x")
         self.assertEqual(beta_cristobalit.get_size(), [2.480, 1.754, 2.024])
         self.assertEqual([round(x, 3) for x in beta_cristobalit.get_block().get_box()], [2.480, 1.754, 2.024])
-        Store(beta_cristobalit.get_block(), "output").gro()
+        pms.Store(beta_cristobalit.get_block(), "output").gro()
 
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "y")
-        beta_cristobalit.get_block().set_name("beta_cristobalit_y")
+        beta_cristobalit.get_block().set_name("pattern_beta_cbt_y")
         self.assertEqual(beta_cristobalit.get_size(), [2.024, 2.480, 1.754])
         self.assertEqual([round(x, 3) for x in beta_cristobalit.get_block().get_box()], [2.024, 2.480, 1.754])
-        Store(beta_cristobalit.get_block(), "output").gro()
+        pms.Store(beta_cristobalit.get_block(), "output").gro()
 
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "z")
-        beta_cristobalit.get_block().set_name("beta_cristobalit_z")
+        beta_cristobalit.get_block().set_name("pattern_beta_cbt_z")
         self.assertEqual(beta_cristobalit.get_size(), [2.024, 1.754, 2.480])
         self.assertEqual([round(x, 3) for x in beta_cristobalit.get_block().get_box()], [2.024, 1.754, 2.480])
-        Store(beta_cristobalit.get_block(), "output").gro()
+        pms.Store(beta_cristobalit.get_block(), "output").gro()
 
         # Exterior
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "x")
-        beta_cristobalit.get_block().set_name("beta_cristobalit_ext_x")
+        beta_cristobalit.get_block().set_name("pattern_beta_cbt_ex_x")
         beta_cristobalit.exterior()
         self.assertEqual(beta_cristobalit.get_block().get_num(), 600)
-        Store(beta_cristobalit.get_block(), "output").gro()
+        pms.Store(beta_cristobalit.get_block(), "output").gro()
 
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "y")
-        beta_cristobalit.get_block().set_name("beta_cristobalit_ext_y")
+        beta_cristobalit.get_block().set_name("pattern_beta_cbt_ex_y")
+        print()
         self.assertIsNone(beta_cristobalit.exterior())
 
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "z")
-        beta_cristobalit.get_block().set_name("beta_cristobalit_ext_z")
+        beta_cristobalit.get_block().set_name("pattern_beta_cbt_ex_z")
         beta_cristobalit.exterior()
         self.assertEqual(beta_cristobalit.get_block().get_num(), 592)
-        Store(beta_cristobalit.get_block(), "output").gro()
+        pms.Store(beta_cristobalit.get_block(), "output").gro()
 
         # Misc
-        beta_cristobalit = BetaCristobalit()
+        beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "z")
-        beta_cristobalit.get_block().set_name("test_mol")
+        beta_cristobalit.get_block().set_name("DOTA")
 
         # Overlap and output
         self.assertEqual(beta_cristobalit.get_block().get_num(), 576)
@@ -333,17 +326,17 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(beta_cristobalit.get_repeat(), [0.506, 0.877, 1.240])
         self.assertEqual(beta_cristobalit.get_gap(), [0.126, 0.073, 0.155])
         self.assertEqual(beta_cristobalit.get_orient(), "z")
-        self.assertEqual(beta_cristobalit.get_block().get_name(), "test_mol")
+        self.assertEqual(beta_cristobalit.get_block().get_name(), "DOTA")
 
 
     ########
     # Dice #
     ########
     def test_dice(self):
-        block = BetaCristobalit().generate([2, 2, 2], "z")
+        block = pms.BetaCristobalit().generate([2, 2, 2], "z")
         block.set_name("dice")
-        Store(block, "output").gro()
-        dice = Dice(block, 0.4, True)
+        pms.Store(block, "output").gro()
+        dice = pms.Dice(block, 0.4, True)
 
         # Splitting and filling
         self.assertEqual(len(dice.get_origin()), 120)
@@ -382,13 +375,13 @@ class UserModelCase(unittest.TestCase):
     ##########
     def test_matrix(self):
         orient = "z"
-        block = BetaCristobalit().generate([1, 1, 1], orient)
+        block = pms.BetaCristobalit().generate([1, 1, 1], orient)
         block.set_name("matrix")
-        Store(block, "output").gro()
-        dice = Dice(block, 0.2, True)
+        pms.Store(block, "output").gro()
+        dice = pms.Dice(block, 0.2, True)
         bonds = dice.find_bond(None, ["Si", "O"], 0.155, 10e-2)
 
-        matrix = Matrix(bonds)
+        matrix = pms.Matrix(bonds)
         connect = matrix.get_matrix()
         matrix.split(0, 17)
         self.assertEqual(connect[0], [30, 8, 1])
@@ -401,6 +394,8 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(matrix.bound(0), [0])
         self.assertEqual(matrix.bound(1, "lt"), [0])
         self.assertEqual(matrix.bound(4, "gt"), [])
+
+        print()
         self.assertIsNone(matrix.bound(4, "test"))
 
 
@@ -410,14 +405,14 @@ class UserModelCase(unittest.TestCase):
     def test_shape_cylinder(self):
         # self.skipTest("Temporary")
 
-        block = BetaCristobalit().generate([6, 6, 6], "z")
+        block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cylinder")
-        dice = Dice(block, 0.4, True)
-        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        dice = pms.Dice(block, 0.4, True)
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
         centroid = block.centroid()
-        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 45, True))
+        central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 45, True))
 
-        cylinder = Cylinder({"centroid": centroid, "central": central, "length": 3, "diameter": 4})
+        cylinder = pms.Cylinder({"centroid": centroid, "central": central, "length": 3, "diameter": 4})
 
         # Properties
         self.assertEqual(round(cylinder.volume(), 4), 37.6991)
@@ -441,7 +436,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(block.get_num(), 12650)
 
         # Store molecule
-        Store(block, "output").gro()
+        pms.Store(block, "output").gro()
 
         # Plot surface
         cylinder.plot(vec=[3.17290646, 4.50630614, 0.22183271])
@@ -450,14 +445,14 @@ class UserModelCase(unittest.TestCase):
     def test_shape_sphere(self):
         # self.skipTest("Temporary")
 
-        block = BetaCristobalit().generate([6, 6, 6], "z")
+        block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_sphere")
-        dice = Dice(block, 0.4, True)
-        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        dice = pms.Dice(block, 0.4, True)
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
         centroid = block.centroid()
-        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 0, True))
+        central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
 
-        sphere = Sphere({"centroid": centroid, "central": central, "diameter": 4})
+        sphere = pms.Sphere({"centroid": centroid, "central": central, "diameter": 4})
 
         # Properties
         self.assertEqual(round(sphere.volume(), 4), 33.5103)
@@ -478,41 +473,11 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(block.get_num(), 12934)
 
         # Store molecule
-        Store(block, "output").gro()
+        pms.Store(block, "output").gro()
 
         # Plot surface
         sphere.plot(inp=3.14, vec=[1.08001048, 3.09687610, 1.72960828])
         # plt.show()
-
-    def test_pore_capsule(self):
-        # self.skipTest("Temporary")
-
-        pattern = BetaCristobalit()
-        block = pattern.generate([6, 6, 12], "z")
-        block.set_name("shape_capsule")
-        dice = Dice(block, 0.4, True)
-        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
-        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 0, True))
-        centroid = block.centroid()
-        centroid_cyl_l = centroid[:2]+[0]
-        centroid_cyl_r = centroid[:2]+[pattern.get_size()[2]]
-        centroid_sph_l = centroid[:2]+[3]
-        centroid_sph_r = centroid[:2]+[pattern.get_size()[2]-3]
-
-        cylinder_l = Cylinder({"centroid": centroid_cyl_l, "central": central, "length": 6, "diameter": 4})
-        cylinder_r = Cylinder({"centroid": centroid_cyl_r, "central": central, "length": 6, "diameter": 4})
-        sphere_l = Sphere({"centroid": centroid_sph_l, "central": central, "diameter": 4})
-        sphere_r = Sphere({"centroid": centroid_sph_r, "central": central, "diameter": 4})
-
-        del_list = []
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_l.is_in(atom.get_pos())])
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_r.is_in(atom.get_pos())])
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_l.is_in(atom.get_pos())])
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_r.is_in(atom.get_pos())])
-        matrix.strip(del_list)
-
-        block.delete(matrix.bound(0))
-        Store(block, "output").gro()
 
 
     ########
@@ -520,20 +485,20 @@ class UserModelCase(unittest.TestCase):
     ########
     def test_pore_cylinder(self):
         orient = "z"
-        pattern = BetaCristobalit()
+        pattern = pms.BetaCristobalit()
         pattern.generate([6, 6, 6], orient)
         pattern.exterior()
 
         block = pattern.get_block()
-        block.set_name("pore_cylinder")
+        block.set_name("pore_cylinder_block")
 
-        dice = Dice(block, 0.4, True)
-        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        dice = pms.Dice(block, 0.4, True)
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
         oxygen_out = matrix.bound(1)
 
         centroid = block.centroid()
-        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 0, True))
-        cylinder = Cylinder({"centroid": centroid, "central": central, "length": 6, "diameter": 4})
+        central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
+        cylinder = pms.Cylinder({"centroid": centroid, "central": central, "length": 6, "diameter": 4})
         del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder.is_in(atom.get_pos())]
         matrix.strip(del_list)
 
@@ -542,7 +507,7 @@ class UserModelCase(unittest.TestCase):
             return [0, 0, -1] if pos[2] < centroid[2] else [0, 0, 1]
 
         # Process surface
-        pore = Pore(block, matrix)
+        pore = pms.Pore(block, matrix)
         pore.prepare()
         pore.amorph()
         self.assertEqual(len(matrix.bound(1)), 710)
@@ -550,86 +515,47 @@ class UserModelCase(unittest.TestCase):
         site_list = pore.get_sites()
         site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+        self.assertEqual(len(site_in), 432)
+        self.assertEqual(len(site_ex), 201)
 
         # Attachment
-        mol = essentials.tms()
+        mol = pms.gen.tms()
 
-        mol_list = pore.attach(mol, 0, [0, 1], site_in, 100, cylinder.normal, scale=1.2)
-        Store(Molecule(name="mol_list_cylinder_in", inp=mol_list), "output").gro()
+        mols_in = pore.attach(mol, 0, [0, 1], site_in, 100, cylinder.normal)
+        mols_ex = pore.attach(mol, 0, [0, 1], site_ex, 20, normal)
+        mols_in_fill = pore.fill_sites(site_in, cylinder.normal)
+        mols_ex_fill = pore.fill_sites(site_ex, normal)
 
-        mol_list = pore.fill_sites(site_in, cylinder.normal)
-        Store(Molecule(name="mol_list_cylinder_in_fill", inp=mol_list), "output").gro()
+        self.assertEqual(len(matrix.bound(0)), 7341)
 
-        mol_list = pore.attach(mol, 0, [0, 1], site_ex, 20, normal, scale=1.2)
-        Store(Molecule(name="mol_list_cylinder_ex", inp=mol_list), "output").gro()
+        pms.Store(pms.Molecule(name="pore_cylinder_in", inp=mols_in), "output").gro()
+        pms.Store(pms.Molecule(name="pore_cylinder_ex", inp=mols_ex), "output").gro()
+        pms.Store(pms.Molecule(name="pore_cylinder_in_fill", inp=mols_in_fill), "output").gro()
+        pms.Store(pms.Molecule(name="pore_cylinder_ex_fill", inp=mols_ex_fill), "output").gro()
 
-        mol_list = pore.fill_sites(site_ex, normal)
-        Store(Molecule(name="mol_list_cylinder_ex_fill", inp=mol_list), "output").gro()
+        # Objectify
+        mol_obj = pore.objectify()
+        self.assertEqual(len(mol_obj), 7947)
+        pms.Store(pms.Molecule(name="pore_cylinder_grid", inp=mol_obj), "output").gro(use_atom_names=True)
+
+        # Delete atoms
+        block.delete(matrix.bound(0))
+        pms.Store(block, "output").gro()
 
         # Output
-        block.delete(matrix.bound(0))
-        Store(block, "output").gro()
+        pore.set_box(block.get_box())
 
-    def test_pore_capsule(self):
-        # self.skipTest("Temporary")
+        pore.set_name("pore_cylinder_full")
+        pms.Store(pore, "output").gro(use_atom_names=True)
 
-        orient = "z"
-        pattern = BetaCristobalit()
-        pattern.generate([6, 6, 6], orient)
-        pattern.exterior()
+        pore.set_name("pore_cylinder_full_sort")
+        sort_list = ["OM", "SI", "SL", "SLG", "TMS", "TMSG"]
+        pms.Store(pore, "output", sort_list=sort_list).gro(use_atom_names=True)
 
-        block = pattern.generate([6, 6, 12], "z")
-        block.set_name("pore_capsule")
-
-        dice = Dice(block, 0.4, True)
-        matrix = Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
-        oxygen_out = matrix.bound(1)
-
-        centroid = block.centroid()
-        central = geometry.unit(geometry.rotate([0, 0, 1], [1, 0, 0], 0, True))
-        centroid_cyl_l = centroid[:2]+[0]
-        centroid_cyl_r = centroid[:2]+[pattern.get_size()[2]]
-        centroid_sph_l = centroid[:2]+[3]
-        centroid_sph_r = centroid[:2]+[pattern.get_size()[2]-3]
-
-        cylinder_l = Cylinder({"centroid": centroid_cyl_l, "central": central, "length": 6, "diameter": 4})
-        cylinder_r = Cylinder({"centroid": centroid_cyl_r, "central": central, "length": 6, "diameter": 4})
-        sphere_l = Sphere({"centroid": centroid_sph_l, "central": central, "diameter": 4})
-        sphere_r = Sphere({"centroid": centroid_sph_r, "central": central, "diameter": 4})
-
-        def normal(pos):
-            if pos[2] <= 3:
-                return cylinder_l.normal(pos)
-            elif pos[2] > 3 and pos[2] < centroid[2]:
-                return [x if i<2 else -x for i, x in enumerate(sphere_l.normal(pos))]
-            elif pos[2] > centroid[2] and pos[2] < pattern.get_size()[2]-3:
-                return [x if i<2 else -x for i, x in enumerate(sphere_r.normal(pos))]
-            elif pos[2] >= pattern.get_size()[2]-3:
-                return cylinder_r.normal(pos)
-
-        del_list = []
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_l.is_in(atom.get_pos())])
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder_r.is_in(atom.get_pos())])
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_l.is_in(atom.get_pos())])
-        del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere_r.is_in(atom.get_pos())])
-        matrix.strip(del_list)
-
-        # Process surface
-        pore = Pore(block, matrix)
-        pore.prepare()
-        pore.sites(oxygen_out)
-        site_list = pore.get_sites()
-        site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
-
-        # Attachment
-        mol = essentials.tms()
-        mol_list = pore.attach(mol, 0, [0, 1], site_in, 100, normal, scale=1.2)
-        Store(Molecule(name="mol_list_capsule", inp=mol_list), "output").gro()
-
-        # Output
-        block.delete(matrix.bound(0))
-        Store(block, "output").gro()
+        # Store test
+        print()
+        pms.Store(pore, "output", sort_list=sort_list[:-1])
+        pms.Store(pore, "output", sort_list=sort_list).top()
 
 
 if __name__ == '__main__':
