@@ -18,14 +18,19 @@ from porems.molecule import Molecule
 
 
 class Pore():
-    """Pore class
+    """This class prepares and converts a given molecule block into a pore
+    system.
+
+    Methods are provided for preparing the surface according to procedures
+    described in literature and for functionalizing the surface with any desired
+    molecule objects.
 
     Parameters
     ----------
-
-    Examples
-    --------
-
+    block : Molecule
+        Block molecule to be prepared as a pore
+    matrix : Matrix
+        Matrix object containing all bond information of given block molecule
     """
     def __init__(self, block, matrix):
         # Initialize
@@ -105,7 +110,7 @@ class Pore():
                         is_disp = False
                         break
 
-                # Displace if new bond length are in acceptance range
+                # Displace if new bond length is in acceptance range
                 if is_disp:
                     self._block.get_atom_list()[atom_id].set_pos(disp_pos)
                     break
@@ -118,12 +123,18 @@ class Pore():
             \\boldsymbol{B}=\\begin{Bmatrix}
                 si_1:&
                 \\begin{Bmatrix}
-                    \\text{"o"}: \\begin{pmatrix}o_{1,1},\\dots o_{1,n}\\end{pmatrix}&
-                    \\text{"type"}: \\text{"in"/"ex"}&
-                    \\text{"state"}: \\text{True/False}
+                    \\text{o}: \\begin{pmatrix}o_{1,1},\\dots o_{1,n}\\end{pmatrix}&
+                    \\text{type}: \\text{in/ex}&
+                    \\text{state}: \\text{True/False}
                 \\end{Bmatrix}\\\\
-                \\vdots
-            \\end{bmatrix}
+                \\vdots&\\vdots\\\\
+                si_m:&
+                \\begin{Bmatrix}
+                    \\text{o}: \\begin{pmatrix}o_{m,1},\\dots o_{m,n}\\end{pmatrix}&
+                    \\text{type}: \\text{in/ex}&
+                    \\text{state}: \\text{True/False}
+                \\end{Bmatrix}
+            \\end{Bmatrix}
 
         with entries
 
@@ -189,7 +200,7 @@ class Pore():
         trials : integer, optional
             Number of trials picking a random site
         is_proxi : bool, optional
-            True to fill binding sites in proximity of filled bingin site
+            True to fill binding sites in proximity of filled binding site
         is_random : bool, optional
             True to randomly pick a binding site from given list
         is_rotate : bool, optional
@@ -250,7 +261,7 @@ class Pore():
                 # Move molecule to mounting position
                 mol_temp.move(mount, self._block.pos(si))
 
-                # Add molecule to molecule list and dict
+                # Add molecule to molecule list and global dictionary
                 mol_list.append(mol_temp)
                 if not mol_temp.get_short() in self._mol_dict:
                     self._mol_dict[mol_temp.get_short()] = []
@@ -283,13 +294,9 @@ class Pore():
         """
         return
 
-
-    ###############
-    # Final Edits #
-    ###############
     def fill_sites(self, sites, normal):
         """Fill list of given sites that are empty with silanol and geminal
-        silanol molecules respectively. Once
+        silanol molecules, respectively.
 
         Parameters
         ----------
@@ -308,13 +315,10 @@ class Pore():
 
         return mol_list
 
-    def reservoir(self):
-        """Create reservoir and center box.
 
-        TODO: Finish function
-        """
-        return
-
+    ###############
+    # Final Edits #
+    ###############
     def objectify(self):
         """Create molecule objects of remaining grid atoms.
 
@@ -347,6 +351,13 @@ class Pore():
 
         # Output
         return mol_list
+
+    def reservoir(self):
+        """Create reservoir and center box.
+
+        TODO: Finish function
+        """
+        return
 
 
     ###########

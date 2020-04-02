@@ -15,15 +15,16 @@ class UserModelCase(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         folder = 'output'
-        if os.path.exists(folder):
-            for filename in os.listdir(folder):
-                file_path = os.path.join(folder, filename)
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-        else:
-            os.makedirs(folder)
+        pms.utils.mkdirp(folder)
+        pms.utils.mkdirp(folder+"/temp")
+        open(folder+"/temp.txt", 'a').close()
+
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
 
 
     #########
@@ -564,15 +565,14 @@ class UserModelCase(unittest.TestCase):
         pms.Store(pore, "output", sort_list=sort_list[:-1])
         pms.Store(pore, "output", sort_list=sort_list).top()
 
+        # Getter and Setter
+        self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
+
         # Empty functions
         pore.attach_special()
         pore.attach_siloxane()
         pore.properties()
         pore.reservoir()
-
-
-        # Getter and Setter
-        self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
 
 
 if __name__ == '__main__':
