@@ -506,6 +506,12 @@ class UserModelCase(unittest.TestCase):
         def normal(pos):
             return [0, 0, -1] if pos[2] < centroid[2] else [0, 0, 1]
 
+        # No exterior input
+        pore = pms.Pore(block, matrix)
+        pore.prepare()
+        pore.sites()
+        self.assertEqual(len(pore.get_sites()), 633)
+
         # Process surface
         pore = pms.Pore(block, matrix)
         pore.prepare()
@@ -551,11 +557,22 @@ class UserModelCase(unittest.TestCase):
         pore.set_name("pore_cylinder_full_sort")
         sort_list = ["OM", "SI", "SL", "SLG", "TMS", "TMSG"]
         pms.Store(pore, "output", sort_list=sort_list).gro(use_atom_names=True)
+        pms.Store(pore, "output", sort_list=sort_list).pdb(use_atom_names=True)
 
         # Store test
         print()
         pms.Store(pore, "output", sort_list=sort_list[:-1])
         pms.Store(pore, "output", sort_list=sort_list).top()
+
+        # Empty functions
+        pore.attach_special()
+        pore.attach_siloxane()
+        pore.properties()
+        pore.reservoir()
+
+
+        # Getter and Setter
+        self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
 
 
 if __name__ == '__main__':
