@@ -338,9 +338,6 @@ class Pore():
             elif atom.get_atom_type() == "Si":
                 mol = Molecule("si", "SI")
                 mol.add("Si", atom.get_pos(), name="SI1")
-            else:
-                print("Pore: Unknown atom type...")
-                return
 
             # Add to molecule list and global dictionary
             mol_list.append(mol)
