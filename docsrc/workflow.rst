@@ -18,10 +18,8 @@ Create surface molecules
 ------------------------
 
 Trimethylsilyl or for short TMS is a simple surface group that can be imported
-from the PoreMS package.
-
-Assuming a new surface group structure is to be created, following code block
-can be used as a base.
+from the PoreMS package. Assuming a new surface group structure is to be created,
+following code block can be used as a base.
 
 .. code-block:: python
 

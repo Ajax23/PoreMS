@@ -577,6 +577,11 @@ class UserModelCase(unittest.TestCase):
         pore.properties()
 
     def test_pore_cylinder(self):
+        # Empty pore
+        pore = pms.PoreCylinder([4, 4, 4], 2, 5)
+        pore.finalize()
+
+        # Filled pore
         pore = pms.PoreCylinder([6, 6, 6], 4, 5)
 
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in")
