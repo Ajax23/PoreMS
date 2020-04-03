@@ -40,9 +40,9 @@ class Molecule:
 
     .. code-block:: python
 
-        from porems.molecule import Molecule
+        import porems as pms
 
-        mol = Molecule("benzene", "BEN")
+        mol = pms.Molecule("benzene", "BEN")
         mol.add("C", [0,0,0])
         mol.add("C", 0, r=0.1375, theta= 60)
         mol.add("C", 1, r=0.1375, theta=120)

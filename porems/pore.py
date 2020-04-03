@@ -319,8 +319,13 @@ class Pore():
     ###############
     # Final Edits #
     ###############
-    def objectify(self):
-        """Create molecule objects of remaining grid atoms.
+    def objectify(self, atoms):
+        """Create molecule objects of specified list of atoms.
+
+        Parameters
+        ----------
+        atoms : list
+            List of atom ids
 
         Returns
         -------
@@ -331,7 +336,7 @@ class Pore():
         mol_list = []
 
         # Run through all remaining atoms with a bond or more
-        for atom_id in self._matrix.bound(0, "gt"):
+        for atom_id in atoms:
             # Get atom object
             atom = self._block.get_atom_list()[atom_id]
 
@@ -352,12 +357,27 @@ class Pore():
         # Output
         return mol_list
 
-    def reservoir(self):
-        """Create reservoir and center box.
+    def reservoir(self, size):
+        """Create a reservoir with given length on each side of pore system.
 
-        TODO: Finish function
+        Parameters
+        ----------
+        size : float
+            Reservoir size in nm
         """
-        return
+        # Convert molecule dict into list
+        mol_list = sum([x for x in self._mol_dict.values()], [])
+
+        # Get zero translation
+        zero_z = min(Molecule(inp=mol_list).column_pos()[2])
+
+        # Translate all molecules
+        for mol in mol_list:
+            mol.translate([0, 0, -zero_z+size])
+
+        # Set new box size
+        box = Molecule(inp=mol_list).get_box()
+        self.set_box([box[0], box[1], box[2]+size])
 
 
     ###########

@@ -4,6 +4,7 @@ from .matrix import Matrix
 from .molecule import Molecule
 from .pattern import BetaCristobalit
 from .pore import Pore
+from .system import PoreCylinder
 from .shape import Cylinder
 from .shape import Sphere
 from .store import Store
@@ -20,6 +21,7 @@ __all__ = [
     "Molecule",
     "BetaCristobalit",
     "Pore",
+    "PoreCylinder",
     "Cylinder",
     "Sphere",
     "Store",
