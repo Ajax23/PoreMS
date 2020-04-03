@@ -18,20 +18,16 @@ Create surface molecules
 ------------------------
 
 Trimethylsilyl or for short TMS is a simple surface group that can be imported
-from the porems package.
-
-.. code-block:: python
-
-  from porems.essentials import TMS
+from the PoreMS package.
 
 Assuming a new surface group structure is to be created, following code block
 can be used as a base.
 
 .. code-block:: python
 
-  from porems.molecule import Molecule
+  import porems as pms
 
-  tms = Molecule("tms", "TMS")
+  tms = pms.Molecule("tms", "TMS")
   tms.set_charge(0.96)
   compress = 30
 
@@ -71,14 +67,12 @@ surface group.
 
 .. code-block:: python
 
-  from porems.pore import Pore
+  import porems as pms
 
-  pore = Pore(size=[10, 10, 10], diam=6, drill="z", res=5.5, is_time=True)
+  pore = pms.PoreCylinder([10, 10, 10], 6, 5.5)
 
-  pore.siloxan(0.5)
-
-  pore.attach(tms, [0, 1], [1, 2], 0, 3, inp="molar", is_rotate=False)
-  pore.attach(tms, [0, 1], [1, 2], 1, 3, inp="molar", is_rotate=False)
+  pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in")
+  pore.attach(pms.gen.tms(), 0, [0, 1], 100, "ex")
 
   pore.finalize()
 
@@ -89,15 +83,12 @@ surface group.
 
 Once the generation is done, store the structure and preferably the object for
 future analysis. Furthermore, a master topology with the number of residues and
-a topology containing grid molecule parameters should be created using the
-:func:`porems.store.Store.top` and :func:`porems.store.Store.grid` functions.
+a topology containing grid molecule parameters should be created. This is all
+handled by the store function
 
 .. code-block:: python
 
-  Store(pore).gro("pore.gro")
-  Store(pore).obj("pore.obj")
-  Store(pore).top("topol.top")
-  Store(pore).grid("grid.itp")
+    pore.store()
 
 
 Simulation folder structure
@@ -196,7 +187,7 @@ achieving the reference density as in an NPT simulation at the desired pressure.
 
   If the GROMACS filling functions, like ``solvate`` or ``insert-molecules``
   are used with small molecules, it may happen that molecules are placed within
-  the grid. Naturally these molecules must be removed from the grid before
+  the grid. Naturally, these molecules must be removed from the grid before
   running the simulation.
 
 

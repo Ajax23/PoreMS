@@ -484,7 +484,7 @@ class UserModelCase(unittest.TestCase):
     ########
     # Pore #
     ########
-    def test_pore_cylinder(self):
+    def test_pore(self):
         orient = "z"
         pattern = pms.BetaCristobalit()
         pattern.generate([6, 6, 6], orient)
@@ -525,6 +525,12 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(len(site_in), 432)
         self.assertEqual(len(site_ex), 201)
 
+        # Objectify grid
+        grid_atoms = [atom for atom in matrix.bound(0, "gt") if not atom in matrix.bound(1)+list(site_list.keys())]
+        mol_obj = pore.objectify(grid_atoms)
+        self.assertEqual(len(mol_obj), 8279)
+        pms.Store(pms.Molecule(name="pore_cylinder_grid", inp=mol_obj), "output").gro(use_atom_names=True)
+
         # Attachment
         mol = pms.gen.tms()
 
@@ -540,18 +546,15 @@ class UserModelCase(unittest.TestCase):
         pms.Store(pms.Molecule(name="pore_cylinder_in_fill", inp=mols_in_fill), "output").gro()
         pms.Store(pms.Molecule(name="pore_cylinder_ex_fill", inp=mols_ex_fill), "output").gro()
 
-        # Objectify
-        mol_obj = pore.objectify()
-        self.assertEqual(len(mol_obj), 7947)
-        pms.Store(pms.Molecule(name="pore_cylinder_grid", inp=mol_obj), "output").gro(use_atom_names=True)
-
         # Delete atoms
         block.delete(matrix.bound(0))
         pms.Store(block, "output").gro()
 
-        # Output
-        pore.set_box(block.get_box())
+        # Set reservoir
+        pore.reservoir(5)
+        self.assertEqual([round(x) for x in pore.get_box()], [6, 6, 17])
 
+        # Output
         pore.set_name("pore_cylinder_full")
         pms.Store(pore, "output").gro(use_atom_names=True)
 
@@ -572,7 +575,18 @@ class UserModelCase(unittest.TestCase):
         pore.attach_special()
         pore.attach_siloxane()
         pore.properties()
-        pore.reservoir()
+
+    def test_pore_cylinder(self):
+        pore = pms.PoreCylinder([6, 6, 6], 4, 5)
+
+        pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in")
+        pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex")
+
+        print()
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "DOTA"))
+
+        pore.finalize()
+        pore.store("output/cylinder")
 
 
 if __name__ == '__main__':

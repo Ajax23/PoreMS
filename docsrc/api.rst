@@ -28,6 +28,7 @@ Pore
     :toctree: generated/
 
     pore.Pore
+    system.PoreCylinder
 
 
 .. _pattern_api:
