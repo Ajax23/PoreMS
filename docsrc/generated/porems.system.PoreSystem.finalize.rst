@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-PoreCylinder\.finalize
-======================
+PoreSystem\.finalize
+====================
 
 .. currentmodule:: porems.system
 
-.. automethod:: PoreCylinder.finalize
+.. automethod:: PoreSystem.finalize

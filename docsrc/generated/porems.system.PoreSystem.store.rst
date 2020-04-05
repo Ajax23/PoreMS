@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-PoreCylinder\.store
-===================
+PoreSystem\.store
+=================
 
 .. currentmodule:: porems.system
 
-.. automethod:: PoreCylinder.store
+.. automethod:: PoreSystem.store

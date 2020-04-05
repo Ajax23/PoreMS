@@ -3,18 +3,17 @@
     </div>
     <div class=col-md-9 content>
 
-PoreCylinder
-============
+PoreSlit
+========
 
 .. currentmodule:: porems.system
 
-.. autoclass:: PoreCylinder
+.. autoclass:: PoreSlit
 
 
   .. rubric:: Attachement
 
   .. autosummary::
 
-    ~PoreCylinder._normal_ex
-    ~PoreCylinder._normal_in
-    ~PoreCylinder.attach
+    ~PoreSlit._normal_in
+    ~PoreSlit.attach

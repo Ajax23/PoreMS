@@ -480,11 +480,46 @@ class UserModelCase(unittest.TestCase):
         sphere.plot(inp=3.14, vec=[1.08001048, 3.09687610, 1.72960828])
         # plt.show()
 
+    def test_shape_cuboid(self):
+        # self.skipTest("Temporary")
+
+        block = pms.BetaCristobalit().generate([6, 6, 6], "z")
+        block.set_name("shape_cuboid")
+        dice = pms.Dice(block, 0.4, True)
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        centroid = block.centroid()
+        central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
+
+        cuboid = pms.Cuboid({"centroid": centroid, "central": central, "length": 10, "width": 6, "height": 4})
+
+        # Properties
+        self.assertEqual(round(cuboid.volume(), 4), 240)
+        self.assertEqual(round(cuboid.surface(), 4), 248)
+
+        # Normal
+        self.assertEqual([round(x, 4) for x in cuboid.convert([0, 0, 0], False)], [0.0777, 1.0937, -1.8656])
+        self.assertEqual([round(x, 4) for x in cuboid.normal([4.2636, 3.0937, 4.745])], [0, 1, 0])
+
+        # Positioning
+        del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cuboid.is_in(atom.get_pos())]
+        matrix.strip(del_list)
+        block.delete(matrix.bound(0))
+        self.assertEqual(block.get_num(), 5160)
+
+        # Store molecule
+        pms.Store(block, "output").gro()
+
+        # Plot surface
+        cuboid.plot()
+        # plt.show()
+
 
     ########
     # Pore #
     ########
     def test_pore(self):
+        # self.skipTest("Temporary")
+
         orient = "z"
         pattern = pms.BetaCristobalit()
         pattern.generate([6, 6, 6], orient)
@@ -577,6 +612,8 @@ class UserModelCase(unittest.TestCase):
         pore.properties()
 
     def test_pore_cylinder(self):
+        # self.skipTest("Temporary")
+
         # Empty pore
         pore = pms.PoreCylinder([4, 4, 4], 2, 5)
         pore.finalize()
@@ -584,14 +621,48 @@ class UserModelCase(unittest.TestCase):
         # Filled pore
         pore = pms.PoreCylinder([6, 6, 6], 4, 5)
 
-        pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in")
-        pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex")
+        pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", trials=10)
+        pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex", trials=10)
 
         print()
         self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "DOTA"))
 
         pore.finalize()
         pore.store("output/cylinder")
+
+    def test_pore_slit(self):
+        # self.skipTest("Temporary")
+
+        # Empty pore
+        pore = pms.PoreSlit([4, 4, 4], 2)
+        pore.finalize()
+
+        # Filled pore
+        pore = pms.PoreSlit([6, 6, 6], 3)
+
+        pore.attach(pms.gen.tms(), 0, [0, 1], 100, trials=10)
+
+        pore.finalize()
+        pore.store("output/slit")
+
+    def test_pore_capsule(self):
+        # self.skipTest("Temporary")
+
+        # Empty pore
+        pore = pms.PoreCapsule([4, 4, 4], 1, 1)
+        pore.finalize()
+
+        # Filled pore
+        pore = pms.PoreCapsule([6, 6, 12], 4, 2)
+
+        pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", trials=10)
+        pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex", trials=10)
+
+        print()
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "DOTA"))
+
+        pore.finalize()
+        pore.store("output/capsule")
 
 
 if __name__ == '__main__':

@@ -233,7 +233,7 @@ class Cylinder(Shape):
         Returns
         -------
         normal : list
-            Unit normal vector
+            Normal vector
         """
         # Initialize
         x, y, z = self.convert(pos)
@@ -496,7 +496,7 @@ class Sphere(Shape):
         Returns
         -------
         normal : list
-            Unit normal vector
+            Normal vector
         """
         # Initialize
         x, y, z = self.convert(pos)
@@ -611,3 +611,174 @@ class Sphere(Shape):
             Inner surface
         """
         return 4*math.pi*(self._inp["diameter"]/2)**2
+
+
+class Cuboid(Shape):
+    """This class defines a cuboid shape. Needed inputs are
+
+    * **central** - Central axis
+    * **centroid** - Centroid of block
+    * **length** - Cuboid length
+    * **width** - Cuboid width
+    * **height** - Cuboid height
+
+    Parameters
+    ----------
+    inp : dictionary
+        Dictionary of necessary inputs
+    """
+    def __init__(self, inp):
+        # Set centroid
+        self._centroid = [inp["width"]/2, inp["height"]/2, inp["length"]/2]
+
+        # Call super class
+        super(Cuboid, self).__init__(inp)
+
+
+    ############
+    # Function #
+    ############
+    def Phi(self, x, y, z):
+        """Surface function of a cuboid.
+
+        Parameters
+        ----------
+        x : float
+            Width
+        y : float
+            Height
+        z : float
+            Length
+
+        Returns
+        -------
+        pos : list
+            Cartesian coordinates for given spherical coordinates
+        """
+        phi = np.arange(1,10,2)*np.pi/4
+        Phi, Theta = np.meshgrid(phi, phi)
+
+        x = x*np.cos(Phi)*np.sin(Theta)
+        y = y*np.sin(Phi)*np.sin(Theta)
+        z = z*np.cos(Theta)/np.sqrt(2)
+
+        return self.convert([x, y, z], False)
+
+
+    ############
+    # Features #
+    ############
+    def normal(self, pos):
+        """Calculate unit normal vector on surface for a given position.
+
+        Parameters
+        ----------
+        pos : list
+            Position
+
+        Returns
+        -------
+        normal : list
+            Unit normal vector
+        """
+        # Initialize
+        x, y, z = self.convert(pos)
+
+        # Calculate derivatives
+        return [0, -1, 0] if y < self._centroid[1] else [0, 1, 0]
+
+    def is_in(self, pos):
+        """Check if given position is inside of shape.
+
+        Parameters
+        ----------
+        pos : list
+            Position
+
+        Returns
+        -------
+        is_in : bool
+            True if position is inside of shape
+        """
+        pos_zero = self.convert(pos)
+
+        return pos_zero[1] > 0 and pos_zero[1] < self._inp["height"]
+
+
+    #########
+    # Shape #
+    #########
+    def rim(self, z, num=100):
+        """Return x and y values for given length.
+
+        Parameters
+        ----------
+        z : float
+            Position on the axis
+        num : integer, optional
+            Number of points
+
+        Returns
+        -------
+        positions : list
+            x and y arrays of the surface rim on the z-position
+        """
+        x = self._inp["width"]
+        y = self._inp["height"]
+
+        return self.Phi(x, y, z)
+
+    def surf(self, num=100):
+        """Return x, y and z values for the shape.
+
+        Parameters
+        ----------
+        num : integer, optional
+            Number of points
+
+        Returns
+        -------
+        positions : list
+            x, y and z arrays of the surface rim
+        """
+        x = self._inp["width"]
+        y = self._inp["height"]
+        z = self._inp["length"]
+
+        return self.Phi(x, y, z)
+
+
+    ##############
+    # Properties #
+    ##############
+    def volume(self):
+        """Calculate volume
+
+        .. math::
+
+            V=w\\cdot h\\cdot l
+
+        with width :math:`w`, height :math:`h` and length :math:`l`.
+
+        Returns
+        -------
+        volume : float
+            Volume
+        """
+        return self._inp["length"]*self._inp["width"]*self._inp["height"]
+
+    def surface(self):
+        """Calculate inner surface
+
+        .. math::
+
+            S=2\\cdot(w\\cdot h+w\\cdot l+h\\cdot l)
+
+        with width :math:`w`, height :math:`h` and length :math:`l`.
+
+        Returns
+        -------
+        surface : float
+            Inner surface
+        """
+        return 2*(self._inp["length"]*self._inp["width"]+self._inp["length"]*self._inp["height"]+self._inp["width"]*self._inp["height"])
