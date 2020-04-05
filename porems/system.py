@@ -136,9 +136,9 @@ class PoreCylinder(PoreSystem):
         self._pore.objectify(grid_atoms)
 
 
-    ###############
-    # Attachement #
-    ###############
+    ##############
+    # Attachment #
+    ##############
     def _normal_in(self, pos):
         """Normal function for the interior surface
 
@@ -276,9 +276,9 @@ class PoreSlit(PoreSystem):
         self._pore.objectify(grid_atoms)
 
 
-    ###############
-    # Attachement #
-    ###############
+    ##############
+    # Attachment #
+    ##############
     def _normal_in(self, pos):
         """Normal function for the interior surface
 
@@ -332,7 +332,7 @@ class PoreCapsule(PoreSystem):
     diam : float
         Cylinder diameter
     sep : float
-        Seperation length between capsule
+        Separation length between capsule
     res : float, optional
         Reservoir size on each side
 
@@ -418,9 +418,9 @@ class PoreCapsule(PoreSystem):
         self._pore.objectify(grid_atoms)
 
 
-    ###############
-    # Attachement #
-    ###############
+    ##############
+    # Attachment #
+    ##############
     def _normal_in(self, pos):
         """Normal function for the interior surface
 
