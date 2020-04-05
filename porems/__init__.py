@@ -5,8 +5,11 @@ from .molecule import Molecule
 from .pattern import BetaCristobalit
 from .pore import Pore
 from .system import PoreCylinder
+from .system import PoreSlit
+from .system import PoreCapsule
 from .shape import Cylinder
 from .shape import Sphere
+from .shape import Cuboid
 from .store import Store
 
 import porems.database as db
@@ -22,8 +25,11 @@ __all__ = [
     "BetaCristobalit",
     "Pore",
     "PoreCylinder",
+    "PoreSlit",
+    "PoreCapsule",
     "Cylinder",
     "Sphere",
+    "Cuboid",
     "Store",
     "db",
     "gen",

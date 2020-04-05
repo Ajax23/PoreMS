@@ -28,7 +28,10 @@ Pore
     :toctree: generated/
 
     pore.Pore
+    system.PoreSystem
     system.PoreCylinder
+    system.PoreSlit
+    system.PoreCapsule
 
 
 .. _pattern_api:
@@ -54,6 +57,7 @@ Shape
     shape.Shape
     shape.Cylinder
     shape.Sphere
+    shape.Cuboid
 
 
 .. _optimization_api:
