@@ -1,8 +1,7 @@
 ################################################################################
 # Shape Pack                                                                   #
 #                                                                              #
-"""This file contains shape definitions to be cut out from the crystal block.
-"""
+"""This file contains shape definitions to be cut out from the crystal block."""
 ################################################################################
 
 

@@ -22,7 +22,7 @@ An examplary [workflow](https://ajax23.github.io/PoreMS/workflow.html) has been 
 
 PoreMS supports Python 3.5+.
 
-Installation requires [pandas](https://pandas.pydata.org/).
+Installation requires [numpy](https://numpy.org/), [pandas](https://pandas.pydata.org/) and [matplotlib](https://matplotlib.org/).
 
 
 ## Installation

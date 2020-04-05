@@ -23,9 +23,9 @@ class Pattern():
         self._size = [0, 0, 0]
 
 
-    ###################
-    # Private Methods #
-    ###################
+    ##############
+    # Generation #
+    ##############
     def _block(self, dim, block):
         """Recursively duplicate and translate a given molecule block in all
         given dimensions. The duplication stops if the next added block would
@@ -70,10 +70,6 @@ class Pattern():
 
         self._orient = orient
 
-
-    ##################
-    # Public Methods #
-    ##################
     def generate(self, size, orient):
         """Generate full block structure.
 
@@ -176,6 +172,10 @@ class BetaCristobalit(Pattern):
         self._repeat = [0.506, 0.877, 1.240]
         self._gap = [0.126, 0.073, 0.155]
 
+
+    ############
+    # Building #
+    ############
     def _hexagonal(self):
         """Define hexagonal molecule.
 
@@ -277,6 +277,9 @@ class BetaCristobalit(Pattern):
 
         return block
 
+    ############
+    # Exterior #
+    ############
     def exterior(self, error=10e-3):
         """This function converts the exterior surface in direction of the
         orientation to binding sites by adding oxygens to unsaturated silicon

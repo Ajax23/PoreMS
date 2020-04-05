@@ -120,9 +120,9 @@ class Molecule:
         return self.__repr__().to_string()
 
 
-    ################################
-    # Private Methods - Management #
-    ################################
+    ##############
+    # Management #
+    ##############
     def _read(self, file_path, file_type):
         """Read a molecule from a file. Currently only **GRO**, **PDB** and
         **MOL2** files are supported.
@@ -211,10 +211,6 @@ class Molecule:
         """
         return Molecule(inp=[self._atom_list[x] for x in atoms])
 
-
-    ###############################
-    # Public Methods - Management #
-    ###############################
     def append(self, mol):
         """Append a given molecule to the current object.
 
@@ -236,9 +232,9 @@ class Molecule:
         return utils.column([atom.get_pos() for atom in self._atom_list])
 
 
-    ##############################
-    # Private Methods - Geometry #
-    ##############################
+    ############
+    # Geometry #
+    ############
     def _vector(self, pos_a, pos_b):
         """Calculate the vector between to two positions as defined in
         :class:`porems.geometry.vector` with the addition to define the inputs
@@ -292,9 +288,9 @@ class Molecule:
         return [max(data[i]) if max(data[i]) > 0 else 0.001 for i in range(self._dim)]
 
 
-    ###############################
-    # Public Methods - Properties #
-    ###############################
+    ##############
+    # Properties #
+    ##############
     def pos(self, atom):
         """Get the position of an atom.
 
@@ -388,9 +384,9 @@ class Molecule:
         return [sum([data[i][j]*masses[j] for j in range(self.get_num())])/sum(masses) for i in range(self._dim)]
 
 
-    ##################################
-    # Public Methods - Basic Editing #
-    ##################################
+    #################
+    # Basic Editing #
+    #################
     def translate(self, vec):
         """Translate the atoms data matrix :math:`\\boldsymbol{D}` along a
         vector :math:`\\boldsymbol{a}\\in\\mathbb{R}^n`.
@@ -484,9 +480,9 @@ class Molecule:
         self._atom_list[atom].set_pos(pos)
 
 
-    #####################################
-    # Public Methods - Advanced Editing #
-    #####################################
+    ####################
+    # Advanced Editing #
+    ####################
     def part_move(self, bond, atoms, length, vec=[]):
         """Change the length of a specified bond. Variable ``atoms`` specifies
         which atoms or rather which part of the molecule needs to be moved for
@@ -618,9 +614,9 @@ class Molecule:
         temp.rotate(vec, angle)
 
 
-    ##########################
-    # Public Methods - Atoms #
-    ##########################
+    #########
+    # Atoms #
+    #########
     def add(self, atom_type, pos, bond=[], r=0, theta=0, phi=0, is_deg=True, name=""):
         """Add a new atom in polar coordinates. The ``pos`` input is either
         an atom id, that determines is the bond-start,
