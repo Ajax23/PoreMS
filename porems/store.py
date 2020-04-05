@@ -79,9 +79,9 @@ class Store:
         utils.mkdirp(link)
 
 
-    ################################
-    # Public Methods - Antechamber #
-    ################################
+    ###############
+    # Antechamber #
+    ###############
     def job(self, is_master=False):
         """Create job file to run with Antechamber. A shell file and a tleap
         file are created with all necessary commands to create a topology from a
@@ -129,9 +129,9 @@ class Store:
             fileMaster.close()
 
 
-    ##############################
-    # Public Methods - Structure #
-    ##############################
+    #############
+    # Structure #
+    #############
     def obj(self, name=""):
         """Save the molecule object or the dictionary of those using pickle.
 
