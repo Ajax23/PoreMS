@@ -35,6 +35,8 @@ You may instead want to use the development version from Github:
 
     pip install git+https://github.com/ajax23/porems.git#egg=porems
 
+    pip install git+https://github.com/ajax23/porems.git@develop#egg=porems
+
 Or download the repository and install in the top directory via:
 
     pip install .
