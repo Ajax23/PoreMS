@@ -48,6 +48,11 @@ class UserModelCase(unittest.TestCase):
         pms.utils.save([1, 1, 1], file_link)
         self.assertEqual(pms.utils.load(file_link), [1, 1, 1])
 
+        self.assertEqual(round(pms.utils.mumol_m2_to_mols(3, 100), 4), 180.66)
+        self.assertEqual(round(pms.utils.mols_to_mumol_m2(180, 100), 4), 2.989)
+        self.assertEqual(round(pms.utils.mmol_l_to_mols(30, 1000), 4), 18.066)
+        self.assertEqual(round(pms.utils.mols_to_mmol_l(18, 1000), 4), 29.8904)
+
         print()
         pms.utils.toc(pms.utils.tic(), message="Test", is_print=True)
         self.assertEqual(round(pms.utils.toc(pms.utils.tic(), is_print=True)), 0)
