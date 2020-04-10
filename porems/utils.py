@@ -149,3 +149,162 @@ def load(link):
     """
     with open(link, 'rb') as f:
         return pickle.load(f)
+
+
+def mumol_m2_to_mols(c, A):
+    """Convert the concntration in :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+    to number of molecules.
+
+    The concentration is given as
+
+    .. math::
+
+        c=\\frac{N}{N_A\\cdot A}
+
+    with surface :math:`A` and avogadro constant
+    :math:`N_A=6.022\\cdot10^{23}\\,\\text{mol}^{-1}`. Assuming that the unit of
+    the concentration is :math:`\\mu\\text{mol}\\cdot\\text{m}^{-2}` and of the
+    surface is :math:`\\text{nm}^2`, the number of molecules is given by
+
+    .. math::
+
+        N=c\\cdot N_A\\cdot A
+        =[c]\\cdot10^{-24}\\,\\frac{\\text{mol}}{\\text{nm}^2}\\cdot6.022\\cdot10^{23}\\,\\frac{1}{\\text{mol}}\\cdot[A]\\,\\text{nm}^2
+
+    and thus
+
+    .. math::
+
+        \\boxed{N=0.6022\\cdot[c]\\cdot[A]}\\ .
+
+    Parameters
+    ----------
+    c : float
+        Concentration in :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+    A : float
+        Surface in :math:`\\text{nm}^2`
+
+    Returns
+    -------
+    N : float
+        Number of molecules
+    """
+    return 0.6022*c*A
+
+
+def mols_to_mumol_m2(N, A):
+    """Convert the number of molecules to concntration in
+    :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
+
+    The concentration is given as
+
+    .. math::
+
+        c=\\frac{N}{N_A\\cdot A}
+
+    with surface :math:`A` and avogadro constant
+    :math:`N_A=6.022\\cdot10^{23}\\,\\text{mol}^{-1}`. Assuming that the unit of
+    the concentration is :math:`\\mu\\text{mol}\\cdot\\text{m}^{-2}` and of the
+    surface is :math:`\\text{nm}^2`, the number of molecules is given by
+
+    .. math::
+
+        c=\\frac{[N]}{6.022\\cdot10^{23}\\,\\text{mol}^{-1}\\cdot[A]\\,\\text{nm}^2}
+
+    and thus
+
+    .. math::
+
+        \\boxed{c=\\frac{N}{0.6022\\cdot[A]}\\cdot\\frac{\\mu\\text{mol}}{\\text{m}^2}}\\ .
+
+    Parameters
+    ----------
+    N : int
+        Number of molecules
+    A : float
+        Surface in :math:`\\text{nm}^2`
+
+    Returns
+    -------
+    c : float
+        Concentration in :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+    """
+    return N/0.6022/A
+
+
+def mmol_l_to_mols(c, V):
+    """Convert the concntration in :math:`\\frac{\\text{mmol}}{\\text{l}}`
+    to number of molecules.
+
+    The concentration in regard to volume is calculated by
+
+    .. math::
+
+        c=\\frac{N}{N_A\\cdot V}
+
+    with volume :math:`V`. Assuming that the unit of the concentration is
+    :math:`\\text{mmol}\\cdot\\text{l}` and of the volume is
+    :math:`\\text{nm}^3`, the number of molecules is given by
+
+    .. math::
+
+        N=c\\cdot N_A\\cdot V
+        =[c]\\cdot10^{-27}\\,\\frac{\\text{mol}}{\\text{nm}^3}\\cdot6.022\\cdot10^{23}\\,\\frac{1}{\\text{mol}}\\cdot[V]\\,\\text{nm}^3
+
+    and thus
+
+    .. math::
+
+        \\boxed{N=6.022\\cdot10^{-4}\\cdot[c]\\cdot[V]}\\ .
+
+    Parameters
+    ----------
+    c : float
+        Concentration in :math:`\\frac{\\text{mmol}}{\\text{l}}`
+    V : float
+        Surface in :math:`\\text{nm}^3`
+
+    Returns
+    -------
+    N : float
+        Number of molecules
+    """
+    return 6.022e-4*c*V
+
+
+def mols_to_mmol_l(N, V):
+    """Convert the number of molecules to concntration in :math:`\\frac{\\text{mmol}}{\\text{l}}`.
+
+    The concentration in regard to volume is calculated by
+
+    .. math::
+
+        c=\\frac{N}{N_A\\cdot V}
+
+    with volume :math:`V`. Assuming that the unit of the concentration is
+    :math:`\\text{mmol}\\cdot\\text{l}` and of the volume is
+    :math:`\\text{nm}^3`, the number of molecules is given by
+
+    .. math::
+
+        c=\\frac{N}{6.022\\cdot10^{23}\\cdot[V]\\,\\text{nm}^3}
+
+    and thus
+
+    .. math::
+
+        \\boxed{c=\\frac{N}{6.022\\times10^{-4}\\cdot[V]}\\cdot\\frac{\\text{mmol}}{\\text{l}}}\\ .
+
+    Parameters
+    ----------
+    N : int
+        Number of molecules
+    V : float
+        Surface in :math:`\\text{nm}^3`
+
+    Returns
+    -------
+    c : float
+        Concentration in :math:`\\frac{\\text{mmol}}{\\text{l}}`
+    """
+    return N/6.022e-4/V
