@@ -644,11 +644,15 @@ class UserModelCase(unittest.TestCase):
         pore.attach_special(pms.gen.tms(),  0, [0, 1], 5)
         pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="mirror")
 
-        pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", trials=10)
-        pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex", trials=10)
+        tms2 = pms.gen.tms()
+        tms2.set_short("TMS2")
+
+        pore.attach(tms2, 0, [0, 1], 100, "in", trials=10)
+        pore.attach(tms2, 0, [0, 1], 20, "ex", trials=10)
 
         print()
         self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "DOTA"))
+        self.assertIsNone(pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="DOTA"))
 
         pore.finalize()
         pore.store("output/cylinder")
