@@ -94,30 +94,19 @@ class Molecule:
         # Create data table from atom list
         atom_data = []
         for atom in self._atom_list:
-            atom_data.append([atom.get_name(), atom.get_atom_type()])
+            atom_data.append([atom.get_residue(), atom.get_name(), atom.get_atom_type()])
             atom_data[-1].extend([atom.get_pos()[i] for i in range(self._dim)])
         atom_data = utils.column(atom_data)
 
         # Create column names
-        column_names = ["Name", "Type"]
+        column_names =["Residue", "Name", "Type"]
         column_names.extend([["x", "y", "z"][dim] for dim in range(self._dim)])
 
         # Create dictionary
-        data = {column_names[i]: atom_data[i] for i in range(self._dim+2)}
+        data = {column_names[i]: atom_data[i] for i in range(self._dim+3)}
 
         # Create data frame
-        return pd.DataFrame(data)
-
-    def __str__(self):
-        """Convert the pandas table from the :func:`__repr__` function to a
-        string.
-
-        Returns
-        -------
-        repr : string
-            Pandas data frame of the molecule object converted to a string
-        """
-        return self.__repr__().to_string()
+        return pd.DataFrame(data).to_string()
 
 
     ##############
@@ -154,6 +143,7 @@ class Molecule:
                 # Gro file
                 if file_type == "GRO":
                     if line_idx > 0 and len(line_val) > 3:
+                        residue = int(line[0:5])-1
                         pos = [float(line_val[i]) for i in range(3, 5+1)]
                         name = line_val[1]
                         atom_type = ''.join([i for i in line_val[1] if not i.isdigit()])
@@ -162,6 +152,7 @@ class Molecule:
                 # Pdb file
                 elif file_type == "PDB":
                     if line_val[0] in ["ATOM", "HETATM"]:
+                        residue = int(line[22:26])-1
                         pos = [float(line_val[i])/10 for i in range(6, 8+1)]
                         name = line_val[11]
                         atom_type = line_val[11]
@@ -170,13 +161,14 @@ class Molecule:
                 # Mol2 file
                 elif file_type == "MOL2":
                     if len(line_val) > 8:
+                        residue = 0
                         pos = [float(line_val[i])/10 for i in range(2, 4+1)]
                         name = line_val[1]
                         atom_type = ''.join([i for i in line_val[1] if not i.isdigit()])
                         is_add = True
 
                 if is_add:
-                    atom_list.append(Atom(pos, atom_type, name))
+                    atom_list.append(Atom(pos, atom_type, name, residue))
 
         # Transform to column
         return atom_list
@@ -617,7 +609,7 @@ class Molecule:
     #########
     # Atoms #
     #########
-    def add(self, atom_type, pos, bond=[], r=0, theta=0, phi=0, is_deg=True, name=""):
+    def add(self, atom_type, pos, bond=[], r=0, theta=0, phi=0, is_deg=True, name="", residue=0):
         """Add a new atom in polar coordinates. The ``pos`` input is either
         an atom id, that determines is the bond-start,
         or a vector for a specific position.
@@ -645,6 +637,8 @@ class Molecule:
             True if the input of the angles in degree
         name : string, optional
             Optionally set a unique atom name
+        residue : integer, optional
+            Residue number
 
         Examples
         --------
@@ -673,7 +667,7 @@ class Molecule:
         coord = [x, y, z]
 
         # Create new atom
-        self._atom_list.append(Atom([pos[i]+coord[i] for i in range(self._dim)], atom_type, name))
+        self._atom_list.append(Atom([pos[i]+coord[i] for i in range(self._dim)], atom_type, name, residue))
 
     # Delete an atom
     def delete(self, atoms):
@@ -763,6 +757,18 @@ class Molecule:
         """
         self._atom_list[atom].set_name(name)
 
+    def set_atom_residue(self, atom, residue):
+        """Change the residue index of a specified atom.
+
+        Parameters
+        ----------
+        atom : integer
+            Atom id
+        residue : integer
+            New residue index
+        """
+        self._atom_list[atom].set_residue(residue)
+
     def get_atom_type(self, atom):
         """Return the atom type of the given atom id.
 
@@ -841,7 +847,6 @@ class Molecule:
             List of molar masses in :math:`\\frac g{mol}`
         """
         self._masses = masses if masses else [db.get_mass(atom.get_atom_type()) for atom in self._atom_list]
-
 
     def set_mass(self, mass=0):
         """Set the molar mass of the molecule.
