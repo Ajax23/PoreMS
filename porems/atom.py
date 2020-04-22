@@ -20,15 +20,15 @@ class Atom:
         Atom type as in the periodic table of elements
     name : string, optional
         Atom name
-
-    Examples
-    --------
+    residue : integer, optional
+        Residue number
     """
-    def __init__(self, pos, atom_type, name=""):
+    def __init__(self, pos, atom_type, name="", residue=0):
         # Initialize
         self._pos = pos
         self._atom_type = atom_type
         self._name = name
+        self._residue = residue
 
 
     ##################
@@ -43,29 +43,18 @@ class Atom:
             Pandas data frame of the molecule object
         """
         # Create data table from atom list
-        atom_data = [[self._name], [self._atom_type]]
+        atom_data = [[self._residue], [self._name], [self._atom_type]]
         atom_data.extend([[self._pos[i]] for i in range(len(self._pos))])
 
         # Create column names
-        column_names = ["Name", "Type"]
+        column_names = ["Residue", "Name", "Type"]
         column_names.extend([["x", "y", "z"][dim] for dim in range(len(self._pos))])
 
         # Create dictionary
-        data = {column_names[i]: atom_data[i] for i in range(len(self._pos)+2)}
+        data = {column_names[i]: atom_data[i] for i in range(len(self._pos)+3)}
 
         # Create data frame
-        return pd.DataFrame(data)
-
-    def __str__(self):
-        """Convert the pandas table from the :func:`__repr__` function to a
-        string.
-
-        Returns
-        -------
-        repr : string
-            Pandas data frame of the molecule object converted to a string
-        """
-        return self.__repr__().to_string()
+        return pd.DataFrame(data).to_string()
 
 
     ##################
@@ -101,6 +90,16 @@ class Atom:
         """
         self._name = name
 
+    def set_residue(self, residue):
+        """Set the residue index.
+
+        Parameters
+        ----------
+        residue : integer
+            Residue index
+        """
+        self._residue = residue
+
 
     ##################
     # Getter Methods #
@@ -134,3 +133,13 @@ class Atom:
             Atom name
         """
         return self._name
+
+    def get_residue(self):
+        """Return the residue index.
+
+        Returns
+        -------
+        residue : integer
+            Residue index
+        """
+        return self._residue

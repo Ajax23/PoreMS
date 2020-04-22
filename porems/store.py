@@ -82,7 +82,7 @@ class Store:
     ###############
     # Antechamber #
     ###############
-    def job(self, is_master=False):
+    def job(self, name="", master=""):
         """Create job file to run with Antechamber. A shell file and a tleap
         file are created with all necessary commands to create a topology from a
         pdb file. For the conversion to GROMACS file format the python package
@@ -90,14 +90,16 @@ class Store:
 
         Parameters
         ----------
-        is_master : bool, optional
-            True if the job file call should be added to a master run file
-            (practical for running multiple topology generations)
+        name : string, optional
+            Filename
+        master : string, optional
+            Set name for master job file if needed (practical for running
+            multiple topology generations)
         """
         # Initialize
-        name = self._name.lower()
-        short = self._inp.get_short()
         link = self._link
+        mol_name = self._name.lower()
+        short = self._inp.get_short()
 
         # Template directory
         package_dir = os.path.split(__file__)[0]+"/"
@@ -107,24 +109,24 @@ class Store:
         file_out = link+name+".job"
         shutil.copy(file_in, file_out)
 
-        utils.replace(file_out, "MOLNAME", name)
+        utils.replace(file_out, "MOLNAME", mol_name)
 
         # Tleap file
         file_in = package_dir+"templates/antechamber.tleap"
         file_out = link+name+".tleap"
         shutil.copy(file_in, file_out)
 
-        utils.replace(file_out, "MOLSHORTLOWER", name.lower())
+        utils.replace(file_out, "MOLSHORTLOWER", mol_name)
         utils.replace(file_out, "MOLSHORT", short)
-        utils.replace(file_out, "MOLNAME", name)
+        utils.replace(file_out, "MOLNAME", mol_name)
 
         # Add to master run
-        if is_master:
-            fileMaster = open(link+"run.job", "a")
-            fileMaster.write("cd "+name+" #\n")
-            fileMaster.write("sh "+name+".job #\n")
+        if master:
+            fileMaster = open(link+master, "a")
+            fileMaster.write("cd "+mol_name+" #\n")
+            fileMaster.write("sh "+mol_name+".job #\n")
             fileMaster.write("cd .. #\n")
-            fileMaster.write("echo \"Finished "+name+"...\"\n")
+            fileMaster.write("echo \"Finished "+mol_name+"...\"\n")
             fileMaster.write("#\n")
             fileMaster.close()
 
@@ -172,8 +174,14 @@ class Store:
             # Run through molecules
             for mol in self._mols:
                 atom_types = {}
+                temp_res_id = 0
                 # Run through atoms
                 for atom in mol.get_atom_list():
+                    # Process residue index
+                    if not atom.get_residue() == temp_res_id:
+                        num_m = num_m+1 if num_m < 9999 else 1
+                        temp_res_id = atom.get_residue()
+
                     # Get atom type
                     atom_type = atom.get_atom_type()
 
@@ -248,8 +256,14 @@ class Store:
             # Run through molecules
             for mol in self._mols:
                 atom_types = {}
+                temp_res_id = 0
                 # Run through atoms
                 for atom in mol.get_atom_list():
+                    # Process residue index
+                    if not atom.get_residue() == temp_res_id:
+                        num_m = num_m+1 if num_m < 99999 else 0
+                        temp_res_id = atom.get_residue()
+
                     # Get atom type
                     atom_type = atom.get_atom_type()
 
