@@ -42,19 +42,15 @@ class Atom:
         repr : DataFrame
             Pandas data frame of the molecule object
         """
-        # Create data table from atom list
-        atom_data = [[self._residue], [self._name], [self._atom_type]]
-        atom_data.extend([[self._pos[i]] for i in range(len(self._pos))])
+        # Set colums names
+        columns = ["Residue", "Name", "Type", "x", "y", "z"]
 
-        # Create column names
-        column_names = ["Residue", "Name", "Type"]
-        column_names.extend([["x", "y", "z"][dim] for dim in range(len(self._pos))])
-
-        # Create dictionary
-        data = {column_names[i]: atom_data[i] for i in range(len(self._pos)+3)}
+        # Get data
+        data =[[self._residue, self._name, self._atom_type,
+                self._pos[0], self._pos[1], self._pos[2]]]
 
         # Create data frame
-        return pd.DataFrame(data).to_string()
+        return pd.DataFrame(data, columns=columns).to_string()
 
 
     ##################
