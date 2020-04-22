@@ -25,8 +25,7 @@ Pore
   .. autosummary::
 
     ~Pore.attach
-    ~Pore.attach_siloxane
-    ~Pore.attach_special
+    ~Pore.siloxane
     ~Pore.fill_sites
 
 

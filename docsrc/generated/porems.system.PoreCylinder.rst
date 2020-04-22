@@ -18,3 +18,4 @@ PoreCylinder
     ~PoreCylinder._normal_ex
     ~PoreCylinder._normal_in
     ~PoreCylinder.attach
+    ~PoreCylinder.attach_special

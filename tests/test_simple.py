@@ -104,13 +104,19 @@ class UserModelCase(unittest.TestCase):
     # Atom #
     ########
     def test_atom(self):
-        atom = pms.Atom([0.0, 0.1, 0.2], "H", "HO1")
+        atom = pms.Atom([0, 0, 0], "O", "O", 5)
+
+        atom.set_pos([0.0, 0.1, 0.2])
+        atom.set_atom_type("H")
+        atom.set_name("HO1")
+        atom.set_residue(0)
 
         self.assertEqual(atom.get_pos(), [0.0, 0.1, 0.2])
         self.assertEqual(atom.get_atom_type(), "H")
         self.assertEqual(atom.get_name(), "HO1")
+        self.assertEqual(atom.get_residue(), 0)
 
-        self.assertEqual(atom.__str__(), "  Name Type    x    y    z\n0  HO1    H  0.0  0.1  0.2")
+        self.assertEqual(atom.__str__(), "   Residue Name Type    x    y    z\n0        0  HO1    H  0.0  0.1  0.2")
 
 
     ############
@@ -204,6 +210,8 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(mol.get_atom_type(0), "R")
         mol.set_atom_name(0, "RuX")
         self.assertEqual(mol.get_atom_list()[0].get_name(), "RuX")
+        mol.set_atom_residue(0, 1)
+        self.assertEqual(mol.get_atom_list()[0].get_residue(), 1)
 
     def test_molecule_set_get(self):
         mol = pms.Molecule()
@@ -226,7 +234,7 @@ class UserModelCase(unittest.TestCase):
         mol = pms.Molecule()
         mol.add("H", [0.0, 0.1, 0.2], name="HO1")
 
-        self.assertEqual(mol.__str__(), "  Name Type    x    y    z\n0  HO1    H  0.0  0.1  0.2")
+        self.assertEqual(mol.__str__(), "   Residue Name Type    x    y    z\n0        0  HO1    H  0.0  0.1  0.2")
 
 
     ###########
@@ -252,12 +260,14 @@ class UserModelCase(unittest.TestCase):
     def test_store(self):
         mol = pms.Molecule(inp="data/benzene.gro")
 
-        pms.Store(mol, "output").job(True)
-        pms.Store(mol, "output").obj()
-        pms.Store(mol, "output").gro(use_atom_names=True)
-        pms.Store(mol, "output").pdb(use_atom_names=True)
-        pms.Store(mol, "output").xyz()
-        pms.Store(mol, "output").grid()
+        mol.set_atom_residue(1, 1)
+
+        pms.Store(mol, "output").job("store_job", "store_master.job")
+        pms.Store(mol, "output").obj("store_obj.obj")
+        pms.Store(mol, "output").gro("store_gro.gro", True)
+        pms.Store(mol, "output").pdb("store_pdb.pdb", True)
+        pms.Store(mol, "output").xyz("store_xyz.xyz")
+        pms.Store(mol, "output").grid("store_grid.itp")
 
         print()
         pms.Store({})
@@ -574,13 +584,20 @@ class UserModelCase(unittest.TestCase):
         # Attachment
         mol = pms.gen.tms()
 
+        ## Siloxane
+        mols_siloxane = pore.siloxane(site_in, 100, cylinder.normal)
+        site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+
+        ## Normal
         mols_in = pore.attach(mol, 0, [0, 1], site_in, 100, cylinder.normal)
         mols_ex = pore.attach(mol, 0, [0, 1], site_ex, 20, normal)
+
+        ## Filling
         mols_in_fill = pore.fill_sites(site_in, cylinder.normal)
         mols_ex_fill = pore.fill_sites(site_ex, normal)
 
-        self.assertEqual(len(matrix.bound(0)), 7341)
-
+        ## Storage
+        pms.Store(pms.Molecule(name="pore_cylinder_siloxane", inp=mols_siloxane), "output").gro()
         pms.Store(pms.Molecule(name="pore_cylinder_in", inp=mols_in), "output").gro()
         pms.Store(pms.Molecule(name="pore_cylinder_ex", inp=mols_ex), "output").gro()
         pms.Store(pms.Molecule(name="pore_cylinder_in_fill", inp=mols_in_fill), "output").gro()
@@ -599,7 +616,7 @@ class UserModelCase(unittest.TestCase):
         pms.Store(pore, "output").gro(use_atom_names=True)
 
         pore.set_name("pore_cylinder_full_sort")
-        sort_list = ["OM", "SI", "SL", "SLG", "TMS", "TMSG"]
+        sort_list = ["OM", "SI", "SLX", "SL", "SLG", "TMS", "TMSG"]
         pms.Store(pore, "output", sort_list=sort_list).gro(use_atom_names=True)
         pms.Store(pore, "output", sort_list=sort_list).pdb(use_atom_names=True)
 
@@ -612,8 +629,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
 
         # Empty functions
-        pore.attach_special()
-        pore.attach_siloxane()
         pore.properties()
 
     def test_pore_cylinder(self):
@@ -625,6 +640,9 @@ class UserModelCase(unittest.TestCase):
 
         # Filled pore
         pore = pms.PoreCylinder([6, 6, 6], 4, 5)
+
+        pore.attach_special(pms.gen.tms(),  0, [0, 1], 5)
+        pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="mirror")
 
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", trials=10)
         pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex", trials=10)
