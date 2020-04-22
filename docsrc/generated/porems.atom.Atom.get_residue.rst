@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Atom\.\_\_str\_\_
-=================
+Atom\.get\_residue
+==================
 
 .. currentmodule:: porems.atom
 
-.. automethod:: Atom.__str__
+.. automethod:: Atom.get_residue

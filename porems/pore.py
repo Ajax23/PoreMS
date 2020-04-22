@@ -179,7 +179,7 @@ class Pore():
     #######################
     # Molecule Attachment #
     #######################
-    def attach(self, mol, mount, axis, sites, amount, normal, scale=1, trials=1000, is_proxi=True, is_random=True, is_rotate=False):
+    def attach(self, mol, mount, axis, sites, amount, normal, scale=1, trials=1000, pos_list=[], is_proxi=True, is_random=True, is_rotate=False):
         """Attach molecules on the surface.
 
         Parameters
@@ -192,6 +192,8 @@ class Pore():
             List of two atom ids of the molecule that define the molecule axis
         sites : list
             List of silicon ids of which binding sites should be picked
+        amount : int
+            Number of molecules to attach
         normal : function
             Function that returns the normal vector of the surface for a given
             position
@@ -199,6 +201,8 @@ class Pore():
             Circumference scaling around the molecule position
         trials : integer, optional
             Number of trials picking a random site
+        pos_list : list, optional
+            List of positions to find nearest available binding site for
         is_proxi : bool, optional
             True to fill binding sites in proximity of filled binding site
         is_random : bool, optional
@@ -211,12 +215,12 @@ class Pore():
         mol_list : list
             List of molecule objects that are attached on the surface
         """
-        # Calculate molecule diameter and add carbon Van der Waals radius (Wiki)
+        # Rotate molecule towards z-axis
         mol_axis = mol.bond(*axis)
         mol.rotate(geometry.cross_product(mol_axis, [0, 0, 1]), geometry.angle(mol_axis, [0, 0, 1]))
         mol.zero()
 
-        # Search for possible overlapping placements
+        # Search for overlapping placements - Calculate diameter and add carbon VdW-raidus (Wiki)
         if is_proxi:
             mol_diam = (max(mol.get_box()[:2])+0.17)*scale
             si_atoms = [self._block.get_atom_list()[atom] for atom in sites]
@@ -227,9 +231,19 @@ class Pore():
         # Run through number of binding sites to add
         mol_list = []
         for i in range(amount):
-            # Randomly pick an available site
             si = None
-            if is_random:
+            # Find nearest free site if a position list is given
+            if pos_list:
+                pos = pos_list[i]
+                min_dist = 100000000
+                for site in sites:
+                    if self._sites[site]["state"]:
+                        length = geometry.length(geometry.vector(self._block.pos(site), pos))
+                        if length < min_dist:
+                            si = site
+                            min_dist = length
+            # Randomly pick an available site
+            elif is_random:
                 for j in range(trials):
                     si_rand = random.choice(sites)
                     if self._sites[si_rand]["state"]:
@@ -278,21 +292,90 @@ class Pore():
 
         return mol_list
 
-    def attach_special(self):
-        """Special attachment of molecules on the surface.
+    def siloxane(self, sites, amount, normal, trials=1000):
+        """Attach siloxane bridges on the surface according to Krishna et al.
+        (2009). Here oxygen atoms wichi were at least 0.27 nm near each other
+        could be converted to siloxan bridges, by removing one oxygen atom and
+        moving the other at the center of the two.
 
-        TODO: Finish function.
+        Parameters
+        ----------
+        sites : list
+            List of silicon ids of which binding sites should be picked
+        amount : int
+            Number of molecules to attach
+        normal : function
+            Function that returns the normal vector of the surface for a given
+            position
+        trials : integer, optional
+            Number of trials picking a random site
         """
-        return
+        # Create siloxane molecule
+        mol = Molecule("siloxane", "SLX")
+        mol.add("O", [0, 0, 0], name="OM")
+        mol.add("O", 0, r=0.155, name="OM")
+        mount = 0
+        axis = [0, 1]
+        slx_dist = 0.27
 
-    def attach_siloxane(self):
-        """Attach siloxane bridges on the surface
+        # Rotate molecule towards z-axis
+        mol_axis = mol.bond(*axis)
+        mol.rotate(geometry.cross_product(mol_axis, [0, 0, 1]), geometry.angle(mol_axis, [0, 0, 1]))
+        mol.zero()
 
-        TODO: Finish function. dice search si with 0.27nm like in Krishna
-        (2009), center oxygen atom, disable binding site, if geminal only remove
-        used o entry from si site -> not geminal anymorem, matrix.strip()
-        """
-        return
+        # Search for silicon atoms near each other
+        si_atoms = [self._block.get_atom_list()[atom] for atom in sites]
+        si_dice = Dice(Molecule(inp=si_atoms), slx_dist, True)
+        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], 0, slx_dist)
+        si_matrix = {x[0]: x[1] for x in si_proxi}
+
+        # Run through number of siloxan bridges to add
+        mol_list = []
+        for i in range(amount):
+            # Randomly pick an available site pair
+            si = []
+            for j in range(trials):
+                si_rand = random.choice(sites)
+                if sites.index(si_rand) in si_matrix and si_matrix[sites.index(si_rand)]:
+                    si_rand_proxi = sites[si_matrix[sites.index(si_rand)][0]]
+                    if sites.index(si_rand_proxi) in si_matrix:
+                        if self._sites[si_rand]["state"] and (self._sites[si_rand_proxi]["state"]):
+                            si = [si_rand, si_rand_proxi]
+                            break
+
+            # Place molecule on surface
+            if si and self._sites[si[0]]["state"] and self._sites[si[1]]["state"]:
+                # Create a copy of the molecule
+                mol_temp = copy.deepcopy(mol)
+
+                # Calculate center position
+                pos_vec_halve = [x/2 for x in geometry.vector(self._block.pos(si[0]), self._block.pos(si[1]))]
+                center_pos = [pos_vec_halve[x]+self._block.pos(si[0])[x] for x in range(self._dim)]
+
+                # Rotate molecule towards surface normal vector
+                surf_axis = normal(center_pos)
+                mol_temp.rotate(geometry.cross_product([0, 0, 1], surf_axis), -geometry.angle([0, 0, 1], surf_axis))
+
+                # Move molecule to mounting position and remove temporary atom
+                mol_temp.move(mount, center_pos)
+                mol_temp.delete(0)
+
+                # Add molecule to molecule list and global dictionary
+                mol_list.append(mol_temp)
+                if not mol_temp.get_short() in self._mol_dict:
+                    self._mol_dict[mol_temp.get_short()] = []
+                self._mol_dict[mol_temp.get_short()].append(mol_temp)
+
+                # Remove oxygen atom and if not geminal delete site
+                for si_id in si:
+                    self._matrix.strip(self._sites[si_id]["o"][0])
+                    if len(self._sites[si_id]["o"])==2:
+                        self._sites[si_id]["o"].pop(0)
+                    else:
+                        del self._sites[si_id]
+                    del si_matrix[sites.index(si_id)]
+
+        return mol_list
 
     def fill_sites(self, sites, normal):
         """Fill list of given sites that are empty with silanol and geminal

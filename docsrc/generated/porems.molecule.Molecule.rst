@@ -16,7 +16,6 @@ Molecule
   .. autosummary::
 
     ~Molecule.__repr__
-    ~Molecule.__str__
 
 
   .. rubric:: Management
@@ -73,6 +72,7 @@ Molecule
     ~Molecule.switch_atom_order
     ~Molecule.set_atom_name
     ~Molecule.get_atom_list
+    ~Molecule.set_atom_residue
     ~Molecule.set_atom_type
     ~Molecule.get_atom_type
 

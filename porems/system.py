@@ -180,6 +180,8 @@ class PoreCylinder(PoreSystem):
             Atom id of the molecule that is placed on the surface silicon atom
         axis : list
             List of two atom ids of the molecule that define the molecule axis
+        amount : int
+            Number of molecules to attach
         site_type : string
             Use **in** for the interior surface and **ex** for the exterior
         scale : float, optional
@@ -199,6 +201,60 @@ class PoreCylinder(PoreSystem):
 
         # Run attachment
         mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, is_proxi=True, is_random=True, is_rotate=is_rotate)
+
+        # Add to sorting list
+        for mol in mols:
+            if not mol.get_short() in self._sort_list:
+                self._sort_list.append(mol.get_short())
+
+    def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_rotate=False):
+        """Special attachment of molecules on the surface.
+
+        Parameters
+        ----------
+        mol : Molecule
+            Molecule object to attach
+        mount : integer
+            Atom id of the molecule that is placed on the surface silicon atom
+        axis : list
+            List of two atom ids of the molecule that define the molecule axis
+        amount : int
+            Number of molecules to attach
+        scale : float, optional
+            Circumference scaling around the molecule position
+        symmetry : string, optional
+            Symmetry option - point, mirror
+        is_rotate : bool, optional
+            True to randomly rotate molecule around own axis
+
+        TODO
+        ----
+        Add fill proxi logic -> add silicon search to attachment function
+        """
+        # Process input
+        if symmetry not in ["point", "mirror"]:
+            print("Symmetry type not supported...")
+            return
+
+        # Calculate geometrical positions
+        dist = self._size[2]/amount if amount>0 else 0
+        start = dist/2
+
+        pos_list = []
+        for i in range(amount):
+            if symmetry == "point":
+                coeff = -1 if i % 2 == 0 else 1
+            elif symmetry == "mirror":
+                coeff = 1
+
+            x = self._centroid[0]+coeff*self._diam/2
+            y = self._centroid[1]
+            z = start+dist*i
+
+            pos_list.append([x, y, z])
+
+        # Run attachment
+        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), self._normal_in, scale, pos_list=pos_list, is_proxi=True, is_random=False, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:
@@ -305,6 +361,8 @@ class PoreSlit(PoreSystem):
             Atom id of the molecule that is placed on the surface silicon atom
         axis : list
             List of two atom ids of the molecule that define the molecule axis
+        amount : int
+            Number of molecules to attach
         scale : float, optional
             Circumference scaling around the molecule position
         trials : integer, optional
@@ -469,6 +527,8 @@ class PoreCapsule(PoreSystem):
             Atom id of the molecule that is placed on the surface silicon atom
         axis : list
             List of two atom ids of the molecule that define the molecule axis
+        amount : int
+            Number of molecules to attach
         site_type : string
             Use **in** for the interior surface and **ex** for the exterior
         scale : float, optional

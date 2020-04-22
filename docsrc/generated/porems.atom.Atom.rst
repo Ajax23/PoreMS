@@ -16,7 +16,6 @@ Atom
   .. autosummary::
 
     ~Atom.__repr__
-    ~Atom.__str__
 
 
   .. rubric:: Setter Methods
@@ -26,6 +25,7 @@ Atom
     ~Atom.set_atom_type
     ~Atom.set_name
     ~Atom.set_pos
+    ~Atom.set_residue
 
 
   .. rubric:: Getter Methods
@@ -35,3 +35,4 @@ Atom
     ~Atom.get_atom_type
     ~Atom.get_name
     ~Atom.get_pos
+    ~Atom.get_residue
