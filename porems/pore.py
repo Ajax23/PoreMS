@@ -42,7 +42,7 @@ class Pore():
         self._block = block
         self._matrix = matrix
 
-        self._mol_dict = {}
+        self._mol_dict = {"block": {}, "in": {}, "ex": {}}
 
 
     ###########
@@ -179,7 +179,7 @@ class Pore():
     #######################
     # Molecule Attachment #
     #######################
-    def attach(self, mol, mount, axis, sites, amount, normal, scale=1, trials=1000, pos_list=[], is_proxi=True, is_random=True, is_rotate=False):
+    def attach(self, mol, mount, axis, sites, amount, normal, scale=1, trials=1000, pos_list=[], site_type="in", is_proxi=True, is_random=True, is_rotate=False):
         """Attach molecules on the surface.
 
         Parameters
@@ -203,6 +203,8 @@ class Pore():
             Number of trials picking a random site
         pos_list : list, optional
             List of positions to find nearest available binding site for
+        site_type : string, optional
+            Site type - interior **in**, exterior **ex**
         is_proxi : bool, optional
             True to fill binding sites in proximity of filled binding site
         is_random : bool, optional
@@ -215,6 +217,11 @@ class Pore():
         mol_list : list
             List of molecule objects that are attached on the surface
         """
+        # Check site type input
+        if not site_type in ["in", "ex"]:
+            print("Pore - Wrong attachement site-type...")
+            return
+
         # Rotate molecule towards z-axis
         mol_axis = mol.bond(*axis)
         mol.rotate(geometry.cross_product(mol_axis, [0, 0, 1]), geometry.angle(mol_axis, [0, 0, 1]))
@@ -277,9 +284,9 @@ class Pore():
 
                 # Add molecule to molecule list and global dictionary
                 mol_list.append(mol_temp)
-                if not mol_temp.get_short() in self._mol_dict:
-                    self._mol_dict[mol_temp.get_short()] = []
-                self._mol_dict[mol_temp.get_short()].append(mol_temp)
+                if not mol_temp.get_short() in self._mol_dict[site_type]:
+                    self._mol_dict[site_type][mol_temp.get_short()] = []
+                self._mol_dict[site_type][mol_temp.get_short()].append(mol_temp)
 
                 # Remove bonds of occupied binding site
                 self._matrix.strip([si]+self._sites[si]["o"])
@@ -362,9 +369,9 @@ class Pore():
 
                 # Add molecule to molecule list and global dictionary
                 mol_list.append(mol_temp)
-                if not mol_temp.get_short() in self._mol_dict:
-                    self._mol_dict[mol_temp.get_short()] = []
-                self._mol_dict[mol_temp.get_short()].append(mol_temp)
+                if not mol_temp.get_short() in self._mol_dict["in"]:
+                    self._mol_dict["in"][mol_temp.get_short()] = []
+                self._mol_dict["in"][mol_temp.get_short()].append(mol_temp)
 
                 # Remove oxygen atom and if not geminal delete site
                 for si_id in si:
@@ -377,7 +384,7 @@ class Pore():
 
         return mol_list
 
-    def fill_sites(self, sites, normal):
+    def fill_sites(self, sites, normal, site_type):
         """Fill list of given sites that are empty with silanol and geminal
         silanol molecules, respectively.
 
@@ -388,13 +395,15 @@ class Pore():
         normal : function
             Function that returns the normal vector of the surface for a given
             position
+        site_type : string, optional
+            Site type - interior **in**, exterior **ex**
 
         Returns
         -------
         mol_list : list
             List of molecule objects that are attached on the surface
         """
-        mol_list = self.attach(generic.silanol(), 0, [0, 1], sites, len(sites), normal, is_proxi=False, is_random=False)
+        mol_list = self.attach(generic.silanol(), 0, [0, 1], sites, len(sites), normal, site_type=site_type, is_proxi=False, is_random=False)
 
         return mol_list
 
@@ -433,9 +442,9 @@ class Pore():
 
             # Add to molecule list and global dictionary
             mol_list.append(mol)
-            if not mol.get_short() in self._mol_dict:
-                self._mol_dict[mol.get_short()] = []
-            self._mol_dict[mol.get_short()].append(mol)
+            if not mol.get_short() in self._mol_dict["block"]:
+                self._mol_dict["block"][mol.get_short()] = []
+            self._mol_dict["block"][mol.get_short()].append(mol)
 
         # Output
         return mol_list
@@ -449,7 +458,7 @@ class Pore():
             Reservoir size in nm
         """
         # Convert molecule dict into list
-        mol_list = sum([x for x in self._mol_dict.values()], [])
+        mol_list = sum([x for x in self.get_mol_dict().values()], [])
 
         # Get zero translation
         zero_z = min(Molecule(inp=mol_list).column_pos()[2])
@@ -461,18 +470,6 @@ class Pore():
         # Set new box size
         box = Molecule(inp=mol_list).get_box()
         self.set_box([box[0], box[1], box[2]+size])
-
-
-    ###########
-    # Analyze #
-    ###########
-    def properties(self):
-        """Calculate properties.
-
-        TODO: As own class with table representation? - Takes volume and surface
-        as inputs -> from shape class
-        """
-        return
 
 
     ##################
@@ -549,5 +546,22 @@ class Pore():
         -------
         mol_dict : dictionary
             Dictionary of all molecules
+        """
+        mol_dict = {}
+        for site_type in self._mol_dict.keys():
+            for key, item in self._mol_dict[site_type].items():
+                if not key in mol_dict.keys():
+                    mol_dict[key] = []
+                mol_dict[key].extend(item)
+
+        return mol_dict
+
+    def get_site_dict(self):
+        """Return the molecule dictionary with site type differentiation.
+
+        Returns
+        -------
+        site_dict : dictionary
+            Dictionary of all molecules with sorted sites
         """
         return self._mol_dict

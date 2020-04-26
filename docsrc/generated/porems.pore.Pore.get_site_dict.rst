@@ -5,9 +5,9 @@
     </div>
     <div class=col-md-9 content>
 
-Pore\.properties
-================
+Pore\.get\_site\_dict
+=====================
 
 .. currentmodule:: porems.pore
 
-.. automethod:: Pore.properties
+.. automethod:: Pore.get_site_dict

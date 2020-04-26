@@ -37,13 +37,6 @@ Pore
     ~Pore.reservoir
 
 
-  .. rubric:: Analysis
-
-  .. autosummary::
-
-    ~Pore.properties
-
-
   .. rubric:: Setter Methods
 
   .. autosummary::
@@ -58,6 +51,7 @@ Pore
 
     ~Pore.get_block
     ~Pore.get_box
-    ~Pore.get_mol_dict
     ~Pore.get_name
     ~Pore.get_sites
+    ~Pore.get_mol_dict
+    ~Pore.get_site_dict

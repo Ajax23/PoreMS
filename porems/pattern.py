@@ -97,7 +97,8 @@ class Pattern():
 
         # Translate gap
         self._structure.zero()
-        self._structure.translate(self._gap)
+        self._structure.translate([x/2 for x in self._gap])
+        self._structure.set_box(self._size)
 
         return self._structure
 
@@ -298,7 +299,7 @@ class BetaCristobalit(Pattern):
         if self._orient == "x":
             is_left = False
             for si in si_list:
-                if abs(self._structure.pos(si)[2]-self._size[2]) < error:
+                if abs(self._structure.pos(si)[2]-self._size[2]+self._gap[2]/2) < error:
                     saturate.append(si)
 
         # Block oriented towards y-axis
@@ -310,7 +311,7 @@ class BetaCristobalit(Pattern):
         elif self._orient == "z":
             is_left = True
             for si in si_list:
-                if abs(self._structure.pos(si)[2]-self._gap[2]) < error:
+                if abs(self._structure.pos(si)[2]-self._gap[2]/2) < error:
                     saturate.append(si)
 
         # Saturate silicon atoms
