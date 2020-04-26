@@ -357,7 +357,7 @@ class UserModelCase(unittest.TestCase):
         # Splitting and filling
         self.assertEqual(len(dice.get_origin()), 120)
         self.assertEqual(dice.get_origin()[(1, 1, 1)], [0.4, 0.4, 0.4])
-        self.assertEqual(dice.get_pointer()[(1, 1, 1)], [14, 46, 51, 52, 65])
+        self.assertEqual(dice.get_pointer()[(1, 1, 1)], [14, 51, 52, 64, 65, 67])
 
         # Iterator
         self.assertEqual(dice._right((1, 1, 1)), (2, 1, 1))
@@ -370,10 +370,10 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(len(dice.neighbor((1, 1, 1), False)), 26)
 
         # Search
-        self.assertEqual(dice.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [14, 46, 52, 65]]])
-        self.assertEqual(dice.find_bond([(1, 1, 1)], ["O", "Si"], 0.155, 0.005), [[14, [51, 13]], [46, [43, 51]], [52, [51, 49]], [65, [64, 51]]])
-        self.assertEqual(dice.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 2, 174, 9]], [5, [306, 110, 4, 6]]])
-        self.assertEqual(dice.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]]])
+        self.assertEqual(dice.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [46, 14, 52, 65]], [64, [26, 63, 65, 67]]])
+        self.assertEqual(dice.find_bond([(1, 1, 1)], ["O", "Si"], 0.155, 0.005), [[14, [51, 13]], [52, [51, 49]], [65, [51, 64]], [67, [64, 69]]])
+        self.assertEqual(dice.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 9, 2, 174]], [5, [306, 110, 4, 6]]])
+        self.assertEqual(dice.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]], [9, [3, 11]]])
 
         # Parallel search
         self.assertEqual(len(dice.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
@@ -435,14 +435,14 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(cylinder.surface(), 4), 37.6991)
 
         # Test vector
-        vec = [3.6716, 4.4441, 0.2840]
+        vec = [3.6086, 4.4076, 0.2065]
 
         # Surface
         self.assertEqual([round(x[0][20], 4) for x in cylinder.surf(num=100)], vec)
         self.assertEqual([round(x[0][20], 4) for x in cylinder.rim(0, num=100)], vec)
 
         # Normal
-        self.assertEqual([round(x, 4) for x in cylinder.convert([0, 0, 0], False)], [3.0777, 3.0937, 1.6344])
+        self.assertEqual([round(x, 4) for x in cylinder.convert([0, 0, 0], False)], [3.0147, 3.0572, 1.5569])
         self.assertEqual([round(x, 4) for x in cylinder.normal(vec)], [0.5939, 2.9704, 0.0000])
 
         # Positioning
@@ -475,12 +475,12 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(sphere.surface(), 4), 50.2655)
 
         # Surface
-        self.assertEqual([round(x[0][20], 4) for x in sphere.surf(num=100)], [4.2636, 3.0937, 4.745])
-        self.assertEqual([round(x[0][20], 4) for x in sphere.rim(0, num=100)], [4.9875, 3.0937, 3.7283])
+        self.assertEqual([round(x[0][20], 4) for x in sphere.surf(num=100)], [4.2006, 3.0572, 4.6675])
+        self.assertEqual([round(x[0][20], 4) for x in sphere.rim(0, num=100)], [4.9245, 3.0572, 3.6508])
 
         # Normal
-        self.assertEqual([round(x, 4) for x in sphere.convert([0, 0, 0], False)], [3.0777, 3.0937, 3.1344])
-        self.assertEqual([round(x, 4) for x in sphere.normal([4.2636, 3.0937, 4.745])], [1.4063, 0.0000, 1.9099])
+        self.assertEqual([round(x, 4) for x in sphere.convert([0, 0, 0], False)], [3.0147, 3.0572, 3.0569])
+        self.assertEqual([round(x, 4) for x in sphere.normal([4.2006, 3.0572, 4.6675])], [1.4063, 0.0000, 1.9099])
 
         # Positioning
         del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if sphere.is_in(atom.get_pos())]
@@ -512,7 +512,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(cuboid.surface(), 4), 248)
 
         # Normal
-        self.assertEqual([round(x, 4) for x in cuboid.convert([0, 0, 0], False)], [0.0777, 1.0937, -1.8656])
+        self.assertEqual([round(x, 4) for x in cuboid.convert([0, 0, 0], False)], [0.0147, 1.0572, -1.9431])
         self.assertEqual([round(x, 4) for x in cuboid.normal([4.2636, 3.0937, 4.745])], [0, 1, 0])
 
         # Positioning
@@ -589,12 +589,12 @@ class UserModelCase(unittest.TestCase):
         site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
 
         ## Normal
-        mols_in = pore.attach(mol, 0, [0, 1], site_in, 100, cylinder.normal)
-        mols_ex = pore.attach(mol, 0, [0, 1], site_ex, 20, normal)
+        mols_in = pore.attach(mol, 0, [0, 1], site_in, 100, cylinder.normal, site_type="in")
+        mols_ex = pore.attach(mol, 0, [0, 1], site_ex, 20, normal, site_type="ex")
 
         ## Filling
-        mols_in_fill = pore.fill_sites(site_in, cylinder.normal)
-        mols_ex_fill = pore.fill_sites(site_ex, normal)
+        mols_in_fill = pore.fill_sites(site_in, cylinder.normal, site_type="in")
+        mols_ex_fill = pore.fill_sites(site_ex, normal, site_type="ex")
 
         ## Storage
         pms.Store(pms.Molecule(name="pore_cylinder_siloxane", inp=mols_siloxane), "output").gro()
@@ -625,11 +625,12 @@ class UserModelCase(unittest.TestCase):
         pms.Store(pore, "output", sort_list=sort_list[:-1])
         pms.Store(pore, "output", sort_list=sort_list).top()
 
+        # Error test
+        self.assertIsNone(pore.attach(mol, 0, [0, 1], site_in, 0, cylinder.normal, site_type="DOTA"))
+
         # Getter and Setter
         self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
-
-        # Empty functions
-        pore.properties()
+        self.assertEqual(len(pore.get_site_dict()), 3)
 
     def test_pore_cylinder(self):
         # self.skipTest("Temporary")
@@ -641,21 +642,34 @@ class UserModelCase(unittest.TestCase):
         # Filled pore
         pore = pms.PoreCylinder([6, 6, 6], 4, 5)
 
+        ## Attachement
         pore.attach_special(pms.gen.tms(),  0, [0, 1], 5)
         pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="mirror")
 
         tms2 = pms.gen.tms()
         tms2.set_short("TMS2")
 
-        pore.attach(tms2, 0, [0, 1], 100, "in", trials=10)
-        pore.attach(tms2, 0, [0, 1], 20, "ex", trials=10)
+        pore.attach(tms2, 0, [0, 1], 1, "in", trials=10, inp="molar")
+        pore.attach(tms2, 0, [0, 1], 0.1, "ex", trials=10, inp="molar")
 
+        # Special cases
         print()
-        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "DOTA"))
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, site_type="DOTA"))
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", inp="DOTA"))
         self.assertIsNone(pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="DOTA"))
 
+        # Finalize
         pore.finalize()
         pore.store("output/cylinder")
+
+        ## Properties
+        self.assertEqual(round(pore.diameter(), 4), 4.0513)
+        self.assertEqual(round(pore.roughness(), 4), 0.0790)
+        self.assertEqual(round(pore.volume(), 4), 81.9219)
+        self.assertEqual({key: round(item, 4) for key, item in pore.surface().items()}, {'in': 80.8840, 'ex': 48.7630})
+
+        print(pore.table()["props"])
+        print(pore.table()["alloc"])
 
     def test_pore_slit(self):
         # self.skipTest("Temporary")
