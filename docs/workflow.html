@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Simulation Workflow &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Simulation Workflow &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="molecule.html">Molecule</a></li>
                 <li><a href="pore.html">Pore</a></li>
                 <li><a href="#">Workflow</a></li>
+                <li><a href="0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -127,15 +128,11 @@ surface molecules. Additionally, the GROMACS simulation package will be utilized
 <div class="section" id="create-surface-molecules">
 <h2>Create surface molecules<a class="headerlink" href="#create-surface-molecules" title="Permalink to this headline">¶</a></h2>
 <p>Trimethylsilyl or for short TMS is a simple surface group that can be imported
-from the porems package.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.essentials</span> <span class="kn">import</span> <span class="n">TMS</span>
-</pre></div>
-</div>
-<p>Assuming a new surface group structure is to be created, following code block
-can be used as a base.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.molecule</span> <span class="kn">import</span> <span class="n">Molecule</span>
+from the PoreMS package. Assuming a new surface group structure is to be created,
+following code block can be used as a base.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">porems</span> <span class="k">as</span> <span class="nn">pms</span>
 
-<span class="n">tms</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="s2">&quot;tms&quot;</span><span class="p">,</span> <span class="s2">&quot;TMS&quot;</span><span class="p">)</span>
+<span class="n">tms</span> <span class="o">=</span> <span class="n">pms</span><span class="o">.</span><span class="n">Molecule</span><span class="p">(</span><span class="s2">&quot;tms&quot;</span><span class="p">,</span> <span class="s2">&quot;TMS&quot;</span><span class="p">)</span>
 <span class="n">tms</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="mf">0.96</span><span class="p">)</span>
 <span class="n">compress</span> <span class="o">=</span> <span class="mi">30</span>
 
@@ -170,14 +167,12 @@ be performed for both a singular binding site and a geminal binding site.</p>
 <h2>Create pore system<a class="headerlink" href="#create-pore-system" title="Permalink to this headline">¶</a></h2>
 <p>Next step is to create a pore structure functionalized with the created TMS
 surface group.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.pore</span> <span class="kn">import</span> <span class="n">Pore</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">porems</span> <span class="k">as</span> <span class="nn">pms</span>
 
-<span class="n">pore</span> <span class="o">=</span> <span class="n">Pore</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">diam</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">drill</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">is_time</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">pore</span> <span class="o">=</span> <span class="n">pms</span><span class="o">.</span><span class="n">PoreCylinder</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">)</span>
 
-<span class="n">pore</span><span class="o">.</span><span class="n">siloxan</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-
-<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">tms</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;molar&quot;</span><span class="p">,</span> <span class="n">is_rotate</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">tms</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;molar&quot;</span><span class="p">,</span> <span class="n">is_rotate</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">pms</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">tms</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">pms</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">tms</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;ex&quot;</span><span class="p">)</span>
 
 <span class="n">pore</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
 </pre></div>
@@ -187,12 +182,9 @@ surface group.</p>
 </div>
 <p>Once the generation is done, store the structure and preferably the object for
 future analysis. Furthermore, a master topology with the number of residues and
-a topology containing grid molecule parameters should be created using the
-<a class="reference internal" href="generated/porems.store.Store.top.html#porems.store.Store.top" title="porems.store.Store.top"><code class="xref py py-func docutils literal"><span class="pre">porems.store.Store.top()</span></code></a> and <a class="reference internal" href="generated/porems.store.Store.grid.html#porems.store.Store.grid" title="porems.store.Store.grid"><code class="xref py py-func docutils literal"><span class="pre">porems.store.Store.grid()</span></code></a> functions.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">gro</span><span class="p">(</span><span class="s2">&quot;pore.gro&quot;</span><span class="p">)</span>
-<span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="s2">&quot;pore.obj&quot;</span><span class="p">)</span>
-<span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="s2">&quot;topol.top&quot;</span><span class="p">)</span>
-<span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="s2">&quot;grid.itp&quot;</span><span class="p">)</span>
+a topology containing grid molecule parameters should be created. This is all
+handled by the store function</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pore</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -270,7 +262,7 @@ achieving the reference density as in an NPT simulation at the desired pressure.
 <p class="first admonition-title">Note</p>
 <p class="last">If the GROMACS filling functions, like <code class="docutils literal"><span class="pre">solvate</span></code> or <code class="docutils literal"><span class="pre">insert-molecules</span></code>
 are used with small molecules, it may happen that molecules are placed within
-the grid. Naturally these molecules must be removed from the grid before
+the grid. Naturally, these molecules must be removed from the grid before
 running the simulation.</p>
 </div>
 </div>

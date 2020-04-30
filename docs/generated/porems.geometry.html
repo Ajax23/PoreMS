@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>porems.geometry &#8212; PoreMS 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          PoreMS</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../process.html">Porcess</a></li>
+                <li><a href="../molecule.html">Molecule</a></li>
+                <li><a href="../pore.html">Pore</a></li>
+                <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">porems.geometry</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="module-porems.geometry">
+<span id="porems-geometry"></span><h1>porems.geometry<a class="headerlink" href="#module-porems.geometry" title="Permalink to this headline">¶</a></h1>
+<p>Here basic geometric functions are noted.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="porems.geometry.angle.html#porems.geometry.angle" title="porems.geometry.angle"><code class="xref py py-obj docutils literal"><span class="pre">angle</span></code></a>(vec_a,&nbsp;vec_b[,&nbsp;is_deg])</td>
+<td>Calculate the angle between two vectors</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.geometry.angle_azi.html#porems.geometry.angle_azi" title="porems.geometry.angle_azi"><code class="xref py py-obj docutils literal"><span class="pre">angle_azi</span></code></a>(pos[,&nbsp;is_deg])</td>
+<td>Calculate the azimuthal angle of a position vector</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="porems.geometry.angle_polar.html#porems.geometry.angle_polar" title="porems.geometry.angle_polar"><code class="xref py py-obj docutils literal"><span class="pre">angle_polar</span></code></a>(pos[,&nbsp;is_deg])</td>
+<td>Calculate the polar angle of a position vector</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.geometry.cross_product.html#porems.geometry.cross_product" title="porems.geometry.cross_product"><code class="xref py py-obj docutils literal"><span class="pre">cross_product</span></code></a>(vec_a,&nbsp;vec_b)</td>
+<td>Calculate the cross product of two three-dimensional vectors</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="porems.geometry.dot_product.html#porems.geometry.dot_product" title="porems.geometry.dot_product"><code class="xref py py-obj docutils literal"><span class="pre">dot_product</span></code></a>(vec_a,&nbsp;vec_b)</td>
+<td>Calculate the dot product of two vectors</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.geometry.length.html#porems.geometry.length" title="porems.geometry.length"><code class="xref py py-obj docutils literal"><span class="pre">length</span></code></a>(vec)</td>
+<td>Calculate the length of a vector</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="porems.geometry.main_axis.html#porems.geometry.main_axis" title="porems.geometry.main_axis"><code class="xref py py-obj docutils literal"><span class="pre">main_axis</span></code></a>(inp[,&nbsp;dim])</td>
+<td>Return the three-dimensional unit-vector of the main axes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.geometry.rotate.html#porems.geometry.rotate" title="porems.geometry.rotate"><code class="xref py py-obj docutils literal"><span class="pre">rotate</span></code></a>(data,&nbsp;axis,&nbsp;angle,&nbsp;is_deg[,&nbsp;dim])</td>
+<td>Rotate a vector <span class="math">\(\boldsymbol{a}\in\mathbb{R}^3\)</span> along an axis <span class="math">\(\boldsymbol{b}\in\mathbb{R}^3\)</span> with angle <span class="math">\(\alpha\in\mathbb{R}\)</span>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="porems.geometry.unit.html#porems.geometry.unit" title="porems.geometry.unit"><code class="xref py py-obj docutils literal"><span class="pre">unit</span></code></a>(vec)</td>
+<td>Transform a vector <span class="math">\(\boldsymbol{a}\in\mathbb{R}^n\)</span> into a</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.geometry.vector.html#porems.geometry.vector" title="porems.geometry.vector"><code class="xref py py-obj docutils literal"><span class="pre">vector</span></code></a>(pos_a,&nbsp;pos_b)</td>
+<td>Calculate the vector between to two positions</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Hamzeh Kraus.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

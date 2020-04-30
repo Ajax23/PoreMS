@@ -5,8 +5,8 @@
     </div>
     <div class=col-md-9 content>
 
-Pore\.\siloxane
-===============
+Pore\.siloxane
+======================
 
 .. currentmodule:: porems.pore
 

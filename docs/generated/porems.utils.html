@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>porems.utils &#8212; PoreMS 0.1.2 documentation</title>
+    <title>porems.utils &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -112,6 +113,27 @@
   <div class="section" id="module-porems.utils">
 <span id="porems-utils"></span><h1>porems.utils<a class="headerlink" href="#module-porems.utils" title="Permalink to this headline">¶</a></h1>
 <p>Here popular basic methods are noted.</p>
+<p class="rubric">Conversions</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="porems.utils.mumol_m2_to_mols.html#porems.utils.mumol_m2_to_mols" title="porems.utils.mumol_m2_to_mols"><code class="xref py py-obj docutils literal"><span class="pre">mumol_m2_to_mols</span></code></a>(c,&nbsp;A)</td>
+<td>Convert the concntration in <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span> to number of molecules.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.utils.mols_to_mumol_m2.html#porems.utils.mols_to_mumol_m2" title="porems.utils.mols_to_mumol_m2"><code class="xref py py-obj docutils literal"><span class="pre">mols_to_mumol_m2</span></code></a>(N,&nbsp;A)</td>
+<td>Convert the number of molecules to concntration in <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="porems.utils.mmol_l_to_mols.html#porems.utils.mmol_l_to_mols" title="porems.utils.mmol_l_to_mols"><code class="xref py py-obj docutils literal"><span class="pre">mmol_l_to_mols</span></code></a>(c,&nbsp;V)</td>
+<td>Convert the concntration in <span class="math">\(\frac{\text{mmol}}{\text{l}}\)</span> to number of molecules.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.utils.mols_to_mmol_l.html#porems.utils.mols_to_mmol_l" title="porems.utils.mols_to_mmol_l"><code class="xref py py-obj docutils literal"><span class="pre">mols_to_mmol_l</span></code></a>(N,&nbsp;V)</td>
+<td>Convert the number of molecules to concntration in <span class="math">\(\frac{\text{mmol}}{\text{l}}\)</span>.</td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Functions</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -125,26 +147,23 @@
 <tr class="row-even"><td><a class="reference internal" href="porems.utils.copy.html#porems.utils.copy" title="porems.utils.copy"><code class="xref py py-obj docutils literal"><span class="pre">copy</span></code></a>(source,&nbsp;target)</td>
 <td>Copy a specified file to a specified location.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.utils.copy_dir.html#porems.utils.copy_dir" title="porems.utils.copy_dir"><code class="xref py py-obj docutils literal"><span class="pre">copy_dir</span></code></a>(source,&nbsp;target)</td>
-<td>Copy a specified folder to a specified location if it does not exist.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.utils.load.html#porems.utils.load" title="porems.utils.load"><code class="xref py py-obj docutils literal"><span class="pre">load</span></code></a>(link)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.utils.load.html#porems.utils.load" title="porems.utils.load"><code class="xref py py-obj docutils literal"><span class="pre">load</span></code></a>(link)</td>
 <td>Load pickled object from the specified folder.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.utils.mkdirp.html#porems.utils.mkdirp" title="porems.utils.mkdirp"><code class="xref py py-obj docutils literal"><span class="pre">mkdirp</span></code></a>(directory)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.utils.mkdirp.html#porems.utils.mkdirp" title="porems.utils.mkdirp"><code class="xref py py-obj docutils literal"><span class="pre">mkdirp</span></code></a>(directory)</td>
 <td>Create directory if it does not exist.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.utils.replace.html#porems.utils.replace" title="porems.utils.replace"><code class="xref py py-obj docutils literal"><span class="pre">replace</span></code></a>(file_link,&nbsp;old,&nbsp;new)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.utils.replace.html#porems.utils.replace" title="porems.utils.replace"><code class="xref py py-obj docutils literal"><span class="pre">replace</span></code></a>(file_link,&nbsp;old,&nbsp;new)</td>
 <td>Replace a given string in a file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.utils.save.html#porems.utils.save" title="porems.utils.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a>(obj,&nbsp;link)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.utils.save.html#porems.utils.save" title="porems.utils.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a>(obj,&nbsp;link)</td>
 <td>Save an object using pickle in the specified link.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.utils.tic.html#porems.utils.tic" title="porems.utils.tic"><code class="xref py py-obj docutils literal"><span class="pre">tic</span></code></a>()</td>
-<td>MATLAB tic reproduction - return current time.</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.utils.tic.html#porems.utils.tic" title="porems.utils.tic"><code class="xref py py-obj docutils literal"><span class="pre">tic</span></code></a>()</td>
+<td>MATLAB tic replica - return current time.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.utils.toc.html#porems.utils.toc" title="porems.utils.toc"><code class="xref py py-obj docutils literal"><span class="pre">toc</span></code></a>(t[,&nbsp;message,&nbsp;is_print])</td>
-<td>MATLAB toc reproduction - return time difference to tic and alternatively print a message.</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.utils.toc.html#porems.utils.toc" title="porems.utils.toc"><code class="xref py py-obj docutils literal"><span class="pre">toc</span></code></a>(t[,&nbsp;message,&nbsp;is_print])</td>
+<td>MATLAB toc replica - return time difference to tic and alternatively print a message.</td>
 </tr>
 </tbody>
 </table>

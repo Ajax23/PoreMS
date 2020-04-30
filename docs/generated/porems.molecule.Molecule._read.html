@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Molecule._read &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Molecule._read &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -115,10 +116,8 @@
 <dl class="method">
 <dt id="porems.molecule.Molecule._read">
 <code class="descclassname">Molecule.</code><code class="descname">_read</code><span class="sig-paren">(</span><em>self</em>, <em>file_path</em>, <em>file_type</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule._read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a molecule from a file. Currently only <strong>GRO</strong>, <strong>PFB</strong> and
-<strong>MOL2</strong> files are supported. In case the <code class="docutils literal"><span class="pre">file_type</span></code> is <strong>OBJ</strong>, the
-function will attempt unpickling the object file. Note that loading the
-object this way, only the data will be imported.</p>
+<dd><p>Read a molecule from a file. Currently only <strong>GRO</strong>, <strong>PDB</strong> and
+<strong>MOL2</strong> files are supported.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -128,14 +127,14 @@ object this way, only the data will be imported.</p>
 <dd><p class="first last">Link to requested file</p>
 </dd>
 <dt><strong>file_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Int for types list id or str for file extension name</p>
+<dd><p class="first last">File extension name</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">data matrix</p>
+<dt><strong>atom_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Atom list</p>
 </dd>
 </dl>
 </td>
