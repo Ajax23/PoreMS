@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Store.job &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Store.job &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -114,7 +115,7 @@
 <h1>Store.job<a class="headerlink" href="#store-job" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.store.Store.job">
-<code class="descclassname">Store.</code><code class="descname">job</code><span class="sig-paren">(</span><em>self</em>, <em>is_master=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.store.Store.job" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Store.</code><code class="descname">job</code><span class="sig-paren">(</span><em>self</em>, <em>name=''</em>, <em>master=''</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.store.Store.job" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create job file to run with Antechamber. A shell file and a tleap
 file are created with all necessary commands to create a topology from a
 pdb file. For the conversion to GROMACS file format the python package
@@ -124,9 +125,12 @@ pdb file. For the conversion to GROMACS file format the python package
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>is_master</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True if the jobfile call should be added to a master run file
-(practical for running multiple topology generations)</p>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Filename</p>
+</dd>
+<dt><strong>master</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Set name for master job file if needed (practical for running
+multiple topology generations)</p>
 </dd>
 </dl>
 </td>

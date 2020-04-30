@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Store &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Store &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -114,7 +115,7 @@
 <h1>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="porems.store.Store">
-<em class="property">class </em><code class="descclassname">porems.store.</code><code class="descname">Store</code><span class="sig-paren">(</span><em>molecule</em>, <em>link='./'</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.store.Store" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">porems.store.</code><code class="descname">Store</code><span class="sig-paren">(</span><em>inp</em>, <em>link='./'</em>, <em>sort_list=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.store.Store" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class converts a molecule object to a structure file of different
 possible formats. Currently only <strong>PDB</strong> and <strong>GRO</strong> are fully supported.</p>
 <p>For pore objects two additional methods are available for generating the
@@ -127,11 +128,15 @@ with Antechamber where job-file for this tool are created.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>molecule</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule</span></dt>
-<dd><p class="first last">Molecule object</p>
+<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule, Pore</span></dt>
+<dd><p class="first last">Molecule or Pore object</p>
 </dd>
 <dt><strong>link</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">Folder link for output</p>
+</dd>
+<dt><strong>sort_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
+<dd><p class="first last">Optionally provide a sorting list in case a dictionary of molecules is
+given</p>
 </dd>
 </dl>
 </td>
@@ -141,10 +146,8 @@ with Antechamber where job-file for this tool are created.</p>
 <p class="rubric">Examples</p>
 <p>Assuming a pore or molecule object have already been created, the structure
 files can be generated like following examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">porems.store</span> <span class="kn">import</span> <span class="n">Store</span>
-
-<span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">)</span><span class="o">.</span><span class="n">gro</span><span class="p">()</span>
-<span class="n">Store</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span><span class="o">.</span><span class="n">pdb</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Store</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span><span class="o">.</span><span class="n">pdb</span><span class="p">()</span>
+<span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">gro</span><span class="p">(</span><span class="s2">&quot;pore.gro&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Structure Methods</p>
@@ -154,20 +157,20 @@ files can be generated like following examples</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.obj.html#porems.store.Store.obj" title="porems.store.Store.obj"><code class="xref py py-obj docutils literal"><span class="pre">obj</span></code></a>(self[,&nbsp;name])</td>
-<td>Save the molecule object using pickle.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.gro.html#porems.store.Store.gro" title="porems.store.Store.gro"><code class="xref py py-obj docutils literal"><span class="pre">gro</span></code></a>(self[,&nbsp;name])</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.gro.html#porems.store.Store.gro" title="porems.store.Store.gro"><code class="xref py py-obj docutils literal"><span class="pre">gro</span></code></a>(self[,&nbsp;name,&nbsp;use_atom_names])</td>
 <td>Generate the structure file for the defined molecule in the <strong>GRO</strong> format.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.job.html#porems.store.Store.job" title="porems.store.Store.job"><code class="xref py py-obj docutils literal"><span class="pre">job</span></code></a>(self[,&nbsp;is_master])</td>
-<td>Create job file to run with Antechamber.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.pdb.html#porems.store.Store.pdb" title="porems.store.Store.pdb"><code class="xref py py-obj docutils literal"><span class="pre">pdb</span></code></a>(self[,&nbsp;name])</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.pdb.html#porems.store.Store.pdb" title="porems.store.Store.pdb"><code class="xref py py-obj docutils literal"><span class="pre">pdb</span></code></a>(self[,&nbsp;name,&nbsp;use_atom_names])</td>
 <td>Generate the structure file for the defined molecule in the <strong>PDB</strong> format.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.xyz.html#porems.store.Store.xyz" title="porems.store.Store.xyz"><code class="xref py py-obj docutils literal"><span class="pre">xyz</span></code></a>(self[,&nbsp;name])</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.xyz.html#porems.store.Store.xyz" title="porems.store.Store.xyz"><code class="xref py py-obj docutils literal"><span class="pre">xyz</span></code></a>(self[,&nbsp;name,&nbsp;use_atom_names])</td>
 <td>Generate the structure file for the defined molecule in the <strong>XYZ</strong> format for running qm-simulations.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.obj.html#porems.store.Store.obj" title="porems.store.Store.obj"><code class="xref py py-obj docutils literal"><span class="pre">obj</span></code></a>(self[,&nbsp;name])</td>
+<td>Save the molecule object or the dictionary of those using pickle.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.job.html#porems.store.Store.job" title="porems.store.Store.job"><code class="xref py py-obj docutils literal"><span class="pre">job</span></code></a>(self[,&nbsp;name,&nbsp;master])</td>
+<td>Create job file to run with Antechamber.</td>
 </tr>
 </tbody>
 </table>
@@ -178,7 +181,7 @@ files can be generated like following examples</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.grid.html#porems.store.Store.grid" title="porems.store.Store.grid"><code class="xref py py-obj docutils literal"><span class="pre">grid</span></code></a>(self[,&nbsp;name])</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.grid.html#porems.store.Store.grid" title="porems.store.Store.grid"><code class="xref py py-obj docutils literal"><span class="pre">grid</span></code></a>(self[,&nbsp;name,&nbsp;charges])</td>
 <td>Store the <strong>grid.itp</strong> file containing the necessary parameters and charges of the grid molecules.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="porems.store.Store.top.html#porems.store.Store.top" title="porems.store.Store.top"><code class="xref py py-obj docutils literal"><span class="pre">top</span></code></a>(self[,&nbsp;name])</td>

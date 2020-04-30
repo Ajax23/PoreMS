@@ -15,11 +15,11 @@ Store
 
   .. autosummary::
 
-    ~Store.obj
     ~Store.gro
-    ~Store.job
     ~Store.pdb
     ~Store.xyz
+    ~Store.obj
+    ~Store.job
 
 
   .. rubric:: Topology Methods

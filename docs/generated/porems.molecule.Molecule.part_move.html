@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Molecule.part_move &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Molecule.part_move &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -114,14 +115,14 @@
 <h1>Molecule.part_move<a class="headerlink" href="#molecule-part-move" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.molecule.Molecule.part_move">
-<code class="descclassname">Molecule.</code><code class="descname">part_move</code><span class="sig-paren">(</span><em>self</em>, <em>bond</em>, <em>atoms</em>, <em>length</em>, <em>vec=None</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule.part_move" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Molecule.</code><code class="descname">part_move</code><span class="sig-paren">(</span><em>self</em>, <em>bond</em>, <em>atoms</em>, <em>length</em>, <em>vec=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule.part_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the length of a specified bond. Variable <code class="docutils literal"><span class="pre">atoms</span></code> specifies
 which atoms or rather which part of the molecule needs to be moved for
 this specific bond. The given length is going to be the new bond length,
-not by how much the bond length is changed.</p>
+<strong>not</strong> by how much the bond length is changed.</p>
 <p>The move vector is determined automatically by the given length and atom
 bond. This vector can also be given manually with no regards to length,
-by setting the vector <code class="docutils literal"><span class="pre">vec</span></code>.</p>
+by setting the variable <code class="docutils literal"><span class="pre">vec</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -138,7 +139,7 @@ by setting the vector <code class="docutils literal"><span class="pre">vec</span
 <dd><p class="first last">New bond length</p>
 </dd>
 <dt><strong>vec</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
-<dd><p class="first last">Set this vector, to manually move the atoms</p>
+<dd><p class="first last">Set this vector to manually define the translation vector</p>
 </dd>
 </dl>
 </td>

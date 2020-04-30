@@ -11,70 +11,47 @@ Pore
 .. autoclass:: Pore
 
 
-  .. rubric:: Private Methods - Building
+  .. rubric:: Surface preperation
 
   .. autosummary::
 
-    ~Pore._block
-    ~Pore._foundation
-    ~Pore._orientation
+    ~Pore.amorph
+    ~Pore.prepare
+    ~Pore.sites
 
 
-  .. rubric:: Private Methods - Binding Sites
-
-  .. autosummary::
-
-    ~Pore._add_mol_list
-    ~Pore._bind
-    ~Pore._close
-    ~Pore._proxi
-    ~Pore._random
-
-
-  .. rubric:: Private Methods - Final Edits
-
-  .. autosummary::
-
-    ~Pore._calc_props
-    ~Pore._connect
-    ~Pore._excess
-    ~Pore._objectify
-    ~Pore._objectify_parallel
-    ~Pore._overlap
-    ~Pore._position
-    ~Pore._silanol
-    ~Pore._silanol_parallel
-    ~Pore._sort
-
-
-  .. rubric:: Public Methods - Surface Attachment
+  .. rubric:: Attachement
 
   .. autosummary::
 
     ~Pore.attach
-    ~Pore.attach_dual
     ~Pore.siloxane
-    ~Pore.special
+    ~Pore.fill_sites
 
 
-  .. rubric:: Public Methods - Completion
+  .. rubric:: Finalization
 
   .. autosummary::
 
-    ~Pore.finalize
-    ~Pore.table_props
+    ~Pore.objectify
+    ~Pore.reservoir
+
+
+  .. rubric:: Setter Methods
+
+  .. autosummary::
+
+    ~Pore.set_box
+    ~Pore.set_name
 
 
   .. rubric:: Getter Methods
 
   .. autosummary::
 
-    ~Pore.get_center
-    ~Pore.get_diam
-    ~Pore.get_drill
-    ~Pore.get_gap
-    ~Pore.get_props
-    ~Pore.get_q
-    ~Pore.get_reservoir
-    ~Pore.get_size
-    ~Pore.get_time
+    ~Pore.get_block
+    ~Pore.get_box
+    ~Pore.get_name
+    ~Pore.get_sites
+    ~Pore.get_mol_dict
+    ~Pore.get_site_dict

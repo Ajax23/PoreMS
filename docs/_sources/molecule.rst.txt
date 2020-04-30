@@ -20,9 +20,9 @@ An empty Molecule object can be easily created by passing no input. Remember to 
 
 .. code-block:: python
 
-  from porems.molecule import Molecule
+  import porems as pms
 
-  mol = Molecule("benzene", "BEN")
+  mol = pms.Molecule("benzene", "BEN")
 
 
 Coordinate placement
@@ -75,11 +75,9 @@ Using the storage class, the generated structure can be exported into various fo
 
 .. code-block:: python
 
-  from porems.store import Store
-
-  Store(mol).gro()
-  Store(mol).pdb()
-  Store(mol).xyz()
+  pms.Store(mol).gro()
+  pms.Store(mol).pdb()
+  pms.Store(mol).xyz()
 
 
 .. raw:: html

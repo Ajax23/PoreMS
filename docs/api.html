@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API reference &#8212; PoreMS 0.1.2 documentation</title>
+    <title>API reference &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="molecule.html">Molecule</a></li>
                 <li><a href="pore.html">Pore</a></li>
                 <li><a href="workflow.html">Workflow</a></li>
+                <li><a href="0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -80,9 +81,13 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">API reference</a><ul>
-<li><a class="reference internal" href="#generation">Generation</a></li>
-<li><a class="reference internal" href="#essential-molecules">Essential Molecules</a></li>
-<li><a class="reference internal" href="#pore-optimization">Pore Optimization</a></li>
+<li><a class="reference internal" href="#molecule">Molecule</a></li>
+<li><a class="reference internal" href="#pore">Pore</a><ul>
+<li><a class="reference internal" href="#pattern">Pattern</a></li>
+<li><a class="reference internal" href="#shape">Shape</a></li>
+<li><a class="reference internal" href="#optimization">Optimization</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#utilities">Utilities</a></li>
 </ul>
 </li>
@@ -117,8 +122,8 @@
       
   <div class="section" id="api-reference">
 <h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="generation">
-<span id="generation-api"></span><h2>Generation<a class="headerlink" href="#generation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="molecule">
+<span id="generation-api"></span><h2>Molecule<a class="headerlink" href="#molecule" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -126,56 +131,99 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/porems.molecule.Molecule.html#porems.molecule.Molecule" title="porems.molecule.Molecule"><code class="xref py py-obj docutils literal"><span class="pre">molecule.Molecule</span></code></a>([name,&nbsp;short,&nbsp;inp])</td>
-<td>This class defines a molecule object, which is basically a data matrix that contains atom information of positions and type.</td>
+<td>This class defines a molecule object, which is basically a list of Atom objects.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/porems.pore.Pore.html#porems.pore.Pore" title="porems.pore.Pore"><code class="xref py py-obj docutils literal"><span class="pre">pore.Pore</span></code></a>(size,&nbsp;diam,&nbsp;drill[,&nbsp;res,&nbsp;vs,&nbsp;…])</td>
-<td>This class is an extension of the molecule class <a class="reference internal" href="generated/porems.molecule.Molecule.html#porems.molecule.Molecule" title="porems.molecule.Molecule"><code class="xref py py-class docutils literal"><span class="pre">porems.molecule.Molecule</span></code></a> and the core class for creating silicon pores.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.atom.Atom.html#porems.atom.Atom" title="porems.atom.Atom"><code class="xref py py-obj docutils literal"><span class="pre">atom.Atom</span></code></a>(pos,&nbsp;atom_type[,&nbsp;name,&nbsp;residue])</td>
+<td>This class defines an atom object containing the position, the atom type and optionally a specific name.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/porems.store.Store.html#porems.store.Store" title="porems.store.Store"><code class="xref py py-obj docutils literal"><span class="pre">store.Store</span></code></a>(molecule[,&nbsp;link])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.store.Store.html#porems.store.Store" title="porems.store.Store"><code class="xref py py-obj docutils literal"><span class="pre">store.Store</span></code></a>(inp[,&nbsp;link,&nbsp;sort_list])</td>
 <td>This class converts a molecule object to a structure file of different possible formats.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="essential-molecules">
-<span id="essential-api"></span><h2>Essential Molecules<a class="headerlink" href="#essential-molecules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pore">
+<span id="pore-api"></span><h2>Pore<a class="headerlink" href="#pore" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/porems.essentials.Alkane.html#porems.essentials.Alkane" title="porems.essentials.Alkane"><code class="xref py py-obj docutils literal"><span class="pre">essentials.Alkane</span></code></a>(length[,&nbsp;name,&nbsp;short,&nbsp;is_h])</td>
-<td>Using this class linear alkane molecules can be easily constructed with the only input of the carbon atom number.</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.pore.Pore.html#porems.pore.Pore" title="porems.pore.Pore"><code class="xref py py-obj docutils literal"><span class="pre">pore.Pore</span></code></a>(block,&nbsp;matrix)</td>
+<td>This class prepares and converts a given molecule block into a pore system.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/porems.essentials.Alcohol.html#porems.essentials.Alcohol" title="porems.essentials.Alcohol"><code class="xref py py-obj docutils literal"><span class="pre">essentials.Alcohol</span></code></a>(length[,&nbsp;name,&nbsp;short,&nbsp;is_h])</td>
-<td>Using this class linear alcohol molecules can be easily constructed with the only input of the carbon atom number.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.system.PoreSystem.html#porems.system.PoreSystem" title="porems.system.PoreSystem"><code class="xref py py-obj docutils literal"><span class="pre">system.PoreSystem</span></code></a>()</td>
+<td>This class is a container class for further pore system classes.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/porems.essentials.Ketone.html#porems.essentials.Ketone" title="porems.essentials.Ketone"><code class="xref py py-obj docutils literal"><span class="pre">essentials.Ketone</span></code></a>(length,&nbsp;pos[,&nbsp;name,&nbsp;…])</td>
-<td>Using this class linear ketone molecules can be easily constructed with the only input of the carbon atom number and oxygen position.</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.system.PoreCylinder.html#porems.system.PoreCylinder" title="porems.system.PoreCylinder"><code class="xref py py-obj docutils literal"><span class="pre">system.PoreCylinder</span></code></a>(size,&nbsp;diam[,&nbsp;res])</td>
+<td>This class carves a cylindric pore system out of a <span class="math">\(\beta\)</span>-cristobalite block.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/porems.essentials.TMS.html#porems.essentials.TMS" title="porems.essentials.TMS"><code class="xref py py-obj docutils literal"><span class="pre">essentials.TMS</span></code></a>([name,&nbsp;short,&nbsp;charge,&nbsp;…])</td>
-<td>This class defines trimethylsilyl (TMS) bound to a silicon-grid.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.system.PoreSlit.html#porems.system.PoreSlit" title="porems.system.PoreSlit"><code class="xref py py-obj docutils literal"><span class="pre">system.PoreSlit</span></code></a>(size,&nbsp;height)</td>
+<td>This class carves a slit-pore out of a <span class="math">\(\beta\)</span>-cristobalite block.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.system.PoreCapsule.html#porems.system.PoreCapsule" title="porems.system.PoreCapsule"><code class="xref py py-obj docutils literal"><span class="pre">system.PoreCapsule</span></code></a>(size,&nbsp;diam,&nbsp;sep[,&nbsp;res])</td>
+<td>This class carves a capsule pore system out of a <span class="math">\(\beta\)</span>-cristobalite block.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="pattern">
+<span id="pattern-api"></span><h3>Pattern<a class="headerlink" href="#pattern" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.pattern.Pattern.html#porems.pattern.Pattern" title="porems.pattern.Pattern"><code class="xref py py-obj docutils literal"><span class="pre">pattern.Pattern</span></code></a>()</td>
+<td>This class is a container for individual pattern classes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.pattern.BetaCristobalit.html#porems.pattern.BetaCristobalit" title="porems.pattern.BetaCristobalit"><code class="xref py py-obj docutils literal"><span class="pre">pattern.BetaCristobalit</span></code></a>()</td>
+<td>This class defines the minimal structure of a <span class="math">\(\beta\)</span>-cristobalite molecule.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="pore-optimization">
-<span id="pore-api"></span><h2>Pore Optimization<a class="headerlink" href="#pore-optimization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="shape">
+<span id="shape-api"></span><h3>Shape<a class="headerlink" href="#shape" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/porems.bonding.Bonding.html#porems.bonding.Bonding" title="porems.bonding.Bonding"><code class="xref py py-obj docutils literal"><span class="pre">bonding.Bonding</span></code></a>(verlet)</td>
-<td>The aim of this class is preserving all information of the silicon grid bonds.</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.shape.Shape.html#porems.shape.Shape" title="porems.shape.Shape"><code class="xref py py-obj docutils literal"><span class="pre">shape.Shape</span></code></a>(inp)</td>
+<td>This class is a container for individual shape classes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/porems.verlet.Verlet.html#porems.verlet.Verlet" title="porems.verlet.Verlet"><code class="xref py py-obj docutils literal"><span class="pre">verlet.Verlet</span></code></a>(mol,&nbsp;size,&nbsp;is_pbc)</td>
-<td>This class converts the molecule box into verlet lists.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.shape.Cylinder.html#porems.shape.Cylinder" title="porems.shape.Cylinder"><code class="xref py py-obj docutils literal"><span class="pre">shape.Cylinder</span></code></a>(inp)</td>
+<td>This class defines a cylindric shape.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.shape.Sphere.html#porems.shape.Sphere" title="porems.shape.Sphere"><code class="xref py py-obj docutils literal"><span class="pre">shape.Sphere</span></code></a>(inp)</td>
+<td>This class defines a sphere shape.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.shape.Cuboid.html#porems.shape.Cuboid" title="porems.shape.Cuboid"><code class="xref py py-obj docutils literal"><span class="pre">shape.Cuboid</span></code></a>(inp)</td>
+<td>This class defines a cuboid shape.</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="optimization">
+<span id="optimization-api"></span><h3>Optimization<a class="headerlink" href="#optimization" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.dice.Dice.html#porems.dice.Dice" title="porems.dice.Dice"><code class="xref py py-obj docutils literal"><span class="pre">dice.Dice</span></code></a>(mol,&nbsp;size,&nbsp;is_pbc)</td>
+<td>This class splits the molecule into smaller sub boxes and provides parallelized functions for pair-search.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.matrix.Matrix.html#porems.matrix.Matrix" title="porems.matrix.Matrix"><code class="xref py py-obj docutils literal"><span class="pre">matrix.Matrix</span></code></a>(bonds)</td>
+<td>The aim of this class is preserving all information of the grid bonds.</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section" id="utilities">
 <span id="utils-api"></span><h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
@@ -187,6 +235,12 @@
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/porems.utils.html#module-porems.utils" title="porems.utils"><code class="xref py py-obj docutils literal"><span class="pre">utils</span></code></a></td>
 <td>Here popular basic methods are noted.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/porems.generic.html#module-porems.generic" title="porems.generic"><code class="xref py py-obj docutils literal"><span class="pre">generic</span></code></a></td>
+<td>This file contains function for generic molecules  and serves as an exemplary molecule generation process.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/porems.geometry.html#module-porems.geometry" title="porems.geometry"><code class="xref py py-obj docutils literal"><span class="pre">geometry</span></code></a></td>
+<td>Here basic geometric functions are noted.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/porems.database.html#module-porems.database" title="porems.database"><code class="xref py py-obj docutils literal"><span class="pre">database</span></code></a></td>
 <td>Very simple molecule database helper methods.</td>

@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Pore.attach &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Pore.attach &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -114,78 +115,65 @@
 <h1>Pore.attach<a class="headerlink" href="#pore-attach" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.pore.Pore.attach">
-<code class="descclassname">Pore.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>si_o</em>, <em>orient</em>, <em>site_type</em>, <em>rate</em>, <em>inp='percent'</em>, <em>sites=None</em>, <em>counter=1000</em>, <em>is_rotate=True</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.attach" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a molecule to the pore binding site.</p>
-<p>The input <code class="docutils literal"><span class="pre">si_o</span></code> defines the silicon atom id and <code class="docutils literal"><span class="pre">orient</span></code> consists of
-two atom ids that determine which molecule bond should be oriented
-towards the centre.</p>
-<p>The binding sites are chosen randomly using function <a class="reference internal" href="porems.pore.Pore._random.html#porems.pore.Pore._random" title="porems.pore.Pore._random"><code class="xref py py-func docutils literal"><span class="pre">_random()</span></code></a>.
-Available input types are noted in the mentioned function.</p>
-<p>First the molecule is rotated around its directional vector randomly to
-simulate a state closer to reality. Second the molecule is rotated so
-that its directional vector and the binding site vector match. One final
-rotation is applied for molecules on the inside, so the directional
-vector points towards the centre of the pore.</p>
-<p>The molecule is then moved in order to place its silicon atom on the
-silicon of the binding site. The oxygen is then placed on top of the
-binding site oxygen, in order to keep the sites geometry.</p>
-<p>Finally, the atoms of the binding sites are added to the list of atoms
-to be deleted at the end of the construction.</p>
-<p>These molecules are then added to the global molecule list.</p>
+<code class="descclassname">Pore.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>scale=1</em>, <em>trials=1000</em>, <em>pos_list=[]</em>, <em>site_type='in'</em>, <em>is_proxi=True</em>, <em>is_random=True</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.attach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach molecules on the surface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>mol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule</span></dt>
-<dd><p class="first last">Molecule to be added</p>
+<dd><p class="first last">Molecule object to attach</p>
 </dd>
-<dt><strong>si_o</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">Silicon and oxygen id of the grid atoms of the molecule</p>
+<dt><strong>mount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer</span></dt>
+<dd><p class="first last">Atom id of the molecule that is placed on the surface silicon atom</p>
 </dd>
-<dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">Two atom ids that determine which molecule bond should be oriented
-towards the centre</p>
+<dt><strong>axis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of two atom ids of the molecule that define the molecule axis</p>
 </dd>
-<dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer</span></dt>
-<dd><p class="first last">Type of the sites <strong>inside-0</strong>, <strong>outside-1</strong></p>
+<dt><strong>sites</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of silicon ids of which binding sites should be picked</p>
 </dd>
-<dt><strong>rate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Rate of how many binding sites</p>
+<dt><strong>amount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of molecules to attach</p>
 </dd>
-<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Input type of the rate</p>
+<dt><strong>normal</strong> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">Function that returns the normal vector of the surface for a given
+position</p>
 </dd>
-<dt><strong>sites</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, list, optional</span></dt>
-<dd><p class="first last">List index of binding sites</p>
+<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Circumference scaling around the molecule position</p>
 </dd>
-<dt><strong>counter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
-<dd><p class="first last">Number of attempts before breaking the loop</p>
+<dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
+<dd><p class="first last">Number of trials picking a random site</p>
+</dd>
+<dt><strong>pos_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
+<dd><p class="first last">List of positions to find nearest available binding site for</p>
+</dd>
+<dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Site type - interior <strong>in</strong>, exterior <strong>ex</strong></p>
+</dd>
+<dt><strong>is_proxi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to fill binding sites in proximity of filled binding site</p>
+</dd>
+<dt><strong>is_random</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to randomly pick a binding site from given list</p>
 </dd>
 <dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True to randomly rotate molecules on the surface</p>
+<dd><p class="first last">True to randomly rotate molecule around own axis</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>mol_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">List of Molecule objects and corresponding site ids</p>
-</dd>
-<dt><strong>remove_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">List of atom ids to be deleted from the pore</p>
+<dd><p class="first last">List of molecule objects that are attached on the surface</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">TMS</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">TMS</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;percent&quot;</span><span class="p">)</span>
-<span class="n">pore</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">TMS</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="n">inp</span><span class="o">=</span><span class="s2">&quot;molar&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>

@@ -3,20 +3,9 @@ porems\.database
 
 .. automodule:: porems.database
 
-   
-   
-   .. rubric:: Functions
 
-   .. autosummary::
-   
-      get_mass
-   
-   
+  .. rubric:: Functions
 
-   
-   
-   
+  .. autosummary::
 
-   
-   
-   
+    get_mass

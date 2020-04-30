@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Molecule.add &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Molecule.add &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -114,28 +115,26 @@
 <h1>Molecule.add<a class="headerlink" href="#molecule-add" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.molecule.Molecule.add">
-<code class="descclassname">Molecule.</code><code class="descname">add</code><span class="sig-paren">(</span><em>self</em>, <em>name</em>, <em>pos</em>, <em>bond=None</em>, <em>r=0</em>, <em>theta=0</em>, <em>phi=0</em>, <em>is_deg=True</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule.add" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Molecule.</code><code class="descname">add</code><span class="sig-paren">(</span><em>self</em>, <em>atom_type</em>, <em>pos</em>, <em>bond=[]</em>, <em>r=0</em>, <em>theta=0</em>, <em>phi=0</em>, <em>is_deg=True</em>, <em>name=''</em>, <em>residue=0</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new atom in polar coordinates. The <code class="docutils literal"><span class="pre">pos</span></code> input is either
 an atom id, that determines is the bond-start,
 or a vector for a specific position.</p>
-<p>Bond has to be given, if the polar coordinates are dependent on the bond
-vector as the basic axis. The coordinate system is then transformed
-to the new bond axis. If set to None, then the given coordinates are
-thought to be dependent on the basic axes.</p>
-<p>If the given position is an atom id, then a bond is automatically added
-to the bond matrix.</p>
+<p>If the polar coordinates are dependent on a bond vector as an axis,
+the <code class="docutils literal"><span class="pre">bond</span></code> variable must be set. The coordinate system is then
+transformed to the bond axis. If this variable is set to an empty list,
+then the given coordinates are assumed to be dependent on the z-axis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dt><strong>atom_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Atom type</p>
 </dd>
 <dt><strong>pos</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, list</span></dt>
 <dd><p class="first last">Position of the atom</p>
 </dd>
-<dt><strong>bond</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None, list, optional</span></dt>
+<dt><strong>bond</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
 <dd><p class="first last">Bond axis</p>
 </dd>
 <dt><strong>r</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
@@ -149,6 +148,12 @@ to the bond matrix.</p>
 </dd>
 <dt><strong>is_deg</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True if the input of the angles in degree</p>
+</dd>
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Optionally set a unique atom name</p>
+</dd>
+<dt><strong>residue</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
+<dd><p class="first last">Residue number</p>
 </dd>
 </dl>
 </td>

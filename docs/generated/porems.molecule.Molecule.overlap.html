@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Molecule.overlap &#8212; PoreMS 0.1.2 documentation</title>
+    <title>Molecule.overlap &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -57,6 +57,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../0.1.2/index.html">V 0.1.2</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -114,18 +115,22 @@
 <h1>Molecule.overlap<a class="headerlink" href="#molecule-overlap" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.molecule.Molecule.overlap">
-<code class="descclassname">Molecule.</code><code class="descname">overlap</code><span class="sig-paren">(</span><em>self</em>, <em>error=0.005</em>, <em>is_print=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule.overlap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if atoms are overlapping (as in duplicates) and delete these.</p>
+<code class="descclassname">Molecule.</code><code class="descname">overlap</code><span class="sig-paren">(</span><em>self</em>, <em>error=0.005</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule.overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for overlapping atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>error</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Error of the overlap search</p>
+<dd><p class="first last">Error tolerance</p>
 </dd>
-<dt><strong>is_print</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True to print the list of overlapping atoms</p>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>duplicate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dictionary</span></dt>
+<dd><p class="first last">Dictionary of duplicate lists</p>
 </dd>
 </dl>
 </td>
