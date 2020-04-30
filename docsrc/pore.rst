@@ -76,16 +76,14 @@ Since the catalyst molecules are placed far enough apart so they do not interact
 
 .. code-block:: python
 
-  TODO
-  pore.attach_special(mol=catalyst, si_o=[37, 34], orient=[34, 22], num=2, symmetry="point")
+  pore.attach_special(mol=catalyst, mount=[37], axis=[34, 22], amount=2, symmetry="point")
 
 The other two molecules will be attached using the conventional attachment function
 
 .. code-block:: python
 
-  TODO
-  pore.attach(dmdms, 0, [1, 2], 100, "in")
-  pore.attach(tms, 0, [1, 2], 100, "ex")
+  pore.attach(mol=dmdms, mount=0, axis=[1, 2], amount=0.3, site_type="in", inp="molar")
+  pore.attach(mol=tms, mount=0, axis=[1, 2], amount=0.3, site_type="ex", inp="molar")
 
 After finishing the surface functionalization, the pore needs to be finalized, which fills empty binding sites with silanol groups creating the final structure
 
@@ -93,13 +91,15 @@ After finishing the surface functionalization, the pore needs to be finalized, w
 
   pore.finalize()
 
-In order to show the properties of the generated pore, use the properties function
+In order to show the properties of the generated pore, use the table function
 
 .. code-block:: python
 
-  TODO
+  tables = pore.table()
+  print(tables["props"])
+  print(tables["alloc"])
 
-which returns pandas tables different pandas tables for allocation and pore properties.
+This returns a dictionary of pandas data frames for pore properties **props** and allocation **alloc**.
 
 At this point the pore generation is completed and what is left is converting the programs data structure into a readable file-format using the functionalities of the Store class. For this a store function is provided that creates a structure file in the GROMACS format, a main topology containing the number of atoms, a topology for the basic surface groups and grid atoms and a pickle file of the pore object
 

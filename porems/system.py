@@ -308,10 +308,10 @@ class PoreCylinder(PoreSystem):
         The roughness is then determined by calculating the standard deviation
         of the binding site silicon atoms peaks and valleys.
 
-        It is therefore sufficient to calculate the distnaces towards a specific
-        axis, whis in this case will be the central axis. The mean value
+        It is therefore enough to calculate the distances towards a specific
+        axis, which in this case will be the central axis. The mean value
         :math:`\\bar r` of the silicon distances :math:`r_i` of silicon
-        :math:`i` towards the pore centre, is calculated by
+        :math:`i` towards the pore center, is calculated by
 
         .. math::
 
@@ -340,7 +340,7 @@ class PoreCylinder(PoreSystem):
 
     def volume(self):
         """Calculate pore volume. This is done by defining a new shape object
-        with system sizes after pore preperation and using the volume function
+        with system sizes after pore preparation and using the volume function
         :func:`porems.shape.Cylinder.volume`.
 
         Returns
@@ -352,7 +352,7 @@ class PoreCylinder(PoreSystem):
 
     def surface(self):
         """Calculate pore surface and exterior surface. This is done by defining
-        a new shape object with system sizes after pore preperation and using
+        a new shape object with system sizes after pore preparation and using
         the surface function :func:`porems.shape.Cylinder.surface`.
 
         Returns
@@ -414,7 +414,7 @@ class PoreCylinder(PoreSystem):
             alloc["OH"][site_type][1] = num_oh/surf[site_type] if surf[site_type]>0 else 0
             alloc["OH"][site_type][2] = pms.utils.mols_to_mumol_m2(num_oh, surf[site_type]) if surf[site_type]>0 else 0
 
-        # Hydroxilation - Total number of binding sites
+        # Hydroxylation - Total number of binding sites
         alloc["Hydro"] = {"in": [0, 0, 0], "ex": [0, 0, 0]}
         for site_type in ["in", "ex"]:
             num_tot = len(sum([x["o"] for x in self._pore.get_sites().values() if x["type"]==site_type], []))
