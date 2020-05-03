@@ -38,7 +38,7 @@ class PoreSystem():
         # Create reservoir
         self._pore.reservoir(self._res)
 
-    def store(self, link="./"):
+    def store(self, link="./", sort_list=[]):
         """Store pore system and all necessary files for simulation at given
         link.
 
@@ -50,8 +50,11 @@ class PoreSystem():
         # Process input
         self._link = link if link[-1] == "/" else link+"/"
 
+        # Set sort list
+        sort_list = sort_list if sort_list else self._sort_list
+
         # Create store object
-        store = pms.Store(self._pore, link, self._sort_list)
+        store = pms.Store(self._pore, link, sort_list)
 
         # Save files
         store.gro(use_atom_names=True)
