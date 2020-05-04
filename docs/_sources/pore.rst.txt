@@ -105,7 +105,7 @@ At this point the pore generation is completed and what is left is converting th
 
 .. code-block:: python
 
-  pore.strore()
+  pore.store()
 
 To sum it up, the complete code is as follows
 

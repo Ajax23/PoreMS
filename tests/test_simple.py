@@ -664,6 +664,7 @@ class UserModelCase(unittest.TestCase):
 
         ## Properties
         self.assertEqual(round(pore.diameter(), 4), 4.0513)
+        self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0773, 3.0934, 3.255])
         self.assertEqual(round(pore.roughness(), 4), 0.0790)
         self.assertEqual(round(pore.volume(), 4), 81.9219)
         self.assertEqual({key: round(item, 4) for key, item in pore.surface().items()}, {'in': 80.8840, 'ex': 48.7630})
