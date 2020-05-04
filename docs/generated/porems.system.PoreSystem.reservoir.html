@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PoreSystem &#8212; PoreMS 0.2.0 documentation</title>
+    <title>PoreSystem.reservoir &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -80,7 +80,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">PoreSystem</a></li>
+<li><a class="reference internal" href="#">PoreSystem.reservoir</a></li>
 </ul>
 </ul>
 </li>
@@ -111,42 +111,22 @@
     <div class="body col-md-12 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="poresystem">
-<h1>PoreSystem<a class="headerlink" href="#poresystem" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="porems.system.PoreSystem">
-<em class="property">class </em><code class="descclassname">porems.system.</code><code class="descname">PoreSystem</code><a class="headerlink" href="#porems.system.PoreSystem" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class is a container class for further pore system classes.</p>
-<p class="rubric">Analysis</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
+<div class=col-md-9 content><div class="section" id="poresystem-reservoir">
+<h1>PoreSystem.reservoir<a class="headerlink" href="#poresystem-reservoir" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="porems.system.PoreSystem.reservoir">
+<code class="descclassname">PoreSystem.</code><code class="descname">reservoir</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreSystem.reservoir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the reservoir length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem.box.html#porems.system.PoreSystem.box" title="porems.system.PoreSystem.box"><code class="xref py py-obj docutils literal"><span class="pre">box</span></code></a>(self)</td>
-<td>Return the box size of the pore block.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSystem.centroid.html#porems.system.PoreSystem.centroid" title="porems.system.PoreSystem.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a>(self)</td>
-<td>Return pore centroid.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem.reservoir.html#porems.system.PoreSystem.reservoir" title="porems.system.PoreSystem.reservoir"><code class="xref py py-obj docutils literal"><span class="pre">reservoir</span></code></a>(self)</td>
-<td>Return the reservoir length.</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Finalization</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem.finalize.html#porems.system.PoreSystem.finalize" title="porems.system.PoreSystem.finalize"><code class="xref py py-obj docutils literal"><span class="pre">finalize</span></code></a>(self)</td>
-<td>Finalize pore system.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSystem.store.html#porems.system.PoreSystem.store" title="porems.system.PoreSystem.store"><code class="xref py py-obj docutils literal"><span class="pre">store</span></code></a>(self[,&nbsp;link,&nbsp;sort_list])</td>
-<td>Store pore system and all necessary files for simulation at given link.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>res</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Reservoir length</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>

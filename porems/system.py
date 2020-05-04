@@ -20,6 +20,40 @@ class PoreSystem():
         self._res = 0
 
 
+    ############
+    # Analysis #
+    ############
+    def reservoir(self):
+        """Return the reservoir length.
+
+        Returns
+        -------
+        res : float
+            Reservoir length
+        """
+        return self._res
+
+    def box(self):
+        """Return the box size of the pore block.
+
+        Returns
+        -------
+        box : list
+            Box size in all dimensions
+        """
+        return self._block.get_box()
+
+    def centroid(self):
+        """Return pore centroid.
+
+        Returns
+        -------
+        centroid : list
+            Centroid of the pore
+        """
+        return self._centroid
+
+
     ################
     # Finalization #
     ################
@@ -61,6 +95,7 @@ class PoreSystem():
         store.obj()
         store.top()
         store.grid()
+        pms.utils.save(self, link+self._pore.get_name()+"_system.obj")
 
 
 class PoreCylinder(PoreSystem):
@@ -446,9 +481,9 @@ class PoreCylinder(PoreSystem):
 
         # Properties table
         data_props = {}
-        data_props["Dimension"] = "["+form%self._block.get_box()[0]+", "+form%self._block.get_box()[1]+", "+form%self._block.get_box()[2]+"]"
+        data_props["Dimension"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
         data_props["Diameter"] = form%self.diameter()
-        data_props["Reservoir"] = form%self._res
+        data_props["Reservoir"] = form%self.reservoir()
         data_props["Roughness"] = form%self.roughness()
         data_props["Surface"] = form%self.surface()["in"]
         data_props["Volume"] = form%self.volume()
