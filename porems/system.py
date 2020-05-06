@@ -674,11 +674,12 @@ class PoreCapsule(PoreSystem):
         self._len_cyl = (self._pattern.get_size()[2]-sep-diam)/2
 
         # Create block
-        block = self._pattern.get_block()
-        block.set_name("pore")
+        self._block = self._pattern.get_block()
+        self._block.set_name("pore")
+        self._box = self._block.get_box()
 
         # Dice up block
-        dice = pms.Dice(block, 0.4, True)
+        dice = pms.Dice(self._block, 0.4, True)
         matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
         oxygen_out = matrix.bound(1)
 
@@ -686,25 +687,25 @@ class PoreCapsule(PoreSystem):
         central = [0, 0, 1]
 
         self._centroid = {}
-        self._centroid["block"] = block.centroid()
+        self._centroid["block"] = self._block.centroid()
         self._centroid["cyl_l"] = self._centroid["block"][:2]+[0]
         self._centroid["cyl_r"] = self._centroid["block"][:2]+[self._pattern.get_size()[2]]
         self._centroid["sph_l"] = self._centroid["block"][:2]+[self._len_cyl]
         self._centroid["sph_r"] = self._centroid["block"][:2]+[self._pattern.get_size()[2]-self._len_cyl]
 
         self._shape = {}
-        self._shape["cyl_l"] = pms.Cylinder({"centroid": self._centroid["cyl_l"], "central": central, "length": self._len_cyl*2, "diameter": diam})
-        self._shape["cyl_r"] = pms.Cylinder({"centroid": self._centroid["cyl_r"], "central": central, "length": self._len_cyl*2, "diameter": diam})
-        self._shape["sph_l"] = pms.Sphere({"centroid": self._centroid["sph_l"], "central": central, "diameter": diam})
-        self._shape["sph_r"] = pms.Sphere({"centroid": self._centroid["sph_r"], "central": central, "diameter": diam})
+        self._shape["cyl_l"] = pms.Cylinder({"centroid": self._centroid["cyl_l"], "central": central, "length": self._len_cyl*2, "diameter": diam-0.5})
+        self._shape["cyl_r"] = pms.Cylinder({"centroid": self._centroid["cyl_r"], "central": central, "length": self._len_cyl*2, "diameter": diam-0.5})
+        self._shape["sph_l"] = pms.Sphere({"centroid": self._centroid["sph_l"], "central": central, "diameter": diam-0.5})
+        self._shape["sph_r"] = pms.Sphere({"centroid": self._centroid["sph_r"], "central": central, "diameter": diam-0.5})
 
         del_list = []
         for shape in self._shape.values():
-            del_list.extend([atom_id for atom_id, atom in enumerate(block.get_atom_list()) if shape.is_in(atom.get_pos())])
+            del_list.extend([atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if shape.is_in(atom.get_pos())])
         matrix.strip(del_list)
 
         # Prepare pore surface
-        self._pore = pms.Pore(block, matrix)
+        self._pore = pms.Pore(self._block, matrix)
         self._pore.set_name("pore")
         self._pore.prepare()
 
@@ -796,3 +797,228 @@ class PoreCapsule(PoreSystem):
         for mol in mols:
             if not mol.get_short() in self._sort_list:
                 self._sort_list.append(mol.get_short())
+
+
+    ############
+    # Analysis #
+    ############
+    def diameter(self):
+        """Calculate true cylinder diameter after drilling and preperation. This
+        is done by determining the mean value :math:`\\bar r` of the silicon
+        distances :math:`r_i` of silicon :math:`i` towards the pore center
+
+        .. math::
+
+            \\bar r=\\frac1n\\sum_{i=1}^nr_i
+
+        with the number of silicon atoms :math:`n`. Hereby the silicon atoms are
+        only of the cylidric parts of the capsules. The diameter is then
+
+        .. math::
+
+            d=2\\bar r=\\frac2n\\sum_{i=1}^nr_i.
+
+        Returns
+        -------
+        diameter : float
+            Pore diameter after preperation
+        """
+        # Determine sites in the cylindric part of the pore
+        site_list = []
+        for site in self._site_in:
+            pos = self._block.pos(site)
+            if pos[2] <= self._len_cyl:
+                site_list.append(site)
+            elif pos[2] >= self._pattern.get_size()[2]-self._len_cyl:
+                site_list.append(site)
+
+        # Calculate distance towards central axis of binding site silicon atoms
+        r = [pms.geom.length(pms.geom.vector([self._centroid["block"][0], self._centroid["block"][1], self._block.pos(site)[2]], self._block.pos(site))) for site in site_list]
+
+        # Calculate mean
+        r_bar = sum(r)/len(r) if len(r)>0 else 0
+
+        # Calculate diameter
+        return 2*r_bar
+
+    def roughness(self):
+        """Calculate surface roughness. In the case of a capsule pore one can
+        visualize pulling the cylindric section pore apart, thus flattening the
+        interior surface. The roughness is then determined by calculating the
+        standard deviation of the binding site silicon atoms peaks and valleys.
+
+        It is therefore enough to calculate the distances towards a specific
+        axis, which in this case will be the central axis. The mean value
+        :math:`\\bar r` of the silicon distances :math:`r_i` of silicon
+        :math:`i` towards the pore center, is calculated by
+
+        .. math::
+
+            \\bar r=\\frac1n\\sum_{i=1}^nr_i
+
+        with the number of silicon atoms :math:`n`. Hereby only the silicon
+        atoms within the cyldirc part are considered. This mean value is used in
+        the square root roughness calculation
+
+        .. math::
+
+            R_q = \\sqrt{\\frac1n\\sum_{i=1}^n\\|r_i-\\bar r\\|^2}.
+
+        Returns
+        -------
+        roughness : float
+            Surface roughness
+        """
+        # Determine sites in the cylindric part of the pore
+        site_list = []
+        for site in self._site_in:
+            pos = self._block.pos(site)
+            if pos[2] <= self._len_cyl:
+                site_list.append(site)
+            elif pos[2] >= self._pattern.get_size()[2]-self._len_cyl:
+                site_list.append(site)
+
+        # Calculate distance towards central axis of binding site silicon atoms
+        r = [pms.geom.length(pms.geom.vector([self._centroid["block"][0], self._centroid["block"][1], self._block.pos(site)[2]], self._block.pos(site))) for site in site_list]
+
+        # Calculate mean
+        r_bar = sum(r)/len(r) if len(r)>0 else 0
+
+        # Calculate square root roughness
+        return math.sqrt(sum([(r_i-r_bar)**2 for r_i in r])/len(r)) if len(r)>0 else 0
+
+    def volume(self):
+        """Calculate pore volume. This is done by defining a new shape object
+        with system sizes after pore preparation and using the volume function
+        :func:`porems.shape.Cylinder.volume`.
+
+        Returns
+        -------
+        volume : float
+            Pore volume
+        """
+        diam = self.diameter()
+
+        cylinder = pms.Cylinder({"centroid": [0, 0, 0], "central": [0, 0, 1], "length": self._len_cyl*2, "diameter": diam})
+        sphere = self._shape["sph_l"] = pms.Sphere({"centroid": [0, 0, 0], "central": [0, 0, 1], "diameter": diam})
+
+        return cylinder.volume() + sphere.volume()
+
+    def surface(self):
+        """Calculate pore surface and exterior surface. This is done by defining
+        a new shape object with system sizes after pore preparation and using
+        the surface function :func:`porems.shape.Cylinder.surface`.
+
+        Returns
+        -------
+        surface : dictionary
+            Pore surface of interior and exterior
+        """
+        diam = self.diameter()
+
+        cylinder = pms.Cylinder({"centroid": [0, 0, 0], "central": [0, 0, 1], "length": self._len_cyl*2, "diameter": diam})
+        sphere = self._shape["sph_l"] = pms.Sphere({"centroid": [0, 0, 0], "central": [0, 0, 1], "diameter": diam})
+
+        surf_in = cylinder.surface() + sphere.surface()
+        surf_ex = 2*(self._box[0]*self._box[1]-math.pi*(diam/2)**2)
+
+        return {"in": surf_in, "ex": surf_ex}
+
+    def allocation(self):
+        """Calculate molecule allocation on the surface. Using interior and
+        exterior surfaces, the allocation rates can be determined by counting
+        the number of used molecules on the surfaces.
+
+        Using the conversion function :func:`porems.utils.mols_to_mumol_m2`, the
+        number of molecules is converted to concentration in
+        :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
+
+        Returns
+        -------
+        alloc : dictionary
+            Dictionary containing the surface allocation of all molecules in
+            number of molecules, :math:`\\frac{\\text{mols}}{\\text{nm}^2}` and
+            :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+        """
+        # Get surfaces
+        surf = self.surface()
+        site_dict = self._pore.get_site_dict()
+
+        # Calculate allocation for all molecules
+        alloc = {}
+        for mol in sorted(self._sort_list):
+            for site_type in ["in", "ex"]:
+                if mol in site_dict[site_type]:
+                    if not mol in alloc:
+                        alloc[mol] = {"in": [0, 0, 0], "ex": [0, 0, 0]}
+                    # Number of molecules
+                    alloc[mol][site_type][0] = len(site_dict[site_type][mol])
+
+                    # Molecules per nano meter
+                    alloc[mol][site_type][1] = len(site_dict[site_type][mol])/surf[site_type] if surf[site_type]>0 else 0
+
+                    # Micromolar per meter
+                    alloc[mol][site_type][2] = pms.utils.mols_to_mumol_m2(len(site_dict[site_type][mol]), surf[site_type]) if surf[site_type]>0 else 0
+
+        # OH allocation
+        alloc["OH"] = {"in": [0, 0, 0], "ex": [0, 0, 0]}
+        for site_type in ["in", "ex"]:
+            num_oh = 0
+            num_oh += len(site_dict[site_type]["SL"]) if "SL" in site_dict[site_type] else 0
+            num_oh += len(site_dict[site_type]["SLG"])*2 if "SLG" in site_dict[site_type] else 0
+
+            alloc["OH"][site_type][0] = num_oh
+            alloc["OH"][site_type][1] = num_oh/surf[site_type] if surf[site_type]>0 else 0
+            alloc["OH"][site_type][2] = pms.utils.mols_to_mumol_m2(num_oh, surf[site_type]) if surf[site_type]>0 else 0
+
+        # Hydroxylation - Total number of binding sites
+        alloc["Hydro"] = {"in": [0, 0, 0], "ex": [0, 0, 0]}
+        for site_type in ["in", "ex"]:
+            num_tot = len(sum([x["o"] for x in self._pore.get_sites().values() if x["type"]==site_type], []))
+            alloc["Hydro"][site_type][0] = num_tot
+            alloc["Hydro"][site_type][1] = num_tot/surf[site_type] if surf[site_type]>0 else 0
+            alloc["Hydro"][site_type][2] = pms.utils.mols_to_mumol_m2(num_tot, surf[site_type]) if surf[site_type]>0 else 0
+
+        return alloc
+
+    def table(self, decimals=3):
+        """Create properties as pandas table for easy viewing.
+
+        Parameters
+        ----------
+        decimals : integer, optional
+            Number of decimals to be rounded to
+
+        Returns
+        -------
+        tables : dictionary
+            Dictionary of pandas table of all properties
+        """
+        # Initialize
+        tables = {}
+        form = "%."+str(decimals)+"f"
+
+        # Properties table
+        data_props = {}
+        data_props["Dimension"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
+        data_props["Diameter"] = form%self.diameter()
+        data_props["Reservoir"] = form%self.reservoir()
+        data_props["Roughness"] = form%self.roughness()
+        data_props["Surface"] = form%self.surface()["in"]
+        data_props["Volume"] = form%self.volume()
+
+        tables["props"] = pd.DataFrame.from_dict(data_props, orient="index", columns={"d = "+"%.2f"%self._diam+" nm"})
+
+        # Allocation table
+        data_alloc = {}
+        allocation = self.allocation()
+        for mol in allocation:
+            data_alloc[mol] = {}
+            for site_type in allocation[mol]:
+                data_alloc[mol][site_type+" - Count"] = allocation[mol][site_type][0]
+                data_alloc[mol][site_type+" - mols/nm^2"] = form%allocation[mol][site_type][1]
+                data_alloc[mol][site_type+" - mumol/m^2"] = form%allocation[mol][site_type][2]
+
+        tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
+
+        return tables

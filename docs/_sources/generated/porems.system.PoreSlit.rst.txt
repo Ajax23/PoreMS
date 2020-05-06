@@ -17,3 +17,19 @@ PoreSlit
 
     ~PoreSlit._normal_in
     ~PoreSlit.attach
+
+
+  .. rubric:: Analysis
+
+  .. autosummary::
+
+    ~PoreSlit.box
+    ~PoreSlit.centroid
+
+
+  .. rubric:: Finalization
+
+  .. autosummary::
+
+    ~PoreSlit.finalize
+    ~PoreSlit.store
