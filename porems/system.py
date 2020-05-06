@@ -497,7 +497,7 @@ class PoreCylinder(PoreSystem):
             data_alloc[mol] = {}
             for site_type in allocation[mol]:
                 data_alloc[mol][site_type+" - Count"] = allocation[mol][site_type][0]
-                data_alloc[mol][site_type+" - mols/nm^2"] = form%allocation[mol][site_type][1]
+                data_alloc[mol][site_type+" - groups/nm^2"] = form%allocation[mol][site_type][1]
                 data_alloc[mol][site_type+" - mumol/m^2"] = form%allocation[mol][site_type][2]
 
         tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
@@ -1016,7 +1016,7 @@ class PoreCapsule(PoreSystem):
             data_alloc[mol] = {}
             for site_type in allocation[mol]:
                 data_alloc[mol][site_type+" - Count"] = allocation[mol][site_type][0]
-                data_alloc[mol][site_type+" - mols/nm^2"] = form%allocation[mol][site_type][1]
+                data_alloc[mol][site_type+" - groups/nm^2"] = form%allocation[mol][site_type][1]
                 data_alloc[mol][site_type+" - mumol/m^2"] = form%allocation[mol][site_type][2]
 
         tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
