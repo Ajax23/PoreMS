@@ -695,7 +695,7 @@ class UserModelCase(unittest.TestCase):
         pore.finalize()
 
         # Filled pore
-        pore = pms.PoreCapsule([6, 6, 12], 4, 2)
+        pore = pms.PoreCapsule([6, 6, 10], 4, 2)
 
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", trials=10)
         pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex", trials=10)
@@ -705,6 +705,16 @@ class UserModelCase(unittest.TestCase):
 
         pore.finalize()
         pore.store("output/capsule")
+
+        ## Properties
+        self.assertEqual(round(pore.diameter(), 4), 4.0554)
+        self.assertEqual([round(x, 4) for x in pore.centroid()["block"]], [3.0775, 3.0935, 5.115])
+        self.assertEqual(round(pore.roughness(), 4), 0.0825)
+        self.assertEqual(round(pore.volume(), 4), 85.5539)
+        self.assertEqual({key: round(item, 4) for key, item in pore.surface().items()}, {'in': 101.6082, 'ex': 48.7117})
+
+        print(pore.table()["props"])
+        print(pore.table()["alloc"])
 
 
 if __name__ == '__main__':

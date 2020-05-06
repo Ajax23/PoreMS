@@ -18,3 +18,26 @@ PoreCapsule
     ~PoreCapsule._normal_ex
     ~PoreCapsule._normal_in
     ~PoreCapsule.attach
+
+
+  .. rubric:: Analysis
+
+  .. autosummary::
+
+    ~PoreCapsule.allocation
+    ~PoreCapsule.box
+    ~PoreCapsule.centroid
+    ~PoreCapsule.diameter
+    ~PoreCapsule.reservoir
+    ~PoreCapsule.roughness
+    ~PoreCapsule.surface
+    ~PoreCapsule.table
+    ~PoreCapsule.volume
+
+
+  .. rubric:: Finalization
+
+  .. autosummary::
+
+    ~PoreCapsule.finalize
+    ~PoreCapsule.store

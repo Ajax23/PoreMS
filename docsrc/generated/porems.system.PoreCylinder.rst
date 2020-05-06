@@ -26,8 +26,19 @@ PoreCylinder
   .. autosummary::
 
     ~PoreCylinder.allocation
+    ~PoreCylinder.box
+    ~PoreCylinder.centroid
     ~PoreCylinder.diameter
+    ~PoreCylinder.reservoir
     ~PoreCylinder.roughness
     ~PoreCylinder.surface
     ~PoreCylinder.table
     ~PoreCylinder.volume
+
+
+  .. rubric:: Finalization
+
+  .. autosummary::
+
+    ~PoreCylinder.finalize
+    ~PoreCylinder.store
