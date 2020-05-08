@@ -55,9 +55,6 @@ extensions = ['sphinx.ext.autodoc',
 autosummary_generate = True
 numpydoc_show_class_members = False
 
-# Hide numbering
-nbsphinx_prompt_width = 0
-
 # autodoc_default_flags = ['members','private-members']
 
 # Add any paths that contain templates here, relative to this directory.
