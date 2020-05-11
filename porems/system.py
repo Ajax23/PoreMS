@@ -760,7 +760,9 @@ class PoreCapsule(PoreSystem):
         """
         return [0, 0, -1] if pos[2] < self._centroid["block"][2] else [0, 0, 1]
 
-    def attach(self, mol, mount, axis, amount, site_type, scale=1, trials=1000, is_rotate=False):
+
+
+    def attach(self, mol, mount, axis, amount, site_type, scale=1, trials=1000, inp="num", is_rotate=False):
         """Attach molecule on the surface.
 
         Parameters
@@ -779,6 +781,8 @@ class PoreCapsule(PoreSystem):
             Circumference scaling around the molecule position
         trials : integer, optional
             Number of trials picking a random site
+        inp : string, optional
+            Input type - **num** Number of molecules, **molar** :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
         """
@@ -787,6 +791,14 @@ class PoreCapsule(PoreSystem):
             print("Pore: Wrong site_type input...")
             return
 
+        if inp not in ["num", "molar"]:
+            print("Pore: Wrong inp type...")
+            return
+
+        # Amount
+        amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type])) if inp=="molar" else amount
+
+        # Sites and normal vector
         sites = self._site_in if site_type=="in" else self._site_ex
         normal = self._normal_in if site_type=="in" else self._normal_ex
 
