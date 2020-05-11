@@ -810,16 +810,16 @@ class PoreSlit(PoreSystem):
         data_props["Surface"] = form%self.surface()
         data_props["Volume"] = form%self.volume()
 
-        tables["props"] = pd.DataFrame.from_dict(data_props, orient="index", columns={"d = "+"%.2f"%self._height+" nm"})
+        tables["props"] = pd.DataFrame.from_dict(data_props, orient="index", columns={"h = "+"%.2f"%self._height+" nm"})
 
         # Allocation table
         data_alloc = {}
         allocation = self.allocation()
         for mol in allocation:
             data_alloc[mol] = {}
-            data_alloc[mol]["in"+" - Count"] = allocation[mol]["in"][0]
-            data_alloc[mol]["in"+" - groups/nm^2"] = form%allocation[mol]["in"][1]
-            data_alloc[mol]["in"+" - mumol/m^2"] = form%allocation[mol]["in"][2]
+            data_alloc[mol]["Count"] = allocation[mol]["in"][0]
+            data_alloc[mol]["groups/nm^2"] = form%allocation[mol]["in"][1]
+            data_alloc[mol]["mumol/m^2"] = form%allocation[mol]["in"][2]
 
         tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
 
