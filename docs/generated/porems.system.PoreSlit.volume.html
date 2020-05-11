@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PoreSlit.attach &#8212; PoreMS 0.2.0 documentation</title>
+    <title>PoreSlit.volume &#8212; PoreMS 0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -80,7 +80,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">PoreSlit.attach</a></li>
+<li><a class="reference internal" href="#">PoreSlit.volume</a></li>
 </ul>
 </ul>
 </li>
@@ -111,40 +111,21 @@
     <div class="body col-md-12 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="poreslit-attach">
-<h1>PoreSlit.attach<a class="headerlink" href="#poreslit-attach" title="Permalink to this headline">¶</a></h1>
+<div class=col-md-9 content><div class="section" id="poreslit-volume">
+<h1>PoreSlit.volume<a class="headerlink" href="#poreslit-volume" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="porems.system.PoreSlit.attach">
-<code class="descclassname">PoreSlit.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>scale=1</em>, <em>trials=1000</em>, <em>inp='num'</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreSlit.attach" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attach molecule on the surface.</p>
+<dt id="porems.system.PoreSlit.volume">
+<code class="descclassname">PoreSlit.</code><code class="descname">volume</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreSlit.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate pore volume. This is done by defining a new shape object
+with system sizes after pore preparation and using the volume function
+<a class="reference internal" href="porems.shape.Cuboid.volume.html#porems.shape.Cuboid.volume" title="porems.shape.Cuboid.volume"><code class="xref py py-func docutils literal"><span class="pre">porems.shape.Cuboid.volume()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule</span></dt>
-<dd><p class="first last">Molecule object to attach</p>
-</dd>
-<dt><strong>mount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer</span></dt>
-<dd><p class="first last">Atom id of the molecule that is placed on the surface silicon atom</p>
-</dd>
-<dt><strong>axis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">List of two atom ids of the molecule that define the molecule axis</p>
-</dd>
-<dt><strong>amount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Number of molecules to attach</p>
-</dd>
-<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Circumference scaling around the molecule position</p>
-</dd>
-<dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
-<dd><p class="first last">Number of trials picking a random site</p>
-</dd>
-<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Input type - <strong>num</strong> Number of molecules, <strong>molar</strong> <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span></p>
-</dd>
-<dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True to randomly rotate molecule around own axis</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>volume</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Pore volume</p>
 </dd>
 </dl>
 </td>

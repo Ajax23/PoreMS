@@ -23,8 +23,15 @@ PoreSlit
 
   .. autosummary::
 
+    ~PoreSlit.allocation
     ~PoreSlit.box
     ~PoreSlit.centroid
+    ~PoreSlit.height
+    ~PoreSlit.reservoir
+    ~PoreSlit.roughness
+    ~PoreSlit.surface
+    ~PoreSlit.table
+    ~PoreSlit.volume
 
 
   .. rubric:: Finalization

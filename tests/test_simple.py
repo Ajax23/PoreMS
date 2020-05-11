@@ -684,8 +684,23 @@ class UserModelCase(unittest.TestCase):
 
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, trials=10)
 
+        # Special cases
+        print()
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, inp="DOTA"))
+
+        # Finalize
         pore.finalize()
         pore.store("output/slit")
+
+        ## Properties
+        self.assertEqual(round(pore.height(), 4), 3.0209)
+        self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0147, 3.0572, 3.0569])
+        self.assertEqual(round(pore.roughness(), 4), 0.0844)
+        self.assertEqual(round(pore.volume(), 4), 113.7253)
+        self.assertEqual(round(pore.surface(), 4), 75.2928)
+
+        print(pore.table()["props"])
+        print(pore.table()["alloc"])
 
     def test_pore_capsule(self):
         # self.skipTest("Temporary")
@@ -700,9 +715,12 @@ class UserModelCase(unittest.TestCase):
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", trials=10)
         pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex", trials=10)
 
+        # Special cases
         print()
-        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "DOTA"))
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, site_type="DOTA"))
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", inp="DOTA"))
 
+        # Finalize
         pore.finalize()
         pore.store("output/capsule")
 
