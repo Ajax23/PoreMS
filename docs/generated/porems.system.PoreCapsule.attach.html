@@ -115,7 +115,7 @@
 <h1>PoreCapsule.attach<a class="headerlink" href="#porecapsule-attach" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.system.PoreCapsule.attach">
-<code class="descclassname">PoreCapsule.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>site_type</em>, <em>scale=1</em>, <em>trials=1000</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCapsule.attach" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">PoreCapsule.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>site_type</em>, <em>scale=1</em>, <em>trials=1000</em>, <em>inp='num'</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCapsule.attach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach molecule on the surface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -142,6 +142,9 @@
 </dd>
 <dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
 <dd><p class="first last">Number of trials picking a random site</p>
+</dd>
+<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Input type - <strong>num</strong> Number of molecules, <strong>molar</strong> <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span></p>
 </dd>
 <dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to randomly rotate molecule around own axis</p>
