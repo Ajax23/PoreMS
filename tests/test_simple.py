@@ -576,7 +576,9 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(len(site_ex), 201)
 
         # Objectify grid
-        grid_atoms = [atom for atom in matrix.bound(0, "gt") if not atom in matrix.bound(1)+list(site_list.keys())]
+        non_grid = matrix.bound(1)+list(site_list.keys())
+        bonded = matrix.bound(0, "gt")
+        grid_atoms = [atom for atom in bonded if not atom in non_grid]
         mol_obj = pore.objectify(grid_atoms)
         self.assertEqual(len(mol_obj), 8279)
         pms.Store(pms.Molecule(name="pore_cylinder_grid", inp=mol_obj), "output").gro(use_atom_names=True)

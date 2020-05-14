@@ -172,7 +172,9 @@ class PoreCylinder(PoreSystem):
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Objectify grid
-        grid_atoms = [atom for atom in matrix.bound(0, "gt") if not atom in matrix.bound(1)+list(site_list.keys())]
+        non_grid = matrix.bound(1)+list(site_list.keys())
+        bonded = matrix.bound(0, "gt")
+        grid_atoms = [atom for atom in bonded if not atom in non_grid]
         self._pore.objectify(grid_atoms)
 
 
@@ -572,7 +574,9 @@ class PoreSlit(PoreSystem):
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
 
         # Objectify grid
-        grid_atoms = [atom for atom in matrix.bound(0, "gt") if not atom in matrix.bound(1)+list(site_list.keys())]
+        non_grid = matrix.bound(1)+list(site_list.keys())
+        bonded = matrix.bound(0, "gt")
+        grid_atoms = [atom for atom in bonded if not atom in non_grid]
         self._pore.objectify(grid_atoms)
 
 
@@ -920,7 +924,9 @@ class PoreCapsule(PoreSystem):
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Objectify grid
-        grid_atoms = [atom for atom in matrix.bound(0, "gt") if not atom in matrix.bound(1)+list(site_list.keys())]
+        non_grid = matrix.bound(1)+list(site_list.keys())
+        bonded = matrix.bound(0, "gt")
+        grid_atoms = [atom for atom in bonded if not atom in non_grid]
         self._pore.objectify(grid_atoms)
 
 
