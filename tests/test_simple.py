@@ -662,7 +662,7 @@ class UserModelCase(unittest.TestCase):
 
         # Finalize
         pore.finalize()
-        pore.store("output/cylinder")
+        pore.store("output/cylinder/")
 
         ## Properties
         self.assertEqual(round(pore.diameter(), 4), 4.0513)
@@ -692,7 +692,7 @@ class UserModelCase(unittest.TestCase):
 
         # Finalize
         pore.finalize()
-        pore.store("output/slit")
+        pore.store("output/slit/")
 
         ## Properties
         self.assertEqual(round(pore.height(), 4), 3.0209)
@@ -724,7 +724,7 @@ class UserModelCase(unittest.TestCase):
 
         # Finalize
         pore.finalize()
-        pore.store("output/capsule")
+        pore.store("output/capsule/")
 
         ## Properties
         self.assertEqual(round(pore.diameter(), 4), 4.0554)
