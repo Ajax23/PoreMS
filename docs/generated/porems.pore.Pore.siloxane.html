@@ -115,11 +115,12 @@
 <h1>Pore.siloxane<a class="headerlink" href="#pore-siloxane" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.pore.Pore.siloxane">
-<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>trials=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attach siloxane bridges on the surface according to Krishna et al.
-(2009). Here oxygen atoms wichi were at least 0.27 nm near each other
-could be converted to siloxan bridges, by removing one oxygen atom and
-moving the other at the center of the two.</p>
+<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>slx_dist=0.31</em>, <em>trials=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach siloxane bridges on the surface similar to Krishna et al.
+(2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
+near each other can be converted to siloxan bridges, by removing one
+oxygen atom of the silanol groups and moving the other at the center of
+the two.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -134,6 +135,9 @@ moving the other at the center of the two.</p>
 <dt><strong>normal</strong> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
 <dd><p class="first last">Function that returns the normal vector of the surface for a given
 position</p>
+</dd>
+<dt><strong>slx_dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Silicon atom distance to search for parters in proximity</p>
 </dd>
 <dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
 <dd><p class="first last">Number of trials picking a random site</p>

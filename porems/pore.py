@@ -299,11 +299,12 @@ class Pore():
 
         return mol_list
 
-    def siloxane(self, sites, amount, normal, trials=1000):
-        """Attach siloxane bridges on the surface according to Krishna et al.
-        (2009). Here oxygen atoms wichi were at least 0.27 nm near each other
-        could be converted to siloxan bridges, by removing one oxygen atom and
-        moving the other at the center of the two.
+    def siloxane(self, sites, amount, normal, slx_dist=0.31, trials=1000):
+        """Attach siloxane bridges on the surface similar to Krishna et al.
+        (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
+        near each other can be converted to siloxan bridges, by removing one
+        oxygen atom of the silanol groups and moving the other at the center of
+        the two.
 
         Parameters
         ----------
@@ -314,6 +315,8 @@ class Pore():
         normal : function
             Function that returns the normal vector of the surface for a given
             position
+        slx_dist : float
+            Silicon atom distance to search for parters in proximity
         trials : integer, optional
             Number of trials picking a random site
         """
@@ -323,7 +326,6 @@ class Pore():
         mol.add("O", 0, r=0.155, name="OM")
         mount = 0
         axis = [0, 1]
-        slx_dist = 0.27
 
         # Rotate molecule towards z-axis
         mol_axis = mol.bond(*axis)
