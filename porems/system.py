@@ -150,7 +150,7 @@ class PoreCylinder(PoreSystem):
 
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
         oxygen_out = matrix.bound(1)
 
         # Carve out shape
@@ -554,7 +554,7 @@ class PoreSlit(PoreSystem):
 
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
 
         # Carve out shape
         self._centroid = self._block.centroid()
@@ -888,7 +888,7 @@ class PoreCapsule(PoreSystem):
 
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
         oxygen_out = matrix.bound(1)
 
         # Carve out shape

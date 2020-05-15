@@ -395,7 +395,7 @@ class UserModelCase(unittest.TestCase):
         block.set_name("matrix")
         pms.Store(block, "output").gro()
         dice = pms.Dice(block, 0.2, True)
-        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 10e-2)
+        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
 
         matrix = pms.Matrix(bonds)
         connect = matrix.get_matrix()
@@ -424,7 +424,7 @@ class UserModelCase(unittest.TestCase):
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cylinder")
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 45, True))
 
@@ -464,7 +464,7 @@ class UserModelCase(unittest.TestCase):
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_sphere")
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
 
@@ -501,7 +501,7 @@ class UserModelCase(unittest.TestCase):
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cuboid")
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
 
@@ -544,7 +544,7 @@ class UserModelCase(unittest.TestCase):
         block.set_name("pore_cylinder_block")
 
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 10e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
         oxygen_out = matrix.bound(1)
 
         centroid = block.centroid()
