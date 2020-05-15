@@ -334,8 +334,8 @@ class Pore():
 
         # Search for silicon atoms near each other
         si_atoms = [self._block.get_atom_list()[atom] for atom in sites]
-        si_dice = Dice(Molecule(inp=si_atoms), slx_dist, True)
-        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], 0, slx_dist)
+        si_dice = Dice(Molecule(inp=si_atoms), slx_dist+0.1, True)
+        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], 0, slx_dist+1e-2)
         si_matrix = {x[0]: x[1] for x in si_proxi}
 
         # Run through number of siloxan bridges to add
