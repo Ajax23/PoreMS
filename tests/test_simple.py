@@ -419,7 +419,7 @@ class UserModelCase(unittest.TestCase):
     # Shape #
     #########
     def test_shape_cylinder(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cylinder")
@@ -459,7 +459,7 @@ class UserModelCase(unittest.TestCase):
         # plt.show()
 
     def test_shape_sphere(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_sphere")
@@ -496,7 +496,7 @@ class UserModelCase(unittest.TestCase):
         # plt.show()
 
     def test_shape_cuboid(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cuboid")
@@ -533,7 +533,7 @@ class UserModelCase(unittest.TestCase):
     # Pore #
     ########
     def test_pore(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         orient = "z"
         pattern = pms.BetaCristobalit()
@@ -675,7 +675,7 @@ class UserModelCase(unittest.TestCase):
         print(pore.table()["alloc"])
 
     def test_pore_slit(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         # Empty pore
         pore = pms.PoreSlit([4, 4, 4], 2)
@@ -705,7 +705,7 @@ class UserModelCase(unittest.TestCase):
         print(pore.table()["alloc"])
 
     def test_pore_capsule(self):
-        self.skipTest("Temporary")
+        # self.skipTest("Temporary")
 
         # Empty pore
         pore = pms.PoreCapsule([4, 4, 4], 1, 1)
