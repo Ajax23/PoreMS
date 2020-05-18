@@ -115,7 +115,7 @@
 <h1>PoreCylinder<a class="headerlink" href="#porecylinder" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="porems.system.PoreCylinder">
-<em class="property">class </em><code class="descclassname">porems.system.</code><code class="descname">PoreCylinder</code><span class="sig-paren">(</span><em>size</em>, <em>diam</em>, <em>res=5</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">porems.system.</code><code class="descname">PoreCylinder</code><span class="sig-paren">(</span><em>size, diam, res=5, hydro=[0, 0]</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class carves a cylindric pore system out of a
 <span class="math">\(\beta\)</span>-cristobalite block.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -131,6 +131,10 @@
 </dd>
 <dt><strong>res</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Reservoir size on each side</p>
+</dd>
+<dt><strong>hydro: list</strong></dt>
+<dd><p class="first last">Hydroxilation degree for interior and exterior of the pore in
+<span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>.</p>
 </dd>
 </dl>
 </td>

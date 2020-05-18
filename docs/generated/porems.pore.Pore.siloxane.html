@@ -115,7 +115,7 @@
 <h1>Pore.siloxane<a class="headerlink" href="#pore-siloxane" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.pore.Pore.siloxane">
-<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>slx_dist=0.31</em>, <em>trials=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>slx_dist=0.507</em>, <em>trials=1000</em>, <em>site_type='in'</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach siloxane bridges on the surface similar to Krishna et al.
 (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
 near each other can be converted to siloxan bridges, by removing one
@@ -141,6 +141,9 @@ position</p>
 </dd>
 <dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
 <dd><p class="first last">Number of trials picking a random site</p>
+</dd>
+<dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Site type - interior <strong>in</strong>, exterior <strong>ex</strong></p>
 </dd>
 </dl>
 </td>
