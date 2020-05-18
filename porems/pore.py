@@ -299,7 +299,7 @@ class Pore():
 
         return mol_list
 
-    def siloxane(self, sites, amount, normal, slx_dist=0.31, trials=1000):
+    def siloxane(self, sites, amount, normal, slx_dist=0.507, trials=1000, site_type="in"):
         """Attach siloxane bridges on the surface similar to Krishna et al.
         (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
         near each other can be converted to siloxan bridges, by removing one
@@ -319,7 +319,14 @@ class Pore():
             Silicon atom distance to search for parters in proximity
         trials : integer, optional
             Number of trials picking a random site
+        site_type : string, optional
+            Site type - interior **in**, exterior **ex**
         """
+        # Check site type input
+        if not site_type in ["in", "ex"]:
+            print("Pore - Wrong attachement site-type...")
+            return
+
         # Create siloxane molecule
         mol = Molecule("siloxane", "SLX")
         mol.add("O", [0, 0, 0], name="OM")
@@ -335,7 +342,7 @@ class Pore():
         # Search for silicon atoms near each other
         si_atoms = [self._block.get_atom_list()[atom] for atom in sites]
         si_dice = Dice(Molecule(inp=si_atoms), slx_dist+0.1, True)
-        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], 0, slx_dist+1e-2)
+        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], slx_dist, 1e-2)
         si_matrix = {x[0]: x[1] for x in si_proxi}
 
         # Run through number of siloxan bridges to add
@@ -371,9 +378,9 @@ class Pore():
 
                 # Add molecule to molecule list and global dictionary
                 mol_list.append(mol_temp)
-                if not mol_temp.get_short() in self._mol_dict["in"]:
-                    self._mol_dict["in"][mol_temp.get_short()] = []
-                self._mol_dict["in"][mol_temp.get_short()].append(mol_temp)
+                if not mol_temp.get_short() in self._mol_dict[site_type]:
+                    self._mol_dict[site_type][mol_temp.get_short()] = []
+                self._mol_dict[site_type][mol_temp.get_short()].append(mol_temp)
 
                 # Remove oxygen atom and if not geminal delete site
                 for si_id in si:

@@ -54,6 +54,36 @@ class PoreSystem():
         return self._centroid
 
 
+    ##############
+    # Allocation #
+    ##############
+    def _siloxane(self, hydro, site_type):
+        """Attach siloxane bridges using function
+        :func:`porems.pore.Pore.siloxane`.
+        """
+        # Amount
+        site_list = self._pore.get_sites()
+        sites = self._site_in if site_type=="in" else self._site_ex
+
+        oh = len(sum([site_list[site]["o"] for site in sites], []))
+        oh_goal = pms.utils.mumol_m2_to_mols(hydro, self.surface()[site_type])
+        amount = round((oh-oh_goal)/2)
+
+        # Fill siloxane
+        if amount > 0:
+            # Sites and normal vector
+            sites = self._site_in if site_type=="in" else self._site_ex
+            normal = self._normal_in if site_type=="in" else self._normal_ex
+
+            # Run attachment
+            mols = self._pore.siloxane(sites, amount, normal, site_type=site_type)
+
+            # Add to sorting list
+            for mol in mols:
+                if not mol.get_short() in self._sort_list:
+                    self._sort_list.append(mol.get_short())
+
+
     ################
     # Finalization #
     ################
@@ -129,7 +159,7 @@ class PoreCylinder(PoreSystem):
 
         pore.store("output/")
     """
-    def __init__(self, size, diam, res=5):
+    def __init__(self, size, diam, res=5, hydro=[0, 0]):
         # Call super class
         super(PoreCylinder, self).__init__()
 
@@ -168,6 +198,15 @@ class PoreCylinder(PoreSystem):
         # Determine sites
         self._pore.sites(oxygen_out)
         site_list = self._pore.get_sites()
+        self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
+        # Siloxane bridges
+        if hydro[0]:
+            self._siloxane(hydro[0], "in")
+        if hydro[1]:
+            self._siloxane(hydro[1], "ex")
+
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
