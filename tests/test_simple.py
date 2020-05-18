@@ -629,6 +629,7 @@ class UserModelCase(unittest.TestCase):
 
         # Error test
         self.assertIsNone(pore.attach(mol, 0, [0, 1], site_in, 0, cylinder.normal, site_type="DOTA"))
+        self.assertIsNone(pore.siloxane(site_in, 0, cylinder.normal, site_type="DOTA"))
 
         # Getter and Setter
         self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
