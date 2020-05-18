@@ -20,6 +20,13 @@ PoreSystem
     ~PoreSystem.reservoir
 
 
+  .. rubric:: Allocation
+
+  .. autosummary::
+
+    ~PoreSystem._siloxane
+
+
   .. rubric:: Finalization
 
   .. autosummary::

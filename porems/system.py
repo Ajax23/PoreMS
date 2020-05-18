@@ -60,6 +60,14 @@ class PoreSystem():
     def _siloxane(self, hydro, site_type):
         """Attach siloxane bridges using function
         :func:`porems.pore.Pore.siloxane`.
+
+        Parameters
+        ----------
+        hydro: float
+            Hydroxilation degree in
+            :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
+        site_type : string, optional
+            Site type - interior **in**, exterior **ex**
         """
         # Amount
         site_list = self._pore.get_sites()
@@ -140,6 +148,9 @@ class PoreCylinder(PoreSystem):
         Cylinder diameter
     res : float, optional
         Reservoir size on each side
+    hydro: list
+        Hydroxilation degree for interior and exterior of the pore in
+        :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
 
     Examples
     --------
