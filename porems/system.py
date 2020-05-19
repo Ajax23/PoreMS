@@ -98,8 +98,8 @@ class PoreSystem():
     def finalize(self):
         """Finalize pore system."""
         # Fill silanol molecules on empty binding sites
-        mols_in = self._pore.fill_sites(self._site_in, self._normal_in, "in") if self._site_in else  []
-        mols_ex = self._pore.fill_sites(self._site_ex, self._normal_ex, "ex") if self._site_ex else  []
+        mols_in = self._pore.fill_sites(self._site_in, self._normal_in, "in") if self._site_in else []
+        mols_ex = self._pore.fill_sites(self._site_ex, self._normal_ex, "ex") if self._site_ex else []
 
         # Add to sorting list
         for mols in [mols_in, mols_ex]:
