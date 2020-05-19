@@ -1020,8 +1020,6 @@ class PoreCapsule(PoreSystem):
         """
         return [0, 0, -1] if pos[2] < self._centroid["block"][2] else [0, 0, 1]
 
-
-
     def attach(self, mol, mount, axis, amount, site_type, scale=1, trials=1000, inp="num", is_rotate=False):
         """Attach molecule on the surface.
 
