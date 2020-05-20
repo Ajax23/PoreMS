@@ -295,7 +295,7 @@ class Pore():
                 if is_proxi:
                     proxi_list = [sites[x] for x in si_matrix[sites.index(si)]]
                     if len(proxi_list) > 0:
-                        mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), normal, is_proxi=False, is_random=False))
+                        mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), normal, site_type=site_type, is_proxi=False, is_random=False))
 
         return mol_list
 

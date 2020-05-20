@@ -700,7 +700,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0147, 3.0572, 3.0569])
         self.assertEqual(round(pore.roughness(), 4), 0.0844)
         self.assertEqual(round(pore.volume(), 4), 113.7253)
-        self.assertEqual(round(pore.surface(), 4), 75.2928)
+        self.assertEqual(round(pore.surface()["in"], 4), 75.2928)
 
         print(pore.table()["props"])
         print(pore.table()["alloc"])
