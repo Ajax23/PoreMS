@@ -10,16 +10,6 @@ PoreSystem
 
 .. autoclass:: PoreSystem
 
-
-  .. rubric:: Analysis
-
-  .. autosummary::
-
-    ~PoreSystem.box
-    ~PoreSystem.centroid
-    ~PoreSystem.reservoir
-
-
   .. rubric:: Allocation
 
   .. autosummary::
@@ -33,3 +23,13 @@ PoreSystem
 
     ~PoreSystem.finalize
     ~PoreSystem.store
+
+
+  .. rubric:: Analysis
+
+  .. autosummary::
+
+    ~PoreSystem.allocation
+    ~PoreSystem.box
+    ~PoreSystem.centroid
+    ~PoreSystem.reservoir
