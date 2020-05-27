@@ -272,11 +272,10 @@ class PoreCylinder(PoreSystem):
         # Siloxane bridges
         if hydro[0]:
             self._siloxane(hydro[0], "in")
+            self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         if hydro[1]:
             self._siloxane(hydro[1], "ex")
-
-        self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+            self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Objectify grid
         non_grid = matrix.bound(1)+list(site_list.keys())
