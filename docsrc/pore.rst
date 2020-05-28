@@ -49,26 +49,24 @@ Finally, DMDMS will be constructed as a new molecule.
 
   # Define dictionaries for bond length and angles
   b = {"sio": 0.155, "sic": 0.186, "ch": 0.109 ,"co": 0.123}
-  a = {"ccc": 30.00, "cch": 109.47, "siosi": 126.12}
 
   # Build molecules
   dmdms.add("Si", [0, 0, 0])
   dmdms.add("O", 0, r=b["sio"])
-  dmdms.add("Si", 1, bond=[1, 0], r=b["sio"], theta=a["siosi"])
+  dmdms.add("Si", 1, r=b["sio"])
 
   for i in range(3):
       if i==0:
-          dmdms.add("O", 2, bond=[2,1], r=b["sio"], theta=a["siosi"]+25, phi=60+120*i)
+          dmdms.add("O", 2, r=b["sio"], theta=50, phi=120*i)
       else:
-          dmdms.add("C", 2, bond=[2,1], r=b["sic"], theta=a["cch"]+30, phi=60+120*i)
+          dmdms.add("C", 2, r=b["sic"], theta=50, phi=120*i)
 
-  dmdms.add("C", 3, bond=[3,2], r=b["co"], theta=-a["siosi"]-20, phi=0)
+  dmdms.add("C", 3, r=b["co"])
 
-  # Add hydrogens
+  # Add hydrogenes
   for i in range(4, 6+1):
       for j in range(3):
-          temp = 2 if i<6 else 3
-          dmdms.add("H", i, bond=[i,temp], r=b["ch"], theta=a["cch"]+35, phi=60+120*j)
+          dmdms.add("H", i, r=b["ch"], theta=30, phi=120*j)
 
 Once the molecules are defined, they can be attached on the surface. Since the functionalization is done iteratively, special placement, and molecules with a lower concentration on the surface have a higher priority and should be attached first.
 
@@ -76,7 +74,7 @@ Since the catalyst molecules are placed far enough apart so they do not interact
 
 .. code-block:: python
 
-  pore.attach_special(mol=catalyst, mount=[37], axis=[34, 22], amount=2, symmetry="point")
+  pore.attach_special(mol=catalyst, mount=37, axis=[34, 22], amount=2, symmetry="point")
 
 The other two molecules will be attached using the conventional attachment function
 
@@ -125,32 +123,30 @@ To sum it up, the complete code is as follows
 
   ## Define dictionaries for bond length and angles
   b = {"sio": 0.155, "sic": 0.186, "ch": 0.109 ,"co": 0.123}
-  a = {"ccc": 30.00, "cch": 109.47, "siosi": 126.12}
 
   ## Build molecules
   dmdms.add("Si", [0, 0, 0])
   dmdms.add("O", 0, r=b["sio"])
-  dmdms.add("Si", 1, bond=[1, 0], r=b["sio"], theta=a["siosi"])
+  dmdms.add("Si", 1, r=b["sio"])
 
   for i in range(3):
       if i==0:
-          dmdms.add("O", 2, bond=[2,1], r=b["sio"], theta=a["siosi"]+25, phi=60+120*i)
+          dmdms.add("O", 2, r=b["sio"], theta=50, phi=120*i)
       else:
-          dmdms.add("C", 2, bond=[2,1], r=b["sic"], theta=a["cch"]+30, phi=60+120*i)
+          dmdms.add("C", 2, r=b["sic"], theta=50, phi=120*i)
 
-  dmdms.add("C", 3, bond=[3,2], r=b["co"], theta=-a["siosi"]-20, phi=0)
+  dmdms.add("C", 3, r=b["co"])
 
-  ## Add hydrogens
+  ## Add hydrogenes
   for i in range(4, 6+1):
       for j in range(3):
-          temp = 2 if i<6 else 3
-          dmdms.add("H", i, bond=[i,temp], r=b["ch"], theta=a["cch"]+35, phi=60+120*j)
+          dmdms.add("H", i, r=b["ch"], theta=30, phi=120*j)
 
   # Initialize pore
   pore = pms.PoreCylinder([8, 8, 10], 4.8, 5.5)
 
   # Attach Catalyst
-  pore.attach_special(mol=catalyst, si_o=[37, 34], orient=[34, 22], num=2, symmetry="point")
+  pore.attach_special(catalyst, 37, [34, 22], 2, symmetry="point")
 
   # Attach surface molecules
   pore.attach(dmdms, 0, [1, 2], 100, "in")
