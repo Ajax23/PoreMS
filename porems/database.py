@@ -40,7 +40,7 @@ masses = {"H":    1.0079,  # Hydrogen
           "As":  74.9216,  # Arsenic
           "Se":  78.9600,  # Selenium
           "Br":  79.9040,  # Bromine
-          "K":   83.8000,  # Krypton
+          "Kr":  83.8000,  # Krypton
           "Rb":  85.4678,  # Rubidium
           "Sr":  87.6200,  # Strontium
           "Y":   88.9059,  # Yttrium
