@@ -8,7 +8,6 @@
 import math
 import multiprocessing as mp
 
-import porems.utils as utils
 import porems.geometry as geometry
 
 

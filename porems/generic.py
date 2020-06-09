@@ -239,7 +239,6 @@ def tms(name="tms", short="TMS", separation=30, is_si=True, is_hydro=True):
 
     # Define bond lengths and angles
     b = {"sio": 0.155, "sic": 0.186, "ch": 0.109, "co": 0.143, "cc": 0.153}
-    a = {"ccc": 30.00, "cch": 109.47, "siosi": 126.12}
 
     # Build silyl chain
     mol.add(si, [0, 0, 0])

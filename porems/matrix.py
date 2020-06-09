@@ -5,11 +5,6 @@
 ################################################################################
 
 
-import math
-
-import porems.utils as utils
-
-
 class Matrix:
     """The aim of this class is preserving all information of the grid bonds.
 
