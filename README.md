@@ -7,6 +7,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3714549.svg)](https://doi.org/10.5281/zenodo.3714549)
 [![Build Status](https://travis-ci.com/Ajax23/PoreMS.svg?branch=master)](https://travis-ci.com/Ajax23/PoreMS)
 [![codecov](https://codecov.io/gh/Ajax23/PoreMS/branch/master/graph/badge.svg)](https://codecov.io/gh/Ajax23/PoreMS)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Ajax23/PoreMS.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Ajax23/PoreMS/context:python)
 
 ## Documentation
 
