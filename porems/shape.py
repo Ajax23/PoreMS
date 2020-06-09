@@ -240,7 +240,6 @@ class Cylinder(Shape):
         # Cartesian to polar
         r = math.sqrt(x**2+y**2)
         phi = geometry.angle_polar([x, y, z])
-        z = z
 
         # Calculate derivatives
         d_Phi_phi = self.d_Phi_phi(r, phi, z)

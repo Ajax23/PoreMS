@@ -323,7 +323,6 @@ class Store:
 
             # Run through molecules
             for mol in self._mols:
-                atom_types = {}
                 # Run through atoms
                 for atom in mol.get_atom_list():
                     # Write file
