@@ -100,6 +100,7 @@ class Store:
         link = self._link
         mol_name = self._name.lower()
         short = self._inp.get_short()
+        name = name if name else self._name
 
         # Template directory
         package_dir = os.path.split(__file__)[0]+"/"
