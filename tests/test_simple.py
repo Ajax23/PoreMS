@@ -674,6 +674,7 @@ class UserModelCase(unittest.TestCase):
 
         print(pore.table()["props"])
         print(pore.table()["alloc"])
+        print(pore.table()["full"])
 
     def test_pore_slit(self):
         # self.skipTest("Temporary")
