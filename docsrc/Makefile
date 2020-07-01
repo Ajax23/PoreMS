@@ -31,4 +31,3 @@ github:
 	@touch ../docs/.nojekyll
 	@make html
 	@cp -a _build/html/. ../docs
-	@cp -r old_versions/0.1.2 ../docs

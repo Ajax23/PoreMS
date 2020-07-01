@@ -63,7 +63,7 @@ Finally, DMDMS will be constructed as a new molecule.
 
   dmdms.add("C", 3, r=b["co"])
 
-  # Add hydrogenes
+  # Add hydrogens
   for i in range(4, 6+1):
       for j in range(3):
           dmdms.add("H", i, r=b["ch"], theta=30, phi=120*j)
@@ -96,8 +96,9 @@ In order to show the properties of the generated pore, use the table function
   tables = pore.table()
   print(tables["props"])
   print(tables["alloc"])
+  print(tables["full"])
 
-This returns a dictionary of pandas data frames for pore properties **props** and allocation **alloc**.
+This returns a dictionary of pandas data frames for pore properties **props**, allocation **alloc** and a table with all pore and allocation properties combined in a single **full** table.
 
 At this point the pore generation is completed and what is left is converting the programs data structure into a readable file-format using the functionalities of the Store class. For this a store function is provided that creates a structure file in the GROMACS format, a main topology containing the number of atoms, a topology for the basic surface groups and grid atoms and a pickle file of the pore object
 
@@ -110,6 +111,7 @@ To sum it up, the complete code is as follows
 .. code-block:: python
 
   import porems as pms
+
 
   # Create TMS molecule
   tms = pms.gen.tms()
@@ -137,26 +139,34 @@ To sum it up, the complete code is as follows
 
   dmdms.add("C", 3, r=b["co"])
 
-  ## Add hydrogenes
+  ## Add hydrogens
   for i in range(4, 6+1):
       for j in range(3):
           dmdms.add("H", i, r=b["ch"], theta=30, phi=120*j)
+
 
   # Initialize pore
   pore = pms.PoreCylinder([8, 8, 10], 4.8, 5.5)
 
   # Attach Catalyst
-  pore.attach_special(catalyst, 37, [34, 22], 2, symmetry="point")
+  pore.attach_special(mol=catalyst, mount=37, axis=[34, 22], amount=2, symmetry="point")
 
   # Attach surface molecules
-  pore.attach(dmdms, 0, [1, 2], 100, "in")
-  pore.attach(tms, 0, [1, 2], 100, "ex")
+  pore.attach(mol=dmdms, mount=0, axis=[1, 2], amount=0.3, site_type="in", inp="molar")
+  pore.attach(mol=tms, mount=0, axis=[1, 2], amount=0.3, site_type="ex", inp="molar")
 
   # Finalize pore
   pore.finalize()
 
   # Store pore
   pore.store()
+
+
+  # Print pore properties
+  tables = pore.table()
+  print(tables["props"])
+  print(tables["alloc"])
+  print(tables["full"])
 
 .. raw:: html
 
