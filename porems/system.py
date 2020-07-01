@@ -337,7 +337,9 @@ class PoreCylinder(PoreSystem):
         trials : integer, optional
             Number of trials picking a random site
         inp : string, optional
-            Input type - **num** Number of molecules, **molar** :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+            Input type - **num** Number of molecules,
+            **molar** :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
+            **percent** :math:`\\%` of total amount of silicon atom binding sites
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
         """
@@ -346,16 +348,19 @@ class PoreCylinder(PoreSystem):
             print("Pore: Wrong site_type input...")
             return
 
-        if inp not in ["num", "molar"]:
+        if inp not in ["num", "molar", "percent"]:
             print("Pore: Wrong inp type...")
             return
-
-        # Amount
-        amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type])) if inp=="molar" else amount
 
         # Sites and normal vector
         sites = self._site_in if site_type=="in" else self._site_ex
         normal = self._normal_in if site_type=="in" else self._normal_ex
+
+        # Amount
+        if inp=="molar":
+            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
+        elif inp=="percent":
+            amount = int(amount/100*len(sites))
 
         # Run attachment
         mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=True, is_random=True, is_rotate=is_rotate)
@@ -715,17 +720,22 @@ class PoreSlit(PoreSystem):
         trials : integer, optional
             Number of trials picking a random site
         inp : string, optional
-            Input type - **num** Number of molecules, **molar** :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+            Input type - **num** Number of molecules,
+            **molar** :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
+            **percent** :math:`\\%` of total amount of silicon atom binding sites
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
         """
         # Process input
-        if inp not in ["num", "molar"]:
+        if inp not in ["num", "molar", "percent"]:
             print("Pore: Wrong inp type...")
             return
 
         # Amount
-        amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()["in"])) if inp=="molar" else amount
+        if inp=="molar":
+            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()["in"]))
+        elif inp=="percent":
+            amount = int(amount/100*len(self._site_in))
 
         # Run attachment
         mols = self._pore.attach(mol, mount, axis, self._site_in, amount, self._normal_in, scale, trials, is_proxi=True, is_random=True, is_rotate=is_rotate)
@@ -1032,7 +1042,9 @@ class PoreCapsule(PoreSystem):
         trials : integer, optional
             Number of trials picking a random site
         inp : string, optional
-            Input type - **num** Number of molecules, **molar** :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+            Input type - **num** Number of molecules,
+            **molar** :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
+            **percent** :math:`\\%` of total amount of silicon atom binding sites
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
         """
@@ -1041,16 +1053,19 @@ class PoreCapsule(PoreSystem):
             print("Pore: Wrong site_type input...")
             return
 
-        if inp not in ["num", "molar"]:
+        if inp not in ["num", "molar", "percent"]:
             print("Pore: Wrong inp type...")
             return
-
-        # Amount
-        amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type])) if inp=="molar" else amount
 
         # Sites and normal vector
         sites = self._site_in if site_type=="in" else self._site_ex
         normal = self._normal_in if site_type=="in" else self._normal_ex
+
+        # Amount
+        if inp=="molar":
+            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
+        elif inp=="percent":
+            amount = int(amount/100*len(sites))
 
         # Run attachment
         mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=True, is_random=True, is_rotate=is_rotate)
