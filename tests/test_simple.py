@@ -652,6 +652,7 @@ class UserModelCase(unittest.TestCase):
         tms2 = pms.gen.tms()
         tms2.set_short("TMS2")
 
+        pore.attach(tms2, 0, [0, 1], 10, "in", trials=10, inp="percent")
         pore.attach(tms2, 0, [0, 1], 1, "in", trials=10, inp="molar")
         pore.attach(tms2, 0, [0, 1], 0.1, "ex", trials=10, inp="molar")
 
@@ -687,6 +688,8 @@ class UserModelCase(unittest.TestCase):
         pore = pms.PoreSlit([6, 6, 6], 3)
 
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, trials=10)
+        pore.attach(pms.gen.tms(), 0, [0, 1], 1, trials=10, inp="molar")
+        pore.attach(pms.gen.tms(), 0, [0, 1], 10, trials=10, inp="percent")
 
         # Special cases
         print()
@@ -718,6 +721,8 @@ class UserModelCase(unittest.TestCase):
 
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", trials=10)
         pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex", trials=10)
+        pore.attach(pms.gen.tms(), 0, [0, 1], 1, "in", trials=10, inp="molar")
+        pore.attach(pms.gen.tms(), 0, [0, 1], 10, "in", trials=10, inp="percent")
 
         # Special cases
         print()
