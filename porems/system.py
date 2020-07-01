@@ -575,10 +575,10 @@ class PoreCylinder(PoreSystem):
 
         data_full["Interior"]["Surface chemistry - Before Functionalization"] = " "
         data_full["Exterior"]["Surface chemistry - Before Functionalization"] = " "
-        data_full["Interior"]["    Number of single silanol groups"] = "%i"%(allocation["Hydro"]["in"][0]-2*sum([x["in"][0] for key,x in allocation.items() if key=="SLG" or len(key)>3 and key[-1]=="G"]))
-        data_full["Exterior"]["    Number of single silanol groups"] = "%i"%(allocation["Hydro"]["ex"][0]-2*sum([x["ex"][0] for key,x in allocation.items() if key=="SLG" or len(key)>3 and key[-1]=="G"]))
-        data_full["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([x["in"][0] for key,x in allocation.items() if key=="SLG" or len(key)>3 and key[-1]=="G"])
-        data_full["Exterior"]["    Number of geminal silanol groups"] = "%i"%sum([x["ex"][0] for key,x in allocation.items() if key=="SLG" or len(key)>3 and key[-1]=="G"])
+        data_full["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
+        data_full["Exterior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
+        data_full["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
+        data_full["Exterior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
         data_full["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
         data_full["Exterior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
         data_full["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
