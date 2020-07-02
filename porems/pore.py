@@ -470,15 +470,20 @@ class Pore():
         mol_list = sum([x for x in self.get_mol_dict().values()], [])
 
         # Get zero translation
-        zero_z = min(Molecule(inp=mol_list).column_pos()[2])
+        min_z = 1000000
+        max_z = 0
+        for mol in mol_list:
+            col_z = mol.column_pos()[2]
+            min_z = min(col_z) if min(col_z) < min_z else min_z
+            max_z = max(col_z) if max(col_z) > max_z else max_z
 
         # Translate all molecules
         for mol in mol_list:
-            mol.translate([0, 0, -zero_z+size])
+            mol.translate([0, 0, -min_z+size])
 
         # Set new box size
-        box = Molecule(inp=mol_list).get_box()
-        self.set_box([box[0], box[1], box[2]+size])
+        box = self._block.get_box()
+        self.set_box([box[0], box[1], max_z-min_z+2*size])
 
 
     ##################
