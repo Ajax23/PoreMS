@@ -233,7 +233,7 @@ def angle_azi(pos, is_deg=False):
     """
     try:
         angle = math.acos(pos[2]/length(pos))
-    except:
+    except(ZeroDivisionError):
         angle = math.acos(0)
 
     return angle*180/math.pi if is_deg else angle
