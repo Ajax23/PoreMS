@@ -8,8 +8,6 @@
 import os
 import shutil
 
-from decimal import Decimal
-
 import porems.utils as utils
 
 from porems.molecule import Molecule
