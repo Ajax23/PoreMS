@@ -53,3 +53,10 @@ To test porems, run the test in the test directory.
 PoreMS development takes place on Github: https://github.com/Ajax23/PoreMS
 
 Please submit any reproducible bugs you encounter to the [issue tracker](https://github.com/Ajax23/PoreMS/issues).
+
+
+## How to Cite PoreMS
+
+When citing PoreMS please use the following: **Kraus et al., Molecular Simulation, 2020, DOI: TbA**
+
+To assure reproducability of the generated pore systems, please cite the **Zenodo** entry corresponding to the used PoreMS version.
