@@ -708,6 +708,7 @@ class UserModelCase(unittest.TestCase):
 
         print(pore.table()["props"])
         print(pore.table()["alloc"])
+        print(pore.table()["full"])
 
     def test_pore_capsule(self):
         # self.skipTest("Temporary")
@@ -742,6 +743,7 @@ class UserModelCase(unittest.TestCase):
 
         print(pore.table()["props"])
         print(pore.table()["alloc"])
+        print(pore.table()["full"])
 
 
 if __name__ == '__main__':

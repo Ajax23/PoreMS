@@ -883,6 +883,34 @@ class PoreSlit(PoreSystem):
 
         tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
 
+        # Full table
+        data_full = {"Interior": {}}
+
+        data_full["Interior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
+        data_full["Interior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
+        data_full["Interior"]["Pore drilling direction"] = "z"
+        data_full["Interior"]["Pore height +- surface roughness (nm)"] = form%self.height()+" +- "+form%self.roughness()
+        data_full["Interior"]["Pore volume (nm^3)"] = form%self.volume()
+        data_full["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
+
+        data_full["Interior"]["Surface chemistry - Before Functionalization"] = " "
+        data_full["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
+        data_full["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
+        data_full["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
+        data_full["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
+        data_full["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
+
+        data_full["Interior"]["Surface chemistry - After Functionalization"] = " "
+        for mol in allocation.keys():
+            if mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]:
+                data_full["Interior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
+                data_full["Interior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
+        data_full["Interior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
+        data_full["Interior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
+        data_full["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
+
+        tables["full"] = pd.DataFrame.from_dict(data_full)
+
         return tables
 
 
@@ -1246,5 +1274,55 @@ class PoreCapsule(PoreSystem):
                 data_alloc[mol][site_type+" - mumol/m^2"] = form%allocation[mol][site_type][2]
 
         tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
+
+        # Full table
+        data_full = {"Interior": {}, "Exterior": {}}
+
+        data_full["Interior"]["Silica block xyz-dimensions (nm)"] = " "
+        data_full["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
+        data_full["Interior"]["Simulation box xyz-dimensions (nm)"] = " "
+        data_full["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
+        data_full["Interior"]["Pore drilling direction"] = "z"
+        data_full["Exterior"]["Pore drilling direction"] = " "
+        data_full["Interior"]["Pore diameter +- surface roughness (nm)"] = form%self.diameter()+" +- "+form%self.roughness()
+        data_full["Exterior"]["Pore diameter +- surface roughness (nm)"] = " "
+        data_full["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
+        data_full["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
+        data_full["Interior"]["Pore volume (nm^3)"] = form%self.volume()
+        data_full["Exterior"]["Pore volume (nm^3)"] = " "
+        data_full["Interior"]["Solvent reservoir volume (nm^3)"] = " "
+        data_full["Exterior"]["Solvent reservoir volume (nm^3)"] = "2 * "+form%(self.box()[0]*self.box()[1]*self.reservoir())
+        data_full["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
+        data_full["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["ex"]/2)
+
+        data_full["Interior"]["Surface chemistry - Before Functionalization"] = " "
+        data_full["Exterior"]["Surface chemistry - Before Functionalization"] = " "
+        data_full["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
+        data_full["Exterior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
+        data_full["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
+        data_full["Exterior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
+        data_full["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
+        data_full["Exterior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
+        data_full["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
+        data_full["Exterior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["ex"][0]
+        data_full["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
+        data_full["Exterior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
+
+        data_full["Interior"]["Surface chemistry - After Functionalization"] = " "
+        data_full["Exterior"]["Surface chemistry - After Functionalization"] = " "
+        for mol in allocation.keys():
+            if mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]:
+                data_full["Interior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
+                data_full["Exterior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["ex"][0]
+                data_full["Interior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
+                data_full["Exterior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["ex"][2]
+        data_full["Interior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
+        data_full["Exterior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["ex"][2]-allocation["OH"]["ex"][2])
+        data_full["Interior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
+        data_full["Exterior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["ex"][0]
+        data_full["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
+        data_full["Exterior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["ex"][2]
+
+        tables["full"] = pd.DataFrame.from_dict(data_full)
 
         return tables
