@@ -1286,13 +1286,15 @@ class PoreCapsule(PoreSystem):
         data_full["Exterior"]["Pore drilling direction"] = " "
         data_full["Interior"]["Pore diameter +- surface roughness (nm)"] = form%self.diameter()+" +- "+form%self.roughness()
         data_full["Exterior"]["Pore diameter +- surface roughness (nm)"] = " "
+        data_full["Interior"]["Cavity seperation distance(nm)"] = form%self._sep
+        data_full["Exterior"]["Cavity seperation distance(nm)"] = " "
         data_full["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
         data_full["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
-        data_full["Interior"]["Pore volume (nm^3)"] = form%self.volume()
+        data_full["Interior"]["Pore volume (nm^3)"] = "2 * "+form%(self.volume()/2)
         data_full["Exterior"]["Pore volume (nm^3)"] = " "
         data_full["Interior"]["Solvent reservoir volume (nm^3)"] = " "
         data_full["Exterior"]["Solvent reservoir volume (nm^3)"] = "2 * "+form%(self.box()[0]*self.box()[1]*self.reservoir())
-        data_full["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
+        data_full["Interior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["in"]/2)
         data_full["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["ex"]/2)
 
         data_full["Interior"]["Surface chemistry - Before Functionalization"] = " "
