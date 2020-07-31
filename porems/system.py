@@ -1285,8 +1285,8 @@ class PoreCapsule(PoreSystem):
         data_full["Exterior"]["Pore drilling direction"] = " "
         data_full["Interior"]["Pore diameter +- surface roughness (nm)"] = form%self.diameter()+" +- "+form%self.roughness()
         data_full["Exterior"]["Pore diameter +- surface roughness (nm)"] = " "
-        data_full["Interior"]["Cavity seperation distance(nm)"] = form%self._sep
-        data_full["Exterior"]["Cavity seperation distance(nm)"] = " "
+        data_full["Interior"]["Cavity separation distance(nm)"] = form%self._sep
+        data_full["Exterior"]["Cavity separation distance(nm)"] = " "
         data_full["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
         data_full["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
         data_full["Interior"]["Pore volume (nm^3)"] = "2 * "+form%(self.volume()/2)
