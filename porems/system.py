@@ -884,32 +884,31 @@ class PoreSlit(PoreSystem):
         tables["alloc"] = pd.DataFrame.from_dict(data_alloc)
 
         # Full table
-        data_full = {"Interior": {}}
+        data_full = {}
 
-        data_full["Interior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
-        data_full["Interior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
-        data_full["Interior"]["Pore drilling direction"] = "z"
-        data_full["Interior"]["Pore height +- surface roughness (nm)"] = form%self.height()+" +- "+form%self.roughness()
-        data_full["Interior"]["Pore volume (nm^3)"] = form%self.volume()
-        data_full["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
+        data_full["Silica block, Simulation xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
+        data_full["Pore drilling direction"] = "z"
+        data_full["Pore height +- surface roughness (nm)"] = form%self.height()+" +- "+form%self.roughness()
+        data_full["Pore volume (nm^3)"] = form%self.volume()
+        data_full["Surface area (nm^2)"] = form%self.surface()["in"]
 
-        data_full["Interior"]["Surface chemistry - Before Functionalization"] = " "
-        data_full["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
-        data_full["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
-        data_full["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
-        data_full["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
-        data_full["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
+        data_full["Surface chemistry - Before Functionalization"] = " "
+        data_full["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
+        data_full["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
+        data_full["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
+        data_full["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
+        data_full["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
 
-        data_full["Interior"]["Surface chemistry - After Functionalization"] = " "
+        data_full["Surface chemistry - After Functionalization"] = " "
         for mol in allocation.keys():
             if mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]:
-                data_full["Interior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
-                data_full["Interior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
-        data_full["Interior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
-        data_full["Interior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
-        data_full["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
+                data_full["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
+                data_full["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
+        data_full["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
+        data_full["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
+        data_full["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
 
-        tables["full"] = pd.DataFrame.from_dict(data_full)
+        tables["full"] = pd.DataFrame.from_dict(data_full, orient="index", columns=["Interior"])
 
         return tables
 
