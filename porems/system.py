@@ -569,8 +569,10 @@ class PoreCylinder(PoreSystem):
         data_full["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
         data_full["Interior"]["Pore drilling direction"] = "z"
         data_full["Exterior"]["Pore drilling direction"] = " "
-        data_full["Interior"]["Pore diameter +- surface roughness (nm)"] = form%self.diameter()+" +- "+form%self.roughness()
-        data_full["Exterior"]["Pore diameter +- surface roughness (nm)"] = " "
+        data_full["Interior"]["Pore diameter (nm)"] = form%self.diameter()
+        data_full["Exterior"]["Pore diameter (nm)"] = " "
+        data_full["Interior"]["Surface roughness (nm)"] = form%self.roughness()
+        data_full["Exterior"]["Surface roughness (nm)"] = form%0.00
         data_full["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
         data_full["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
         data_full["Interior"]["Pore volume (nm^3)"] = form%self.volume()
@@ -888,7 +890,8 @@ class PoreSlit(PoreSystem):
 
         data_full["Silica block, Simulation xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
         data_full["Pore drilling direction"] = "z"
-        data_full["Pore height +- surface roughness (nm)"] = form%self.height()+" +- "+form%self.roughness()
+        data_full["Pore height (nm)"] = form%self.height()
+        data_full["Surface roughness (nm)"] = form%self.roughness()
         data_full["Pore volume (nm^3)"] = form%self.volume()
         data_full["Surface area (nm^2)"] = form%self.surface()["in"]
 
@@ -1283,8 +1286,10 @@ class PoreCapsule(PoreSystem):
         data_full["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
         data_full["Interior"]["Pore drilling direction"] = "z"
         data_full["Exterior"]["Pore drilling direction"] = " "
-        data_full["Interior"]["Pore diameter +- surface roughness (nm)"] = form%self.diameter()+" +- "+form%self.roughness()
-        data_full["Exterior"]["Pore diameter +- surface roughness (nm)"] = " "
+        data_full["Interior"]["Pore diameter (nm)"] = form%self.diameter()
+        data_full["Exterior"]["Pore diameter (nm)"] = " "
+        data_full["Interior"]["Surface roughness (nm)"] = form%self.roughness()
+        data_full["Exterior"]["Surface roughness (nm)"] = form%0.00
         data_full["Interior"]["Cavity separation distance(nm)"] = form%self._sep
         data_full["Exterior"]["Cavity separation distance(nm)"] = " "
         data_full["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
