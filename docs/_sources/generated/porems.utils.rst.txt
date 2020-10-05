@@ -10,6 +10,7 @@ porems\.utils
 
     mumol_m2_to_mols
     mols_to_mumol_m2
+    mmol_g_to_mumol_m2
     mmol_l_to_mols
     mols_to_mmol_l
 

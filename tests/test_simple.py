@@ -50,6 +50,7 @@ class UserModelCase(unittest.TestCase):
 
         self.assertEqual(round(pms.utils.mumol_m2_to_mols(3, 100), 4), 180.66)
         self.assertEqual(round(pms.utils.mols_to_mumol_m2(180, 100), 4), 2.989)
+        self.assertEqual(round(pms.utils.mmol_g_to_mumol_m2(0.072, 512), 2), 0.14)
         self.assertEqual(round(pms.utils.mmol_l_to_mols(30, 1000), 4), 18.066)
         self.assertEqual(round(pms.utils.mols_to_mmol_l(18, 1000), 4), 29.8904)
 

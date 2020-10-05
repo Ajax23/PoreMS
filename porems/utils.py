@@ -151,7 +151,7 @@ def load(link):
 
 
 def mumol_m2_to_mols(c, A):
-    """Convert the concntration in :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+    """Convert the concentration in :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
     to number of molecules.
 
     The concentration is given as
@@ -192,7 +192,7 @@ def mumol_m2_to_mols(c, A):
 
 
 def mols_to_mumol_m2(N, A):
-    """Convert the number of molecules to concntration in
+    """Convert the number of molecules to concentration in
     :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
 
     The concentration is given as
@@ -231,8 +231,34 @@ def mols_to_mumol_m2(N, A):
     return N/0.6022/A
 
 
+def mmol_g_to_mumol_m2(c, A):
+    """Convert the concentration :math:`\\frac{\\text{mmol}}{\\text{g}}`
+    to :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
+
+    This is done by dividing the concentration per gram by the material surface
+    per gram property :math:`S_\\text{BET}`
+
+    .. math::
+
+        \\boxed{c_A=\\frac{c_g}{S_\\text{BET}}\\cdot10^3}\\ .
+
+    Parameters
+    ----------
+    c : float
+        Concentration in :math:`\\frac{\\text{mmol}}{\\text{g}}`
+    A : float
+        Surface in :math:`\\frac{\\text{m}^2}{\\text{g}}`
+
+    Returns
+    -------
+    c : float
+        Concentration in :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+    """
+    return c/A*1e3
+
+
 def mmol_l_to_mols(c, V):
-    """Convert the concntration in :math:`\\frac{\\text{mmol}}{\\text{l}}`
+    """Convert the concentration in :math:`\\frac{\\text{mmol}}{\\text{l}}`
     to number of molecules.
 
     The concentration in regard to volume is calculated by
@@ -272,7 +298,8 @@ def mmol_l_to_mols(c, V):
 
 
 def mols_to_mmol_l(N, V):
-    """Convert the number of molecules to concntration in :math:`\\frac{\\text{mmol}}{\\text{l}}`.
+    """Convert the number of molecules to concentration in
+    :math:`\\frac{\\text{mmol}}{\\text{l}}`.
 
     The concentration in regard to volume is calculated by
 

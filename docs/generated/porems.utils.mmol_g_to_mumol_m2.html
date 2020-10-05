@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Dice._left &#8212; PoreMS 0.2.1 documentation</title>
+    <title>mmol_g_to_mumol_m2 &#8212; PoreMS 0.2.1 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -79,7 +79,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Dice._left</a></li>
+<li><a class="reference internal" href="#">mmol_g_to_mumol_m2</a></li>
 </ul>
 </ul>
 </li>
@@ -110,26 +110,34 @@
     <div class="body col-md-12 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="dice-left">
-<h1>Dice._left<a class="headerlink" href="#dice-left" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
-<dt id="porems.dice.Dice._left">
-<code class="descclassname">Dice.</code><code class="descname">_left</code><span class="sig-paren">(</span><em>self</em>, <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.dice.Dice._left" title="Permalink to this definition">¶</a></dt>
-<dd><p>Step one cube to the left considering the x-axis.</p>
+<div class=col-md-9 content><div class="section" id="mmol-g-to-mumol-m2">
+<h1>mmol_g_to_mumol_m2<a class="headerlink" href="#mmol-g-to-mumol-m2" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="porems.utils.mmol_g_to_mumol_m2">
+<code class="descclassname">porems.utils.</code><code class="descname">mmol_g_to_mumol_m2</code><span class="sig-paren">(</span><em>c</em>, <em>A</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.utils.mmol_g_to_mumol_m2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the concentration <span class="math">\(\frac{\text{mmol}}{\text{g}}\)</span>
+to <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>.</p>
+<p>This is done by dividing the concentration per gram by the material surface
+per gram property <span class="math">\(S_\text{BET}\)</span></p>
+<div class="math">
+\[\boxed{c_A=\frac{c_g}{S_\text{BET}}\cdot10^3}\ .\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">Cube index</p>
+<dt><strong>c</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Concentration in <span class="math">\(\frac{\text{mmol}}{\text{g}}\)</span></p>
+</dd>
+<dt><strong>A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Surface in <span class="math">\(\frac{\text{m}^2}{\text{g}}\)</span></p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">New cube index</p>
+<dt><strong>c</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Concentration in <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span></p>
 </dd>
 </dl>
 </td>
