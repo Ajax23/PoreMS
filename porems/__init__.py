@@ -4,7 +4,7 @@ from .matrix import Matrix
 from .molecule import Molecule
 from .pattern import BetaCristobalit
 from .pore import Pore
-from .system import PoreCylinder, PoreSlit, PoreCapsule
+from .system import PoreSystem, PoreCylinder, PoreSlit, PoreCapsule
 from .shape import Cylinder, Sphere, Cuboid
 from .store import Store
 
@@ -17,7 +17,7 @@ __all__ = [
     "Atom", "Molecule", "Store",
     "Dice", "Matrix",
     "BetaCristobalit",
-    "Pore", "PoreCylinder", "PoreSlit", "PoreCapsule",
+    "Pore", "PoreSystem", "PoreCylinder", "PoreSlit", "PoreCapsule",
     "Cylinder", "Sphere", "Cuboid",
     "db", "gen", "geom", "utils"
 ]
