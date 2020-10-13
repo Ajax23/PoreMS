@@ -300,24 +300,39 @@ class BetaCristobalit(Pattern):
             is_left = False
             for si in si_list:
                 if abs(self._structure.pos(si)[2]-self._size[2]+self._gap[2]/2) < error:
-                    saturate.append(si)
+                    saturate.append([si, is_left])
 
         # Block oriented towards y-axis
         elif self._orient == "y":
-            print("Pattern: Orientation is not yet supported...")
-            return
+            right = 0.413
+            left  = 0.826
+            for si in si_list:
+                pos = self._structure.pos(si)
+                if abs(pos[2]-self._size[2]+self._gap[2]*3/2) < error:
+                    if abs(pos[1]-right+self._gap[1]/2)%self._repeat[2] < error:
+                        saturate.append([si, False])
+                elif abs(pos[2]-self._gap[2]/2) < error:
+                    if abs(pos[1]-left+self._gap[1]/2)%self._repeat[2] < error:
+                        saturate.append([si, None])
+                    else:
+                        saturate.append([si, True])
 
         # Block oriented towards z-axis
         elif self._orient == "z":
             is_left = True
             for si in si_list:
                 if abs(self._structure.pos(si)[2]-self._gap[2]/2) < error:
-                    saturate.append(si)
+                    saturate.append([si, is_left])
 
         # Saturate silicon atoms
         for si in saturate:
-            r = -0.155 if is_left else 0.155
-            self._structure.add("O", si, r=r)
+            if si[1] is not None:
+                r = -0.155 if si[1] else 0.155
+                self._structure.add("O", si[0], r=r)
+            else:
+                r = -0.155
+                self._structure.add("O", si[0], r=r, theta= 40)
+                self._structure.add("O", si[0], r=r, theta=-40)
 
         # Move box to zero
         self._structure.zero()

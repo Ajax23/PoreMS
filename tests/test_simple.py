@@ -320,8 +320,9 @@ class UserModelCase(unittest.TestCase):
         beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "y")
         beta_cristobalit.get_block().set_name("pattern_beta_cbt_ex_y")
-        print()
-        self.assertIsNone(beta_cristobalit.exterior())
+        beta_cristobalit.exterior()
+        self.assertEqual(beta_cristobalit.get_block().get_num(), 608)
+        pms.Store(beta_cristobalit.get_block(), "output").gro()
 
         beta_cristobalit = pms.BetaCristobalit()
         beta_cristobalit.generate([2, 2, 2], "z")
