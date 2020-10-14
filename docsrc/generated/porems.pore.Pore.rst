@@ -52,6 +52,7 @@ Pore
     ~Pore.get_block
     ~Pore.get_box
     ~Pore.get_name
+    ~Pore.get_num_in_ex
     ~Pore.get_sites
     ~Pore.get_mol_dict
     ~Pore.get_site_dict

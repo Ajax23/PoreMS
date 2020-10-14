@@ -42,6 +42,8 @@ class Pore():
         self._block = block
         self._matrix = matrix
 
+        self._num_in_ex = 0
+
         self._mol_dict = {"block": {}, "in": {}, "ex": {}}
 
 
@@ -161,16 +163,21 @@ class Pore():
         # Fill other information
         for si, data in self._sites.items():
             # Site type
+            is_in = False
+            is_ex = False
             if exterior:
                 for o in data["o"]:
                     if o in exterior:
-                        site_type = "ex"
-                        break
+                        is_ex = True
                     else:
-                        site_type = "in"
+                        is_in = True
             else:
-                site_type = "in"
-            data["type"] = site_type
+                is_in = True
+
+            data["type"] = "ex" if is_ex else "in"
+
+            if is_in and is_ex:
+                self._num_in_ex += 1
 
             # State
             data["state"] = True
@@ -579,3 +586,14 @@ class Pore():
             Dictionary of all molecules with sorted sites
         """
         return self._mol_dict
+
+    def get_num_in_ex(self):
+        """Return the number of geminal si-binding sites that have one OH on the
+        interior surface and on on the exterior surface.
+
+        Returns
+        -------
+        num_in_ex : integer
+            Dictionary of all molecules with sorted sites
+        """
+        return self._num_in_ex

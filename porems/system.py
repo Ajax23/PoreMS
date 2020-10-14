@@ -124,6 +124,7 @@ class PoreSystem():
         # Get surfaces
         surf = self.surface()
         site_dict = self._pore.get_site_dict()
+        num_in_ex = self._pore.get_num_in_ex()
 
         # Calculate allocation for all molecules
         alloc = {}
@@ -148,6 +149,8 @@ class PoreSystem():
             for mol in site_dict[site_type].keys():
                 num_oh -= len(site_dict[site_type][mol]) if mol not in ["SL", "SLG", "SLX"] else 0
 
+            num_oh = num_oh-num_in_ex if site_type=="ex" else num_oh+num_in_ex
+
             alloc["OH"][site_type][0] = num_oh
             alloc["OH"][site_type][1] = num_oh/surf[site_type] if surf[site_type]>0 else 0
             alloc["OH"][site_type][2] = pms.utils.mols_to_mumol_m2(num_oh, surf[site_type]) if surf[site_type]>0 else 0
@@ -156,6 +159,9 @@ class PoreSystem():
         alloc["Hydro"] = {"in": [0, 0, 0], "ex": [0, 0, 0]}
         for site_type in ["in", "ex"]:
             num_tot = len(sum([x["o"] for x in self._pore.get_sites().values() if x["type"]==site_type], []))
+
+            num_tot = num_tot-num_in_ex if site_type=="ex" else num_tot+num_in_ex
+
             alloc["Hydro"][site_type][0] = num_tot
             alloc["Hydro"][site_type][1] = num_tot/surf[site_type] if surf[site_type]>0 else 0
             alloc["Hydro"][site_type][2] = pms.utils.mols_to_mumol_m2(num_tot, surf[site_type]) if surf[site_type]>0 else 0

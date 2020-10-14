@@ -636,6 +636,7 @@ class UserModelCase(unittest.TestCase):
         # Getter and Setter
         self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
         self.assertEqual(len(pore.get_site_dict()), 3)
+        self.assertEqual(pore.get_num_in_ex(), 23)
 
     def test_pore_cylinder(self):
         # self.skipTest("Temporary")
