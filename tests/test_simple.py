@@ -737,7 +737,7 @@ class UserModelCase(unittest.TestCase):
         pore.finalize()
         pore.store("output/capsule/")
 
-        ## Properties
+        # Properties
         self.assertEqual(round(pore.diameter(), 4), 4.0554)
         self.assertEqual([round(x, 4) for x in pore.centroid()["block"]], [3.0775, 3.0935, 5.115])
         self.assertEqual(round(pore.roughness(), 4), 0.0825)
