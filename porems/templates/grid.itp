@@ -6,7 +6,7 @@
 ; nr  type  resnr  resid  atom  cgnr  charge
    1    SI      1     SL   Si1     1  CHARGESI   ; original 1.28
    2    OA      1     SL    O1     1  -0.74
-   3    HO      1     SL    H1     1   0.42
+   3    HG      1     SL    H1     1   0.42
 
 [ bonds ]
 ; ai  aj  fu  c        K
@@ -26,9 +26,9 @@
 ; nr  type  resnr  resid  atom  cgnr  charge
    1    SI      1    SLG   Si1     1   CHARGESI   ; original 1.28
    2    OA      1    SLG    O1     1   -0.74
-   3    HO      1    SLG    H1     1    0.42
+   3    HG      1    SLG    H1     1    0.42
    4    OA      1    SLG    O2     1   -0.74
-   5    HO      1    SLG    H2     1    0.42
+   5    HG      1    SLG    H2     1    0.42
 
 [ bonds ]
 ; ai  aj  fu  c        K
