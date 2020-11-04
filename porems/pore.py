@@ -336,8 +336,8 @@ class Pore():
 
         # Create siloxane molecule
         mol = Molecule("siloxane", "SLX")
-        mol.add("O", [0, 0, 0], name="OM")
-        mol.add("O", 0, r=0.09, name="OM")
+        mol.add("O", [0, 0, 0], name="OM1")
+        mol.add("O", 0, r=0.09, name="OM1")
         mount = 0
         axis = [0, 1]
 
