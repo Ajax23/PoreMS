@@ -83,7 +83,7 @@ class Pore():
             Maximal displacement distance
         accept : list, optional
             Acceptance criteria for allowed bond distances with partners
-        trials : integer
+        trials : integer, optional
             Allowed number of trials per atom
         """
         # Get connectivity matrix
