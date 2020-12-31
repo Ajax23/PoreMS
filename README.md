@@ -57,6 +57,6 @@ Please submit any reproducible bugs you encounter to the [issue tracker](https:/
 
 ## How to Cite PoreMS
 
-When citing PoreMS please use the following: **Kraus et al., Molecular Simulation, 2020, DOI: TbA**
+When citing PoreMS please use the following: **Kraus et al., Molecular Simulation, 2021, DOI: 10.1080/08927022.2020.1871478**
 
 Additionaly, to assure reproducability of the generated pore systems, please cite the **Zenodo DOI** corresponding to the used PoreMS version. (Current DOI is listed in the badges.)
