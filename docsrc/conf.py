@@ -70,7 +70,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PoreMS'
-copyright = '2020, Hamzeh Kraus'
+copyright = '2021, Hamzeh Kraus'
 author = 'Hamzeh Kraus'
 
 # The version info for the project you're documenting, acts as replacement for
