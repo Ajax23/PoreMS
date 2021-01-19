@@ -114,7 +114,7 @@
 <h1>PoreCylinder.attach<a class="headerlink" href="#porecylinder-attach" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.system.PoreCylinder.attach">
-<code class="descclassname">PoreCylinder.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>site_type</em>, <em>scale=1</em>, <em>trials=1000</em>, <em>inp='num'</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder.attach" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">PoreCylinder.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>site_type</em>, <em>trials=1000</em>, <em>inp='num'</em>, <em>scale=1</em>, <em>is_proxi=True</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder.attach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach molecule on the surface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -136,9 +136,6 @@
 <dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Use <strong>in</strong> for the interior surface and <strong>ex</strong> for the exterior</p>
 </dd>
-<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Circumference scaling around the molecule position</p>
-</dd>
 <dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
 <dd><p class="first last">Number of trials picking a random site</p>
 </dd>
@@ -146,6 +143,12 @@
 <dd><p class="first last">Input type: <strong>num</strong> - Number of molecules,
 <strong>molar</strong> - <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>,
 <strong>percent</strong> - <span class="math">\(\%\)</span> of OH groups</p>
+</dd>
+<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Circumference scaling around the molecule position</p>
+</dd>
+<dt><strong>is_proxi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to fill binding sites in proximity of filled binding site</p>
 </dd>
 <dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to randomly rotate molecule around own axis</p>

@@ -323,7 +323,7 @@ class PoreCylinder(PoreSystem):
         """
         return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
 
-    def attach(self, mol, mount, axis, amount, site_type, scale=1, trials=1000, inp="num", is_rotate=False):
+    def attach(self, mol, mount, axis, amount, site_type, trials=1000, inp="num", scale=1, is_proxi=True, is_rotate=False):
         """Attach molecule on the surface.
 
         Parameters
@@ -338,14 +338,16 @@ class PoreCylinder(PoreSystem):
             Number of molecules to attach
         site_type : string
             Use **in** for the interior surface and **ex** for the exterior
-        scale : float, optional
-            Circumference scaling around the molecule position
         trials : integer, optional
             Number of trials picking a random site
         inp : string, optional
             Input type: **num** - Number of molecules,
             **molar** - :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
             **percent** - :math:`\\%` of OH groups
+        scale : float, optional
+            Circumference scaling around the molecule position
+        is_proxi : bool, optional
+            True to fill binding sites in proximity of filled binding site
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
         """
@@ -371,7 +373,7 @@ class PoreCylinder(PoreSystem):
             amount = int(amount/100*num_oh)
 
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=True, is_random=True, is_rotate=is_rotate)
+        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:
