@@ -60,3 +60,11 @@ Please submit any reproducible bugs you encounter to the [issue tracker](https:/
 When citing PoreMS please use the following: **Kraus et al., Molecular Simulation, 2021, DOI: [10.1080/08927022.2020.1871478](https://doi.org/10.1080/08927022.2020.1871478)**
 
 Additionaly, to assure reproducability of the generated pore systems, please cite the **Zenodo DOI** corresponding to the used PoreMS version. (Current DOI is listed in the badges.)
+
+## Published Work
+* Kraus et al., 2021. PoreMS: a software tool for generating silica pore models with user-defined surface functionalisation and pore dimensions. Molecular Simulation, pp.1-11, doi:[10.1080/08927022.2020.1871478](https://doi.org/10.1080/08927022.2020.1871478).
+  - Data-Repository: doi:[10.18419/darus-1170](https://doi.org/10.18419/darus-1170)
+* Kobayashi et al., 2020. Confined Ru‐catalysts in a Two‐phase Heptane/Ionic Liquid Solution: Modeling Aspects. ChemCatChem, 13(2), pp.739-746, doi:[10.1002/cctc.202001596](https://doi.org/10.1002/cctc.202001596).
+  - Data-Repository: doi:[10.18419/darus-1138](https://doi.org/10.18419/darus-1138)
+* Ziegler et al., 2019. Olefin Metathesis in Confined Geometries: A Biomimetic Approach toward Selective Macrocyclization. Journal of the American Chemical Society, 141(48), pp.19014-19022, doi:[10.1021/jacs.9b08776](https://doi.org/10.1021/jacs.9b08776).
+  - Data-Repository: doi:[10.18419/darus-477](https://doi.org/10.18419/darus-477)
