@@ -53,7 +53,6 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../api.html">API</a></li>
-                <li><a href="../process.html">Process</a></li>
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
@@ -114,7 +113,7 @@
 <h1>PoreSlit.attach<a class="headerlink" href="#poreslit-attach" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.system.PoreSlit.attach">
-<code class="descclassname">PoreSlit.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>scale=1</em>, <em>trials=1000</em>, <em>inp='num'</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreSlit.attach" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">PoreSlit.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>site_type='in'</em>, <em>trials=1000</em>, <em>inp='num'</em>, <em>scale=1</em>, <em>is_proxi=True</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreSlit.attach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach molecule on the surface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -133,8 +132,8 @@
 <dt><strong>amount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd><p class="first last">Number of molecules to attach</p>
 </dd>
-<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Circumference scaling around the molecule position</p>
+<dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Use <strong>in</strong> for the interior surface and <strong>ex</strong> for the exterior</p>
 </dd>
 <dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
 <dd><p class="first last">Number of trials picking a random site</p>
@@ -143,6 +142,12 @@
 <dd><p class="first last">Input type: <strong>num</strong> - Number of molecules,
 <strong>molar</strong> - <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>,
 <strong>percent</strong> - <span class="math">\(\%\)</span> of OH groups</p>
+</dd>
+<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Circumference scaling around the molecule position</p>
+</dd>
+<dt><strong>is_proxi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to fill binding sites in proximity of filled binding site</p>
 </dd>
 <dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to randomly rotate molecule around own axis</p>

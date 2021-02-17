@@ -20,8 +20,10 @@ Pore Generator for Molecular Simulations
   :width: 100%
 
 This python package generates pore structures to be used in molecular
-simulations. Visit the `process <process.html>`_ page for an overview of the
-programs operating principle. Additionally, tutorials for generating
+simulations. For an overview of the programs operating principle, check out the
+corresponding publication
+**Kraus et al.** (doi:`10.1080/08927022.2020.1871478 <https://doi.org/10.1080/08927022.2020.1871478>`_).
+Additionally, tutorials for generating
 `molecules <molecule.html>`_ and `pores <pore.html>`_ are provided.
 
 Check out an exemplary `workflow <workflow.html>`_ for using the PoreMS package
@@ -48,7 +50,7 @@ To see the code, report a bug or contribute, please visit the
   * Gridstructure Patterns :ref:`API <pattern_api>`
   * Three-Dimensional Shapes :ref:`API <shape_api>`
   * Runtime Optimization :ref:`API <optimization_api>`
-  
+
 * Utilities :ref:`API <utils_api>`
 
 .. raw:: html

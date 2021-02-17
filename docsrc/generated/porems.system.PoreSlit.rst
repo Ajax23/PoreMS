@@ -16,7 +16,9 @@ PoreSlit
   .. autosummary::
 
     ~PoreSlit._normal_in
+    ~PoreSlit._normal_ex
     ~PoreSlit.attach
+    ~PoreSlit.attach_special
 
 
   .. rubric:: Analysis
