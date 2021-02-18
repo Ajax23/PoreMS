@@ -93,12 +93,9 @@ In order to show the properties of the generated pore, use the table function
 
 .. code-block:: python
 
-  tables = pore.table()
-  print(tables["props"])
-  print(tables["alloc"])
-  print(tables["full"])
+  print(pore.table())
 
-This returns a dictionary of pandas data frames for pore properties **props**, allocation **alloc** and a table with all pore and allocation properties combined in a single **full** table.
+This returns a pandas data frame of pore properties and allocation.
 
 At this point the pore generation is completed and what is left is converting the programs data structure into a readable file-format using the functionalities of the Store class. For this a store function is provided that creates a structure file in the GROMACS format, a main topology containing the number of atoms, a topology for the basic surface groups and grid atoms and a pickle file of the pore object
 
@@ -163,10 +160,7 @@ To sum it up, the complete code is as follows
 
 
   # Print pore properties
-  tables = pore.table()
-  print(tables["props"])
-  print(tables["alloc"])
-  print(tables["full"])
+  print(pore.table())
 
 .. raw:: html
 

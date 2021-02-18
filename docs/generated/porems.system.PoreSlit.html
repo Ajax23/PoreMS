@@ -129,7 +129,7 @@
 <dt><strong>res</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Reservoir size on each side</p>
 </dd>
-<dt><strong>hydro: list</strong></dt>
+<dt><strong>hydro: list, optional</strong></dt>
 <dd><p class="first last">Hydroxilation degree for interior and exterior of the pore in
 <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span></p>
 </dd>
@@ -180,31 +180,34 @@ with TMS</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.allocation.html#porems.system.PoreSlit.allocation" title="porems.system.PoreSlit.allocation"><code class="xref py py-obj docutils literal"><span class="pre">allocation</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit._table_base.html#porems.system.PoreSlit._table_base" title="porems.system.PoreSlit._table_base"><code class="xref py py-obj docutils literal"><span class="pre">_table_base</span></code></a>(self,&nbsp;props[,&nbsp;decimals])</td>
+<td>Base functino for converting properties to pandas table for easy viewing.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.allocation.html#porems.system.PoreSlit.allocation" title="porems.system.PoreSlit.allocation"><code class="xref py py-obj docutils literal"><span class="pre">allocation</span></code></a>(self)</td>
 <td>Calculate molecule allocation on the surface.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.box.html#porems.system.PoreSlit.box" title="porems.system.PoreSlit.box"><code class="xref py py-obj docutils literal"><span class="pre">box</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.box.html#porems.system.PoreSlit.box" title="porems.system.PoreSlit.box"><code class="xref py py-obj docutils literal"><span class="pre">box</span></code></a>(self)</td>
 <td>Return the box size of the pore block.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.centroid.html#porems.system.PoreSlit.centroid" title="porems.system.PoreSlit.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.centroid.html#porems.system.PoreSlit.centroid" title="porems.system.PoreSlit.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a>(self)</td>
 <td>Return pore centroid.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.height.html#porems.system.PoreSlit.height" title="porems.system.PoreSlit.height"><code class="xref py py-obj docutils literal"><span class="pre">height</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.height.html#porems.system.PoreSlit.height" title="porems.system.PoreSlit.height"><code class="xref py py-obj docutils literal"><span class="pre">height</span></code></a>(self)</td>
 <td>Calculate true slit pore size after drilling and preperation.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.reservoir.html#porems.system.PoreSlit.reservoir" title="porems.system.PoreSlit.reservoir"><code class="xref py py-obj docutils literal"><span class="pre">reservoir</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.reservoir.html#porems.system.PoreSlit.reservoir" title="porems.system.PoreSlit.reservoir"><code class="xref py py-obj docutils literal"><span class="pre">reservoir</span></code></a>(self)</td>
 <td>Return the reservoir length.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.roughness.html#porems.system.PoreSlit.roughness" title="porems.system.PoreSlit.roughness"><code class="xref py py-obj docutils literal"><span class="pre">roughness</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.roughness.html#porems.system.PoreSlit.roughness" title="porems.system.PoreSlit.roughness"><code class="xref py py-obj docutils literal"><span class="pre">roughness</span></code></a>(self)</td>
 <td>Calculate surface roughness.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.surface.html#porems.system.PoreSlit.surface" title="porems.system.PoreSlit.surface"><code class="xref py py-obj docutils literal"><span class="pre">surface</span></code></a>(self)</td>
-<td>Calculate pore surface.</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.surface.html#porems.system.PoreSlit.surface" title="porems.system.PoreSlit.surface"><code class="xref py py-obj docutils literal"><span class="pre">surface</span></code></a>(self)</td>
+<td>Calculate pore surface and exterior surface.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.table.html#porems.system.PoreSlit.table" title="porems.system.PoreSlit.table"><code class="xref py py-obj docutils literal"><span class="pre">table</span></code></a>(self[,&nbsp;decimals])</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.table.html#porems.system.PoreSlit.table" title="porems.system.PoreSlit.table"><code class="xref py py-obj docutils literal"><span class="pre">table</span></code></a>(self[,&nbsp;decimals])</td>
 <td>Create properties as pandas table for easy viewing.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSlit.volume.html#porems.system.PoreSlit.volume" title="porems.system.PoreSlit.volume"><code class="xref py py-obj docutils literal"><span class="pre">volume</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSlit.volume.html#porems.system.PoreSlit.volume" title="porems.system.PoreSlit.volume"><code class="xref py py-obj docutils literal"><span class="pre">volume</span></code></a>(self)</td>
 <td>Calculate pore volume.</td>
 </tr>
 </tbody>

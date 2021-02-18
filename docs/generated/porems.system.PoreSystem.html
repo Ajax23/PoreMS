@@ -115,7 +115,7 @@
 <dt id="porems.system.PoreSystem">
 <em class="property">class </em><code class="descclassname">porems.system.</code><code class="descname">PoreSystem</code><a class="headerlink" href="#porems.system.PoreSystem" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class is a container class for further pore system classes.</p>
-<p class="rubric">Allocation</p>
+<p class="rubric">Attachement</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -124,6 +124,9 @@
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem._siloxane.html#porems.system.PoreSystem._siloxane" title="porems.system.PoreSystem._siloxane"><code class="xref py py-obj docutils literal"><span class="pre">_siloxane</span></code></a>(self,&nbsp;hydro,&nbsp;site_type)</td>
 <td>Attach siloxane bridges using function <a class="reference internal" href="porems.pore.Pore.siloxane.html#porems.pore.Pore.siloxane" title="porems.pore.Pore.siloxane"><code class="xref py py-func docutils literal"><span class="pre">porems.pore.Pore.siloxane()</span></code></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSystem.attach.html#porems.system.PoreSystem.attach" title="porems.system.PoreSystem.attach"><code class="xref py py-obj docutils literal"><span class="pre">attach</span></code></a>(self,&nbsp;mol,&nbsp;mount,&nbsp;axis,&nbsp;amount[,&nbsp;…])</td>
+<td>Attach molecule on the surface.</td>
 </tr>
 </tbody>
 </table>
@@ -149,16 +152,19 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem.allocation.html#porems.system.PoreSystem.allocation" title="porems.system.PoreSystem.allocation"><code class="xref py py-obj docutils literal"><span class="pre">allocation</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem._table_base.html#porems.system.PoreSystem._table_base" title="porems.system.PoreSystem._table_base"><code class="xref py py-obj docutils literal"><span class="pre">_table_base</span></code></a>(self,&nbsp;props[,&nbsp;decimals])</td>
+<td>Base functino for converting properties to pandas table for easy viewing.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSystem.allocation.html#porems.system.PoreSystem.allocation" title="porems.system.PoreSystem.allocation"><code class="xref py py-obj docutils literal"><span class="pre">allocation</span></code></a>(self)</td>
 <td>Calculate molecule allocation on the surface.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSystem.box.html#porems.system.PoreSystem.box" title="porems.system.PoreSystem.box"><code class="xref py py-obj docutils literal"><span class="pre">box</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem.box.html#porems.system.PoreSystem.box" title="porems.system.PoreSystem.box"><code class="xref py py-obj docutils literal"><span class="pre">box</span></code></a>(self)</td>
 <td>Return the box size of the pore block.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem.centroid.html#porems.system.PoreSystem.centroid" title="porems.system.PoreSystem.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSystem.centroid.html#porems.system.PoreSystem.centroid" title="porems.system.PoreSystem.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a>(self)</td>
 <td>Return pore centroid.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreSystem.reservoir.html#porems.system.PoreSystem.reservoir" title="porems.system.PoreSystem.reservoir"><code class="xref py py-obj docutils literal"><span class="pre">reservoir</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreSystem.reservoir.html#porems.system.PoreSystem.reservoir" title="porems.system.PoreSystem.reservoir"><code class="xref py py-obj docutils literal"><span class="pre">reservoir</span></code></a>(self)</td>
 <td>Return the reservoir length.</td>
 </tr>
 </tbody>

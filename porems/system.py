@@ -21,7 +21,7 @@ class PoreSystem():
 
 
     ##############
-    # Allocation #
+    # Attachment #
     ##############
     def _siloxane(self, hydro, site_type):
         """Attach siloxane bridges using function
@@ -56,6 +56,63 @@ class PoreSystem():
             for mol in mols:
                 if not mol.get_short() in self._sort_list:
                     self._sort_list.append(mol.get_short())
+
+    def attach(self, mol, mount, axis, amount, site_type="in", trials=1000, inp="num", scale=1, is_proxi=True, is_rotate=False):
+        """Attach molecule on the surface.
+
+        Parameters
+        ----------
+        mol : Molecule
+            Molecule object to attach
+        mount : integer
+            Atom id of the molecule that is placed on the surface silicon atom
+        axis : list
+            List of two atom ids of the molecule that define the molecule axis
+        amount : int
+            Number of molecules to attach
+        site_type : string, optional
+            Use **in** for the interior surface and **ex** for the exterior
+        trials : integer, optional
+            Number of trials picking a random site
+        inp : string, optional
+            Input type: **num** - Number of molecules,
+            **molar** - :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
+            **percent** - :math:`\\%` of OH groups
+        scale : float, optional
+            Circumference scaling around the molecule position
+        is_proxi : bool, optional
+            True to fill binding sites in proximity of filled binding site
+        is_rotate : bool, optional
+            True to randomly rotate molecule around own axis
+        """
+        # Process input
+        if site_type not in ["in", "ex"]:
+            print("Pore: Wrong site_type input...")
+            return
+
+        if inp not in ["num", "molar", "percent"]:
+            print("Pore: Wrong inp type...")
+            return
+
+        # Sites and normal vector
+        sites = self._site_in if site_type=="in" else self._site_ex
+        normal = self._normal_in if site_type=="in" else self._normal_ex
+
+        # Amount
+        if inp=="molar":
+            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
+        elif inp=="percent":
+            num_oh = len(sites)
+            num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
+            amount = int(amount/100*num_oh)
+
+        # Run attachment
+        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+
+        # Add to sorting list
+        for mol in mols:
+            if not mol.get_short() in self._sort_list:
+                self._sort_list.append(mol.get_short())
 
 
     ################
@@ -199,6 +256,86 @@ class PoreSystem():
         return self._centroid
 
 
+    #########
+    # Table #
+    #########
+    def _table_base(self, props, decimals=3):
+        """Base functino for converting properties to pandas table for easy viewing.
+
+        Parameters
+        ----------
+        props : dictionary
+            Additional pore specific properties {propname: [in-prop, ex-prop], ...}
+        decimals : integer, optional
+            Number of decimals to be rounded to
+
+        Returns
+        -------
+        tables : DataFrame
+            Pandas table of all properties
+        """
+        # Initialize
+        form = "%."+str(decimals)+"f"
+
+        # Get allocation data
+        allocation = self.allocation()
+
+        # Save data
+        data = {"Interior": {}, "Exterior": {}}
+
+        data["Interior"]["Silica block xyz-dimensions (nm)"] = " "
+        data["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
+        data["Interior"]["Simulation box xyz-dimensions (nm)"] = " "
+        data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
+        data["Interior"]["Pore drilling direction"] = "z"
+        data["Exterior"]["Pore drilling direction"] = " "
+        data["Interior"]["Surface roughness (nm)"] = form%self.roughness()
+        data["Exterior"]["Surface roughness (nm)"] = form%0.00
+
+        for prop_name, values in props.items():
+            data["Interior"][prop_name] = values[0]
+            data["Exterior"][prop_name] = values[1]
+
+        data["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
+        data["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
+        data["Interior"]["Pore volume (nm^3)"] = form%self.volume()
+        data["Exterior"]["Pore volume (nm^3)"] = " "
+        data["Interior"]["Solvent reservoir volume (nm^3)"] = " "
+        data["Exterior"]["Solvent reservoir volume (nm^3)"] = "2 * "+form%(self.box()[0]*self.box()[1]*self.reservoir())
+        data["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
+        data["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["ex"]/2)
+
+        data["Interior"]["Surface chemistry - Before Functionalization"] = " "
+        data["Exterior"]["Surface chemistry - Before Functionalization"] = " "
+        data["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
+        data["Exterior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
+        data["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
+        data["Exterior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
+        data["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
+        data["Exterior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
+        data["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
+        data["Exterior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["ex"][0]
+        data["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
+        data["Exterior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
+
+        data["Interior"]["Surface chemistry - After Functionalization"] = " "
+        data["Exterior"]["Surface chemistry - After Functionalization"] = " "
+        for mol in allocation.keys():
+            if mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]:
+                data["Interior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
+                data["Exterior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["ex"][0]
+                data["Interior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
+                data["Exterior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["ex"][2]
+        data["Interior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
+        data["Exterior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["ex"][2]-allocation["OH"]["ex"][2])
+        data["Interior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
+        data["Exterior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["ex"][0]
+        data["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
+        data["Exterior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["ex"][2]
+
+        return pd.DataFrame.from_dict(data)
+
+
 class PoreCylinder(PoreSystem):
     """This class carves a cylindric pore system out of a
     :math:`\\beta`-cristobalite block.
@@ -211,9 +348,9 @@ class PoreCylinder(PoreSystem):
         Cylinder diameter
     res : float, optional
         Reservoir size on each side
-    hydro: list
+    hydro: list, optional
         Hydroxilation degree for interior and exterior of the pore in
-        :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
+        :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
 
     Examples
     --------
@@ -245,7 +382,7 @@ class PoreCylinder(PoreSystem):
         # Build pattern
         pattern = pms.BetaCristobalit()
         pattern.generate(size, "z")
-        pattern.exterior()
+        if res: pattern.exterior()
 
         # Create block
         self._block = pattern.get_block()
@@ -255,7 +392,7 @@ class PoreCylinder(PoreSystem):
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
         matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
-        oxygen_out = matrix.bound(1)
+        if res: oxygen_out = matrix.bound(1)
 
         # Carve out shape
         self._centroid = self._block.centroid()
@@ -270,7 +407,10 @@ class PoreCylinder(PoreSystem):
         self._pore.prepare()
 
         # Determine sites
-        self._pore.sites(oxygen_out)
+        if res:
+            self._pore.sites(oxygen_out)
+        else:
+            self._pore.sites()
         site_list = self._pore.get_sites()
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
@@ -322,63 +462,6 @@ class PoreCylinder(PoreSystem):
             Vector perpendicular to surface of the given position
         """
         return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
-
-    def attach(self, mol, mount, axis, amount, site_type, trials=1000, inp="num", scale=1, is_proxi=True, is_rotate=False):
-        """Attach molecule on the surface.
-
-        Parameters
-        ----------
-        mol : Molecule
-            Molecule object to attach
-        mount : integer
-            Atom id of the molecule that is placed on the surface silicon atom
-        axis : list
-            List of two atom ids of the molecule that define the molecule axis
-        amount : int
-            Number of molecules to attach
-        site_type : string
-            Use **in** for the interior surface and **ex** for the exterior
-        trials : integer, optional
-            Number of trials picking a random site
-        inp : string, optional
-            Input type: **num** - Number of molecules,
-            **molar** - :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
-            **percent** - :math:`\\%` of OH groups
-        scale : float, optional
-            Circumference scaling around the molecule position
-        is_proxi : bool, optional
-            True to fill binding sites in proximity of filled binding site
-        is_rotate : bool, optional
-            True to randomly rotate molecule around own axis
-        """
-        # Process input
-        if site_type not in ["in", "ex"]:
-            print("Pore: Wrong site_type input...")
-            return
-
-        if inp not in ["num", "molar", "percent"]:
-            print("Pore: Wrong inp type...")
-            return
-
-        # Sites and normal vector
-        sites = self._site_in if site_type=="in" else self._site_ex
-        normal = self._normal_in if site_type=="in" else self._normal_ex
-
-        # Amount
-        if inp=="molar":
-            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
-        elif inp=="percent":
-            num_oh = len(sites)
-            num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
-            amount = int(amount/100*num_oh)
-
-        # Run attachment
-        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
-
-        # Add to sorting list
-        for mol in mols:
-            if not mol.get_short() in self._sort_list:
-                self._sort_list.append(mol.get_short())
 
     def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_rotate=False):
         """Special attachment of molecules on the surface.
@@ -544,60 +627,11 @@ class PoreCylinder(PoreSystem):
         # Initialize
         form = "%."+str(decimals)+"f"
 
-        # Get allocation data
-        allocation = self.allocation()
+        # Define pore specific properties
+        props = {}
+        props["Pore diameter (nm)"] = [form%self.diameter(), " "]
 
-        # Save data
-        data = {"Interior": {}, "Exterior": {}}
-
-        data["Interior"]["Silica block xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
-        data["Interior"]["Simulation box xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
-        data["Interior"]["Pore drilling direction"] = "z"
-        data["Exterior"]["Pore drilling direction"] = " "
-        data["Interior"]["Pore diameter (nm)"] = form%self.diameter()
-        data["Exterior"]["Pore diameter (nm)"] = " "
-        data["Interior"]["Surface roughness (nm)"] = form%self.roughness()
-        data["Exterior"]["Surface roughness (nm)"] = form%0.00
-        data["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
-        data["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
-        data["Interior"]["Pore volume (nm^3)"] = form%self.volume()
-        data["Exterior"]["Pore volume (nm^3)"] = " "
-        data["Interior"]["Solvent reservoir volume (nm^3)"] = " "
-        data["Exterior"]["Solvent reservoir volume (nm^3)"] = "2 * "+form%(self.box()[0]*self.box()[1]*self.reservoir())
-        data["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
-        data["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["ex"]/2)
-
-        data["Interior"]["Surface chemistry - Before Functionalization"] = " "
-        data["Exterior"]["Surface chemistry - Before Functionalization"] = " "
-        data["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
-        data["Exterior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
-        data["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
-        data["Exterior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
-        data["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
-        data["Exterior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
-        data["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
-        data["Exterior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["ex"][0]
-        data["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
-        data["Exterior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
-
-        data["Interior"]["Surface chemistry - After Functionalization"] = " "
-        data["Exterior"]["Surface chemistry - After Functionalization"] = " "
-        for mol in allocation.keys():
-            if mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]:
-                data["Interior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
-                data["Exterior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["ex"][0]
-                data["Interior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
-                data["Exterior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["ex"][2]
-        data["Interior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
-        data["Exterior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["ex"][2]-allocation["OH"]["ex"][2])
-        data["Interior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
-        data["Exterior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["ex"][0]
-        data["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
-        data["Exterior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["ex"][2]
-
-        return pd.DataFrame.from_dict(data)
+        return self._table_base(props, decimals)
 
 
 class PoreSlit(PoreSystem):
@@ -611,7 +645,7 @@ class PoreSlit(PoreSystem):
         Pore height
     res : float, optional
         Reservoir size on each side
-    hydro: list
+    hydro: list, optional
         Hydroxilation degree for interior and exterior of the pore in
         :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
 
@@ -713,73 +747,18 @@ class PoreSlit(PoreSystem):
 
     def _normal_ex(self, pos):
         """Normal function for the exterior surface
+
         Parameters
         ----------
         pos : list
             Position on the surface
+
         Returns
         -------
         normal : list
             Vector perpendicular to surface of the given position
         """
         return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
-
-    def attach(self, mol, mount, axis, amount, site_type="in", trials=1000, inp="num", scale=1, is_proxi=True, is_rotate=False):
-        """Attach molecule on the surface.
-
-        Parameters
-        ----------
-        mol : Molecule
-            Molecule object to attach
-        mount : integer
-            Atom id of the molecule that is placed on the surface silicon atom
-        axis : list
-            List of two atom ids of the molecule that define the molecule axis
-        amount : int
-            Number of molecules to attach
-        site_type : string
-            Use **in** for the interior surface and **ex** for the exterior
-        trials : integer, optional
-            Number of trials picking a random site
-        inp : string, optional
-            Input type: **num** - Number of molecules,
-            **molar** - :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
-            **percent** - :math:`\\%` of OH groups
-        scale : float, optional
-            Circumference scaling around the molecule position
-        is_proxi : bool, optional
-            True to fill binding sites in proximity of filled binding site
-        is_rotate : bool, optional
-            True to randomly rotate molecule around own axis
-        """
-        # Process input
-        if site_type not in ["in", "ex"]:
-            print("Pore: Wrong site_type input...")
-            return
-
-        if inp not in ["num", "molar", "percent"]:
-            print("Pore: Wrong inp type...")
-            return
-
-        # Sites and normal vector
-        sites = self._site_in if site_type=="in" else self._site_ex
-        normal = self._normal_in if site_type=="in" else self._normal_ex
-
-        # Amount
-        if inp=="molar":
-            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
-        elif inp=="percent":
-            num_oh = len(sites)
-            num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
-            amount = int(amount/100*num_oh)
-
-        # Run attachment
-        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
-
-        # Add to sorting list
-        for mol in mols:
-            if not mol.get_short() in self._sort_list:
-                self._sort_list.append(mol.get_short())
 
     def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_rotate=False):
         """Special attachment of molecules on the surface.
@@ -912,7 +891,8 @@ class PoreSlit(PoreSystem):
         return pms.Cuboid({"centroid": self._centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": self.height()}).volume()
 
     def surface(self):
-        """Calculate pore surface. This is can be simply calculated by
+        """Calculate pore surface and exterior surface. This is can be simply
+        calculated by
 
         .. math::
 
@@ -943,60 +923,11 @@ class PoreSlit(PoreSystem):
         # Initialize
         form = "%."+str(decimals)+"f"
 
-        # Get allocation data
-        allocation = self.allocation()
+        # Define pore specific properties
+        props = {}
+        props["Pore height (nm)"] = [form%self.height(), " "]
 
-        # Save data
-        data = {"Interior": {}, "Exterior": {}}
-
-        data["Interior"]["Silica block xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
-        data["Interior"]["Simulation box xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
-        data["Interior"]["Pore drilling direction"] = "z"
-        data["Exterior"]["Pore drilling direction"] = " "
-        data["Interior"]["Pore height (nm)"] = form%self.height()
-        data["Exterior"]["Pore height (nm)"] = " "
-        data["Interior"]["Surface roughness (nm)"] = form%self.roughness()
-        data["Exterior"]["Surface roughness (nm)"] = form%0.00
-        data["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
-        data["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
-        data["Interior"]["Pore volume (nm^3)"] = form%self.volume()
-        data["Exterior"]["Pore volume (nm^3)"] = " "
-        data["Interior"]["Solvent reservoir volume (nm^3)"] = " "
-        data["Exterior"]["Solvent reservoir volume (nm^3)"] = "2 * "+form%(self.box()[0]*self.box()[1]*self.reservoir())
-        data["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
-        data["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["ex"]/2)
-
-        data["Interior"]["Surface chemistry - Before Functionalization"] = " "
-        data["Exterior"]["Surface chemistry - Before Functionalization"] = " "
-        data["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
-        data["Exterior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
-        data["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
-        data["Exterior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
-        data["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
-        data["Exterior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
-        data["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
-        data["Exterior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["ex"][0]
-        data["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
-        data["Exterior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
-
-        data["Interior"]["Surface chemistry - After Functionalization"] = " "
-        data["Exterior"]["Surface chemistry - After Functionalization"] = " "
-        for mol in allocation.keys():
-            if mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]:
-                data["Interior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
-                data["Exterior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["ex"][0]
-                data["Interior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
-                data["Exterior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["ex"][2]
-        data["Interior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
-        data["Exterior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["ex"][2]-allocation["OH"]["ex"][2])
-        data["Interior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
-        data["Exterior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["ex"][0]
-        data["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
-        data["Exterior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["ex"][2]
-
-        return pd.DataFrame.from_dict(data)
+        return self._table_base(props, decimals)
 
 
 class PoreCapsule(PoreSystem):
@@ -1013,6 +944,9 @@ class PoreCapsule(PoreSystem):
         Separation length between capsule
     res : float, optional
         Reservoir size on each side
+    hydro: list, optional
+        Hydroxilation degree for interior and exterior of the pore in
+        :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
 
     Examples
     --------
@@ -1033,7 +967,7 @@ class PoreCapsule(PoreSystem):
 
         pore.store("output/")
     """
-    def __init__(self, size, diam, sep, res=5):
+    def __init__(self, size, diam, sep, res=5, hydro=[0, 0]):
         # Call super class
         super(PoreCapsule, self).__init__()
 
@@ -1047,7 +981,7 @@ class PoreCapsule(PoreSystem):
         # Build pattern
         self._pattern = pms.BetaCristobalit()
         self._pattern.generate(self._size, "z")
-        self._pattern.exterior()
+        if res: self._pattern.exterior()
         self._len_cyl = (self._pattern.get_size()[2]-sep-diam)/2
 
         # Create block
@@ -1058,7 +992,7 @@ class PoreCapsule(PoreSystem):
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
         matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
-        oxygen_out = matrix.bound(1)
+        if res: oxygen_out = matrix.bound(1)
 
         # Carve out shape
         central = [0, 0, 1]
@@ -1087,10 +1021,21 @@ class PoreCapsule(PoreSystem):
         self._pore.prepare()
 
         # Determine sites
-        self._pore.sites(oxygen_out)
+        if res:
+            self._pore.sites(oxygen_out)
+        else:
+            self._pore.sites()
         site_list = self._pore.get_sites()
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
+        # Siloxane bridges
+        if hydro[0]:
+            self._siloxane(hydro[0], "in")
+            self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        if hydro[1]:
+            self._siloxane(hydro[1], "ex")
+            self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Objectify grid
         non_grid = matrix.bound(1)+list(site_list.keys())
@@ -1138,61 +1083,6 @@ class PoreCapsule(PoreSystem):
             Vector perpendicular to surface of the given position
         """
         return [0, 0, -1] if pos[2] < self._centroid["block"][2] else [0, 0, 1]
-
-    def attach(self, mol, mount, axis, amount, site_type, scale=1, trials=1000, inp="num", is_rotate=False):
-        """Attach molecule on the surface.
-
-        Parameters
-        ----------
-        mol : Molecule
-            Molecule object to attach
-        mount : integer
-            Atom id of the molecule that is placed on the surface silicon atom
-        axis : list
-            List of two atom ids of the molecule that define the molecule axis
-        amount : int
-            Number of molecules to attach
-        site_type : string
-            Use **in** for the interior surface and **ex** for the exterior
-        scale : float, optional
-            Circumference scaling around the molecule position
-        trials : integer, optional
-            Number of trials picking a random site
-        inp : string, optional
-            Input type: **num** - Number of molecules,
-            **molar** - :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
-            **percent** - :math:`\\%` of OH groups
-        is_rotate : bool, optional
-            True to randomly rotate molecule around own axis
-        """
-        # Process input
-        if site_type not in ["in", "ex"]:
-            print("Pore: Wrong site_type input...")
-            return
-
-        if inp not in ["num", "molar", "percent"]:
-            print("Pore: Wrong inp type...")
-            return
-
-        # Sites and normal vector
-        sites = self._site_in if site_type=="in" else self._site_ex
-        normal = self._normal_in if site_type=="in" else self._normal_ex
-
-        # Amount
-        if inp=="molar":
-            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
-        elif inp=="percent":
-            num_oh = len(sites)
-            num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
-            amount = int(amount/100*num_oh)
-
-        # Run attachment
-        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=True, is_random=True, is_rotate=is_rotate)
-
-        # Add to sorting list
-        for mol in mols:
-            if not mol.get_short() in self._sort_list:
-                self._sort_list.append(mol.get_short())
 
 
     ############
@@ -1336,59 +1226,9 @@ class PoreCapsule(PoreSystem):
         # Initialize
         form = "%."+str(decimals)+"f"
 
-        # Get allocation data
-        allocation = self.allocation()
+        # Define pore specific properties
+        props = {}
+        props["Pore diameter (nm)"] = [form%self.diameter(), " "]
+        props["Cavity separation distance(nm)"] = [form%self._sep, " "]
 
-        # Save data
-        data = {"Interior": {}, "Exterior": {}}
-
-        data["Interior"]["Silica block xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
-        data["Interior"]["Simulation box xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
-        data["Interior"]["Pore drilling direction"] = "z"
-        data["Exterior"]["Pore drilling direction"] = " "
-        data["Interior"]["Pore diameter (nm)"] = form%self.diameter()
-        data["Exterior"]["Pore diameter (nm)"] = " "
-        data["Interior"]["Surface roughness (nm)"] = form%self.roughness()
-        data["Exterior"]["Surface roughness (nm)"] = form%0.00
-        data["Interior"]["Cavity separation distance(nm)"] = form%self._sep
-        data["Exterior"]["Cavity separation distance(nm)"] = " "
-        data["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
-        data["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
-        data["Interior"]["Pore volume (nm^3)"] = "2 * "+form%(self.volume()/2)
-        data["Exterior"]["Pore volume (nm^3)"] = " "
-        data["Interior"]["Solvent reservoir volume (nm^3)"] = " "
-        data["Exterior"]["Solvent reservoir volume (nm^3)"] = "2 * "+form%(self.box()[0]*self.box()[1]*self.reservoir())
-        data["Interior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["in"]/2)
-        data["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["ex"]/2)
-
-        data["Interior"]["Surface chemistry - Before Functionalization"] = " "
-        data["Exterior"]["Surface chemistry - Before Functionalization"] = " "
-        data["Interior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="in"])
-        data["Exterior"]["    Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
-        data["Interior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="in"])
-        data["Exterior"]["    Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
-        data["Interior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["in"][0] if "SLX" in allocation else "0"
-        data["Exterior"]["    Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
-        data["Interior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["in"][0]
-        data["Exterior"]["    Total number of OH groups"] = "%i"%allocation["Hydro"]["ex"][0]
-        data["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
-        data["Exterior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
-
-        data["Interior"]["Surface chemistry - After Functionalization"] = " "
-        data["Exterior"]["Surface chemistry - After Functionalization"] = " "
-        for mol in allocation.keys():
-            if mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]:
-                data["Interior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["in"][0]
-                data["Exterior"]["    Number of "+mol+" groups"] = "%i"%allocation[mol]["ex"][0]
-                data["Interior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["in"][2]
-                data["Exterior"]["    "+mol+" density (mumol/m^2)"] = form%allocation[mol]["ex"][2]
-        data["Interior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
-        data["Exterior"]["    Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["ex"][2]-allocation["OH"]["ex"][2])
-        data["Interior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["in"][0]
-        data["Exterior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["ex"][0]
-        data["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
-        data["Exterior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["ex"][2]
-
-        return pd.DataFrame.from_dict(data)
+        return self._table_base(props, decimals)

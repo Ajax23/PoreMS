@@ -173,13 +173,10 @@
 </pre></div>
 </div>
 <p>In order to show the properties of the generated pore, use the table function</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tables</span> <span class="o">=</span> <span class="n">pore</span><span class="o">.</span><span class="n">table</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;props&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;alloc&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">pore</span><span class="o">.</span><span class="n">table</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>This returns a dictionary of pandas data frames for pore properties <strong>props</strong>, allocation <strong>alloc</strong> and a table with all pore and allocation properties combined in a single <strong>full</strong> table.</p>
+<p>This returns a pandas data frame of pore properties and allocation.</p>
 <p>At this point the pore generation is completed and what is left is converting the programs data structure into a readable file-format using the functionalities of the Store class. For this a store function is provided that creates a structure file in the GROMACS format, a main topology containing the number of atoms, a topology for the basic surface groups and grid atoms and a pickle file of the pore object</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pore</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
 </pre></div>
@@ -238,10 +235,7 @@
 
 
 <span class="c1"># Print pore properties</span>
-<span class="n">tables</span> <span class="o">=</span> <span class="n">pore</span><span class="o">.</span><span class="n">table</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;props&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;alloc&quot;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pore</span><span class="o">.</span><span class="n">table</span><span class="p">())</span>
 </pre></div>
 </div>
       </div>

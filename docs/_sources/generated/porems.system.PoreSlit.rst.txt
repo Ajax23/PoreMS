@@ -25,6 +25,7 @@ PoreSlit
 
   .. autosummary::
 
+    ~PoreSlit._table_base
     ~PoreSlit.allocation
     ~PoreSlit.box
     ~PoreSlit.centroid

@@ -25,6 +25,7 @@ PoreCylinder
 
   .. autosummary::
 
+    ~PoreCylinder._table_base
     ~PoreCylinder.allocation
     ~PoreCylinder.box
     ~PoreCylinder.centroid

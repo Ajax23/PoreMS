@@ -24,6 +24,7 @@ PoreCapsule
 
   .. autosummary::
 
+    ~PoreCapsule._table_base
     ~PoreCapsule.allocation
     ~PoreCapsule.box
     ~PoreCapsule.centroid

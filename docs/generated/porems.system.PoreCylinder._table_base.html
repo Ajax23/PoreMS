@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PoreCapsule.attach &#8212; PoreMS 0.2.2 documentation</title>
+    <title>PoreCylinder._table_base &#8212; PoreMS 0.2.2 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -78,7 +78,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">PoreCapsule.attach</a></li>
+<li><a class="reference internal" href="#">PoreCylinder._table_base</a></li>
 </ul>
 </ul>
 </li>
@@ -109,48 +109,29 @@
     <div class="body col-md-12 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="porecapsule-attach">
-<h1>PoreCapsule.attach<a class="headerlink" href="#porecapsule-attach" title="Permalink to this headline">¶</a></h1>
+<div class=col-md-9 content><div class="section" id="porecylinder-table-base">
+<h1>PoreCylinder._table_base<a class="headerlink" href="#porecylinder-table-base" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="porems.system.PoreCapsule.attach">
-<code class="descclassname">PoreCapsule.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>site_type='in'</em>, <em>trials=1000</em>, <em>inp='num'</em>, <em>scale=1</em>, <em>is_proxi=True</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCapsule.attach" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attach molecule on the surface.</p>
+<dt id="porems.system.PoreCylinder._table_base">
+<code class="descclassname">PoreCylinder.</code><code class="descname">_table_base</code><span class="sig-paren">(</span><em>self</em>, <em>props</em>, <em>decimals=3</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder._table_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base functino for converting properties to pandas table for easy viewing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule</span></dt>
-<dd><p class="first last">Molecule object to attach</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>props</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dictionary</span></dt>
+<dd><p class="first last">Additional pore specific properties {propname: [in-prop, ex-prop], …}</p>
 </dd>
-<dt><strong>mount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer</span></dt>
-<dd><p class="first last">Atom id of the molecule that is placed on the surface silicon atom</p>
+<dt><strong>decimals</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
+<dd><p class="first last">Number of decimals to be rounded to</p>
 </dd>
-<dt><strong>axis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">List of two atom ids of the molecule that define the molecule axis</p>
-</dd>
-<dt><strong>amount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Number of molecules to attach</p>
-</dd>
-<dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Use <strong>in</strong> for the interior surface and <strong>ex</strong> for the exterior</p>
-</dd>
-<dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
-<dd><p class="first last">Number of trials picking a random site</p>
-</dd>
-<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Input type: <strong>num</strong> - Number of molecules,
-<strong>molar</strong> - <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>,
-<strong>percent</strong> - <span class="math">\(\%\)</span> of OH groups</p>
-</dd>
-<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Circumference scaling around the molecule position</p>
-</dd>
-<dt><strong>is_proxi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True to fill binding sites in proximity of filled binding site</p>
-</dd>
-<dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True to randomly rotate molecule around own axis</p>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>tables</strong> <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame</span></dt>
+<dd><p class="first last">Pandas table of all properties</p>
 </dd>
 </dl>
 </td>

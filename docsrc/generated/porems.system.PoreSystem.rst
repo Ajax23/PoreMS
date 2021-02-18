@@ -10,11 +10,12 @@ PoreSystem
 
 .. autoclass:: PoreSystem
 
-  .. rubric:: Allocation
+  .. rubric:: Attachement
 
   .. autosummary::
 
     ~PoreSystem._siloxane
+    ~PoreSystem.attach
 
 
   .. rubric:: Finalization
@@ -29,6 +30,7 @@ PoreSystem
 
   .. autosummary::
 
+    ~PoreSystem._table_base
     ~PoreSystem.allocation
     ~PoreSystem.box
     ~PoreSystem.centroid
