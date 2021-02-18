@@ -642,7 +642,7 @@ class UserModelCase(unittest.TestCase):
         # self.skipTest("Temporary")
 
         # Empty pore
-        pore = pms.PoreCylinder([4, 4, 4], 2, 5)
+        pore = pms.PoreCylinder([4, 4, 4], 2, 0)
         pore.finalize()
 
         # Filled pore
@@ -722,7 +722,7 @@ class UserModelCase(unittest.TestCase):
         # self.skipTest("Temporary")
 
         # Empty pore
-        pore = pms.PoreCapsule([4, 4, 4], 1, 1)
+        pore = pms.PoreCapsule([4, 4, 4], 1, 1, 0)
         pore.finalize()
 
         # Filled pore
