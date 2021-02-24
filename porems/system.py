@@ -181,7 +181,7 @@ class PoreSystem():
         # Get surfaces
         surf = self.surface()
         site_dict = self._pore.get_site_dict()
-        num_in_ex = self._pore.get_num_in_ex()
+        # num_in_ex = self._pore.get_num_in_ex()
 
         # Calculate allocation for all molecules
         alloc = {}
