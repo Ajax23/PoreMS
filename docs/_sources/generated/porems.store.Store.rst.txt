@@ -17,6 +17,7 @@ Store
 
     ~Store.gro
     ~Store.pdb
+    ~Store.lmp
     ~Store.xyz
     ~Store.obj
     ~Store.job

@@ -9,6 +9,7 @@ import os
 import shutil
 
 import porems.utils as utils
+import porems.database as db
 
 from porems.molecule import Molecule
 from porems.pore import Pore
@@ -330,6 +331,78 @@ class Store:
                         out_string += "%13.7f" % (atom.get_pos()[i]*10)
 
                     file_out.write(out_string+"\n")
+
+    def lmp(self, name=""):
+        """Generate the structure file for the defined molecule in the LAMMPS
+        format.
+
+        Parameters
+        ----------
+        name : string, optional
+            Filename
+        """
+        # Initialize
+        link = self._link
+        link += name if name else self._name+".lmp"
+
+        # Atom types
+        atom_types = list(set(sum([[x.get_atom_type(i) for i in range(x.get_num())] for x in self._mols], [])))
+
+        # Open file
+        with open(link, "w") as file_out:
+            # Set title
+            file_out.write("# Molecule generated using the PoreMS package\n\n")
+
+            # Porperties section
+            file_out.write("%i" % sum([x.get_num() for x in self._mols])+" atoms\n")
+            file_out.write("%i" % len(atom_types)+" atom types\n")
+            file_out.write("\n")
+
+            # Box size - Periodic boundary conditions
+            file_out.write("0.000 "+"%.3f" % self._box[0]+" xlo xhi\n")
+            file_out.write("0.000 "+"%.3f" % self._box[1]+" ylo yhi\n")
+            file_out.write("0.000 "+"%.3f" % self._box[2]+" zlo zhi\n")
+            file_out.write("\n")
+
+            # Masses
+            file_out.write("Masses\n\n")
+            for i, at in enumerate(atom_types):
+                file_out.write("%i"%(i+1)+" "+"%8.3f"%db.get_mass(at)+"\n")
+            file_out.write("\n")
+
+            # Atoms
+            file_out.write("Atoms\n\n")
+
+            # Set counter
+            num_a = 1
+            num_m = 1
+
+            # Run through molecules
+            for mol in self._mols:
+                temp_res_id = 0
+                # Run through atoms
+                for atom in mol.get_atom_list():
+                    # Process residue index
+                    if not atom.get_residue() == temp_res_id:
+                        num_m = num_m+1
+                        temp_res_id = atom.get_residue()
+
+                    # Get atom type
+                    atom_type_id = atom_types.index(atom.get_atom_type())+1
+
+                    # Write atom line
+                    out_string  = "%5i" % num_a + " "        #  Atom number
+                    out_string += "%5i" % num_m + " "        #  Residue number
+                    out_string += "%3i" % atom_type_id + " " #  Atom type
+                    out_string += "%5i" % 0 + " "            #  Charge
+                    for i in range(self._dim):               #  Coordinates
+                        out_string += "%8.3f" % atom.get_pos()[i]
+                        out_string += " " if i<self._dim-1 else ""
+                    file_out.write(out_string+"\n")
+
+                    # Process counter
+                    num_a = num_a+1
+                num_m = num_m+1
 
 
     ############

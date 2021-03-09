@@ -268,6 +268,7 @@ class UserModelCase(unittest.TestCase):
         pms.Store(mol, "output").gro("store_gro.gro", True)
         pms.Store(mol, "output").pdb("store_pdb.pdb", True)
         pms.Store(mol, "output").xyz("store_xyz.xyz")
+        pms.Store(mol, "output").lmp("store_lmp.lmp")
         pms.Store(mol, "output").grid("store_grid.itp")
 
         print()
