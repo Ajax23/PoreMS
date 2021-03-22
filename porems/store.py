@@ -334,7 +334,7 @@ class Store:
 
     def lmp(self, name=""):
         """Generate the structure file for the defined molecule in the LAMMPS
-        format.
+        format. Assuming real units are used, the coordinates are in Angstroms.
 
         Parameters
         ----------
@@ -351,7 +351,7 @@ class Store:
         # Open file
         with open(link, "w") as file_out:
             # Set title
-            file_out.write("# Molecule generated using the PoreMS package\n\n")
+            file_out.write("Molecule generated using the PoreMS package\n\n")
 
             # Porperties section
             file_out.write("%i" % sum([x.get_num() for x in self._mols])+" atoms\n")
@@ -359,9 +359,9 @@ class Store:
             file_out.write("\n")
 
             # Box size - Periodic boundary conditions
-            file_out.write("0.000 "+"%.3f" % self._box[0]+" xlo xhi\n")
-            file_out.write("0.000 "+"%.3f" % self._box[1]+" ylo yhi\n")
-            file_out.write("0.000 "+"%.3f" % self._box[2]+" zlo zhi\n")
+            file_out.write("0.000 "+"%.3f" % (self._box[0]*10)+" xlo xhi\n")
+            file_out.write("0.000 "+"%.3f" % (self._box[1]*10)+" ylo yhi\n")
+            file_out.write("0.000 "+"%.3f" % (self._box[2]*10)+" zlo zhi\n")
             file_out.write("\n")
 
             # Masses
@@ -396,7 +396,7 @@ class Store:
                     out_string += "%3i" % atom_type_id + " " #  Atom type
                     out_string += "%5i" % 0 + " "            #  Charge
                     for i in range(self._dim):               #  Coordinates
-                        out_string += "%8.3f" % atom.get_pos()[i]
+                        out_string += "%8.3f" % (atom.get_pos()[i]*10)
                         out_string += " " if i<self._dim-1 else ""
                     file_out.write(out_string+"\n")
 

@@ -309,6 +309,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(beta_cristobalit.get_size(), [2.024, 1.754, 2.480])
         self.assertEqual([round(x, 3) for x in beta_cristobalit.get_block().get_box()], [2.024, 1.754, 2.480])
         pms.Store(beta_cristobalit.get_block(), "output").gro()
+        pms.Store(beta_cristobalit.get_block(), "output").lmp()
 
         # Exterior
         beta_cristobalit = pms.BetaCristobalit()
