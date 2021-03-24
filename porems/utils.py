@@ -231,7 +231,7 @@ def mols_to_mumol_m2(N, A):
     return N/0.6022/A
 
 
-def mmol_g_to_mumol_m2(c, A):
+def mmol_g_to_mumol_m2(c, SBET):
     """Convert the concentration :math:`\\frac{\\text{mmol}}{\\text{g}}`
     to :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
 
@@ -246,15 +246,15 @@ def mmol_g_to_mumol_m2(c, A):
     ----------
     c : float
         Concentration in :math:`\\frac{\\text{mmol}}{\\text{g}}`
-    A : float
-        Surface in :math:`\\frac{\\text{m}^2}{\\text{g}}`
+    SBET : float
+        Material surface in :math:`\\frac{\\text{m}^2}{\\text{g}}`
 
     Returns
     -------
     c : float
         Concentration in :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
     """
-    return c/A*1e3
+    return c/SBET*1e3
 
 
 def mmol_l_to_mols(c, V):
