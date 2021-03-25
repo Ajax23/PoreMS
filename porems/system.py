@@ -463,7 +463,7 @@ class PoreCylinder(PoreSystem):
         """
         return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
 
-    def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_rotate=False):
+    def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_proxi=True, is_rotate=False):
         """Special attachment of molecules on the surface.
 
         Parameters
@@ -480,6 +480,8 @@ class PoreCylinder(PoreSystem):
             Circumference scaling around the molecule position
         symmetry : string, optional
             Symmetry option - point, mirror
+        is_proxi : bool, optional
+            True to fill binding sites in proximity of filled binding site
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
         """
@@ -506,7 +508,7 @@ class PoreCylinder(PoreSystem):
             pos_list.append([x, y, z])
 
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), self._normal_in, scale, pos_list=pos_list, is_proxi=True, is_random=False, is_rotate=is_rotate)
+        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), self._normal_in, scale, pos_list=pos_list, is_proxi=is_proxi, is_random=False, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:
@@ -760,7 +762,7 @@ class PoreSlit(PoreSystem):
         """
         return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
 
-    def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_rotate=False):
+    def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_proxi=True, is_rotate=False):
         """Special attachment of molecules on the surface.
 
         Parameters
@@ -777,6 +779,8 @@ class PoreSlit(PoreSystem):
             Circumference scaling around the molecule position
         symmetry : string, optional
             Symmetry option - point, mirror
+        is_proxi : bool, optional
+            True to fill binding sites in proximity of filled binding site
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
         """
@@ -803,7 +807,7 @@ class PoreSlit(PoreSystem):
             pos_list.append([x, y, z])
 
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), self._normal_in, scale, pos_list=pos_list, is_proxi=True, is_random=False, is_rotate=is_rotate)
+        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), self._normal_in, scale, pos_list=pos_list, is_proxi=is_proxi, is_random=False, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:

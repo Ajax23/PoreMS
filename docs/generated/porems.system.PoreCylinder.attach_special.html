@@ -113,7 +113,7 @@
 <h1>PoreCylinder.attach_special<a class="headerlink" href="#porecylinder-attach-special" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.system.PoreCylinder.attach_special">
-<code class="descclassname">PoreCylinder.</code><code class="descname">attach_special</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>scale=1</em>, <em>symmetry='point'</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder.attach_special" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">PoreCylinder.</code><code class="descname">attach_special</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>scale=1</em>, <em>symmetry='point'</em>, <em>is_proxi=True</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder.attach_special" title="Permalink to this definition">¶</a></dt>
 <dd><p>Special attachment of molecules on the surface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -137,6 +137,9 @@
 </dd>
 <dt><strong>symmetry</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">Symmetry option - point, mirror</p>
+</dd>
+<dt><strong>is_proxi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">True to fill binding sites in proximity of filled binding site</p>
 </dd>
 <dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">True to randomly rotate molecule around own axis</p>
