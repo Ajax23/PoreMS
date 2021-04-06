@@ -121,7 +121,7 @@ class Atom:
         return self._atom_type
 
     def get_name(self):
-        """Return the atom position.
+        """Return the atom name.
 
         Returns
         -------
