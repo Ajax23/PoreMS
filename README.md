@@ -5,7 +5,7 @@
 [![PyPI Version](https://img.shields.io/badge/PyPI-0.2.2-orange)](https://pypi.org/project/porems/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/Ajax23/PoreMS/blob/master/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4738036.svg)](https://doi.org/10.5281/zenodo.4738036)
-[![Build Status](https://travis-ci.com/Ajax23/PoreMS.svg?branch=master)](https://travis-ci.com/Ajax23/PoreMS)
+[![Build Status](https://github.com/Ajax23/PoreMS/actions/workflows/workflow.yml/badge.svg)](https://github.com/Ajax23/PoreMS/actions/workflows/workflow.yml)
 [![codecov](https://codecov.io/gh/Ajax23/PoreMS/branch/master/graph/badge.svg)](https://codecov.io/gh/Ajax23/PoreMS)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Ajax23/PoreMS.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Ajax23/PoreMS/context:python)
 
