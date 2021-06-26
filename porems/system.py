@@ -57,7 +57,7 @@ class PoreSystem():
                 if not mol.get_short() in self._sort_list:
                     self._sort_list.append(mol.get_short())
 
-    def attach(self, mol, mount, axis, amount, site_type="in", trials=1000, inp="num", scale=1, is_proxi=True, is_rotate=False):
+    def attach(self, mol, mount, axis, amount, site_type="in", inp="num", pos_list=[], scale=1, trials=1000, is_proxi=True, is_rotate=False):
         """Attach molecule on the surface.
 
         Parameters
@@ -72,14 +72,16 @@ class PoreSystem():
             Number of molecules to attach
         site_type : string, optional
             Use **in** for the interior surface and **ex** for the exterior
-        trials : integer, optional
-            Number of trials picking a random site
         inp : string, optional
             Input type: **num** - Number of molecules,
             **molar** - :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
             **percent** - :math:`\\%` of OH groups
+        pos_list : list, optional
+            List of positions (cartesian) to find nearest available binding site for
         scale : float, optional
             Circumference scaling around the molecule position
+        trials : integer, optional
+            Number of trials picking a random site
         is_proxi : bool, optional
             True to fill binding sites in proximity of filled binding site
         is_rotate : bool, optional
@@ -106,8 +108,13 @@ class PoreSystem():
             num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
             amount = int(amount/100*num_oh)
 
+        # Check number of given positions
+        if pos_list and not len(pos_list)==amount:
+            print("Pore: Number of given positions does not match number of groups to attach...")
+            return
+
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:

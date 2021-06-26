@@ -209,7 +209,7 @@ class Pore():
         trials : integer, optional
             Number of trials picking a random site
         pos_list : list, optional
-            List of positions to find nearest available binding site for
+            List of positions (cartesian) to find nearest available binding site for
         site_type : string, optional
             Site type - interior **in**, exterior **ex**
         is_proxi : bool, optional
