@@ -75,7 +75,7 @@ class Shape():
         vec : list, optional
             Vector on surface to test normal vector
         """
-        fig = plt.figure()
+        fig = plt.gcf()
         ax = fig.add_subplot(111, projection="3d")
 
         # Surface

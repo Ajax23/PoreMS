@@ -462,6 +462,7 @@ class UserModelCase(unittest.TestCase):
         pms.Store(block, "output").gro()
 
         # Plot surface
+        plt.figure()
         cylinder.plot(vec=[3.17290646, 4.50630614, 0.22183271])
         # plt.show()
 
