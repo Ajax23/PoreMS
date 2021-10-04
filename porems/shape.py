@@ -81,14 +81,14 @@ class Shape():
         # Surface
         ax.plot_surface(*self.surf(num=100), alpha=0.7)
 
-        # Rim
-        ax.plot3D(*[x[0] for x in self.rim(inp, num)])
-
-        # Normal
-        if vec:
-            line = [self.convert([0, 0, 0], False), vec,
-                    self.convert([x*5 for x in geometry.unit(self.normal(vec))], False)]
-            ax.plot3D(*utils.column(line))
+        # # Rim
+        # ax.plot3D(*[x[0] for x in self.rim(inp, num)])
+        #
+        # # Normal
+        # if vec:
+        #     line = [self.convert([0, 0, 0], False), vec,
+        #             self.convert([x*5 for x in geometry.unit(self.normal(vec))], False)]
+        #     ax.plot3D(*utils.column(line))
 
 
 class Cylinder(Shape):
@@ -780,3 +780,277 @@ class Cuboid(Shape):
             Inner surface
         """
         return 2*(self._inp["length"]*self._inp["width"]+self._inp["length"]*self._inp["height"]+self._inp["width"]*self._inp["height"])
+
+
+class Hyperboloid(Shape):
+        """This class defines a sphere shape. Needed inputs are
+
+        * **central** - Central axis
+        * **centroid** - Centroid of block
+        * **length** - Shape length
+        * **base** - Base diameter
+        * **Skirt** - Skirt diameter
+
+        Parameters
+        ----------
+        inp : dictionary
+            Dictionary of necessary inputs
+        """
+        def __init__(self, inp):
+            # Set centroid
+            self._centroid = [0, 0, 0]
+
+            # Call super class
+            super(Hyperboloid, self).__init__(inp)
+
+
+        ############
+        # Function #
+        ############
+        def Phi(self, r, a, theta, v):
+            """Surface function of a sphere
+
+            .. math::
+
+                \\Phi(r,\\phi,\\theta)=
+                \\begin{bmatrix}r\\cos(\\phi)\\sin(\\theta)\\\\r\\sin(\\phi)\\sin(\\theta)\\\\r\\cos(\\theta)\\end{bmatrix}
+
+            with radius :math:`r`, polar angle :math:`\\phi` and azimuthal angle
+            :math:`\\theta`.
+
+            Parameters
+            ----------
+            r : float
+                Base radius
+            a : float
+                Skirt radius
+            theta : float
+                Azimuth angle
+            phi : float
+                Polar angle
+
+            Returns
+            -------
+            pos : list
+                Cartesian coordinates for given spherical coordinates
+            """
+            x = a*np.outer(np.cosh(v), np.cos(theta))
+            y = a*np.outer(np.cosh(v), np.sin(theta))
+            z = r*np.outer(np.sinh(v), np.ones(len(v)))
+
+            return self.convert([x, y, z], False)
+
+        def d_Phi_phi(self, r, theta, phi):
+            """Derivative of the surface function considering the polar angle
+            :math:`\\phi`
+
+            .. math::
+
+                \\frac{\\partial\\Phi}{\\partial\\phi}(r,\\phi,\\theta)=
+                \\begin{bmatrix}-r\\sin(\\phi)\\sin(\\theta)\\\\r\\cos(\\phi)\\sin(\\theta)\\\\0\\end{bmatrix}
+
+            with radius :math:`r`, polar angle :math:`\\phi` and azimuthal angle
+            :math:`\\theta`.
+
+            Parameters
+            ----------
+            r : float
+                Radius
+            theta : float
+                Azimuth angle
+            phi : float
+                Polar angle
+
+            Returns
+            -------
+            pos : list
+                Cartesian coordinates for given spherical coordinates
+            """
+            x = -r*np.sin(phi)*np.sin(theta)
+            y = r*np.cos(phi)*np.sin(theta)
+            z = 0
+
+            return [x, y, z]
+
+        def d_Phi_theta(self, r, theta, phi):
+            """Derivative of the surface function considering the azimuthal angle
+            :math:`\\theta`
+
+            .. math::
+
+                \\frac{\\partial\\Phi}{\\partial\\theta}(r,\\phi,\\theta)=
+                \\begin{bmatrix}r\\cos(\\phi)\\cos(\\theta)\\\\r\\sin(\\phi)\\cos(\\theta)\\\\-r\\sin(\\theta)\\end{bmatrix}
+
+            with radius :math:`r`, polar angle :math:`\\phi` and azimuthal angle
+            :math:`\\theta`.
+
+            Parameters
+            ----------
+            r : float
+                Radius
+            theta : float
+                Azimuth angle
+            phi : float
+                Polar angle
+
+            Returns
+            -------
+            pos : list
+                Cartesian coordinates for given spherical coordinates
+            """
+            x = r*np.cos(phi)*np.cos(theta)
+            y = r*np.sin(phi)*np.cos(theta)
+            z = -r*np.sin(theta)
+
+            return [x, y, z]
+
+
+        ############
+        # Features #
+        ############
+        def normal(self, pos):
+            """Calculate unit normal vector on surface for a given position
+
+            .. math::
+
+                \\frac{\\partial\\Phi}{\\partial\\theta}(r,\\phi,\\theta)\\times
+                \\frac{\\partial\\Phi}{\\partial\\phi}(r,\\phi,\\theta)=
+                \\begin{bmatrix}
+                -r^2\\cos(\\phi)\\sin(\\theta)^2\\\\
+                r^2\\sin(\\phi)\\sin(\\theta)^2\\\\
+                -r^2\\sin(\\theta)\\cos(\\theta)\\left[\\sin(\\phi)^2-\\cos(\\phi)^2\\right]\\\\
+                \\end{bmatrix}
+
+            with radius :math:`r`, polar angle :math:`\\phi` and cylinder length
+            :math:`z`.
+
+            Parameters
+            ----------
+            pos : list
+                Position
+
+            Returns
+            -------
+            normal : list
+                Normal vector
+            """
+            # Initialize
+            x, y, z = self.convert(pos)
+
+            # Cartesian to polar
+            r = math.sqrt(x**2+y**2+z**2)
+            theta = geometry.angle_azi([x, y, z])
+            phi = geometry.angle_polar([x, y, z])
+
+            # Calculate derivatives
+            d_Phi_theta = self.d_Phi_theta(r, theta, phi)
+            d_Phi_phi = self.d_Phi_phi(r, theta, phi)
+
+            # Calculate normal vector
+            return geometry.cross_product(d_Phi_theta, d_Phi_phi)
+
+        def is_in(self, pos):
+            """Check if given position is inside of shape.
+
+            Parameters
+            ----------
+            pos : list
+                Position
+
+            Returns
+            -------
+            is_in : bool
+                True if position is inside of shape
+            """
+            # Check if within shape
+            pos_zero = self.convert(pos)
+
+            r = self._inp["base"]/2
+            a = self._inp["skirt"]/2
+
+            len_pos = geometry.length(geometry.vector([self._centroid[0], self._centroid[1], pos_zero[2]], pos_zero))
+            len_surf = math.sqrt(math.pi*a**2*(1+pos_zero[2]**2)*r)/math.pi
+
+            return len_pos<len_surf
+
+
+        #########
+        # Shape #
+        #########
+        def rim(self, phi, num=100):
+            """Return x and y values for given polar angle.
+
+            Parameters
+            ----------
+            phi : float
+                Position on the axis
+            num : integer, optional
+                Number of points
+
+            Returns
+            -------
+            positions : list
+                x and y arrays of the surface rim on the z-position
+            """
+            r = self._inp["base"]/2
+            a = self._inp["skirt"]/2
+            theta = np.linspace(0, 2*np.pi, num)
+
+            return self.Phi(r, a, theta, [phi])
+
+        def surf(self, num=100):
+            """Return x, y and z values for the shape.
+
+            Parameters
+            ----------
+            num : integer, optional
+                Number of points
+
+            Returns
+            -------
+            positions : list
+                x, y and z arrays of the surface rim
+            """
+            r = self._inp["base"]/2
+            a = self._inp["skirt"]/2
+            l = self._inp["length"]/2
+            theta = np.linspace(0, 2*np.pi, num)
+            v = np.linspace(-l, l, num)
+
+            return self.Phi(r, a, theta, v)
+
+
+        ##############
+        # Properties #
+        ##############
+        def volume(self):
+            """Calculate volume
+
+            .. math::
+
+                V=\\frac43\\pi r^3
+
+            with radius :math:`r`.
+
+            Returns
+            -------
+            volume : float
+                Volume
+            """
+            return 4/3*math.pi*(self._inp["base"]/2)**3
+
+        def surface(self):
+            """Calculate inner surface
+
+            .. math::
+
+                S=4\\pi r^2
+
+            with radius :math:`r`.
+
+            Returns
+            -------
+            surface : float
+                Inner surface
+            """
+            return 4*math.pi*(self._inp["base"]/2)**2
