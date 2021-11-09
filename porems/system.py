@@ -250,7 +250,7 @@ class PoreSystem():
         box : list
             Box size in all dimensions
         """
-        return self._block.get_box()
+        return self._pore.get_box()
 
     def centroid(self):
         """Return pore centroid.
@@ -291,9 +291,9 @@ class PoreSystem():
         data = {"Interior": {}, "Exterior": {}}
 
         data["Interior"]["Silica block xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
+        data["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]-2*self.reservoir())+"]"
         data["Interior"]["Simulation box xyz-dimensions (nm)"] = " "
-        data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]+2*self.reservoir())+"]"
+        data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
         data["Interior"]["Pore drilling direction"] = "z"
         data["Exterior"]["Pore drilling direction"] = " "
         data["Interior"]["Surface roughness (nm)"] = form%self.roughness()
