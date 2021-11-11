@@ -1,4 +1,4 @@
-# v0.2.3 (Upcoming)
+# v0.2.3
 * Bugfixes and quality of life improvements
 
 # v0.2.2
