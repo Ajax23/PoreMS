@@ -1,5 +1,5 @@
 # v0.2.3 (Upcoming)
-* -
+* Bugfixes and quality of life improvements
 
 # v0.2.2
 * System Class: Move duplicate methods of child classes to parent class
