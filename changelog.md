@@ -1,3 +1,6 @@
+# v0.2.4 (Upcoming)
+* -
+
 # v0.2.3
 * Bugfixes and quality of life improvements
 

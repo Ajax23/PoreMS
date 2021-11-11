@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="porems",
-    version="0.2.3",
+    version="0.2.4",
     author="Hamzeh Kraus",
     author_email="kraus@itt.uni-stuttgart.de",
     description="Pore Generator for Molecular Simulations.",
