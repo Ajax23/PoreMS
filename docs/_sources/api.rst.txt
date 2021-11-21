@@ -32,6 +32,7 @@ Pore
     system.PoreCylinder
     system.PoreSlit
     system.PoreCapsule
+    system.PoreAmorphCylinder
 
 
 .. _pattern_api:

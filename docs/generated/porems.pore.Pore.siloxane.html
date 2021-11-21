@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Pore.siloxane &#8212; PoreMS 0.2.3 documentation</title>
+    <title>Pore.siloxane &#8212; PoreMS 0.2.4 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -113,7 +113,7 @@
 <h1>Pore.siloxane<a class="headerlink" href="#pore-siloxane" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.pore.Pore.siloxane">
-<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>slx_dist=0.507</em>, <em>trials=1000</em>, <em>site_type='in'</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>slx_dist=0.507</em>, <em>slx_dist_error=0.01</em>, <em>trials=1000</em>, <em>site_type='in'</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach siloxane bridges on the surface similar to Krishna et al.
 (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
 near each other can be converted to siloxan bridges, by removing one
@@ -136,6 +136,9 @@ position</p>
 </dd>
 <dt><strong>slx_dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">Silicon atom distance to search for parters in proximity</p>
+</dd>
+<dt><strong>slx_dist_error</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Silicon atom distance error for searching parters in proximity</p>
 </dd>
 <dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
 <dd><p class="first last">Number of trials picking a random site</p>

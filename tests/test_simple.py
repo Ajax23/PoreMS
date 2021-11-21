@@ -283,6 +283,7 @@ class UserModelCase(unittest.TestCase):
     # Pattern #
     ###########
     def test_pattern_beta_cristobalit(self):
+        # Initialize
         beta_cristobalit = pms.BetaCristobalit()
 
         # Pattern and output
@@ -313,28 +314,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 3) for x in beta_cristobalit.get_block().get_box()], [2.024, 1.754, 2.480])
         pms.Store(beta_cristobalit.get_block(), "output").gro()
         pms.Store(beta_cristobalit.get_block(), "output").lmp()
-
-        # Exterior
-        beta_cristobalit = pms.BetaCristobalit()
-        beta_cristobalit.generate([2, 2, 2], "x")
-        beta_cristobalit.get_block().set_name("pattern_beta_cbt_ex_x")
-        beta_cristobalit.exterior()
-        self.assertEqual(beta_cristobalit.get_block().get_num(), 600)
-        pms.Store(beta_cristobalit.get_block(), "output").gro()
-
-        beta_cristobalit = pms.BetaCristobalit()
-        beta_cristobalit.generate([2, 2, 2], "y")
-        beta_cristobalit.get_block().set_name("pattern_beta_cbt_ex_y")
-        beta_cristobalit.exterior()
-        self.assertEqual(beta_cristobalit.get_block().get_num(), 608)
-        pms.Store(beta_cristobalit.get_block(), "output").gro()
-
-        beta_cristobalit = pms.BetaCristobalit()
-        beta_cristobalit.generate([2, 2, 2], "z")
-        beta_cristobalit.get_block().set_name("pattern_beta_cbt_ex_z")
-        beta_cristobalit.exterior()
-        self.assertEqual(beta_cristobalit.get_block().get_num(), 592)
-        pms.Store(beta_cristobalit.get_block(), "output").gro()
 
         # Misc
         beta_cristobalit = pms.BetaCristobalit()
@@ -417,6 +396,9 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(matrix.bound(0), [0])
         self.assertEqual(matrix.bound(1, "lt"), [0])
         self.assertEqual(matrix.bound(4, "gt"), [])
+        matrix.add(0, 17)
+        self.assertEqual(connect[0], [17])
+        self.assertEqual(connect[17], [19, 0])
 
         print()
         self.assertIsNone(matrix.bound(4, "test"))
@@ -543,17 +525,19 @@ class UserModelCase(unittest.TestCase):
     def test_pore(self):
         # self.skipTest("Temporary")
 
+        # No exterior surface
         orient = "z"
         pattern = pms.BetaCristobalit()
         pattern.generate([6, 6, 6], orient)
-        pattern.exterior()
 
         block = pattern.get_block()
         block.set_name("pore_cylinder_block")
 
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
-        oxygen_out = matrix.bound(1)
+        bond_list = dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2)
+        matrix = pms.Matrix(bond_list)
+
+        pore = pms.Pore(block, matrix)
 
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
@@ -561,22 +545,38 @@ class UserModelCase(unittest.TestCase):
         del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder.is_in(atom.get_pos())]
         matrix.strip(del_list)
 
-        # Normal funtion for exterior
-        def normal(pos):
-            return [0, 0, -1] if pos[2] < centroid[2] else [0, 0, 1]
-
-        # No exterior input
-        pore = pms.Pore(block, matrix)
         pore.prepare()
         pore.sites()
-        self.assertEqual(len(pore.get_sites()), 633)
+        self.assertEqual(len(pore.get_sites()), 455)
 
-        # Process surface
+        block.delete(matrix.bound(0))
+        pms.Store(block, "output").gro("pore_no_ex.gro")
+
+        # With exterior surface
+        orient = "z"
+        pattern = pms.BetaCristobalit()
+        pattern.generate([6, 6, 6], orient)
+
+        block = pattern.get_block()
+        block.set_name("pore_cylinder_block")
+
+        dice = pms.Dice(block, 0.4, True)
+        bond_list = dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2)
+        matrix = pms.Matrix(bond_list)
+
         pore = pms.Pore(block, matrix)
+        pore.exterior(pattern.get_gap())
+
+        centroid = block.centroid()
+        central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
+        cylinder = pms.Cylinder({"centroid": centroid, "central": central, "length": 6, "diameter": 4})
+        del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cylinder.is_in(atom.get_pos())]
+        matrix.strip(del_list)
+
         pore.prepare()
         pore.amorph()
         self.assertEqual(len(matrix.bound(1)), 710)
-        pore.sites(oxygen_out)
+        pore.sites()
         site_list = pore.get_sites()
         site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
@@ -593,6 +593,9 @@ class UserModelCase(unittest.TestCase):
 
         # Attachment
         mol = pms.gen.tms()
+
+        def normal(pos):
+            return [0, 0, -1] if pos[2] < centroid[2] else [0, 0, 1]
 
         ## Siloxane
         mols_siloxane = pore.siloxane(site_in, 100, cylinder.normal)
@@ -643,6 +646,71 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(pore.get_block().get_name(), "pore_cylinder_block")
         self.assertEqual(len(pore.get_site_dict()), 3)
         self.assertEqual(pore.get_num_in_ex(), 23)
+
+    def test_pore_exterior(self):
+        # self.skipTest("Temporary")
+
+        # x-axis
+        pattern = pms.BetaCristobalit()
+        block = pattern.generate([2, 2, 2], "x")
+        block.set_name("pattern_beta_cbt_ex_x")
+        dice = pms.Dice(block, 0.2, True)
+        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
+        matrix = pms.Matrix(bonds)
+        pore = pms.Pore(block, matrix)
+        pore.prepare()
+        pore.exterior(pattern.get_gap())
+        pore.sites()
+        pms.Store(block, "output").gro()
+
+        # y-axis
+        pattern = pms.BetaCristobalit()
+        block = pattern.generate([2, 2, 2], "y")
+        block.set_name("pattern_beta_cbt_ex_y")
+        dice = pms.Dice(block, 0.2, True)
+        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
+        matrix = pms.Matrix(bonds)
+        pore = pms.Pore(block, matrix)
+        pore.prepare()
+        pore.exterior(pattern.get_gap())
+        pore.sites()
+        pms.Store(block, "output").gro()
+
+        # z-axis
+        pattern = pms.BetaCristobalit()
+        block = pattern.generate([2, 2, 2], "z")
+        block.set_name("pattern_beta_cbt_ex_z")
+        dice = pms.Dice(block, 0.2, True)
+        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
+        matrix = pms.Matrix(bonds)
+        pore = pms.Pore(block, matrix)
+        pore.prepare()
+        pore.exterior(pattern.get_gap())
+        pore.sites()
+        pms.Store(block, "output").gro()
+
+        # Amorph
+        pattern = pms.BetaCristobalit()
+        pattern.generate([2, 2, 2], "z")
+
+        pattern._structure = pms.Molecule(inp="data/amorph.gro")
+        pattern._size = [2.014, 1.751, 2.468]
+
+        block = pattern.get_block()
+        block.set_name("pattern_beta_cbt_ex_amoprh")
+
+        dice = pms.Dice(block, 0.4, True)
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.160, 0.02))
+
+        connect = matrix.get_matrix()
+        matrix.split(57790, 2524)
+
+        pore = pms.Pore(block, matrix)
+        pore.prepare()
+        pore.exterior(pattern.get_gap())
+        pore.sites()
+
+        pms.Store(block, "output").gro()
 
     def test_pore_cylinder(self):
         # self.skipTest("Temporary")
@@ -762,6 +830,47 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(pore.roughness(), 1), 0.1)
         # self.assertEqual(round(pore.volume(), 4), 85.5539)
         # self.assertEqual({key: round(item, 4) for key, item in pore.surface().items()}, {'in': 101.6082, 'ex': 48.7117})
+
+        print(pore.table())
+
+    def test_pore_cylinder_amorph(self):
+        # self.skipTest("Temporary")
+
+        # Empty pore
+        pore = pms.PoreAmorphCylinder(2, 0)
+        pore.finalize()
+
+        # Filled pore
+        pore = pms.PoreAmorphCylinder(4, 5, [5, 5])
+
+        ## Attachement
+        pore.attach_special(pms.gen.tms(),  0, [0, 1], 5)
+        pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="mirror")
+
+        tms2 = pms.gen.tms()
+        tms2.set_short("TMS2")
+
+        pore.attach(tms2, 0, [0, 1], 10, "in", trials=10, inp="percent")
+        pore.attach(tms2, 0, [0, 1], 1, "in", trials=10, inp="molar")
+        pore.attach(tms2, 0, [0, 1], 0.1, "ex", trials=10, inp="molar")
+
+        # Special cases
+        print()
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, site_type="DOTA"))
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", inp="DOTA"))
+        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, pos_list=[[1, 3, 3], [7, 4, 2]]))
+        self.assertIsNone(pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="DOTA"))
+
+        # Finalize
+        pore.finalize()
+        pore.store("output/cylinder_amorph/")
+
+        ## Properties
+        self.assertEqual(round(pore.diameter()), 4)
+        self.assertEqual([round(x, 4) for x in pore.centroid()], [4.923, 4.9651, 5.118])
+        # self.assertEqual(round(pore.roughness(), 1), 0.6)
+        # self.assertEqual(round(pore.volume()), 81)
+        # self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 81, 'ex': 49})
 
         print(pore.table())
 
