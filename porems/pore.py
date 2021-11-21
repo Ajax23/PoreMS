@@ -43,6 +43,7 @@ class Pore():
         self._matrix = matrix
 
         self._num_in_ex = 0
+        self._oxygen_ex = []
 
         self._mol_dict = {"block": {}, "in": {}, "ex": {}}
 
@@ -117,7 +118,71 @@ class Pore():
                     self._block.get_atom_list()[atom_id].set_pos(disp_pos)
                     break
 
-    def sites(self, exterior=[]):
+    def exterior(self, gap):
+        """Create an exterior surface for reservoir attachement. Using the
+        periodic boundary distance as the indication, the bond between Si and O
+        is broken and the silicon atom is saturated with and additional O atom
+        using the original bond vector for orientation. At the end, the system
+        is shifted by the given gap vector which represents the distance between
+        bonds.
+
+        Parameters
+        ----------
+        gap : list
+            Gap between box boundary and crystal structure
+        """
+        # Initialize
+        box = self._block.get_box()
+        atom_list = self._block.get_atom_list()
+        bound_list = self._matrix.get_matrix()
+
+        # Get list of all si atoms
+        si_list = [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if atom.get_atom_type()=="Si"]
+
+        # Run through silicon atoms
+        add_list = []
+        break_list = []
+        for si in si_list:
+            # Run through bound oxygen atoms
+            for o in bound_list[si]:
+                # Calculate bond vector
+                bond_vector = [atom_list[si].get_pos()[dim]-atom_list[o].get_pos()[dim] for dim in range(3)]
+
+                # Check if z dimension of bond - after rotation in pattern class - goes over boundary
+                if abs(bond_vector[2]) > box[2]/2:
+                    # Get bond direction
+                    r = -0.155 if bond_vector[2] < 0 else 0.155
+
+                    # Get bond angle
+                    theta = geometry.angle_azi(bond_vector, is_deg=True)
+                    phi = geometry.angle_polar(bond_vector, is_deg=True)
+                    theta = theta-180 if r < 0 else theta
+
+                    # Add new oxygen atom
+                    self._block.add("O", si, r=r, theta=theta, phi=phi)
+
+                    # Add list for new atoms
+                    add_list.append([si, self._block.get_num()-1])
+
+                    # Add to break bond list
+                    break_list.append([si, o])
+
+        # Move box to zero
+        self._block.zero()
+        self._block.translate(gap)
+
+        # Break bonds
+        for bond in break_list:
+            self._matrix.split(bond[0], bond[1])
+
+        # Add bonds
+        for bond in add_list:
+            self._matrix.add(bond[0], bond[1])
+
+        # Add atoms to exterior oxygen list
+        self._oxygen_ex = [bond[1] for bond in break_list]+[bond[1] for bond in add_list]
+
+    def sites(self):
         """Create binding site dictionary of the format
 
         .. math::
@@ -143,11 +208,6 @@ class Pore():
         * **o** - Unsaturated oxygen atoms bound to silicon atom
         * **type** - Exterior "ex" or interior "in" binding site
         * **state** - available - True, used - False
-
-        Parameters
-        ----------
-        exterior : list, optional
-            List of oxygen atom ids that are on the exterior surface
         """
         # Get list of surface oxygen atoms
         oxygen_list = self._matrix.bound(1)
@@ -165,9 +225,9 @@ class Pore():
             # Site type
             is_in = False
             is_ex = False
-            if exterior:
+            if self._oxygen_ex:
                 for o in data["o"]:
-                    if o in exterior:
+                    if o in self._oxygen_ex:
                         is_ex = True
                     else:
                         is_in = True
@@ -306,7 +366,7 @@ class Pore():
 
         return mol_list
 
-    def siloxane(self, sites, amount, normal, slx_dist=0.507, trials=1000, site_type="in"):
+    def siloxane(self, sites, amount, normal, slx_dist=0.507, slx_dist_error=1e-2, trials=1000, site_type="in"):
         """Attach siloxane bridges on the surface similar to Krishna et al.
         (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
         near each other can be converted to siloxan bridges, by removing one
@@ -324,6 +384,8 @@ class Pore():
             position
         slx_dist : float
             Silicon atom distance to search for parters in proximity
+        slx_dist_error : float
+            Silicon atom distance error for searching parters in proximity
         trials : integer, optional
             Number of trials picking a random site
         site_type : string, optional
@@ -349,7 +411,7 @@ class Pore():
         # Search for silicon atoms near each other
         si_atoms = [self._block.get_atom_list()[atom] for atom in sites]
         si_dice = Dice(Molecule(inp=si_atoms), slx_dist+0.1, True)
-        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], slx_dist, 1e-2)
+        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], slx_dist, slx_dist_error)
         si_matrix = {x[0]: x[1] for x in si_proxi}
 
         # Run through number of siloxan bridges to add

@@ -16,6 +16,7 @@ Pore
   .. autosummary::
 
     ~Pore.amorph
+    ~Pore.exterior
     ~Pore.prepare
     ~Pore.sites
 

@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>BetaCristobalit.exterior &#8212; PoreMS 0.2.3 documentation</title>
+    <title>Pore.exterior &#8212; PoreMS 0.2.4 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -78,7 +78,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">BetaCristobalit.exterior</a></li>
+<li><a class="reference internal" href="#">Pore.exterior</a></li>
 </ul>
 </ul>
 </li>
@@ -109,21 +109,24 @@
     <div class="body col-md-12 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="betacristobalit-exterior">
-<h1>BetaCristobalit.exterior<a class="headerlink" href="#betacristobalit-exterior" title="Permalink to this headline">¶</a></h1>
+<div class=col-md-9 content><div class="section" id="pore-exterior">
+<h1>Pore.exterior<a class="headerlink" href="#pore-exterior" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="porems.pattern.BetaCristobalit.exterior">
-<code class="descclassname">BetaCristobalit.</code><code class="descname">exterior</code><span class="sig-paren">(</span><em>self</em>, <em>error=0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pattern.BetaCristobalit.exterior" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function converts the exterior surface in direction of the
-orientation to binding sites by adding oxygens to unsaturated silicon
-atoms.</p>
+<dt id="porems.pore.Pore.exterior">
+<code class="descclassname">Pore.</code><code class="descname">exterior</code><span class="sig-paren">(</span><em>self</em>, <em>gap</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.exterior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an exterior surface for reservoir attachement. Using the
+periodic boundary distance as the indication, the bond between Si and O
+is broken and the silicon atom is saturated with and additional O atom
+using the original bond vector for orientation. At the end, the system
+is shifted by the given gap vector which represents the distance between
+bonds.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>error</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Tollerated error for position check</p>
+<dt><strong>gap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Gap between box boundary and crystal structure</p>
 </dd>
 </dl>
 </td>

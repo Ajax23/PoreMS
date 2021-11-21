@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Matrix &#8212; PoreMS 0.2.3 documentation</title>
+    <title>Matrix &#8212; PoreMS 0.2.4 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -163,13 +163,16 @@ types</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.matrix.Matrix.bound.html#porems.matrix.Matrix.bound" title="porems.matrix.Matrix.bound"><code class="xref py py-obj docutils literal"><span class="pre">bound</span></code></a>(self,&nbsp;num_bonds[,&nbsp;logic])</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.matrix.Matrix.add.html#porems.matrix.Matrix.add" title="porems.matrix.Matrix.add"><code class="xref py py-obj docutils literal"><span class="pre">add</span></code></a>(self,&nbsp;atom_a,&nbsp;atom_b)</td>
+<td>Add atom between given atom ids.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="porems.matrix.Matrix.bound.html#porems.matrix.Matrix.bound" title="porems.matrix.Matrix.bound"><code class="xref py py-obj docutils literal"><span class="pre">bound</span></code></a>(self,&nbsp;num_bonds[,&nbsp;logic])</td>
 <td>Return a list of atoms with the specified number of bonds.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.matrix.Matrix.split.html#porems.matrix.Matrix.split" title="porems.matrix.Matrix.split"><code class="xref py py-obj docutils literal"><span class="pre">split</span></code></a>(self,&nbsp;atom_a,&nbsp;atom_b)</td>
+<tr class="row-odd"><td><a class="reference internal" href="porems.matrix.Matrix.split.html#porems.matrix.Matrix.split" title="porems.matrix.Matrix.split"><code class="xref py py-obj docutils literal"><span class="pre">split</span></code></a>(self,&nbsp;atom_a,&nbsp;atom_b)</td>
 <td>Remove the bond between two atoms from the connectivity matrix.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.matrix.Matrix.strip.html#porems.matrix.Matrix.strip" title="porems.matrix.Matrix.strip"><code class="xref py py-obj docutils literal"><span class="pre">strip</span></code></a>(self,&nbsp;atoms)</td>
+<tr class="row-even"><td><a class="reference internal" href="porems.matrix.Matrix.strip.html#porems.matrix.Matrix.strip" title="porems.matrix.Matrix.strip"><code class="xref py py-obj docutils literal"><span class="pre">strip</span></code></a>(self,&nbsp;atoms)</td>
 <td>Remove all bonds of a specified atom from the connection matrix.</td>
 </tr>
 </tbody>

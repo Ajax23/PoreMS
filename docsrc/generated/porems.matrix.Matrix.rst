@@ -15,6 +15,7 @@ Matrix
 
   .. autosummary::
 
+      ~Matrix.add
       ~Matrix.bound
       ~Matrix.split
       ~Matrix.strip

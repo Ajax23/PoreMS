@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PoreSystem._siloxane &#8212; PoreMS 0.2.3 documentation</title>
+    <title>PoreSystem._siloxane &#8212; PoreMS 0.2.4 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -113,7 +113,7 @@
 <h1>PoreSystem._siloxane<a class="headerlink" href="#poresystem-siloxane" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.system.PoreSystem._siloxane">
-<code class="descclassname">PoreSystem.</code><code class="descname">_siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>hydro</em>, <em>site_type</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreSystem._siloxane" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">PoreSystem.</code><code class="descname">_siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>hydro</em>, <em>site_type</em>, <em>slx_dist=0.507</em>, <em>slx_dist_error=0.01</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreSystem._siloxane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach siloxane bridges using function
 <a class="reference internal" href="porems.pore.Pore.siloxane.html#porems.pore.Pore.siloxane" title="porems.pore.Pore.siloxane"><code class="xref py py-func docutils literal"><span class="pre">porems.pore.Pore.siloxane()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -124,6 +124,12 @@
 <dt><strong>hydro: float</strong></dt>
 <dd><p class="first last">Hydroxilation degree in
 <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>.</p>
+</dd>
+<dt><strong>slx_dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Silicon atom distance to search for parters in proximity</p>
+</dd>
+<dt><strong>slx_dist_error</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Silicon atom distance error for searching parters in proximity</p>
 </dd>
 <dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">Site type - interior <strong>in</strong>, exterior <strong>ex</strong></p>

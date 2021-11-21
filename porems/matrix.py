@@ -94,6 +94,28 @@ class Matrix:
             for atom_b in atoms_b:
                 self. split(atom_a, atom_b)
 
+    def add(self, atom_a, atom_b):
+        """Add atom between given atom ids.
+
+        Parameters
+        ----------
+        atom_a : int
+            First atom id
+        atom_b : int
+            Second atom id
+        """
+        # Add entry fort first atom
+        if atom_a in self._matrix.keys():
+            self._matrix[atom_a].append(atom_b)
+        else:
+            self._matrix[atom_a] = [atom_b]
+
+        # Add entry for second atom
+        if atom_b in self._matrix.keys():
+            self._matrix[atom_b].append(atom_a)
+        else:
+            self._matrix[atom_b] = [atom_a]
+
     def bound(self, num_bonds, logic="eq"):
         """Return a list of atoms with the specified number of bonds. Possible
         ``logic`` arguments are
