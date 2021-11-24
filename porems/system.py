@@ -24,7 +24,7 @@ class PoreSystem():
     ##############
     # Attachment #
     ##############
-    def _siloxane(self, hydro, site_type, slx_dist=0.507, slx_dist_error=1e-2):
+    def _siloxane(self, hydro, site_type, slx_dist=[0.507-1e-2, 0.507+1e-2]):
         """Attach siloxane bridges using function
         :func:`porems.pore.Pore.siloxane`.
 
@@ -33,29 +33,25 @@ class PoreSystem():
         hydro: float
             Hydroxilation degree in
             :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
-        slx_dist : float
+        slx_dist : list
             Silicon atom distance to search for parters in proximity
-        slx_dist_error : float
-            Silicon atom distance error for searching parters in proximity
         site_type : string, optional
             Site type - interior **in**, exterior **ex**
         """
-        # Amount
+        # Initialize
         site_list = self._pore.get_sites()
         sites = self._site_in if site_type=="in" else self._site_ex
+        normal = self._normal_in if site_type=="in" else self._normal_ex
 
+        # Amount - Connect two oxygen to one siloxane
         oh = len(sum([site_list[site]["o"] for site in sites], []))
         oh_goal = pms.utils.mumol_m2_to_mols(hydro, self.surface()[site_type])
         amount = round((oh-oh_goal)/2)
 
         # Fill siloxane
         if amount > 0:
-            # Sites and normal vector
-            sites = self._site_in if site_type=="in" else self._site_ex
-            normal = self._normal_in if site_type=="in" else self._normal_ex
-
             # Run attachment
-            mols = self._pore.siloxane(sites, amount, normal, slx_dist=slx_dist, slx_dist_error=slx_dist_error, site_type=site_type)
+            mols = self._pore.siloxane(sites, amount, normal, slx_dist=slx_dist, site_type=site_type)
 
             # Add to sorting list
             for mol in mols:
@@ -155,7 +151,7 @@ class PoreSystem():
             Folder link for output
         """
         # Process input
-        self._link = link if link[-1] == "/" else link+"/"
+        link = link if link[-1] == "/" else link+"/"
 
         # Set sort list
         sort_list = sort_list if sort_list else self._sort_list
@@ -301,8 +297,8 @@ class PoreSystem():
         data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
         data["Interior"]["Pore drilling direction"] = "z"
         data["Exterior"]["Pore drilling direction"] = " "
-        data["Interior"]["Surface roughness (nm)"] = form%self.roughness()
-        data["Exterior"]["Surface roughness (nm)"] = form%0.00
+        data["Interior"]["Surface roughness (nm)"] = form%self.roughness()["in"] if "in" in self.roughness() else form%0
+        data["Exterior"]["Surface roughness (nm)"] = form%self.roughness()["ex"] if "ex" in self.roughness() else form%0
 
         for prop_name, values in props.items():
             data["Interior"][prop_name] = values[0]
@@ -402,7 +398,7 @@ class PoreCylinder(PoreSystem):
 
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
 
         # Create pore object
         self._pore = pms.Pore(self._block, matrix)
@@ -427,6 +423,10 @@ class PoreCylinder(PoreSystem):
         site_list = self._pore.get_sites()
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
+        # Save original surface si positions
+        self._si_pos_in = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        self._si_pos_ex = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Siloxane bridges
         if hydro[0]:
@@ -553,7 +553,7 @@ class PoreCylinder(PoreSystem):
             Pore diameter after preperation
         """
         # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], self._block.pos(site)[2]], self._block.pos(site))) for site in self._site_in]
+        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
 
         # Calculate mean
         r_bar = sum(r)/len(r) if len(r)>0 else 0
@@ -588,14 +588,31 @@ class PoreCylinder(PoreSystem):
         roughness : float
             Surface roughness
         """
-        # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], self._block.pos(site)[2]], self._block.pos(site))) for site in self._site_in]
+        # Interior
+        ## Calculate distance towards central axis of binding site silicon atoms
+        r_in = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
+
+        # Exterior
+        ## Create molecules with exterior positions
+        temp_mol = pms.Molecule()
+        for pos in self._si_pos_ex:
+            temp_mol.add("Si", pos)
+        temp_mol.zero()
+        size = temp_mol.get_box()[2]
+
+        ## Calculate distance to boundary
+        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
 
         # Calculate mean
-        r_bar = sum(r)/len(r) if len(r)>0 else 0
+        r_bar_in = sum(r_in)/len(r_in) if len(r_in)>0 else 0
+        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
+
+        # Calculate roughness
+        r_q_in =  math.sqrt(sum([(r_i-r_bar_in)**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0
+        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
 
         # Calculate square root roughness
-        return math.sqrt(sum([(r_i-r_bar)**2 for r_i in r])/len(r)) if len(r)>0 else 0
+        return {"in": r_q_in, "ex": r_q_ex}
 
     def volume(self):
         """Calculate pore volume. This is done by defining a new shape object
@@ -702,7 +719,7 @@ class PoreSlit(PoreSystem):
 
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
 
         # Create pore object
         self._pore = pms.Pore(self._block, matrix)
@@ -727,6 +744,10 @@ class PoreSlit(PoreSystem):
         site_list = self._pore.get_sites()
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
+        # Save original surface si positions
+        self._si_pos_in = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        self._si_pos_ex = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Siloxane bridges
         if hydro[0]:
@@ -853,7 +874,7 @@ class PoreSlit(PoreSystem):
             Pore size after preperation
         """
         # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._block.pos(site)[0], self._centroid[1], self._block.pos(site)[2]], self._block.pos(site))) for site in self._site_in]
+        r = [pms.geom.length(pms.geom.vector([pos[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
 
         # Calculate mean
         r_bar = sum(r)/len(r) if len(r)>0 else 0
@@ -887,14 +908,31 @@ class PoreSlit(PoreSystem):
         roughness : float
             Surface roughness
         """
-        # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._block.pos(site)[0], self._centroid[1], self._block.pos(site)[2]], self._block.pos(site))) for site in self._site_in]
+        # Interior
+        ## Calculate distance towards central axis of binding site silicon atoms
+        r_in = [pms.geom.length(pms.geom.vector([pos[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
+
+        # Exterior
+        ## Create molecules with exterior positions
+        temp_mol = pms.Molecule()
+        for pos in self._si_pos_ex:
+            temp_mol.add("Si", pos)
+        temp_mol.zero()
+        size = temp_mol.get_box()[2]
+
+        ## Calculate distance to boundary
+        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
 
         # Calculate mean
-        r_bar = sum(r)/len(r) if len(r)>0 else 0
+        r_bar_in = sum(r_in)/len(r_in) if len(r_in)>0 else 0
+        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
+
+        # Calculate roughness
+        r_q_in =  math.sqrt(sum([(r_i-r_bar_in)**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0
+        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
 
         # Calculate square root roughness
-        return math.sqrt(sum([(r_i-r_bar)**2 for r_i in r])/len(r)) if len(r)>0 else 0
+        return {"in": r_q_in, "ex": r_q_ex}
 
     def volume(self):
         """Calculate pore volume. This is done by defining a new shape object
@@ -1008,7 +1046,7 @@ class PoreCapsule(PoreSystem):
 
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
 
         # Create pore object
         self._pore = pms.Pore(self._block, matrix)
@@ -1047,6 +1085,10 @@ class PoreCapsule(PoreSystem):
         site_list = self._pore.get_sites()
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
+        # Save original surface si positions
+        self._si_pos_in = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        self._si_pos_ex = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Siloxane bridges
         if hydro[0]:
@@ -1129,16 +1171,15 @@ class PoreCapsule(PoreSystem):
             Pore diameter after preperation
         """
         # Determine sites in the cylindric part of the pore
-        site_list = []
-        for site in self._site_in:
-            pos = self._block.pos(site)
+        pos_list = []
+        for pos in self._si_pos_in:
             if pos[2] <= self._len_cyl:
-                site_list.append(site)
+                pos_list.append(pos)
             elif pos[2] >= self._pattern.get_size()[2]-self._len_cyl:
-                site_list.append(site)
+                pos_list.append(pos)
 
         # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid["block"][0], self._centroid["block"][1], self._block.pos(site)[2]], self._block.pos(site))) for site in site_list]
+        r = [pms.geom.length(pms.geom.vector([self._centroid["block"][0], self._centroid["block"][1], pos[2]], pos)) for pos in pos_list]
 
         # Calculate mean
         r_bar = sum(r)/len(r) if len(r)>0 else 0
@@ -1174,23 +1215,39 @@ class PoreCapsule(PoreSystem):
         roughness : float
             Surface roughness
         """
-        # Determine sites in the cylindric part of the pore
-        site_list = []
-        for site in self._site_in:
-            pos = self._block.pos(site)
+        # Interior
+        ## Determine sites in the cylindric part of the pore
+        pos_list = []
+        for pos in self._si_pos_in:
             if pos[2] <= self._len_cyl:
-                site_list.append(site)
+                pos_list.append(pos)
             elif pos[2] >= self._pattern.get_size()[2]-self._len_cyl:
-                site_list.append(site)
+                pos_list.append(pos)
 
-        # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid["block"][0], self._centroid["block"][1], self._block.pos(site)[2]], self._block.pos(site))) for site in site_list]
+        ## Calculate distance towards central axis of binding site silicon atoms
+        r_in = [pms.geom.length(pms.geom.vector([self._centroid["block"][0], self._centroid["block"][1], pos[2]], pos)) for pos in pos_list]
+
+        # Exterior
+        ## Create molecules with exterior positions
+        temp_mol = pms.Molecule()
+        for pos in self._si_pos_ex:
+            temp_mol.add("Si", pos)
+        temp_mol.zero()
+        size = temp_mol.get_box()[2]
+
+        ## Calculate distance to boundary
+        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
 
         # Calculate mean
-        r_bar = sum(r)/len(r) if len(r)>0 else 0
+        r_bar_in = sum(r_in)/len(r_in) if len(r_in)>0 else 0
+        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
+
+        # Calculate roughness
+        r_q_in =  math.sqrt(sum([(r_i-r_bar_in)**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0
+        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
 
         # Calculate square root roughness
-        return math.sqrt(sum([(r_i-r_bar)**2 for r_i in r])/len(r)) if len(r)>0 else 0
+        return {"in": r_q_in, "ex": r_q_ex}
 
     def volume(self):
         """Calculate pore volume. This is done by defining a new shape object
@@ -1309,7 +1366,7 @@ class PoreAmorphCylinder(PoreSystem):
 
         # Dice up block
         dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.160, 0.02))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.160-0.02, 0.160+0.02]))
         matrix.split(57790, 2524)
 
         # Create pore object
@@ -1336,12 +1393,16 @@ class PoreAmorphCylinder(PoreSystem):
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
+        # Save original surface si positions
+        self._si_pos_in = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        self._si_pos_ex = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
         # Siloxane bridges
         if hydro[0]:
-            self._siloxane(hydro[0], "in")# , 0.4, 0.1)
+            self._siloxane(hydro[0], "in", [0, 0.51])
             self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         if hydro[1]:
-            self._siloxane(hydro[1], "ex")# , 0.4, 0.1)
+            self._siloxane(hydro[1], "ex", [0, 0.51])
             self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
 
         # Objectify grid
@@ -1461,7 +1522,7 @@ class PoreAmorphCylinder(PoreSystem):
             Pore diameter after preperation
         """
         # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], self._block.pos(site)[2]], self._block.pos(site))) for site in self._site_in]
+        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
 
         # Calculate mean
         r_bar = sum(r)/len(r) if len(r)>0 else 0
@@ -1496,14 +1557,31 @@ class PoreAmorphCylinder(PoreSystem):
         roughness : float
             Surface roughness
         """
-        # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], self._block.pos(site)[2]], self._block.pos(site))) for site in self._site_in]
+        # Interior
+        ## Calculate distance towards central axis of binding site silicon atoms
+        r_in = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
+
+        # Exterior
+        ## Create molecules with exterior positions
+        temp_mol = pms.Molecule()
+        for pos in self._si_pos_ex:
+            temp_mol.add("Si", pos)
+        temp_mol.zero()
+        size = temp_mol.get_box()[2]
+
+        ## Calculate distance to boundary
+        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
 
         # Calculate mean
-        r_bar = sum(r)/len(r) if len(r)>0 else 0
+        r_bar_in = sum(r_in)/len(r_in) if len(r_in)>0 else 0
+        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
+
+        # Calculate roughness
+        r_q_in =  math.sqrt(sum([(r_i-r_bar_in)**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0
+        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
 
         # Calculate square root roughness
-        return math.sqrt(sum([(r_i-r_bar)**2 for r_i in r])/len(r)) if len(r)>0 else 0
+        return {"in": r_q_in, "ex": r_q_ex}
 
     def volume(self):
         """Calculate pore volume. This is done by defining a new shape object

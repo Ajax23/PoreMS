@@ -286,7 +286,7 @@ class Dice:
     ##########
     # Search #
     ##########
-    def find_bond(self, cube_list, atom_type, distance, error):
+    def find_bond(self, cube_list, atom_type, distance):
         """Search for a bond in the given cubes. This function searches for
         atom-pairs that fulfill the distance requirements within the given cube
         and all 26 surrounding ones.
@@ -297,10 +297,8 @@ class Dice:
             List of cube indices to search in, use an empty list for all cubes
         atom_type : list
             List of two atom types
-        distance : float
-            Bond length
-        error : float
-            Tolerated deviation from the distance entry
+        distance : list
+            Bounds of allowed distance [lower, upper]
 
         Returns
         -------
@@ -314,7 +312,7 @@ class Dice:
         bond_list = []
         for cube_id in cube_list:
             # Get atom ids of surrounding cubes
-            atoms = sum([self._pointer[x] for x in self.neighbor(cube_id)], [])
+            atoms = sum([self._pointer[x] for x in self.neighbor(cube_id) if None not in x], [])
 
             # Run through atoms in the main cube
             for atom_id_a in self._pointer[cube_id]:
@@ -334,7 +332,7 @@ class Dice:
                             # Calculate bond length
                             length = geometry.length(bond_vector)
                             # Check if bond distance is within error
-                            if abs(length-distance) <= error:
+                            if length >= distance[0] and length <= distance[1]:
                                 entry[1].append(atom_id_b)
 
                     # Add pairs to bond list
@@ -342,7 +340,7 @@ class Dice:
 
         return bond_list
 
-    def find_parallel(self, cube_list, atom_type, distance, error):
+    def find_parallel(self, cube_list, atom_type, distance):
         """Parallelized bond search of function :func:`find_bond`.
 
         Parameters
@@ -351,10 +349,8 @@ class Dice:
             List of cube indices to search in, use an empty list for all cubes
         atom_type : list
             List of two atom types
-        distance : float
-            Bond length
-        error : float
-            Tolerated deviation from the distance entry
+        distance : list
+            Bounds of allowed distance [lower, upper]
 
         Returns
         -------
@@ -370,7 +366,7 @@ class Dice:
 
         # Run parallel search
         pool = mp.Pool(processes=self._np)
-        results = [pool.apply_async(self.find_bond, args=(x, atom_type, distance, error)) for x in cube_np]
+        results = [pool.apply_async(self.find_bond, args=(x, atom_type, distance)) for x in cube_np]
         bond_list = sum([x.get() for x in results], [])
 
         # Destroy object

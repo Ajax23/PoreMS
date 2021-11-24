@@ -171,16 +171,17 @@ class Pore():
         self._block.zero()
         self._block.translate(gap)
 
-        # Break bonds
+        # Break periodic bonds
         for bond in break_list:
             self._matrix.split(bond[0], bond[1])
 
-        # Add bonds
+        # Add bonds to new oxygens
         for bond in add_list:
             self._matrix.add(bond[0], bond[1])
 
         # Add atoms to exterior oxygen list
-        self._oxygen_ex = [bond[1] for bond in break_list]+[bond[1] for bond in add_list]
+        self.prepare()
+        self._oxygen_ex = self._matrix.bound(1)
 
     def sites(self):
         """Create binding site dictionary of the format
@@ -225,14 +226,11 @@ class Pore():
             # Site type
             is_in = False
             is_ex = False
-            if self._oxygen_ex:
-                for o in data["o"]:
-                    if o in self._oxygen_ex:
-                        is_ex = True
-                    else:
-                        is_in = True
-            else:
-                is_in = True
+            for o in data["o"]:
+                if o in self._oxygen_ex:
+                    is_ex = True
+                else:
+                    is_in = True
 
             data["type"] = "ex" if is_ex else "in"
 
@@ -299,7 +297,7 @@ class Pore():
             mol_diam = (max(mol.get_box()[:2])+0.17)*scale
             si_atoms = [self._block.get_atom_list()[atom] for atom in sites]
             si_dice = Dice(Molecule(inp=si_atoms), mol_diam, True)
-            si_proxi = si_dice.find_parallel(None, ["Si", "Si"], 0, mol_diam)
+            si_proxi = si_dice.find_parallel(None, ["Si", "Si"], [-mol_diam, mol_diam])
             si_matrix = {x[0]: x[1] for x in si_proxi}
 
         # Run through number of binding sites to add
@@ -366,7 +364,7 @@ class Pore():
 
         return mol_list
 
-    def siloxane(self, sites, amount, normal, slx_dist=0.507, slx_dist_error=1e-2, trials=1000, site_type="in"):
+    def siloxane(self, sites, amount, normal, slx_dist=[0.507-1e-2, 0.507+1e-2], trials=1000, site_type="in"):
         """Attach siloxane bridges on the surface similar to Krishna et al.
         (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
         near each other can be converted to siloxan bridges, by removing one
@@ -382,10 +380,9 @@ class Pore():
         normal : function
             Function that returns the normal vector of the surface for a given
             position
-        slx_dist : float
-            Silicon atom distance to search for parters in proximity
-        slx_dist_error : float
-            Silicon atom distance error for searching parters in proximity
+        slx_dist : list
+            Silicon atom distance bounds to search for parters in proximity
+            [lower, upper]
         trials : integer, optional
             Number of trials picking a random site
         site_type : string, optional
@@ -410,8 +407,8 @@ class Pore():
 
         # Search for silicon atoms near each other
         si_atoms = [self._block.get_atom_list()[atom] for atom in sites]
-        si_dice = Dice(Molecule(inp=si_atoms), slx_dist+0.1, True)
-        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], slx_dist, slx_dist_error)
+        si_dice = Dice(Molecule(inp=si_atoms), slx_dist[1], False)
+        si_proxi = si_dice.find_parallel(None, ["Si", "Si"], slx_dist)
         si_matrix = {x[0]: x[1] for x in si_proxi}
 
         # Run through number of siloxan bridges to add
@@ -421,12 +418,24 @@ class Pore():
             si = []
             for j in range(trials):
                 si_rand = random.choice(sites)
+                # Check if binding site in local si-si matrix and if it contains binding partners
                 if sites.index(si_rand) in si_matrix and si_matrix[sites.index(si_rand)]:
+                    # Choose first binding partner in list
                     si_rand_proxi = sites[si_matrix[sites.index(si_rand)][0]]
+                    # Check if binding partner is in local si-si matrix
                     if sites.index(si_rand_proxi) in si_matrix:
-                        if self._sites[si_rand]["state"] and (self._sites[si_rand_proxi]["state"]):
-                            si = [si_rand, si_rand_proxi]
-                            break
+                        # Check if unbound states
+                        if self._sites[si_rand]["state"] and self._sites[si_rand_proxi]["state"]:
+                            # Check if binding site silicon atoms are already connected with an oxygen
+                            is_connected = False
+                            for atom_o in self._sites[si_rand]["o"]:
+                                if atom_o in self._sites[si_rand_proxi]["o"]:
+                                    is_connected = True
+                            # Add to siloxane list if not connected
+                            if not is_connected:
+                                si = [si_rand, si_rand_proxi]
+                                # End trials if appended
+                                break
 
             # Place molecule on surface
             if si and self._sites[si[0]]["state"] and self._sites[si[1]]["state"]:
