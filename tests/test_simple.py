@@ -356,14 +356,14 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(len(dice.neighbor((1, 1, 1), False)), 26)
 
         # Search
-        self.assertEqual(dice.find_bond([(1, 1, 1)], ["Si", "O"], 0.155, 0.005), [[51, [46, 14, 52, 65]], [64, [26, 63, 65, 67]]])
-        self.assertEqual(dice.find_bond([(1, 1, 1)], ["O", "Si"], 0.155, 0.005), [[14, [51, 13]], [52, [51, 49]], [65, [51, 64]], [67, [64, 69]]])
-        self.assertEqual(dice.find_bond([(0, 0, 0)], ["Si", "O"], 0.155, 0.005), [[3, [4, 9, 2, 174]], [5, [306, 110, 4, 6]]])
-        self.assertEqual(dice.find_bond([(0, 0, 0)], ["O", "Si"], 0.155, 0.005), [[4, [3, 5]], [6, [7, 5]], [9, [3, 11]]])
+        self.assertEqual(dice.find_bond([(1, 1, 1)], ["Si", "O"], [0.155-0.005, 0.155+0.005]), [[51, [46, 14, 52, 65]], [64, [26, 63, 65, 67]]])
+        self.assertEqual(dice.find_bond([(1, 1, 1)], ["O", "Si"], [0.155-0.005, 0.155+0.005]), [[14, [51, 13]], [52, [51, 49]], [65, [51, 64]], [67, [64, 69]]])
+        self.assertEqual(dice.find_bond([(0, 0, 0)], ["Si", "O"], [0.155-0.005, 0.155+0.005]), [[3, [4, 9, 2, 174]], [5, [306, 110, 4, 6]]])
+        self.assertEqual(dice.find_bond([(0, 0, 0)], ["O", "Si"], [0.155-0.005, 0.155+0.005]), [[4, [3, 5]], [6, [7, 5]], [9, [3, 11]]])
 
         # Parallel search
-        self.assertEqual(len(dice.find_parallel(None, ["Si", "O"], 0.155, 0.005)), 192)
-        self.assertEqual(len(dice.find_parallel(None, ["O", "Si"], 0.155, 0.005)), 384)
+        self.assertEqual(len(dice.find_parallel(None, ["Si", "O"], [0.155-0.005, 0.155+0.005])), 192)
+        self.assertEqual(len(dice.find_parallel(None, ["O", "Si"], [0.155-0.005, 0.155+0.005])), 384)
 
         # Setter Getter
         dice.set_pbc(True)
@@ -381,7 +381,7 @@ class UserModelCase(unittest.TestCase):
         block.set_name("matrix")
         pms.Store(block, "output").gro()
         dice = pms.Dice(block, 0.2, True)
-        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
+        bonds = dice.find_bond(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2])
 
         matrix = pms.Matrix(bonds)
         connect = matrix.get_matrix()
@@ -413,7 +413,7 @@ class UserModelCase(unittest.TestCase):
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cylinder")
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 45, True))
 
@@ -454,7 +454,7 @@ class UserModelCase(unittest.TestCase):
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_sphere")
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
 
@@ -491,7 +491,7 @@ class UserModelCase(unittest.TestCase):
         block = pms.BetaCristobalit().generate([6, 6, 6], "z")
         block.set_name("shape_cuboid")
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
 
@@ -534,7 +534,7 @@ class UserModelCase(unittest.TestCase):
         block.set_name("pore_cylinder_block")
 
         dice = pms.Dice(block, 0.4, True)
-        bond_list = dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2)
+        bond_list = dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2])
         matrix = pms.Matrix(bond_list)
 
         pore = pms.Pore(block, matrix)
@@ -561,7 +561,7 @@ class UserModelCase(unittest.TestCase):
         block.set_name("pore_cylinder_block")
 
         dice = pms.Dice(block, 0.4, True)
-        bond_list = dice.find_parallel(None, ["Si", "O"], 0.155, 1e-2)
+        bond_list = dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2])
         matrix = pms.Matrix(bond_list)
 
         pore = pms.Pore(block, matrix)
@@ -582,6 +582,23 @@ class UserModelCase(unittest.TestCase):
         site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
         self.assertEqual(len(site_in), 432)
         self.assertEqual(len(site_ex), 201)
+
+        si_pos_in = [block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        si_pos_ex = [block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+
+        if si_pos_in:
+            temp_mol = pms.Molecule()
+            for pos in si_pos_in:
+                temp_mol.add("Si", pos)
+            size = temp_mol.get_box()[2]
+            pms.Store(temp_mol).gro("output/pore_cylinder_si_in.gro")
+
+        if si_pos_ex:
+            temp_mol = pms.Molecule()
+            for pos in si_pos_ex:
+                temp_mol.add("Si", pos)
+            size = temp_mol.get_box()[2]
+            pms.Store(temp_mol).gro("output/pore_cylinder_si_ex.gro")
 
         # Objectify grid
         non_grid = matrix.bound(1)+list(site_list.keys())
@@ -655,7 +672,7 @@ class UserModelCase(unittest.TestCase):
         block = pattern.generate([2, 2, 2], "x")
         block.set_name("pattern_beta_cbt_ex_x")
         dice = pms.Dice(block, 0.2, True)
-        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
+        bonds = dice.find_bond(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2])
         matrix = pms.Matrix(bonds)
         pore = pms.Pore(block, matrix)
         pore.prepare()
@@ -668,7 +685,7 @@ class UserModelCase(unittest.TestCase):
         block = pattern.generate([2, 2, 2], "y")
         block.set_name("pattern_beta_cbt_ex_y")
         dice = pms.Dice(block, 0.2, True)
-        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
+        bonds = dice.find_bond(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2])
         matrix = pms.Matrix(bonds)
         pore = pms.Pore(block, matrix)
         pore.prepare()
@@ -681,7 +698,7 @@ class UserModelCase(unittest.TestCase):
         block = pattern.generate([2, 2, 2], "z")
         block.set_name("pattern_beta_cbt_ex_z")
         dice = pms.Dice(block, 0.2, True)
-        bonds = dice.find_bond(None, ["Si", "O"], 0.155, 1e-2)
+        bonds = dice.find_bond(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2])
         matrix = pms.Matrix(bonds)
         pore = pms.Pore(block, matrix)
         pore.prepare()
@@ -700,7 +717,7 @@ class UserModelCase(unittest.TestCase):
         block.set_name("pattern_beta_cbt_ex_amoprh")
 
         dice = pms.Dice(block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], 0.160, 0.02))
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.160-0.02, 0.160+0.02]))
 
         connect = matrix.get_matrix()
         matrix.split(57790, 2524)
@@ -747,7 +764,8 @@ class UserModelCase(unittest.TestCase):
         ## Properties
         self.assertEqual(round(pore.diameter()), 4)
         self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0773, 3.0934, 3.255])
-        self.assertEqual(round(pore.roughness(), 1), 0.1)
+        self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
+        self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
         # self.assertEqual(round(pore.volume()), 81)
         # self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 81, 'ex': 49})
 
@@ -787,7 +805,8 @@ class UserModelCase(unittest.TestCase):
         ## Properties
         self.assertEqual(round(pore.height()), 3)
         self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0773, 3.0934, 3.255])
-        self.assertEqual(round(pore.roughness(), 1), 0.1)
+        self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
+        self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
         # self.assertEqual(round(pore.volume(), 4), 113.7253)
         # self.assertEqual(round(pore.surface()["in"], 4), 75.2928)
 
@@ -827,7 +846,8 @@ class UserModelCase(unittest.TestCase):
         # Properties
         self.assertEqual(round(pore.diameter()), 4)
         self.assertEqual([round(x, 4) for x in pore.centroid()["block"]], [3.0775, 3.0935, 5.115])
-        self.assertEqual(round(pore.roughness(), 1), 0.1)
+        self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
+        self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
         # self.assertEqual(round(pore.volume(), 4), 85.5539)
         # self.assertEqual({key: round(item, 4) for key, item in pore.surface().items()}, {'in': 101.6082, 'ex': 48.7117})
 
@@ -841,7 +861,7 @@ class UserModelCase(unittest.TestCase):
         pore.finalize()
 
         # Filled pore
-        pore = pms.PoreAmorphCylinder(4, 5, [5, 5])
+        pore = pms.PoreAmorphCylinder(4, 5, [2, 2])
 
         ## Attachement
         pore.attach_special(pms.gen.tms(),  0, [0, 1], 5)
@@ -868,7 +888,8 @@ class UserModelCase(unittest.TestCase):
         ## Properties
         self.assertEqual(round(pore.diameter()), 4)
         self.assertEqual([round(x, 4) for x in pore.centroid()], [4.923, 4.9651, 5.118])
-        # self.assertEqual(round(pore.roughness(), 1), 0.6)
+        self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
+        self.assertEqual(round(pore.roughness()["ex"], 1), 0.2)
         # self.assertEqual(round(pore.volume()), 81)
         # self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 81, 'ex': 49})
 

@@ -1,5 +1,8 @@
 # v0.2.4 (Upcoming)
-* -
+* Add PoreAmorphCylinder class for amorphous generation
+* Rewrite exterior surface site determination - now works independet of exterior surface
+* Distance search now takes in a range instead of a distance and error
+* Bugfixes and quality of life improvements
 
 # v0.2.3
 * Bugfixes and quality of life improvements
