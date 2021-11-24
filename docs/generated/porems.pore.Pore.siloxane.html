@@ -113,7 +113,7 @@
 <h1>Pore.siloxane<a class="headerlink" href="#pore-siloxane" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.pore.Pore.siloxane">
-<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self</em>, <em>sites</em>, <em>amount</em>, <em>normal</em>, <em>slx_dist=0.507</em>, <em>slx_dist_error=0.01</em>, <em>trials=1000</em>, <em>site_type='in'</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Pore.</code><code class="descname">siloxane</code><span class="sig-paren">(</span><em>self, sites, amount, normal, slx_dist=[0.497, 0.517], trials=1000, site_type='in'</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.pore.Pore.siloxane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach siloxane bridges on the surface similar to Krishna et al.
 (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
 near each other can be converted to siloxan bridges, by removing one
@@ -134,11 +134,9 @@ the two.</p>
 <dd><p class="first last">Function that returns the normal vector of the surface for a given
 position</p>
 </dd>
-<dt><strong>slx_dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Silicon atom distance to search for parters in proximity</p>
-</dd>
-<dt><strong>slx_dist_error</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Silicon atom distance error for searching parters in proximity</p>
+<dt><strong>slx_dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Silicon atom distance bounds to search for parters in proximity
+[lower, upper]</p>
 </dd>
 <dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
 <dd><p class="first last">Number of trials picking a random site</p>

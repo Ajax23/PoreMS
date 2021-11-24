@@ -113,7 +113,7 @@
 <h1>Dice.find_parallel<a class="headerlink" href="#dice-find-parallel" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="porems.dice.Dice.find_parallel">
-<code class="descclassname">Dice.</code><code class="descname">find_parallel</code><span class="sig-paren">(</span><em>self</em>, <em>cube_list</em>, <em>atom_type</em>, <em>distance</em>, <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.dice.Dice.find_parallel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Dice.</code><code class="descname">find_parallel</code><span class="sig-paren">(</span><em>self</em>, <em>cube_list</em>, <em>atom_type</em>, <em>distance</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.dice.Dice.find_parallel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parallelized bond search of function <a class="reference internal" href="porems.dice.Dice.find_bond.html#porems.dice.Dice.find_bond" title="porems.dice.Dice.find_bond"><code class="xref py py-func docutils literal"><span class="pre">find_bond()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -126,11 +126,8 @@
 <dt><strong>atom_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">List of two atom types</p>
 </dd>
-<dt><strong>distance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Bond length</p>
-</dd>
-<dt><strong>error</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Tolerated deviation from the distance entry</p>
+<dt><strong>distance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Bounds of allowed distance [lower, upper]</p>
 </dd>
 </dl>
 </td>

@@ -70,10 +70,11 @@ class Pore():
                 self._matrix.strip(atom)
 
         # Remove silicon atoms with three unsaturated oxygen atoms
-        si_count = Counter(sum([self._matrix.get_matrix()[atom] for atom in self._matrix.bound(1)], []))
-        for si, count in si_count.items():
-            if count == 3:
-                self._matrix.strip(si)
+        while 3 in Counter(sum([self._matrix.get_matrix()[atom] for atom in self._matrix.bound(1)], [])).values():
+            si_count = Counter(sum([self._matrix.get_matrix()[atom] for atom in self._matrix.bound(1)], []))
+            for si, count in si_count.items():
+                if count >= 3:
+                    self._matrix.strip(si)
 
     def amorph(self, dist=0.05, accept=[0.1, 0.2], trials=100):
         """Make Structure amorphous.
