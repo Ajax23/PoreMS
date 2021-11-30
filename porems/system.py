@@ -593,12 +593,13 @@ class PoreCylinder(PoreSystem):
         r_in = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
 
         # Exterior
-        ## Create molecules with exterior positions
-        temp_mol = pms.Molecule()
-        for pos in self._si_pos_ex:
-            temp_mol.add("Si", pos)
-        temp_mol.zero()
-        size = temp_mol.get_box()[2]
+        if self._res:
+            ## Create molecules with exterior positions
+            temp_mol = pms.Molecule()
+            for pos in self._si_pos_ex:
+                temp_mol.add("Si", pos)
+            temp_mol.zero()
+            size = temp_mol.get_box()[2]
 
         ## Calculate distance to boundary
         r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
@@ -913,12 +914,13 @@ class PoreSlit(PoreSystem):
         r_in = [pms.geom.length(pms.geom.vector([pos[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
 
         # Exterior
-        ## Create molecules with exterior positions
-        temp_mol = pms.Molecule()
-        for pos in self._si_pos_ex:
-            temp_mol.add("Si", pos)
-        temp_mol.zero()
-        size = temp_mol.get_box()[2]
+        if self._res:
+            ## Create molecules with exterior positions
+            temp_mol = pms.Molecule()
+            for pos in self._si_pos_ex:
+                temp_mol.add("Si", pos)
+            temp_mol.zero()
+            size = temp_mol.get_box()[2]
 
         ## Calculate distance to boundary
         r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
@@ -1229,11 +1231,12 @@ class PoreCapsule(PoreSystem):
 
         # Exterior
         ## Create molecules with exterior positions
-        temp_mol = pms.Molecule()
-        for pos in self._si_pos_ex:
-            temp_mol.add("Si", pos)
-        temp_mol.zero()
-        size = temp_mol.get_box()[2]
+        if self._res:
+            temp_mol = pms.Molecule()
+            for pos in self._si_pos_ex:
+                temp_mol.add("Si", pos)
+            temp_mol.zero()
+            size = temp_mol.get_box()[2]
 
         ## Calculate distance to boundary
         r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
@@ -1562,12 +1565,13 @@ class PoreAmorphCylinder(PoreSystem):
         r_in = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
 
         # Exterior
-        ## Create molecules with exterior positions
-        temp_mol = pms.Molecule()
-        for pos in self._si_pos_ex:
-            temp_mol.add("Si", pos)
-        temp_mol.zero()
-        size = temp_mol.get_box()[2]
+        if self._res:
+            ## Create molecules with exterior positions
+            temp_mol = pms.Molecule()
+            for pos in self._si_pos_ex:
+                temp_mol.add("Si", pos)
+            temp_mol.zero()
+            size = temp_mol.get_box()[2]
 
         ## Calculate distance to boundary
         r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
