@@ -760,6 +760,7 @@ class UserModelCase(unittest.TestCase):
         # Finalize
         pore.finalize()
         pore.store("output/cylinder/")
+        print(pore.table())
 
         ## Properties
         self.assertEqual(round(pore.diameter()), 4)
@@ -768,8 +769,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
         # self.assertEqual(round(pore.volume()), 81)
         # self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 81, 'ex': 49})
-
-        print(pore.table())
 
     def test_pore_slit(self):
         # self.skipTest("Temporary")
@@ -801,6 +800,7 @@ class UserModelCase(unittest.TestCase):
         # Finalize
         pore.finalize()
         pore.store("output/slit/")
+        print(pore.table())
 
         ## Properties
         self.assertEqual(round(pore.height()), 3)
@@ -809,8 +809,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
         # self.assertEqual(round(pore.volume(), 4), 113.7253)
         # self.assertEqual(round(pore.surface()["in"], 4), 75.2928)
-
-        print(pore.table())
 
     def test_pore_capsule(self):
         # self.skipTest("Temporary")
@@ -842,6 +840,7 @@ class UserModelCase(unittest.TestCase):
         # Finalize
         pore.finalize()
         pore.store("output/capsule/")
+        print(pore.table())
 
         # Properties
         self.assertEqual(round(pore.diameter()), 4)
@@ -850,8 +849,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
         # self.assertEqual(round(pore.volume(), 4), 85.5539)
         # self.assertEqual({key: round(item, 4) for key, item in pore.surface().items()}, {'in': 101.6082, 'ex': 48.7117})
-
-        print(pore.table())
 
     def test_pore_cylinder_amorph(self):
         # self.skipTest("Temporary")
@@ -884,6 +881,7 @@ class UserModelCase(unittest.TestCase):
         # Finalize
         pore.finalize()
         pore.store("output/cylinder_amorph/")
+        print(pore.table())
 
         ## Properties
         self.assertEqual(round(pore.diameter()), 4)
@@ -892,8 +890,6 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.2)
         # self.assertEqual(round(pore.volume()), 81)
         # self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 81, 'ex': 49})
-
-        print(pore.table())
 
 
 if __name__ == '__main__':
