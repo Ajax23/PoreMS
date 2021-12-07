@@ -32,6 +32,7 @@ PoreSlit
     ~PoreSlit.height
     ~PoreSlit.reservoir
     ~PoreSlit.roughness
+    ~PoreSlit.shape
     ~PoreSlit.surface
     ~PoreSlit.table
     ~PoreSlit.volume

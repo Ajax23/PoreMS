@@ -19,6 +19,7 @@ class PoreSystem():
         self._site_in = []
         self._site_ex = []
         self._res = 0
+        self._pore_shape = ""
 
 
     ##############
@@ -263,6 +264,16 @@ class PoreSystem():
         """
         return self._centroid
 
+    def shape(self):
+        """Return the pore shape for analysis using PoreAna.
+
+        Returns
+        -------
+        pore_shape : string
+            Pore shape
+        """
+        return self._pore_shape
+
 
     #########
     # Table #
@@ -414,6 +425,7 @@ class PoreCylinder(PoreSystem):
         self._cylinder = pms.Cylinder({"centroid": self._centroid, "central": central, "length": size[2], "diameter": diam-0.5})  # Preperation precaution
         del_list = [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if self._cylinder.is_in(atom.get_pos())]
         matrix.strip(del_list)
+        self._pore_shape = "CYLINDER"
 
         # Prepare pore surface
         self._pore.prepare()
@@ -736,6 +748,7 @@ class PoreSlit(PoreSystem):
         self._cuboid = pms.Cuboid({"centroid": self._centroid, "central": central, "length": size[2], "width": size[0], "height": height-0.5})  # Preperation precaution
         del_list = [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if self._cuboid.is_in(atom.get_pos())]
         matrix.strip(del_list)
+        self._pore_shape = "SLIT"
 
         # Prepare pore surface
         self._pore.prepare()
@@ -1079,6 +1092,8 @@ class PoreCapsule(PoreSystem):
             del_list.extend([atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if shape.is_in(atom.get_pos())])
         matrix.strip(del_list)
 
+        self._pore_shape = "CAPSULE"
+
         # Prepare pore surface
         self._pore.prepare()
 
@@ -1386,6 +1401,7 @@ class PoreAmorphCylinder(PoreSystem):
         self._cylinder = pms.Cylinder({"centroid": self._centroid, "central": central, "length": 9.605, "diameter": diam-0.5})  # Preperation precaution
         del_list = [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if self._cylinder.is_in(atom.get_pos())]
         matrix.strip(del_list)
+        self._pore_shape = "CYLINDER"
 
         # Prepare pore surface
         self._pore.prepare()
@@ -1637,3 +1653,19 @@ class PoreAmorphCylinder(PoreSystem):
         props["Pore diameter (nm)"] = [form%self.diameter(), " "]
 
         return self._table_base(props, decimals)
+
+
+    ################
+    # Finalization #
+    ################
+    def finalize(self):
+        """Finalize pore system."""
+        # Call parent dunction
+        super(PoreAmorphCylinder, self).finalize()
+
+        # Fill silanol molecules on empty binding sites
+        if "SLX" in self.allocation():
+            out_string  = "WARNING - Siloxane bridges may lead to close atom placements. "
+            out_string += "Consider running a few energy minimization steps without freezing the grid atoms in order to relax the system. "
+            out_string += "Otherwise, it might lead to very high forces during the simulation."
+            print(out_string)
