@@ -767,8 +767,9 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0773, 3.0934, 3.255])
         self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
-        # self.assertEqual(round(pore.volume()), 81)
-        # self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 81, 'ex': 49})
+        self.assertEqual(round(pore.volume()), 80)
+        self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 79, 'ex': 49})
+        self.assertEqual(pore.shape(), "CYLINDER")
 
     def test_pore_slit(self):
         # self.skipTest("Temporary")
@@ -807,8 +808,9 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0773, 3.0934, 3.255])
         self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
-        # self.assertEqual(round(pore.volume(), 4), 113.7253)
-        # self.assertEqual(round(pore.surface()["in"], 4), 75.2928)
+        self.assertEqual(round(pore.volume()), 114)
+        self.assertEqual(round(pore.surface()["in"]), 75)
+        self.assertEqual(pore.shape(), "SLIT")
 
     def test_pore_capsule(self):
         # self.skipTest("Temporary")
@@ -847,8 +849,9 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in pore.centroid()["block"]], [3.0775, 3.0935, 5.115])
         self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
-        # self.assertEqual(round(pore.volume(), 4), 85.5539)
-        # self.assertEqual({key: round(item, 4) for key, item in pore.surface().items()}, {'in': 101.6082, 'ex': 48.7117})
+        self.assertEqual(round(pore.volume()), 86)
+        self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 102, 'ex': 49})
+        self.assertEqual(pore.shape(), "CAPSULE")
 
     def test_pore_cylinder_amorph(self):
         # self.skipTest("Temporary")
@@ -888,8 +891,9 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual([round(x, 4) for x in pore.centroid()], [4.923, 4.9651, 5.118])
         self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.2)
-        # self.assertEqual(round(pore.volume()), 81)
-        # self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 81, 'ex': 49})
+        self.assertEqual(round(pore.volume()), 122)
+        self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 121, 'ex': 159})
+        self.assertEqual(pore.shape(), "CYLINDER")
 
 
 if __name__ == '__main__':

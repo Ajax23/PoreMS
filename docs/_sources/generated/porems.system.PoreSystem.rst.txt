@@ -35,3 +35,4 @@ PoreSystem
     ~PoreSystem.box
     ~PoreSystem.centroid
     ~PoreSystem.reservoir
+    ~PoreSystem.shape

@@ -31,6 +31,7 @@ PoreCapsule
     ~PoreCapsule.diameter
     ~PoreCapsule.reservoir
     ~PoreCapsule.roughness
+    ~PoreCapsule.shape
     ~PoreCapsule.surface
     ~PoreCapsule.table
     ~PoreCapsule.volume

@@ -32,6 +32,7 @@ PoreAmorphCylinder
     ~PoreAmorphCylinder.diameter
     ~PoreAmorphCylinder.reservoir
     ~PoreAmorphCylinder.roughness
+    ~PoreAmorphCylinder.shape
     ~PoreAmorphCylinder.surface
     ~PoreAmorphCylinder.table
     ~PoreAmorphCylinder.volume
