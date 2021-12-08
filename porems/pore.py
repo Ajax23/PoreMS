@@ -413,6 +413,7 @@ class Pore():
         si_matrix = {x[0]: x[1] for x in si_proxi}
 
         # Run through number of siloxan bridges to add
+        bond_matrix = self._matrix.get_matrix()
         mol_list = []
         for i in range(amount):
             # Randomly pick an available site pair
@@ -429,8 +430,8 @@ class Pore():
                         if self._sites[si_rand]["state"] and self._sites[si_rand_proxi]["state"]:
                             # Check if binding site silicon atoms are already connected with an oxygen
                             is_connected = False
-                            for atom_o in self._sites[si_rand]["o"]:
-                                if atom_o in self._sites[si_rand_proxi]["o"]:
+                            for atom_o in bond_matrix[si_rand]:
+                                if atom_o in bond_matrix[si_rand_proxi]:
                                     is_connected = True
                             # Add to siloxane list if not connected
                             if not is_connected:

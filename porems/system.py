@@ -1653,19 +1653,3 @@ class PoreAmorphCylinder(PoreSystem):
         props["Pore diameter (nm)"] = [form%self.diameter(), " "]
 
         return self._table_base(props, decimals)
-
-
-    ################
-    # Finalization #
-    ################
-    def finalize(self):
-        """Finalize pore system."""
-        # Call parent dunction
-        super(PoreAmorphCylinder, self).finalize()
-
-        # Fill silanol molecules on empty binding sites
-        if "SLX" in self.allocation():
-            out_string  = "WARNING - Siloxane bridges may lead to close atom placements. "
-            out_string += "Consider running a few energy minimization steps without freezing the grid atoms in order to relax the system. "
-            out_string += "Otherwise, it might lead to very high forces during the simulation."
-            print(out_string)
