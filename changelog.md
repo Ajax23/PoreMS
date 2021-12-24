@@ -1,5 +1,8 @@
-# v0.2.5 (Upcoming)
+# v0.2.6 (Upcoming)
 * -
+
+# v0.2.5
+* Add properties output in yaml format
 
 # v0.2.4
 * Add PoreAmorphCylinder class for amorphous generation
