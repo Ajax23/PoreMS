@@ -44,3 +44,4 @@ PoreSlit
 
     ~PoreSlit.finalize
     ~PoreSlit.store
+    ~PoreSlit.yml

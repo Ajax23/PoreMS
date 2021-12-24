@@ -19,6 +19,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.5',
-    install_requires=['pandas', 'seaborn'],
+    install_requires=['pandas', 'seaborn', 'pyyaml'],
     include_package_data=True,
 )

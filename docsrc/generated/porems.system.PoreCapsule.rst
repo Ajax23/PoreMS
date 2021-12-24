@@ -43,3 +43,4 @@ PoreCapsule
 
     ~PoreCapsule.finalize
     ~PoreCapsule.store
+    ~PoreCapsule.yml

@@ -7,6 +7,7 @@
 
 import os
 import math
+import yaml
 import pandas as pd
 import porems as pms
 
@@ -20,6 +21,7 @@ class PoreSystem():
         self._site_ex = []
         self._res = 0
         self._pore_shape = ""
+        self._yml = {}
 
 
     ##############
@@ -166,6 +168,37 @@ class PoreSystem():
         store.top()
         store.grid()
         pms.utils.save(self, link+self._pore.get_name()+"_system.obj")
+        self.yml(link)
+
+    def yml(self, link="./"):
+        """Save yaml file with properties necessary for analysis.
+
+        Parameters
+        ----------
+        link : string, optional
+            Folder link for output
+        """
+        # Process input
+        link = link if link[-1] == "/" else link+"/"
+
+        # Fill properties
+        self._yml["dimensions"] = self.box()
+        self._yml["centroid"] = self.centroid()
+        self._yml["reservoir"] = self.reservoir()
+
+        self._yml["shape"] = self._pore_shape
+        if self._yml["shape"]=="CYLINDER":
+            self._yml["diameter"] = self.diameter()
+        elif self._yml["shape"]=="SLIT":
+            self._yml["height"] = self.height()
+
+        self._yml["roughness"] = self.roughness()
+        self._yml["volume"] = self.volume()
+        self._yml["surface"] = self.surface()
+
+        # Export
+        with open(link+self._pore.get_name()+".yml", "w") as file_out:
+            file_out.write(yaml.dump(self._yml))
 
 
     ############

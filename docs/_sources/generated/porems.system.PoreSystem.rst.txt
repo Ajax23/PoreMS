@@ -24,6 +24,7 @@ PoreSystem
 
     ~PoreSystem.finalize
     ~PoreSystem.store
+    ~PoreSystem.yml
 
 
   .. rubric:: Analysis

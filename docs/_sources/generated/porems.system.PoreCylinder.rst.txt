@@ -44,3 +44,4 @@ PoreCylinder
 
     ~PoreCylinder.finalize
     ~PoreCylinder.store
+    ~PoreCylinder.yml
