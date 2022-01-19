@@ -796,6 +796,9 @@ class Hyperboloid(Shape):
         inp : dictionary
             Dictionary of necessary inputs
         """
+        ########
+        # READ THIS -- https://aip.scitation.org/doi/full/10.1063/1.2171965 --
+        ########
         def __init__(self, inp):
             # Set centroid
             self._centroid = [0, 0, 0]
