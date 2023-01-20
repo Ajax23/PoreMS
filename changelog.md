@@ -1,5 +1,7 @@
-# v0.2.6 (Upcoming)
-* -
+# v0.3.0 (Upcoming)
+* Reworked generation methodology for easier shape combination and pattern usage
+* Added new alpha-cristobalite pattern
+* Generalization of connectivity search
 
 # v0.2.5
 * Add properties output in yaml format

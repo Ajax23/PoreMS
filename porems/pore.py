@@ -65,13 +65,17 @@ class Pore():
         molecules that are to be placed on the surface.
         """
         # Remove unsaturated silicon atoms
-        for atom in self._matrix.bound(4, "lt"):
+        # for atom in self._matrix.bound(4, "lt"):
+        #     if self._block.get_atom_type(atom)=="Si":
+        #         self._matrix.strip(atom)
+        for atom, props in self._matrix.get_matrix().items():
             if self._block.get_atom_type(atom)=="Si":
-                self._matrix.strip(atom)
+                if len(props["atoms"]) < props["bonds"]:
+                    self._matrix.strip(atom)
 
         # Remove silicon atoms with three unsaturated oxygen atoms
-        while 3 in Counter(sum([self._matrix.get_matrix()[atom] for atom in self._matrix.bound(1)], [])).values():
-            si_count = Counter(sum([self._matrix.get_matrix()[atom] for atom in self._matrix.bound(1)], []))
+        while 3 in Counter(sum([self._matrix.get_matrix()[atom]["atoms"] for atom in self._matrix.bound(1)], [])).values():
+            si_count = Counter(sum([self._matrix.get_matrix()[atom]["atoms"] for atom in self._matrix.bound(1)], []))
             for si, count in si_count.items():
                 if count >= 3:
                     self._matrix.strip(si)
@@ -108,7 +112,7 @@ class Pore():
 
                 # Calculate new bond lengths
                 is_disp = True
-                for bond in connect[atom_id]:
+                for bond in connect[atom_id]["atoms"]:
                     bond_length = geometry.length(self._block.bond(atom_id, bond))
                     if bond_length < accept[0] or bond_length > accept[1]:
                         is_disp = False
@@ -119,23 +123,21 @@ class Pore():
                     self._block.get_atom_list()[atom_id].set_pos(disp_pos)
                     break
 
-    def exterior(self, gap):
+    def exterior(self):
         """Create an exterior surface for reservoir attachement. Using the
         periodic boundary distance as the indication, the bond between Si and O
         is broken and the silicon atom is saturated with and additional O atom
         using the original bond vector for orientation. At the end, the system
         is shifted by the given gap vector which represents the distance between
         bonds.
-
-        Parameters
-        ----------
-        gap : list
-            Gap between box boundary and crystal structure
         """
         # Initialize
         box = self._block.get_box()
         atom_list = self._block.get_atom_list()
         bound_list = self._matrix.get_matrix()
+
+        # Get gap
+        gap = [-2*x for x in self._block.zero()]
 
         # Get list of all si atoms
         si_list = [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if atom.get_atom_type()=="Si"]
@@ -145,7 +147,7 @@ class Pore():
         break_list = []
         for si in si_list:
             # Run through bound oxygen atoms
-            for o in bound_list[si]:
+            for o in bound_list[si]["atoms"]:
                 # Calculate bond vector
                 bond_vector = [atom_list[si].get_pos()[dim]-atom_list[o].get_pos()[dim] for dim in range(3)]
 
@@ -168,7 +170,7 @@ class Pore():
                     # Add to break bond list
                     break_list.append([si, o])
 
-        # Move box to zero
+        # Translate initial gap
         self._block.zero()
         self._block.translate(gap)
 
@@ -218,9 +220,9 @@ class Pore():
         # Create binding site dictionary
         self._sites = {}
         for o in oxygen_list:
-            if not connect[o][0] in self._sites:
-                self._sites[connect[o][0]] = {"o": []}
-            self._sites[connect[o][0]]["o"].append(o)
+            if not connect[o]["atoms"][0] in self._sites:
+                self._sites[connect[o]["atoms"][0]] = {"o": []}
+            self._sites[connect[o]["atoms"][0]]["o"].append(o)
 
         # Fill other information
         for si, data in self._sites.items():
@@ -245,7 +247,7 @@ class Pore():
     #######################
     # Molecule Attachment #
     #######################
-    def attach(self, mol, mount, axis, sites, amount, normal, scale=1, trials=1000, pos_list=[], site_type="in", is_proxi=True, is_random=True, is_rotate=False):
+    def attach(self, mol, mount, axis, sites, amount, scale=1, trials=1000, pos_list=[], site_type="in", is_proxi=True, is_random=True, is_rotate=False):
         """Attach molecules on the surface.
 
         Parameters
@@ -260,9 +262,6 @@ class Pore():
             List of silicon ids of which binding sites should be picked
         amount : int
             Number of molecules to attach
-        normal : function
-            Function that returns the normal vector of the surface for a given
-            position
         scale : float, optional
             Circumference scaling around the molecule position
         trials : integer, optional
@@ -342,7 +341,7 @@ class Pore():
                     mol_temp.set_short(mol.get_short()+"G")
 
                 # Rotate molecule towards surface normal vector
-                surf_axis = normal(self._block.pos(si))
+                surf_axis = self._sites[si]["normal"](self._block.pos(si))
                 mol_temp.rotate(geometry.cross_product([0, 0, 1], surf_axis), -geometry.angle([0, 0, 1], surf_axis))
 
                 # Move molecule to mounting position
@@ -361,11 +360,11 @@ class Pore():
                 if is_proxi:
                     proxi_list = [sites[x] for x in si_matrix[sites.index(si)]]
                     if len(proxi_list) > 0:
-                        mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), normal, site_type=site_type, is_proxi=False, is_random=False))
+                        mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), site_type=site_type, is_proxi=False, is_random=False))
 
         return mol_list
 
-    def siloxane(self, sites, amount, normal, slx_dist=[0.507-1e-2, 0.507+1e-2], trials=1000, site_type="in"):
+    def siloxane(self, sites, amount, slx_dist=[0.507-1e-2, 0.507+1e-2], trials=1000, site_type="in"):
         """Attach siloxane bridges on the surface similar to Krishna et al.
         (2009). Here silicon atoms of silanol groups wich are at least 0.31 nm
         near each other can be converted to siloxan bridges, by removing one
@@ -378,9 +377,6 @@ class Pore():
             List of silicon ids of which binding sites should be picked
         amount : int
             Number of molecules to attach
-        normal : function
-            Function that returns the normal vector of the surface for a given
-            position
         slx_dist : list
             Silicon atom distance bounds to search for parters in proximity
             [lower, upper]
@@ -430,8 +426,8 @@ class Pore():
                         if self._sites[si_rand]["state"] and self._sites[si_rand_proxi]["state"]:
                             # Check if binding site silicon atoms are already connected with an oxygen
                             is_connected = False
-                            for atom_o in bond_matrix[si_rand]:
-                                if atom_o in bond_matrix[si_rand_proxi]:
+                            for atom_o in bond_matrix[si_rand]["atoms"]:
+                                if atom_o in bond_matrix[si_rand_proxi]["atoms"]:
                                     is_connected = True
                             # Add to siloxane list if not connected
                             if not is_connected:
@@ -449,7 +445,7 @@ class Pore():
                 center_pos = [pos_vec_halve[x]+self._block.pos(si[0])[x] for x in range(self._dim)]
 
                 # Rotate molecule towards surface normal vector
-                surf_axis = normal(center_pos)
+                surf_axis = self._sites[si[0]]["normal"](center_pos)
                 mol_temp.rotate(geometry.cross_product([0, 0, 1], surf_axis), -geometry.angle([0, 0, 1], surf_axis))
 
                 # Move molecule to mounting position and remove temporary atom
@@ -473,7 +469,7 @@ class Pore():
 
         return mol_list
 
-    def fill_sites(self, sites, normal, site_type):
+    def fill_sites(self, sites, site_type):
         """Fill list of given sites that are empty with silanol and geminal
         silanol molecules, respectively.
 
@@ -492,7 +488,7 @@ class Pore():
         mol_list : list
             List of molecule objects that are attached on the surface
         """
-        mol_list = self.attach(generic.silanol(), 0, [0, 1], sites, len(sites), normal, site_type=site_type, is_proxi=False, is_random=False)
+        mol_list = self.attach(generic.silanol(), 0, [0, 1], sites, len(sites), site_type=site_type, is_proxi=False, is_random=False)
 
         return mol_list
 

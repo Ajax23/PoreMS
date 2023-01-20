@@ -42,6 +42,9 @@ class Matrix:
 
       \\mathcal{O}(n).
 
+    In addtition, for further processing, the original amount of bonds is saved
+    in the same dictionary.
+
     Parameters
     ----------
     bonds : list
@@ -53,12 +56,13 @@ class Matrix:
         self._matrix = {}
         for bond in bonds:
             # Fill bond as given
-            self._matrix[bond[0]] = bond[1]
+            self._matrix[bond[0]] = {"atoms": bond[1], "bonds": len(bond[1])}
             # Fill reverse bonds
             for atom_b in bond[1]:
                 if not atom_b in self._matrix:
-                    self._matrix[atom_b] = []
-                self._matrix[atom_b].append(bond[0])
+                    self._matrix[atom_b] = {"atoms": [], "bonds": 0}
+                self._matrix[atom_b]["atoms"].append(bond[0])
+                self._matrix[atom_b]["bonds"] += 1
 
 
     ###########
@@ -74,8 +78,8 @@ class Matrix:
         atom_b : integer
             Atom B
         """
-        self._matrix[atom_a].remove(atom_b)
-        self._matrix[atom_b].remove(atom_a)
+        self._matrix[atom_a]["atoms"].remove(atom_b)
+        self._matrix[atom_b]["atoms"].remove(atom_a)
 
     def strip(self, atoms):
         """Remove all bonds of a specified atom from the connection matrix.
@@ -90,9 +94,9 @@ class Matrix:
 
         # Split all bonds
         for atom_a in atoms:
-            atoms_b = self._matrix[atom_a][:]
+            atoms_b = self._matrix[atom_a]["atoms"][:]
             for atom_b in atoms_b:
-                self. split(atom_a, atom_b)
+                self.split(atom_a, atom_b)
 
     def add(self, atom_a, atom_b):
         """Add atom between given atom ids.
@@ -106,15 +110,15 @@ class Matrix:
         """
         # Add entry fort first atom
         if atom_a in self._matrix.keys():
-            self._matrix[atom_a].append(atom_b)
+            self._matrix[atom_a]["atoms"].append(atom_b)
         else:
-            self._matrix[atom_a] = [atom_b]
+            self._matrix[atom_a] = {"atoms": [atom_b], "bonds": -1}
 
         # Add entry for second atom
         if atom_b in self._matrix.keys():
-            self._matrix[atom_b].append(atom_a)
+            self._matrix[atom_b]["atoms"].append(atom_a)
         else:
-            self._matrix[atom_b] = [atom_a]
+            self._matrix[atom_b] = {"atoms": [atom_a], "bonds": -1}
 
     def bound(self, num_bonds, logic="eq"):
         """Return a list of atoms with the specified number of bonds. Possible
@@ -137,11 +141,11 @@ class Matrix:
             List of atom ids with the number of specified bonds
         """
         if logic=="eq":
-            return [atom for atom in self._matrix if len(self._matrix[atom])==num_bonds]
+            return [atom for atom in self._matrix if len(self._matrix[atom]["atoms"])==num_bonds]
         elif logic=="lt":
-            return [atom for atom in self._matrix if len(self._matrix[atom])<num_bonds]
+            return [atom for atom in self._matrix if len(self._matrix[atom]["atoms"])<num_bonds]
         elif logic=="gt":
-            return [atom for atom in self._matrix if len(self._matrix[atom])>num_bonds]
+            return [atom for atom in self._matrix if len(self._matrix[atom]["atoms"])>num_bonds]
         else:
             print("Matrix: Wrong logic statement...")
             return

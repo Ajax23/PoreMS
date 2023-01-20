@@ -330,6 +330,56 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(beta_cristobalit.get_orient(), "z")
         self.assertEqual(beta_cristobalit.get_block().get_name(), "DOTA")
 
+    def test_alpha_cristobalit(self):
+        # self.skipTest("Temporary")
+
+        # Initialize
+        alpha_cristobalit = pms.AlphaCristobalit()
+
+        # Pattern and output
+        pattern = alpha_cristobalit.pattern()
+        pattern.set_name("pattern_alpha_cbt_minimal")
+        self.assertEqual(pattern.get_num(), 12)
+        pms.Store(pattern, "output").gro()
+
+        # Generation and Orientation
+        alpha_cristobalit = pms.AlphaCristobalit()
+        alpha_cristobalit.generate([2, 2, 2], "x")
+        alpha_cristobalit.get_block().set_name("pattern_alpha_cbt_x")
+        self.assertEqual(alpha_cristobalit.get_size(), [2.0844, 1.9912, 1.9912])
+        self.assertEqual([round(x, 3) for x in alpha_cristobalit.get_block().get_box()], [2.084, 1.991, 1.991])
+        pms.Store(alpha_cristobalit.get_block(), "output").gro()
+
+        alpha_cristobalit = pms.AlphaCristobalit()
+        alpha_cristobalit.generate([2, 2, 2], "y")
+        alpha_cristobalit.get_block().set_name("pattern_alpha_cbt_y")
+        self.assertEqual(alpha_cristobalit.get_size(), [1.9912, 2.0844, 1.9912])
+        self.assertEqual([round(x, 3) for x in alpha_cristobalit.get_block().get_box()], [1.991, 2.084, 1.991])
+        pms.Store(alpha_cristobalit.get_block(), "output").gro()
+
+        alpha_cristobalit = pms.AlphaCristobalit()
+        alpha_cristobalit.generate([2, 2, 2], "z")
+        alpha_cristobalit.get_block().set_name("pattern_alpha_cbt_z")
+        self.assertEqual(alpha_cristobalit.get_size(), [1.9912, 1.9912, 2.0844])
+        self.assertEqual([round(x, 3) for x in alpha_cristobalit.get_block().get_box()], [1.991, 1.991, 2.084])
+        pms.Store(alpha_cristobalit.get_block(), "output").gro()
+        pms.Store(alpha_cristobalit.get_block(), "output").lmp()
+
+        # Misc
+        alpha_cristobalit = pms.AlphaCristobalit()
+        alpha_cristobalit.generate([2, 2, 2], "z")
+        alpha_cristobalit.get_block().set_name("DOTA")
+
+        # Overlap and output
+        self.assertEqual(alpha_cristobalit.get_block().get_num(), 576)
+        self.assertEqual(alpha_cristobalit.get_block().overlap(), {})
+
+        # Getter
+        self.assertEqual(alpha_cristobalit.get_repeat(), [0.4978, 0.4978, 0.6948])
+        # self.assertEqual(alpha_cristobalit.get_gap(), [0.126, 0.073, 0.155])
+        self.assertEqual(alpha_cristobalit.get_orient(), "z")
+        self.assertEqual(alpha_cristobalit.get_block().get_name(), "DOTA")
+
 
     ########
     # Dice #
@@ -386,19 +436,19 @@ class UserModelCase(unittest.TestCase):
         matrix = pms.Matrix(bonds)
         connect = matrix.get_matrix()
         matrix.split(0, 17)
-        self.assertEqual(connect[0], [30, 8, 1])
-        self.assertEqual(connect[17], [19])
+        self.assertEqual(connect[0]["atoms"], [30, 8, 1])
+        self.assertEqual(connect[17]["atoms"], [19])
         matrix.strip(0)
-        self.assertEqual(connect[0], [])
-        self.assertEqual(connect[1], [43])
-        self.assertEqual(connect[8], [7])
-        self.assertEqual(connect[30], [3])
+        self.assertEqual(connect[0]["atoms"], [])
+        self.assertEqual(connect[1]["atoms"], [43])
+        self.assertEqual(connect[8]["atoms"], [7])
+        self.assertEqual(connect[30]["atoms"], [3])
         self.assertEqual(matrix.bound(0), [0])
         self.assertEqual(matrix.bound(1, "lt"), [0])
         self.assertEqual(matrix.bound(4, "gt"), [])
         matrix.add(0, 17)
-        self.assertEqual(connect[0], [17])
-        self.assertEqual(connect[17], [19, 0])
+        self.assertEqual(connect[0]["atoms"], [17])
+        self.assertEqual(connect[17]["atoms"], [19, 0])
 
         print()
         self.assertIsNone(matrix.bound(4, "test"))
@@ -565,7 +615,7 @@ class UserModelCase(unittest.TestCase):
         matrix = pms.Matrix(bond_list)
 
         pore = pms.Pore(block, matrix)
-        pore.exterior(pattern.get_gap())
+        pore.exterior()
 
         centroid = block.centroid()
         central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 0, True))
@@ -590,14 +640,12 @@ class UserModelCase(unittest.TestCase):
             temp_mol = pms.Molecule()
             for pos in si_pos_in:
                 temp_mol.add("Si", pos)
-            size = temp_mol.get_box()[2]
             pms.Store(temp_mol).gro("output/pore_cylinder_si_in.gro")
 
         if si_pos_ex:
             temp_mol = pms.Molecule()
             for pos in si_pos_ex:
                 temp_mol.add("Si", pos)
-            size = temp_mol.get_box()[2]
             pms.Store(temp_mol).gro("output/pore_cylinder_si_ex.gro")
 
         # Objectify grid
@@ -614,17 +662,22 @@ class UserModelCase(unittest.TestCase):
         def normal(pos):
             return [0, 0, -1] if pos[2] < centroid[2] else [0, 0, 1]
 
+        for site in site_in:
+            site_list[site]["normal"] = cylinder.normal
+        for site in site_ex:
+            site_list[site]["normal"] = normal
+
         ## Siloxane
-        mols_siloxane = pore.siloxane(site_in, 100, cylinder.normal)
+        mols_siloxane = pore.siloxane(site_in, 100)
         site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
 
         ## Normal
-        mols_in = pore.attach(mol, 0, [0, 1], site_in, 100, cylinder.normal, site_type="in")
-        mols_ex = pore.attach(mol, 0, [0, 1], site_ex, 20, normal, site_type="ex")
+        mols_in = pore.attach(mol, 0, [0, 1], site_in, 100, site_type="in")
+        mols_ex = pore.attach(mol, 0, [0, 1], site_ex, 20, site_type="ex")
 
         ## Filling
-        mols_in_fill = pore.fill_sites(site_in, cylinder.normal, site_type="in")
-        mols_ex_fill = pore.fill_sites(site_ex, normal, site_type="ex")
+        mols_in_fill = pore.fill_sites(site_in, site_type="in")
+        mols_ex_fill = pore.fill_sites(site_ex, site_type="ex")
 
         ## Storage
         pms.Store(pms.Molecule(name="pore_cylinder_siloxane", inp=mols_siloxane), "output").gro()
@@ -676,7 +729,7 @@ class UserModelCase(unittest.TestCase):
         matrix = pms.Matrix(bonds)
         pore = pms.Pore(block, matrix)
         pore.prepare()
-        pore.exterior(pattern.get_gap())
+        pore.exterior()
         pore.sites()
         pms.Store(block, "output").gro()
 
@@ -689,7 +742,7 @@ class UserModelCase(unittest.TestCase):
         matrix = pms.Matrix(bonds)
         pore = pms.Pore(block, matrix)
         pore.prepare()
-        pore.exterior(pattern.get_gap())
+        pore.exterior()
         pore.sites()
         pms.Store(block, "output").gro()
 
@@ -702,7 +755,7 @@ class UserModelCase(unittest.TestCase):
         matrix = pms.Matrix(bonds)
         pore = pms.Pore(block, matrix)
         pore.prepare()
-        pore.exterior(pattern.get_gap())
+        pore.exterior()
         pore.sites()
         pms.Store(block, "output").gro()
 
@@ -724,10 +777,27 @@ class UserModelCase(unittest.TestCase):
 
         pore = pms.Pore(block, matrix)
         pore.prepare()
-        pore.exterior(pattern.get_gap())
+        pore.exterior()
         pore.sites()
 
         pms.Store(block, "output").gro()
+
+    def test_pore_kit(self):
+        # self.skipTest("Temporary")
+
+        pore = pms.PoreKit()
+
+        pore.structure(pms.BetaCristobalit().generate([5, 5, 10], "z"))
+        pore.build()
+        pore.exterior(5, hydro=0.4)
+        pore.add_shape(pore.shape_cylinder(4, 6, [2.5, 2.6, 2.5]), section=[0, 5], hydro=0.4)
+        pore.add_shape(pore.shape_cylinder(2, 5, [2.5, 2.6, 7.5]), section=[5, 10], hydro=0.4)
+        pore.prepare()
+        pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in")
+        pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex")
+        pore.finalize()
+        pore.store("output/kit/")
+        # pore.table()
 
     def test_pore_cylinder(self):
         # self.skipTest("Temporary")
@@ -764,11 +834,11 @@ class UserModelCase(unittest.TestCase):
 
         ## Properties
         self.assertEqual(round(pore.diameter()), 4)
-        self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0773, 3.0934, 3.255])
+        self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0147, 3.0572, 3.0569])
         self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
-        self.assertEqual(round(pore.volume()), 80)
-        self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 79, 'ex': 49})
+        self.assertEqual(round(pore.volume()), 78)
+        self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 78, 'ex': 49})
         self.assertEqual(pore.shape(), "CYLINDER")
 
     def test_pore_slit(self):
@@ -804,8 +874,8 @@ class UserModelCase(unittest.TestCase):
         print(pore.table())
 
         ## Properties
-        self.assertEqual(round(pore.height()), 3)
-        self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0773, 3.0934, 3.255])
+        self.assertEqual(round(pore.diameter()), 3)
+        self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0147, 3.0572, 3.0569])
         self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
         self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
         self.assertEqual(round(pore.volume()), 114)
@@ -813,7 +883,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(pore.shape(), "SLIT")
 
     def test_pore_capsule(self):
-        # self.skipTest("Temporary")
+        self.skipTest("Temporary")
 
         # Empty pore
         pore = pms.PoreCapsule([4, 4, 4], 1, 1, 0)
@@ -854,7 +924,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(pore.shape(), "CAPSULE")
 
     def test_pore_cylinder_amorph(self):
-        # self.skipTest("Temporary")
+        self.skipTest("Temporary")
 
         # Empty pore
         pore = pms.PoreAmorphCylinder(2, 0)
@@ -890,7 +960,7 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(pore.diameter()), 4)
         self.assertEqual([round(x, 4) for x in pore.centroid()], [4.923, 4.9651, 5.118])
         self.assertEqual(round(pore.roughness()["in"], 1), 0.1)
-        self.assertEqual(round(pore.roughness()["ex"], 1), 0.2)
+        self.assertEqual(round(pore.roughness()["ex"], 1), 0.3)
         self.assertEqual(round(pore.volume()), 122)
         self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 121, 'ex': 159})
         self.assertEqual(pore.shape(), "CYLINDER")

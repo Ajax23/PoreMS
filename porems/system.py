@@ -12,39 +12,242 @@ import pandas as pd
 import porems as pms
 
 
-class PoreSystem():
-    """This class is a container class for further pore system classes."""
+class PoreKit():
+    """Pore construction kit.
+    """
     def __init__(self):
         # Initialize
-        self._sort_list = []
-        self._site_in = []
-        self._site_ex = []
+        self._sort_list = ["OM", "SI"]
         self._res = 0
-        self._pore_shape = ""
+        self._hydro = [0, 0]
+        self._shapes = []
         self._yml = {}
 
+    def structure(self, structure):
+        """Add structure to the Pore builder.
+
+        Parameters
+        ----------
+        structure : Molecule
+            Crystal structure given as a PoreMS Molecule object
+        """
+        # Globalize Crysttal structure
+        self._block = structure
+        self._box = self._block.get_box()
+        self._centroid = self._block.centroid()
+
+    def build(self, bonds=[0.155-1e-2, 0.155+1e-2]):
+        """Process provided structure to build connectivity matrix.
+
+        Parameters
+        ----------
+        bonds : list, optional
+            Minimal ans maximal bond length range for Si-O bonds
+        """
+        # Dice up block
+        dice = pms.Dice(self._block, 0.4, True)
+        self._matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], bonds))
+
+        # Create pore object
+        self._pore = pms.Pore(self._block, self._matrix)
+        self._pore.set_name("pore")
+
+    ##########
+    # Shapes #
+    ##########
+    def exterior(self, res, hydro=0):
+        """Optionally create and adjust exterior surface.
+
+        Parameters
+        ----------
+        res : float
+            Reservoir length in nm
+        hydro : float, optional
+            Hydroxilation degree for exterior surface in
+            :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+            leave zero for no adjustemnt
+        """
+        self._pore.exterior()
+        self._hydro[1] = hydro
+        self._res = res
+
+    def add_shape(self, shape, section=[], hydro=0):
+        """Add shape to pore system for drilling.
+
+        Parameters
+        ----------
+        shape : list
+            Shape type (pos 0) and shape (pos 1)
+        section : list, optional
+            Range of shape from start z-length to end z-length, leave empty for whole range
+        hydro : float, optional, TEMPORARY
+            Hydroxilation degree for interior surface in
+            :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
+        """
+        # Check shape type
+        if shape[0] not in ["CYLINDER", "SLIT", "SPHERE"]:
+            print("Wrong shape type...")
+            return
+
+        # Process user input
+        section = section if section else [0, self._box[2]]
+        self._hydro[0] = hydro
+
+        # Append to shape list
+        shape.append(section)
+        self._shapes.append(shape)
+
+    def shape_cylinder(self, diam, length=0, centroid=[], central=[0, 0, 1]):
+        """
+        Add cylidrical shape
+
+        Parameters
+        ----------
+        diam : float
+            Cylinder diameter
+        length : float, optional
+            length of cylindrical shape
+        centroid : list, optional
+            Cylinder centroid - leave zero for system centroid
+        central : list, optional
+            Central axis for cylinder
+
+        Returns
+        -------
+        shape : list
+            Shape type (pos 0) and shape (pos 1)
+        """
+        # Process user input
+        centroid = centroid if centroid else self.centroid()
+        length = length if length else self._box[2]
+
+        # Define shape
+        cylinder = pms.Cylinder({"centroid": centroid, "central": central, "length": length, "diameter": diam-0.5})  # Preperation precaution
+
+        return ["CYLINDER", cylinder]
+
+    def shape_slit(self, height, length=0, centroid=[], central=[0, 0, 1]):
+        """
+        Add slit shape
+
+        Parameters
+        ----------
+        height : float
+            Cylinder diameter
+        length : float, optional
+            length of cylindrical shape
+        centroid : list, optional
+            Cylinder centroid - leave zero for system centroid
+        central : list, optional
+            Central axis for cylinder
+
+        Returns
+        -------
+        shape : list
+            Shape type (pos 0) and shape (pos 1)
+        """
+        # Process user input
+        centroid = centroid if centroid else self.centroid()
+        length = length if length else self._box[2]
+
+        # Define shape
+        cuboid = pms.Cuboid({"centroid": centroid, "central": central, "length": length, "width": self._box[0], "height": height-0.5})  # Preperation precaution
+
+        return ["SLIT", cuboid]
+
+    def prepare(self):
+        """
+        Prepare pore surface, add siloxane bridges, assign sites to sections,
+        and assign a unique normal vector to each site by updating the
+        original pore object site list.
+        """
+        # Carve out shape
+        del_list = []
+        for shape in self._shapes:
+            del_list += [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if shape[1].is_in(atom.get_pos())]
+        self._matrix.strip(del_list)
+
+        # Prepare pore surface
+        self._pore.prepare()
+
+        # Determine sites
+        self._pore.sites()
+        site_list = self._pore.get_sites()
+
+        # Define sites and save bindinf site si positions and allocate to interior section
+        self._sections = [shape[2] for shape in self._shapes]
+
+        self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+        self._si_pos_ex = [self._block.pos(site_key) for site_key in self._site_ex]
+
+        self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+        self._si_pos_in = [[] for x in self._sections]
+
+        for site in self._site_in:
+            # Get geometric position
+            pos = self._block.pos(site)
+            # Run through pore sections
+            for i, section in enumerate(self._sections):
+                # Check if position within section
+                if pos[2]>=section[0] and pos[2]<=section[1]:
+                    # Add position to global list
+                    self._si_pos_in[i].append(pos)
+                    # Add normal vector to pore site list
+                    site_list[site]["normal"] = self._shapes[i][1].normal
+
+        for site in self._site_ex:
+            # Add n ormal vector to pore site list
+            site_list[site]["normal"] = self._normal_ex
+
+        # Siloxane bridges
+        if self._hydro[0]:
+            self._siloxane("in")
+        if self._hydro[1]:
+            self._siloxane("ex")
+
+        # Update site list after siloxan bridgges
+        self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
+        self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
+
+        # Objectify grid
+        non_grid = self._matrix.bound(1)+list(site_list.keys())
+        bonded = self._matrix.bound(0, "gt")
+        grid_atoms = [atom for atom in bonded if not atom in non_grid]
+        self._pore.objectify(grid_atoms)
 
     ##############
     # Attachment #
     ##############
-    def _siloxane(self, hydro, site_type, slx_dist=[0.507-1e-2, 0.507+1e-2]):
+    def _normal_ex(self, pos):
+        """Normal function for the exterior surface
+
+        Parameters
+        ----------
+        pos : list
+            Position on the surface
+
+        Returns
+        -------
+        normal : list
+            Vector perpendicular to surface of the given position
+        """
+        return [0, 0, -1] if pos[2] < self.centroid()[2] else [0, 0, 1]
+
+    def _siloxane(self, site_type, slx_dist=[0.507-1e-2, 0.507+1e-2]):
         """Attach siloxane bridges using function
         :func:`porems.pore.Pore.siloxane`.
 
         Parameters
         ----------
-        hydro: float
-            Hydroxilation degree in
-            :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`.
-        slx_dist : list
-            Silicon atom distance to search for parters in proximity
-        site_type : string, optional
+        site_type : string
             Site type - interior **in**, exterior **ex**
+        slx_dist : list, optional
+            Silicon atom distance to search for parters in proximity
         """
         # Initialize
         site_list = self._pore.get_sites()
         sites = self._site_in if site_type=="in" else self._site_ex
-        normal = self._normal_in if site_type=="in" else self._normal_ex
+        hydro = self._hydro[0] if site_type=="in" else self._hydro[1]
 
         # Amount - Connect two oxygen to one siloxane
         oh = len(sum([site_list[site]["o"] for site in sites], []))
@@ -54,7 +257,7 @@ class PoreSystem():
         # Fill siloxane
         if amount > 0:
             # Run attachment
-            mols = self._pore.siloxane(sites, amount, normal, slx_dist=slx_dist, site_type=site_type)
+            mols = self._pore.siloxane(sites, amount, slx_dist=slx_dist, site_type=site_type)
 
             # Add to sorting list
             for mol in mols:
@@ -100,9 +303,8 @@ class PoreSystem():
             print("Pore: Wrong inp type...")
             return
 
-        # Sites and normal vector
+        # Define sites
         sites = self._site_in if site_type=="in" else self._site_ex
-        normal = self._normal_in if site_type=="in" else self._normal_ex
 
         # Amount
         if inp=="molar":
@@ -118,22 +320,23 @@ class PoreSystem():
             return
 
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, sites, amount, normal, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+        mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:
             if not mol.get_short() in self._sort_list:
                 self._sort_list.append(mol.get_short())
 
-
     ################
     # Finalization #
     ################
     def finalize(self):
         """Finalize pore system."""
-        # Fill silanol molecules on empty binding sites
-        mols_in = self._pore.fill_sites(self._site_in, self._normal_in, "in") if self._site_in else []
-        mols_ex = self._pore.fill_sites(self._site_ex, self._normal_ex, "ex") if self._site_ex else []
+        # Fill silanol on the exterior surface
+        mols_ex = self._pore.fill_sites(self._site_ex, "ex") if self._site_ex else []
+
+        # Fill silanol on the interior surface
+        mols_in = self._pore.fill_sites(self._site_in, "in") if self._site_in else []
 
         # Add to sorting list
         for mols in [mols_in, mols_ex]:
@@ -186,11 +389,8 @@ class PoreSystem():
         self._yml["centroid"] = self.centroid()
         self._yml["reservoir"] = self.reservoir()
 
-        self._yml["shape"] = self._pore_shape
-        if self._yml["shape"]=="CYLINDER":
-            self._yml["diameter"] = self.diameter()
-        elif self._yml["shape"]=="SLIT":
-            self._yml["height"] = self.height()
+        self._yml["shape"] = self.shape()
+        self._yml["diameter"] = self.diameter()
 
         self._yml["roughness"] = self.roughness()
         self._yml["volume"] = self.volume()
@@ -200,10 +400,189 @@ class PoreSystem():
         with open(link+self._pore.get_name()+".yml", "w") as file_out:
             file_out.write(yaml.dump(self._yml))
 
-
     ############
     # Analysis #
     ############
+    def diameter(self):
+        """Calculate true diameter after drilling and preperation. This
+        is done by determining the mean value :math:`\\bar r` of the silicon
+        distances :math:`r_i` of silicon :math:`i` towards the shape center
+
+        .. math::
+
+            \\bar r=\\frac1n\\sum_{i=1}^nr_i
+
+        with the number of silicon atoms :math:`n`. The diameter is then
+
+        .. math::
+
+            d=2\\bar r=\\frac2n\\sum_{i=1}^nr_i.
+
+        Returns
+        -------
+        diameter : float
+            Pore diameter after preperation
+        """
+        # Run through sections
+        radii = []
+        for i, shape in enumerate(self._shapes):
+            pos_list = self._si_pos_in[i]
+            # Calculate distance towards central axis of binding site silicon atoms
+            if shape[0]=="CYLINDER":
+                radii.append([pms.geom.length(pms.geom.vector([self.centroid()[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+            elif shape[0]=="SLIT":
+                radii.append([pms.geom.length(pms.geom.vector([pos[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+            elif shape[0]=="SPHERE":
+                radii.append([])
+
+        # Calculate mean
+        r_bar = [sum(r)/len(r) if len(r)>0 else 0 for r in radii]
+
+        # Return diameter
+        diam = [2*r for r in r_bar]
+
+        return sum(diam) if len(diam)==1 else diam
+
+    def roughness(self):
+        """Calculate surface roughness. In the case of a cylindric pore one can
+        visualize pulling the pore apart, thus flattening the interior surface.
+        The roughness is then determined by calculating the standard deviation
+        of the binding site silicon atoms peaks and valleys.
+
+        It is therefore enough to calculate the distances towards a specific
+        axis, which in this case will be the central axis. The mean value
+        :math:`\\bar r` of the silicon distances :math:`r_i` of silicon
+        :math:`i` towards the pore center, is calculated by
+
+        .. math::
+
+            \\bar r=\\frac1n\\sum_{i=1}^nr_i
+
+        with the number of silicon atoms :math:`n`. This mean value is used in
+        the square root roughness calculation
+
+        .. math::
+
+            R_q = \\sqrt{\\frac1n\\sum_{i=1}^n\\|r_i-\\bar r\\|^2}.
+
+        Returns
+        -------
+        roughness : float
+            Surface roughness
+        """
+        # Interior
+        ## Calculate distance towards central axis of binding site silicon atoms
+        radii_in = []
+        for i, shape in enumerate(self._shapes):
+            pos_list = self._si_pos_in[i]
+            if shape[0]=="CYLINDER":
+                radii_in.append([pms.geom.length(pms.geom.vector([self.centroid()[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+            elif shape[0]=="SLIT":
+                radii_in.append([pms.geom.length(pms.geom.vector([pos[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+            elif shape[0]=="SPHERE":
+                radii_in.append([])
+
+        # Exterior
+        if self._res:
+            ## Create molecules with exterior positions
+            temp_mol = pms.Molecule()
+            for pos in self._si_pos_ex:
+                temp_mol.add("Si", pos)
+            temp_mol.zero()
+            size = temp_mol.get_box()[2]
+
+        ## Calculate distance to boundary
+        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
+
+        # Calculate mean
+        r_bar_in = [sum(r_in)/len(r_in) if len(r_in)>0 else 0 for r_in in radii_in]
+        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
+
+        # Calculate roughness
+        r_q_in =  [math.sqrt(sum([(r_i-r_bar_in[i])**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0 for i, r_in in enumerate(radii_in)]
+        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
+
+        # Calculate square root roughness
+        return {"in": sum(r_q_in) if len(r_q_in)==1 else r_q_in, "ex": r_q_ex}
+
+    def volume(self, is_sum=True):
+        """Calculate pore volume. This is done by defining a new shape object
+        with system sizes after pore preparation and using the volume functions.
+
+        Parameters
+        ----------
+        is_sum : bool, optional
+            True to return sum of all sections
+
+        Returns
+        -------
+        volume : float
+            Pore volume
+        """
+        # Get diameters
+        diam = self.diameter()
+        diam = diam if isinstance(diam, list) else [diam]
+
+        # Calculate volumes
+        volume = []
+        for i, shape in enumerate(self._shapes):
+            if shape[0]=="CYLINDER":
+                volume.append(pms.Cylinder({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).volume())
+            elif shape[0]=="SLIT":
+                volume.append(pms.Cuboid({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).volume())
+            elif shape[0]=="SPHERE":
+                volume.append(0)
+
+        return sum(volume) if is_sum else volume
+
+    def surface(self, is_sum=True):
+        """Calculate pore surface and exterior surface. This is done by defining
+        a new shape object with system sizes after pore preparation and using
+        the surface functions.
+
+        Parameters
+        ----------
+        is_sum : bool, optional
+            True to return sum of all sections
+
+        Returns
+        -------
+        surface : dictionary
+            Pore surface of interior and exterior
+        """
+        # Get diameters
+        diam = self.diameter()
+        diam = diam if isinstance(diam, list) else [diam]
+
+        # Interior surface
+        surf_in = []
+        for i, shape in enumerate(self._shapes):
+            if shape[0]=="CYLINDER":
+                surf_in.append(pms.Cylinder({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).surface())
+            elif shape[0]=="SLIT":
+                surf_in.append(pms.Cuboid({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).surface()/2)
+            elif shape[0]=="SPHERE":
+                surf_in.append(0)
+
+        # Exterior surface
+        sections_ex = [0, 0]
+        for i, section in enumerate(self._sections):
+            if section[0]-0<=1e-2:
+                sections_ex[0] = i
+            if section[1]-self._box[2]<=1e-2:
+                sections_ex[1] = i
+
+        surf_ex = []
+        for section in sections_ex:
+            if self._shapes[section][0]=="CYLINDER":
+                surf_ex.append(self._box[0]*self._box[1]-math.pi*(diam[section]/2)**2)
+            elif self._shapes[section][0]=="SLIT":
+                surf_ex.append(self._box[0]*(self._box[1]-diam[section]))
+            elif self._shapes[section][0]=="SPHERE":
+                surf_ex.append(0)
+
+        return {"in": sum(surf_in) if is_sum else surf_in, "ex": sum(surf_ex) if is_sum else surf_ex}
+
     def allocation(self):
         """Calculate molecule allocation on the surface. Using interior and
         exterior surfaces, the allocation rates can be determined by counting
@@ -300,24 +679,25 @@ class PoreSystem():
     def shape(self):
         """Return the pore shape for analysis using PoreAna.
 
+        TODOS
+        -----
+        NEEDS TO BE CHANGED WHEN POREANA CAN DO SECTIONS
+
         Returns
         -------
         pore_shape : string
             Pore shape
         """
-        return self._pore_shape
-
+        return self._shapes[0][0]
 
     #########
     # Table #
     #########
-    def _table_base(self, props, decimals=3):
-        """Base functino for converting properties to pandas table for easy viewing.
+    def table(self, decimals=3):
+        """Create properties as pandas table for easy viewing.
 
         Parameters
         ----------
-        props : dictionary
-            Additional pore specific properties {propname: [in-prop, ex-prop], ...}
         decimals : integer, optional
             Number of decimals to be rounded to
 
@@ -332,6 +712,10 @@ class PoreSystem():
         # Get allocation data
         allocation = self.allocation()
 
+        # Get properties
+        surf = self.surface()
+        roughness = self.roughness()
+
         # Save data
         data = {"Interior": {}, "Exterior": {}}
 
@@ -339,14 +723,11 @@ class PoreSystem():
         data["Exterior"]["Silica block xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%(self.box()[2]-2*self.reservoir())+"]"
         data["Interior"]["Simulation box xyz-dimensions (nm)"] = " "
         data["Exterior"]["Simulation box xyz-dimensions (nm)"] = "["+form%self.box()[0]+", "+form%self.box()[1]+", "+form%self.box()[2]+"]"
-        data["Interior"]["Pore drilling direction"] = "z"
-        data["Exterior"]["Pore drilling direction"] = " "
-        data["Interior"]["Surface roughness (nm)"] = form%self.roughness()["in"] if "in" in self.roughness() else form%0
-        data["Exterior"]["Surface roughness (nm)"] = form%self.roughness()["ex"] if "ex" in self.roughness() else form%0
+        data["Interior"]["Surface roughness (nm)"] = form%roughness["in"] if "in" in roughness else form%0
+        data["Exterior"]["Surface roughness (nm)"] = form%roughness["ex"] if "ex" in roughness else form%0
 
-        for prop_name, values in props.items():
-            data["Interior"][prop_name] = values[0]
-            data["Exterior"][prop_name] = values[1]
+        data["Interior"]["Pore diameter (nm)"] = form%self.diameter()
+        data["Exterior"]["Pore diameter (nm)"] = " "
 
         data["Interior"]["Solvent reservoir z-dimension (nm)"] = " "
         data["Exterior"]["Solvent reservoir z-dimension (nm)"] = form%self.reservoir()
@@ -354,8 +735,8 @@ class PoreSystem():
         data["Exterior"]["Pore volume (nm^3)"] = " "
         data["Interior"]["Solvent reservoir volume (nm^3)"] = " "
         data["Exterior"]["Solvent reservoir volume (nm^3)"] = "2 * "+form%(self.box()[0]*self.box()[1]*self.reservoir())
-        data["Interior"]["Surface area (nm^2)"] = form%self.surface()["in"]
-        data["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(self.surface()["ex"]/2)
+        data["Interior"]["Surface area (nm^2)"] = form%surf["in"]
+        data["Exterior"]["Surface area (nm^2)"] = "2 * "+form%(surf["ex"]/2)
 
         data["Interior"]["Surface chemistry - Before Functionalization"] = " "
         data["Exterior"]["Surface chemistry - Before Functionalization"] = " "
@@ -388,7 +769,7 @@ class PoreSystem():
         return pd.DataFrame.from_dict(data)
 
 
-class PoreCylinder(PoreSystem):
+class PoreCylinder(PoreKit):
     """This class carves a cylindric pore system out of a
     :math:`\\beta`-cristobalite block.
 
@@ -426,100 +807,16 @@ class PoreCylinder(PoreSystem):
         # Call super class
         super(PoreCylinder, self).__init__()
 
-        # Initialize
-        self._diam = diam
-        self._res = res
-        self._sort_list = ["OM", "SI"]
+        # Create structure
+        self.structure(pms.BetaCristobalit().generate(size, "z"))
+        self.build()
 
-        # Build pattern
-        pattern = pms.BetaCristobalit()
-        pattern.generate(size, "z")
+        # Create reservoir
+        self.exterior(res, hydro=hydro[1])
 
-        # Create block
-        self._block = pattern.get_block()
-        self._block.set_name("pore")
-        self._box = self._block.get_box()
-
-        # Dice up block
-        dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
-
-        # Create pore object
-        self._pore = pms.Pore(self._block, matrix)
-        self._pore.set_name("pore")
-
-        # Create exterior
-        if res:
-            self._pore.exterior(pattern.get_gap())
-
-        # Carve out shape
-        self._centroid = self._block.centroid()
-        central = [0, 0, 1]
-        self._cylinder = pms.Cylinder({"centroid": self._centroid, "central": central, "length": size[2], "diameter": diam-0.5})  # Preperation precaution
-        del_list = [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if self._cylinder.is_in(atom.get_pos())]
-        matrix.strip(del_list)
-        self._pore_shape = "CYLINDER"
-
-        # Prepare pore surface
-        self._pore.prepare()
-
-        # Determine sites
-        self._pore.sites()
-        site_list = self._pore.get_sites()
-        self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
-
-        # Save original surface si positions
-        self._si_pos_in = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        self._si_pos_ex = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
-
-        # Siloxane bridges
-        if hydro[0]:
-            self._siloxane(hydro[0], "in")
-            self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        if hydro[1]:
-            self._siloxane(hydro[1], "ex")
-            self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
-
-        # Objectify grid
-        non_grid = matrix.bound(1)+list(site_list.keys())
-        bonded = matrix.bound(0, "gt")
-        grid_atoms = [atom for atom in bonded if not atom in non_grid]
-        self._pore.objectify(grid_atoms)
-
-
-    ##############
-    # Attachment #
-    ##############
-    def _normal_in(self, pos):
-        """Normal function for the interior surface
-
-        Parameters
-        ----------
-        pos : list
-            Position on the surface
-
-        Returns
-        -------
-        normal : list
-            Vector perpendicular to surface of the given position
-        """
-        return self._cylinder.normal(pos)
-
-    def _normal_ex(self, pos):
-        """Normal function for the exterior surface
-
-        Parameters
-        ----------
-        pos : list
-            Position on the surface
-
-        Returns
-        -------
-        normal : list
-            Vector perpendicular to surface of the given position
-        """
-        return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
+        # Add pore shape
+        self.add_shape(self.shape_cylinder(diam), hydro=hydro[0])
+        self.prepare()
 
     def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_proxi=True, is_rotate=False):
         """Special attachment of molecules on the surface.
@@ -566,153 +863,14 @@ class PoreCylinder(PoreSystem):
             pos_list.append([x, y, z])
 
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), self._normal_in, scale, pos_list=pos_list, is_proxi=is_proxi, is_random=False, is_rotate=is_rotate)
+        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), scale, pos_list=pos_list, is_proxi=is_proxi, is_random=False, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:
             if not mol.get_short() in self._sort_list:
                 self._sort_list.append(mol.get_short())
 
-
-    ############
-    # Analysis #
-    ############
-    def diameter(self):
-        """Calculate true cylinder diameter after drilling and preperation. This
-        is done by determining the mean value :math:`\\bar r` of the silicon
-        distances :math:`r_i` of silicon :math:`i` towards the pore center
-
-        .. math::
-
-            \\bar r=\\frac1n\\sum_{i=1}^nr_i
-
-        with the number of silicon atoms :math:`n`. The diameter is then
-
-        .. math::
-
-            d=2\\bar r=\\frac2n\\sum_{i=1}^nr_i.
-
-        Returns
-        -------
-        diameter : float
-            Pore diameter after preperation
-        """
-        # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
-
-        # Calculate mean
-        r_bar = sum(r)/len(r) if len(r)>0 else 0
-
-        # Calculate diameter
-        return 2*r_bar
-
-    def roughness(self):
-        """Calculate surface roughness. In the case of a cylindric pore one can
-        visualize pulling the pore apart, thus flattening the interior surface.
-        The roughness is then determined by calculating the standard deviation
-        of the binding site silicon atoms peaks and valleys.
-
-        It is therefore enough to calculate the distances towards a specific
-        axis, which in this case will be the central axis. The mean value
-        :math:`\\bar r` of the silicon distances :math:`r_i` of silicon
-        :math:`i` towards the pore center, is calculated by
-
-        .. math::
-
-            \\bar r=\\frac1n\\sum_{i=1}^nr_i
-
-        with the number of silicon atoms :math:`n`. This mean value is used in
-        the square root roughness calculation
-
-        .. math::
-
-            R_q = \\sqrt{\\frac1n\\sum_{i=1}^n\\|r_i-\\bar r\\|^2}.
-
-        Returns
-        -------
-        roughness : float
-            Surface roughness
-        """
-        # Interior
-        ## Calculate distance towards central axis of binding site silicon atoms
-        r_in = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
-
-        # Exterior
-        if self._res:
-            ## Create molecules with exterior positions
-            temp_mol = pms.Molecule()
-            for pos in self._si_pos_ex:
-                temp_mol.add("Si", pos)
-            temp_mol.zero()
-            size = temp_mol.get_box()[2]
-
-        ## Calculate distance to boundary
-        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
-
-        # Calculate mean
-        r_bar_in = sum(r_in)/len(r_in) if len(r_in)>0 else 0
-        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
-
-        # Calculate roughness
-        r_q_in =  math.sqrt(sum([(r_i-r_bar_in)**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0
-        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
-
-        # Calculate square root roughness
-        return {"in": r_q_in, "ex": r_q_ex}
-
-    def volume(self):
-        """Calculate pore volume. This is done by defining a new shape object
-        with system sizes after pore preparation and using the volume function
-        :func:`porems.shape.Cylinder.volume`.
-
-        Returns
-        -------
-        volume : float
-            Pore volume
-        """
-        return pms.Cylinder({"centroid": self._centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": self.diameter()}).volume()
-
-    def surface(self):
-        """Calculate pore surface and exterior surface. This is done by defining
-        a new shape object with system sizes after pore preparation and using
-        the surface function :func:`porems.shape.Cylinder.surface`.
-
-        Returns
-        -------
-        surface : dictionary
-            Pore surface of interior and exterior
-        """
-        diam = self.diameter()
-
-        surf_in = pms.Cylinder({"centroid": self._centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": diam}).surface()
-        surf_ex = 2*(self._box[0]*self._box[1]-math.pi*(diam/2)**2)
-
-        return {"in": surf_in, "ex": surf_ex}
-
-    def table(self, decimals=3):
-        """Create properties as pandas table for easy viewing.
-
-        Parameters
-        ----------
-        decimals : integer, optional
-            Number of decimals to be rounded to
-
-        Returns
-        -------
-        tables : DataFrame
-            Pandas table of all properties
-        """
-        # Initialize
-        form = "%."+str(decimals)+"f"
-
-        # Define pore specific properties
-        props = {}
-        props["Pore diameter (nm)"] = [form%self.diameter(), " "]
-
-        return self._table_base(props, decimals)
-
-
-class PoreSlit(PoreSystem):
+class PoreSlit(PoreKit):
     """This class carves a slit-pore out of a :math:`\\beta`-cristobalite block.
 
     Parameters
@@ -748,102 +906,20 @@ class PoreSlit(PoreSystem):
         # Call super class
         super(PoreSlit, self).__init__()
 
-        # Initialize
-        self._size = size
-        self._height = height
-        self._res = res
-        self._sort_list = ["OM", "SI"]
+        # Create structure
+        self.structure(pms.BetaCristobalit().generate(size, "z"))
+        self.build()
 
-        # Build pattern
-        pattern = pms.BetaCristobalit()
-        pattern.generate(size, "z")
+        # Create reservoir
+        self.exterior(res, hydro=hydro[1])
 
-        # Create block
-        self._block = pattern.get_block()
-        self._block.set_name("pore")
-        self._box = self._block.get_box()
-
-        # Dice up block
-        dice = pms.Dice(self._block, 0.4, True)
-        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
-
-        # Create pore object
-        self._pore = pms.Pore(self._block, matrix)
-        self._pore.set_name("pore")
-
-        # Create exterior
-        if res:
-            self._pore.exterior(pattern.get_gap())
-
-        # Carve out shape
-        self._centroid = self._block.centroid()
-        central = [0, 0, 1]
-        self._cuboid = pms.Cuboid({"centroid": self._centroid, "central": central, "length": size[2], "width": size[0], "height": height-0.5})  # Preperation precaution
-        del_list = [atom_id for atom_id, atom in enumerate(self._block.get_atom_list()) if self._cuboid.is_in(atom.get_pos())]
-        matrix.strip(del_list)
-        self._pore_shape = "SLIT"
-
-        # Prepare pore surface
-        self._pore.prepare()
-
-        # Determine sites
-        self._pore.sites()
-        site_list = self._pore.get_sites()
-        self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
-
-        # Save original surface si positions
-        self._si_pos_in = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        self._si_pos_ex = [self._block.pos(site_key) for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
-
-        # Siloxane bridges
-        if hydro[0]:
-            self._siloxane(hydro[0], "in")
-            self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
-        if hydro[1] and res:
-            self._siloxane(hydro[1], "ex")
-            self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
-
-        # Objectify grid
-        non_grid = matrix.bound(1)+list(site_list.keys())
-        bonded = matrix.bound(0, "gt")
-        grid_atoms = [atom for atom in bonded if not atom in non_grid]
-        self._pore.objectify(grid_atoms)
-
+        # Add pore shape
+        self.add_shape(self.shape_slit(height), hydro=hydro[0])
+        self.prepare()
 
     ##############
     # Attachment #
     ##############
-    def _normal_in(self, pos):
-        """Normal function for the interior surface
-
-        Parameters
-        ----------
-        pos : list
-            Position on the surface
-
-        Returns
-        -------
-        normal : list
-            Vector perpendicular to surface of the given position
-        """
-        return self._cuboid.normal(pos)
-
-    def _normal_ex(self, pos):
-        """Normal function for the exterior surface
-
-        Parameters
-        ----------
-        pos : list
-            Position on the surface
-
-        Returns
-        -------
-        normal : list
-            Vector perpendicular to surface of the given position
-        """
-        return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
-
     def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_proxi=True, is_rotate=False):
         """Special attachment of molecules on the surface.
 
@@ -882,14 +958,14 @@ class PoreSlit(PoreSystem):
             elif symmetry == "mirror":
                 coeff = 1
 
-            x = self._centroid[0]+coeff*self.height()/2
+            x = self._centroid[0]+coeff*self.diameter()/2
             y = self._centroid[1]
             z = start+dist*i
 
             pos_list.append([x, y, z])
 
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), self._normal_in, scale, pos_list=pos_list, is_proxi=is_proxi, is_random=False, is_rotate=is_rotate)
+        mols = self._pore.attach(mol, mount, axis, self._site_in, len(pos_list), scale, pos_list=pos_list, is_proxi=is_proxi, is_random=False, is_rotate=is_rotate)
 
         # Add to sorting list
         for mol in mols:
@@ -897,144 +973,7 @@ class PoreSlit(PoreSystem):
                 self._sort_list.append(mol.get_short())
 
 
-    ############
-    # Analysis #
-    ############
-    def height(self):
-        """Calculate true slit pore size after drilling and preperation. This
-        is done by determining the mean value :math:`\\bar r` of the silicon
-        distances :math:`r_i` of silicon :math:`i` towards the pore center
-
-        .. math::
-
-            \\bar r=\\frac1n\\sum_{i=1}^nr_i
-
-        with the number of silicon atoms :math:`n`. The size is then
-
-        .. math::
-
-            h=2\\bar r=\\frac2n\\sum_{i=1}^nr_i.
-
-        Returns
-        -------
-        height : float
-            Pore size after preperation
-        """
-        # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([pos[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
-
-        # Calculate mean
-        r_bar = sum(r)/len(r) if len(r)>0 else 0
-
-        # Calculate diameter
-        return 2*r_bar
-
-    def roughness(self):
-        """Calculate surface roughness. In the case of a slit pore the roughness
-        is then determined by calculating the standard deviation of the binding
-        site silicon atoms peaks and valleys.
-
-        It is therefore enough to calculate the distances towards a specific
-        surface, which in this case will be the central surface. The mean value
-        :math:`\\bar r` of the silicon distances :math:`r_i` of silicon
-        :math:`i` towards the pore center, is calculated by
-
-        .. math::
-
-            \\bar r=\\frac1n\\sum_{i=1}^nr_i
-
-        with the number of silicon atoms :math:`n`. This mean value is used in
-        the square root roughness calculation
-
-        .. math::
-
-            R_q = \\sqrt{\\frac1n\\sum_{i=1}^n\\|r_i-\\bar r\\|^2}.
-
-        Returns
-        -------
-        roughness : float
-            Surface roughness
-        """
-        # Interior
-        ## Calculate distance towards central axis of binding site silicon atoms
-        r_in = [pms.geom.length(pms.geom.vector([pos[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
-
-        # Exterior
-        if self._res:
-            ## Create molecules with exterior positions
-            temp_mol = pms.Molecule()
-            for pos in self._si_pos_ex:
-                temp_mol.add("Si", pos)
-            temp_mol.zero()
-            size = temp_mol.get_box()[2]
-
-        ## Calculate distance to boundary
-        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
-
-        # Calculate mean
-        r_bar_in = sum(r_in)/len(r_in) if len(r_in)>0 else 0
-        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
-
-        # Calculate roughness
-        r_q_in =  math.sqrt(sum([(r_i-r_bar_in)**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0
-        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
-
-        # Calculate square root roughness
-        return {"in": r_q_in, "ex": r_q_ex}
-
-    def volume(self):
-        """Calculate pore volume. This is done by defining a new shape object
-        with system sizes after pore preparation and using the volume function
-        :func:`porems.shape.Cuboid.volume`.
-
-        Returns
-        -------
-        volume : float
-            Pore volume
-        """
-        return pms.Cuboid({"centroid": self._centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": self.height()}).volume()
-
-    def surface(self):
-        """Calculate pore surface and exterior surface. This is can be simply
-        calculated by
-
-        .. math::
-
-            A = 2\\cdot x\\cdot z
-
-        with block width :math:`x` and depth :math:`z`.
-
-        Returns
-        -------
-        surface : dictionary
-            Pore surface of interior and exterior
-        """
-        return {"in": 2*self._box[2]*self._box[0], "ex": self._box[0]*(self._box[1]-self.height())}
-
-    def table(self, decimals=3):
-        """Create properties as pandas table for easy viewing.
-
-        Parameters
-        ----------
-        decimals : integer, optional
-            Number of decimals to be rounded to
-
-        Returns
-        -------
-        tables : DataFrame
-            Pandas table of all properties
-        """
-        # Initialize
-        form = "%."+str(decimals)+"f"
-
-        # Define pore specific properties
-        props = {}
-        props["Pore height (nm)"] = [form%self.height(), " "]
-
-        return self._table_base(props, decimals)
-
-
-class PoreCapsule(PoreSystem):
+class PoreCapsule(PoreKit):
     """This class carves a capsule pore system out of a
     :math:`\\beta`-cristobalite block.
 
@@ -1102,7 +1041,7 @@ class PoreCapsule(PoreSystem):
 
         # Create exterior
         if res:
-            self._pore.exterior(self._pattern.get_gap())
+            self._pore.exterior()
 
         # Carve out shape
         central = [0, 0, 1]
@@ -1361,7 +1300,7 @@ class PoreCapsule(PoreSystem):
         return self._table_base(props, decimals)
 
 
-class PoreAmorphCylinder(PoreSystem):
+class PoreAmorphCylinder(PoreKit):
     """This class carves a cylindric pore system out of an amorph
     :math:`\\beta`-cristobalite block from
     `Vink et al. <http://doi.org/10.1103/PhysRevB.67.245201>`_ with dimensions
@@ -1426,7 +1365,7 @@ class PoreAmorphCylinder(PoreSystem):
 
         # Create exterior
         if res:
-            self._pore.exterior(pattern.get_gap())
+            self._pore.exterior()
 
         # Carve out shape
         self._centroid = self._block.centroid()
@@ -1463,40 +1402,9 @@ class PoreAmorphCylinder(PoreSystem):
         grid_atoms = [atom for atom in bonded if not atom in non_grid]
         self._pore.objectify(grid_atoms)
 
-
     ##############
     # Attachment #
     ##############
-    def _normal_in(self, pos):
-        """Normal function for the interior surface
-
-        Parameters
-        ----------
-        pos : list
-            Position on the surface
-
-        Returns
-        -------
-        normal : list
-            Vector perpendicular to surface of the given position
-        """
-        return self._cylinder.normal(pos)
-
-    def _normal_ex(self, pos):
-        """Normal function for the exterior surface
-
-        Parameters
-        ----------
-        pos : list
-            Position on the surface
-
-        Returns
-        -------
-        normal : list
-            Vector perpendicular to surface of the given position
-        """
-        return [0, 0, -1] if pos[2] < self._centroid[2] else [0, 0, 1]
-
     def attach_special(self, mol, mount, axis, amount, scale=1, symmetry="point", is_proxi=True, is_rotate=False):
         """Special attachment of molecules on the surface.
 
@@ -1548,141 +1456,3 @@ class PoreAmorphCylinder(PoreSystem):
         for mol in mols:
             if not mol.get_short() in self._sort_list:
                 self._sort_list.append(mol.get_short())
-
-
-    ############
-    # Analysis #
-    ############
-    def diameter(self):
-        """Calculate true cylinder diameter after drilling and preperation. This
-        is done by determining the mean value :math:`\\bar r` of the silicon
-        distances :math:`r_i` of silicon :math:`i` towards the pore center
-
-        .. math::
-
-            \\bar r=\\frac1n\\sum_{i=1}^nr_i
-
-        with the number of silicon atoms :math:`n`. The diameter is then
-
-        .. math::
-
-            d=2\\bar r=\\frac2n\\sum_{i=1}^nr_i.
-
-        Returns
-        -------
-        diameter : float
-            Pore diameter after preperation
-        """
-        # Calculate distance towards central axis of binding site silicon atoms
-        r = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
-
-        # Calculate mean
-        r_bar = sum(r)/len(r) if len(r)>0 else 0
-
-        # Calculate diameter
-        return 2*r_bar
-
-    def roughness(self):
-        """Calculate surface roughness. In the case of a cylindric pore one can
-        visualize pulling the pore apart, thus flattening the interior surface.
-        The roughness is then determined by calculating the standard deviation
-        of the binding site silicon atoms peaks and valleys.
-
-        It is therefore enough to calculate the distances towards a specific
-        axis, which in this case will be the central axis. The mean value
-        :math:`\\bar r` of the silicon distances :math:`r_i` of silicon
-        :math:`i` towards the pore center, is calculated by
-
-        .. math::
-
-            \\bar r=\\frac1n\\sum_{i=1}^nr_i
-
-        with the number of silicon atoms :math:`n`. This mean value is used in
-        the square root roughness calculation
-
-        .. math::
-
-            R_q = \\sqrt{\\frac1n\\sum_{i=1}^n\\|r_i-\\bar r\\|^2}.
-
-        Returns
-        -------
-        roughness : float
-            Surface roughness
-        """
-        # Interior
-        ## Calculate distance towards central axis of binding site silicon atoms
-        r_in = [pms.geom.length(pms.geom.vector([self._centroid[0], self._centroid[1], pos[2]], pos)) for pos in self._si_pos_in]
-
-        # Exterior
-        if self._res:
-            ## Create molecules with exterior positions
-            temp_mol = pms.Molecule()
-            for pos in self._si_pos_ex:
-                temp_mol.add("Si", pos)
-            temp_mol.zero()
-            size = temp_mol.get_box()[2]
-
-        ## Calculate distance to boundary
-        r_ex = [pos[2] if pos[2] < size/2 else abs(pos[2]-size) for pos in self._si_pos_ex]
-
-        # Calculate mean
-        r_bar_in = sum(r_in)/len(r_in) if len(r_in)>0 else 0
-        r_bar_ex = sum(r_ex)/len(r_ex) if len(r_ex)>0 else 0
-
-        # Calculate roughness
-        r_q_in =  math.sqrt(sum([(r_i-r_bar_in)**2 for r_i in r_in])/len(r_in)) if len(r_in)>0 else 0
-        r_q_ex =  math.sqrt(sum([(r_i-r_bar_ex)**2 for r_i in r_ex])/len(r_ex)) if len(r_ex)>0 else 0
-
-        # Calculate square root roughness
-        return {"in": r_q_in, "ex": r_q_ex}
-
-    def volume(self):
-        """Calculate pore volume. This is done by defining a new shape object
-        with system sizes after pore preparation and using the volume function
-        :func:`porems.shape.Cylinder.volume`.
-
-        Returns
-        -------
-        volume : float
-            Pore volume
-        """
-        return pms.Cylinder({"centroid": self._centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": self.diameter()}).volume()
-
-    def surface(self):
-        """Calculate pore surface and exterior surface. This is done by defining
-        a new shape object with system sizes after pore preparation and using
-        the surface function :func:`porems.shape.Cylinder.surface`.
-
-        Returns
-        -------
-        surface : dictionary
-            Pore surface of interior and exterior
-        """
-        diam = self.diameter()
-
-        surf_in = pms.Cylinder({"centroid": self._centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": diam}).surface()
-        surf_ex = 2*(self._box[0]*self._box[1]-math.pi*(diam/2)**2)
-
-        return {"in": surf_in, "ex": surf_ex}
-
-    def table(self, decimals=3):
-        """Create properties as pandas table for easy viewing.
-
-        Parameters
-        ----------
-        decimals : integer, optional
-            Number of decimals to be rounded to
-
-        Returns
-        -------
-        tables : DataFrame
-            Pandas table of all properties
-        """
-        # Initialize
-        form = "%."+str(decimals)+"f"
-
-        # Define pore specific properties
-        props = {}
-        props["Pore diameter (nm)"] = [form%self.diameter(), " "]
-
-        return self._table_base(props, decimals)

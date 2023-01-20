@@ -8,6 +8,7 @@ creating pore structures."""
 
 import math
 import copy
+import numpy as np
 
 import porems.geometry as geometry
 
@@ -275,5 +276,60 @@ class BetaCristobalit(Pattern):
 
         # Move to zero
         block.zero()
+
+        return block
+
+
+class AlphaCristobalit(Pattern):
+    """This class defines the minimal structure of a :math:`\\alpha`-cristobalite
+    molecule.
+
+    * http://aflowlib.org/prototype-encyclopedia/A2B_tP12_92_b_a.html
+    * https://www.atomic-scale-physics.de/lattice/struk/acrist.html
+    """
+    def __init__(self):
+        # Call super class
+        super(AlphaCristobalit, self).__init__()
+
+        self._repeat = [.4978, .4978, .6948]
+
+    def pattern(self):
+        """Construct minimal block structure.
+
+        Returns
+        -------
+        block : Molecule
+            Minimal block structure
+        """
+        # Initialize
+        block = Molecule()
+
+        # Primitive Vectors
+        a1 = np.array([1, 0, 0])*self._repeat[0]
+        a2 = np.array([0, 1, 0])*self._repeat[1]
+        a3 = np.array([0, 0, 1])*self._repeat[2]
+
+        # lattice coordinate Si
+        x1 = 0.30004000
+
+        # lattice coordinates O
+        x2 = 0.23976000
+        y2 = 0.10324000
+        z2 = 0.17844000
+
+        # Lattice vectors
+        block.add("Si",  x1*a1+x1*a2)
+        block.add("Si", -x1*a1-x1*a2+1/2*a3)
+        block.add("Si", (1/2-x1)*a1+(1/2+x1)*a2+1/4*a3)
+        block.add("Si", (1/2+x1)*a1+(1/2-x1)*a2+3/4*a3)
+
+        block.add("O",   x2*a1+y2*a2+z2*a3)
+        block.add("O",  -x2*a1-y2*a2+(1/2+z2)*a3)
+        block.add("O",  (1/2-y2)*a1+(1/2+x2)*a2+(1/4+z2)*a3)
+        block.add("O",  (1/2+y2)*a1+(1/2-x2)*a2+(3/4+z2)*a3)
+        block.add("O",   y2*a1+x2*a2-z2*a3)
+        block.add("O",  -y2*a1-x2*a2+(1/2-z2)*a3)
+        block.add("O",  (1/2-x2)*a1+(1/2+y2)*a2+(1/4-z2)*a3)
+        block.add("O",  (1/2+x2)*a1+(1/2-y2)*a2+(3/4-z2)*a3)
 
         return block
