@@ -91,8 +91,22 @@ class Shape():
             ax.plot3D(*utils.column(line))
 
 
+    ##########
+    # Getter #
+    ##########
+    def get_inp(self):
+        """Return full input dictionary.
+
+        Returns
+        -------
+        inp : dictionary
+            Dictionary of all inputs
+        """
+        return self._inp
+
+
 class Cylinder(Shape):
-    """This class defines a cylindric shape. Needed inputs are
+    """This class defines a cylindrical shape. Needed inputs are
 
     * **central** - Central axis
     * **centroid** - Centroid of block
@@ -352,8 +366,8 @@ class Sphere(Shape):
     """This class defines a sphere shape. Needed inputs are
 
     * **central** - Central axis
-    * **centroid** - Centroid of block
-    * **diameter** - Cylinder diameter
+    * **centroid** - Sphere Centroid
+    * **diameter** - Sphere diameter
 
     Parameters
     ----------

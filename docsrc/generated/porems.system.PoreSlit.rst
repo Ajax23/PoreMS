@@ -15,8 +15,6 @@ PoreSlit
 
   .. autosummary::
 
-    ~PoreSlit._normal_in
-    ~PoreSlit._normal_ex
     ~PoreSlit.attach
     ~PoreSlit.attach_special
 
@@ -25,11 +23,10 @@ PoreSlit
 
   .. autosummary::
 
-    ~PoreSlit._table_base
     ~PoreSlit.allocation
     ~PoreSlit.box
     ~PoreSlit.centroid
-    ~PoreSlit.height
+    ~PoreSlit.diameter
     ~PoreSlit.reservoir
     ~PoreSlit.roughness
     ~PoreSlit.shape

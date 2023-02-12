@@ -15,8 +15,6 @@ PoreCylinder
 
   .. autosummary::
 
-    ~PoreCylinder._normal_ex
-    ~PoreCylinder._normal_in
     ~PoreCylinder.attach
     ~PoreCylinder.attach_special
 
@@ -25,7 +23,6 @@ PoreCylinder
 
   .. autosummary::
 
-    ~PoreCylinder._table_base
     ~PoreCylinder.allocation
     ~PoreCylinder.box
     ~PoreCylinder.centroid

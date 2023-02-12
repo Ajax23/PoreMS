@@ -17,3 +17,9 @@ Shape
 
     ~Shape.convert
     ~Shape.plot
+
+  .. rubric:: Getter Methods
+
+  .. autosummary::
+
+    ~Shape.get_inp

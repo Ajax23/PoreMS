@@ -22,6 +22,8 @@ Cuboid
 
   .. autosummary::
 
+    ~Cuboid.convert
+    ~Cuboid.plot
     ~Cuboid.rim
     ~Cuboid.surf
 
@@ -34,3 +36,9 @@ Cuboid
     ~Cuboid.normal
     ~Cuboid.surface
     ~Cuboid.volume
+
+  .. rubric:: Getter Methods
+
+  .. autosummary::
+
+    ~Cuboid.get_inp

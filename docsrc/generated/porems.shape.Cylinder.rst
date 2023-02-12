@@ -24,6 +24,8 @@ Cylinder
 
   .. autosummary::
 
+    ~Cylinder.convert
+    ~Cylinder.plot
     ~Cylinder.rim
     ~Cylinder.surf
 
@@ -36,3 +38,9 @@ Cylinder
     ~Cylinder.normal
     ~Cylinder.surface
     ~Cylinder.volume
+
+  .. rubric:: Getter Methods
+
+  .. autosummary::
+
+    ~Cylinder.get_inp

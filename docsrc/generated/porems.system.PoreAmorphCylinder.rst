@@ -15,8 +15,6 @@ PoreAmorphCylinder
 
   .. autosummary::
 
-    ~PoreAmorphCylinder._normal_ex
-    ~PoreAmorphCylinder._normal_in
     ~PoreAmorphCylinder.attach
     ~PoreAmorphCylinder.attach_special
 
@@ -25,7 +23,6 @@ PoreAmorphCylinder
 
   .. autosummary::
 
-    ~PoreAmorphCylinder._table_base
     ~PoreAmorphCylinder.allocation
     ~PoreAmorphCylinder.box
     ~PoreAmorphCylinder.centroid

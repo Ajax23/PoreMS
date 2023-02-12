@@ -24,6 +24,8 @@ Sphere
 
   .. autosummary::
 
+    ~Sphere.convert
+    ~Sphere.plot
     ~Sphere.rim
     ~Sphere.surf
 
@@ -36,3 +38,9 @@ Sphere
     ~Sphere.normal
     ~Sphere.surface
     ~Sphere.volume
+
+  .. rubric:: Getter Methods
+
+  .. autosummary::
+
+    ~Sphere.get_inp

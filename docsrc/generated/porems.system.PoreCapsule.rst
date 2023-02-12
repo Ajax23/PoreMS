@@ -15,8 +15,6 @@ PoreCapsule
 
   .. autosummary::
 
-    ~PoreCapsule._normal_ex
-    ~PoreCapsule._normal_in
     ~PoreCapsule.attach
 
 
@@ -24,7 +22,6 @@ PoreCapsule
 
   .. autosummary::
 
-    ~PoreCapsule._table_base
     ~PoreCapsule.allocation
     ~PoreCapsule.box
     ~PoreCapsule.centroid

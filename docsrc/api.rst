@@ -28,7 +28,7 @@ Pore
     :toctree: generated/
 
     pore.Pore
-    system.PoreSystem
+    system.PoreKit
     system.PoreCylinder
     system.PoreSlit
     system.PoreCapsule
@@ -44,6 +44,7 @@ Pattern
     :toctree: generated/
 
     pattern.Pattern
+    pattern.AlphaCristobalit
     pattern.BetaCristobalit
 
 
