@@ -71,15 +71,15 @@ class PoreKit():
         self._hydro[1] = hydro
         self._res = res
 
-    def add_shape(self, shape, section=[], hydro=0):
+    def add_shape(self, shape, section={"x": [], "y": [], "z": []}, hydro=0):
         """Add shape to pore system for drilling.
 
         Parameters
         ----------
         shape : list
             Shape type (pos 0) and shape (pos 1)
-        section : list, optional
-            Range of shape from start z-length to end z-length,
+        section : dictionary, optional
+            Range of shape from start x,y,z-length to end x,y,z-length,
             leave empty for whole range - mainly used to assign
             silanol groups to the shapes
         hydro : float, optional, TEMPORARY
@@ -92,11 +92,14 @@ class PoreKit():
             return
 
         # Process user input
-        section = section if section else [0, self._box[2]]
+        coord_id = {"x": 0, "y": 1, "z": 2}
+        ranges = {}
+        for coord, sec in section.items():
+            ranges[coord_id[coord]] = sec if sec else [0, self._box[coord_id[coord]]]
         self._hydro[0] = hydro
 
         # Append to shape list
-        shape.append(section)
+        shape.append(ranges)
         self._shapes.append(shape)
 
     def shape_cylinder(self, diam, length=0, centroid=[], central=[0, 0, 1]):
@@ -198,35 +201,58 @@ class PoreKit():
         self._pore.sites()
         site_list = self._pore.get_sites()
 
-        # Define sites and save binding site si positions and allocate to interior section
+        # Check if sections are given
         self._sections = [shape[2] for shape in self._shapes]
+        self._is_section = False
+        for section in self._sections:
+            if not section=={0: [0, self._box[0]], 1: [0, self._box[1]], 2: [0, self._box[2]]}:
+                self._is_section = True
 
+        # Define sites and save binding site si positions and allocate to interior section
         self._site_ex = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="ex"]
         self._si_pos_ex = [self._block.pos(site_key) for site_key in self._site_ex]
 
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
         self._si_pos_in = [[] for x in self._sections]
 
+        # Add normal vector to interior pore site list
         for site in self._site_in:
             # Get geometric position
             pos = self._block.pos(site)
-            # Run through pore sections
-            for i, section in enumerate(self._sections):
-                # Check if position within section
-                if pos[2]>=section[0] and pos[2]<=section[1]:
-                    # Add position to global list
-                    self._si_pos_in[i].append(pos)
-                    # Add normal vector to pore site list
-                    site_list[site]["normal"] = self._shapes[i][1].normal
+            # Multiple shapes
+            if len(self._shapes)>1:
+                # Check distance to shape centroid
+                lengths = []
+                for i in range(len(self._shapes)):
+                    lengths.append(pms.geom.length(pms.geom.vector(self._shapes[i][1].get_inp()["centroid"], pos)))
+                # Fin minimal length id
+                min_len_id = lengths.index(min(lengths))
 
-        for site in self._site_ex:
+                # If sections are given
+                if self._is_section:
+                    # Check if position within section
+                    for i, section in enumerate(self._sections):
+                        is_in = []
+                        for dim in range(3):
+                            is_in.append(pos[dim]>=section[dim][0] and pos[dim]<=section[dim][1])
+                        if sum(is_in)==3:
+                            min_len_id = i
+            else:
+                min_len_id = 0
+
+            # Add position to global list
+            self._si_pos_in[min_len_id].append(pos)
             # Add normal vector to pore site list
+            site_list[site]["normal"] = self._shapes[min_len_id][1].normal
+
+        # Add normal vector to exterior pore site list
+        for site in self._site_ex:
             site_list[site]["normal"] = self._normal_ex
 
         # Sanity check
         num_site_err = sum([1 for site in site_list if "normal" not in site_list[site].keys()])
         if num_site_err > 0:
-            print("%i"%num_site_err+" sites were not assigned to shapes. Consider adjusting section intervalls.")
+            print("%i"%num_site_err+" sites were not assigned to shapes. Consider adjusting section intervals.")
 
         # Siloxane bridges
         if self._hydro[0]:
@@ -432,7 +458,11 @@ class PoreKit():
             shape_id = "shape_"+"%02i"%i
             self._yml[shape_id] = {}
             self._yml[shape_id]["shape"] = shape[0]
-            self._yml[shape_id]["parameter"] = shape[1].get_inp()
+            self._yml[shape_id]["parameter"] = shape[1].get_inp().copy()
+            if shape[0]=="CYLINDER":
+                self._yml[shape_id]["parameter"]["diameter"] += 0.5
+            elif shape[0]=="SLIT":
+                self._yml[shape_id]["parameter"]["height"] += 0.5
             self._yml[shape_id]["diameter"] = diameter[i]
             self._yml[shape_id]["roughness"] = roughness["in"][i]
             self._yml[shape_id]["volume"] = volume[i]
@@ -470,13 +500,14 @@ class PoreKit():
         radii = []
         for i, shape in enumerate(self._shapes):
             pos_list = self._si_pos_in[i]
+            centroid = self._shapes[i][1].get_inp()["centroid"]
             # Calculate distance towards central axis of binding site silicon atoms
             if shape[0]=="CYLINDER":
-                radii.append([pms.geom.length(pms.geom.vector([self.centroid()[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+                radii.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
             elif shape[0]=="SLIT":
-                radii.append([pms.geom.length(pms.geom.vector([pos[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+                radii.append([pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)) for pos in pos_list])
             elif shape[0]=="SPHERE":
-                radii.append([pms.geom.length(pms.geom.vector(self.centroid(), pos)) for pos in pos_list])
+                radii.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos_list])
 
         # Calculate mean
         r_bar = [sum(r)/len(r) if len(r)>0 else 0 for r in radii]
@@ -518,12 +549,13 @@ class PoreKit():
         radii_in = []
         for i, shape in enumerate(self._shapes):
             pos_list = self._si_pos_in[i]
+            centroid = self._shapes[i][1].get_inp()["centroid"]
             if shape[0]=="CYLINDER":
-                radii_in.append([pms.geom.length(pms.geom.vector([self.centroid()[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+                radii_in.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
             elif shape[0]=="SLIT":
-                radii_in.append([pms.geom.length(pms.geom.vector([pos[0], self.centroid()[1], pos[2]], pos)) for pos in pos_list])
+                radii_in.append([pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)) for pos in pos_list])
             elif shape[0]=="SPHERE":
-                radii_in.append([pms.geom.length(pms.geom.vector(self.centroid(), pos)) for pos in pos_list])
+                radii_in.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos_list])
 
         # Exterior
         if self._res:
@@ -573,12 +605,13 @@ class PoreKit():
         # Calculate volumes
         volume = []
         for i, shape in enumerate(self._shapes):
+            centroid = self._shapes[i][1].get_inp()["centroid"]
             if shape[0]=="CYLINDER":
-                volume.append(pms.Cylinder({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).volume())
+                volume.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).volume())
             elif shape[0]=="SLIT":
-                volume.append(pms.Cuboid({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).volume())
+                volume.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).volume())
             elif shape[0]=="SPHERE":
-                volume.append(pms.Sphere({"centroid": self.centroid(), "central": [0, 0, 1], "diameter": diam[i]}).volume())
+                volume.append(pms.Sphere({"centroid": centroid, "central": [0, 0, 1], "diameter": diam[i]}).volume())
 
         return sum(volume) if is_sum else volume
 
@@ -609,19 +642,20 @@ class PoreKit():
         # Interior surface
         surf_in = []
         for i, shape in enumerate(self._shapes):
+            centroid = self._shapes[i][1].get_inp()["centroid"]
             if shape[0]=="CYLINDER":
-                surf_in.append(pms.Cylinder({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).surface())
+                surf_in.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).surface())
             elif shape[0]=="SLIT":
-                surf_in.append(pms.Cuboid({"centroid": self.centroid(), "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).surface()/2)
+                surf_in.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).surface()/2)
             elif shape[0]=="SPHERE":
-                surf_in.append(pms.Sphere({"centroid": self.centroid(), "central": [0, 0, 1], "diameter": diam[i]}).surface())
+                surf_in.append(pms.Sphere({"centroid": centroid, "central": [0, 0, 1], "diameter": diam[i]}).surface())
 
         # Exterior surface
         sections_ex = [0, 0]
         for i, section in enumerate(self._sections):
-            if section[0]-0<=1e-2:
+            if section[2][0]-0<=1e-2:
                 sections_ex[0] = i
-            if section[1]-self._box[2]<=1e-2:
+            if section[2][1]-self._box[2]<=1e-2:
                 sections_ex[1] = i
 
         surf_ex = []
@@ -1073,10 +1107,22 @@ class PoreCapsule(PoreKit):
         center = [size[0]/2, size[1]/2]
         len_cyl = (size[2]-diam-sep)/2
 
-        self.add_shape(self.shape_cylinder(diam, len_cyl, center+[0+len_cyl/2]), section=[0, len_cyl], hydro=hydro[0])
-        self.add_shape(self.shape_sphere(diam, center+[len_cyl]), section=[len_cyl, len_cyl+diam/2+sep/2], hydro=hydro[0])
-        self.add_shape(self.shape_sphere(diam, center+[len_cyl+diam+sep]), section=[len_cyl+diam/2+sep/2, len_cyl+diam+sep], hydro=hydro[0])
-        self.add_shape(self.shape_cylinder(diam, len_cyl, center+[size[2]-len_cyl/2]), section=[size[2]-len_cyl, size[2]], hydro=hydro[0])
+        centroids = []
+        centroids.append(center+[0+len_cyl/2])
+        centroids.append(center+[len_cyl])
+        centroids.append(center+[len_cyl+diam+sep])
+        centroids.append(center+[size[2]-len_cyl/2])
+
+        sections = []
+        sections.append({"x": [], "y": [], "z": [0, len_cyl]})
+        sections.append({"x": [], "y": [], "z": [len_cyl, len_cyl+diam/2+sep/2]})
+        sections.append({"x": [], "y": [], "z": [len_cyl+diam/2+sep/2, len_cyl+diam+sep]})
+        sections.append({"x": [], "y": [], "z": [size[2]-len_cyl, size[2]]})
+
+        self.add_shape(self.shape_cylinder(diam, len_cyl, centroids[0]), section=sections[0], hydro=hydro[0])
+        self.add_shape(self.shape_sphere(  diam,          centroids[1]), section=sections[1], hydro=hydro[0])
+        self.add_shape(self.shape_sphere(  diam,          centroids[2]), section=sections[2], hydro=hydro[0])
+        self.add_shape(self.shape_cylinder(diam, len_cyl, centroids[3]), section=sections[3], hydro=hydro[0])
 
         self.prepare()
 
@@ -1128,7 +1174,7 @@ class PoreAmorphCylinder(PoreKit):
         self.exterior(res, hydro=hydro[1])
 
         # Add pore shape
-        self.add_shape(self.shape_cylinder(diam), section=[-1, 10], hydro=hydro[0])
+        self.add_shape(self.shape_cylinder(diam), section={"x": [], "y": [], "z": [-1, 10]}, hydro=hydro[0])
         self.prepare()
 
 
