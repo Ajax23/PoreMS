@@ -30,6 +30,7 @@ PoreKit
 
     ~PoreKit.add_shape
     ~PoreKit.shape_cylinder
+    ~PoreKit.shape_cone
     ~PoreKit.shape_slit
     ~PoreKit.shape_sphere
 

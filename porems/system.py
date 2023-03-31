@@ -87,7 +87,7 @@ class PoreKit():
             :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`
         """
         # Check shape type
-        if shape[0] not in ["CYLINDER", "SLIT", "SPHERE"]:
+        if shape[0] not in ["CYLINDER", "SLIT", "SPHERE", "CONE"]:
             print("Wrong shape type...")
             return
 
@@ -182,6 +182,36 @@ class PoreKit():
         sphere = pms.Sphere({"centroid": centroid, "central": central, "diameter": diameter})
 
         return ["SPHERE", sphere]
+
+    def shape_cone(self, diam_1, diam_2, length=0, centroid=[], central=[0, 0, 1]):
+        """Add cone shape
+
+        Parameters
+        ----------
+        diam_1 : float
+            Cone first diameter
+        diam_2 : float
+            Cone second diameter
+        length : float, optional
+            length of cylindrical shape leave zero for full length
+        centroid : list, optional
+            Cone centroid - leave zero for system centroid
+        central : list, optional
+            Central axis for cone
+
+        Returns
+        -------
+        shape : list
+            Shape type (pos 0) and shape (pos 1)
+        """
+        # Process user input
+        centroid = centroid if centroid else self.centroid()
+        length = length if length else self._box[2]
+
+        # Define shape
+        cone = pms.Cone({"centroid": centroid, "central": central, "length": length, "diameter_1": diam_1-0.5, "diameter_2": diam_2-0.5})  # Preparation precaution
+
+        return ["CONE", cone]
 
     def prepare(self):
         """Prepare pore surface, add siloxane bridges, assign sites to sections,
@@ -508,6 +538,8 @@ class PoreKit():
                 radii.append([pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)) for pos in pos_list])
             elif shape[0]=="SPHERE":
                 radii.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos_list])
+            if shape[0]=="CONE":
+                radii.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
 
         # Calculate mean
         r_bar = [sum(r)/len(r) if len(r)>0 else 0 for r in radii]
@@ -556,6 +588,8 @@ class PoreKit():
                 radii_in.append([pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)) for pos in pos_list])
             elif shape[0]=="SPHERE":
                 radii_in.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos_list])
+            if shape[0]=="CONE":
+                radii_in.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
 
         # Exterior
         if self._res:
@@ -612,6 +646,8 @@ class PoreKit():
                 volume.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).volume())
             elif shape[0]=="SPHERE":
                 volume.append(pms.Sphere({"centroid": centroid, "central": [0, 0, 1], "diameter": diam[i]}).volume())
+            if shape[0]=="CONE":
+                volume.append(0)
 
         return sum(volume) if is_sum else volume
 
@@ -649,6 +685,8 @@ class PoreKit():
                 surf_in.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).surface()/2)
             elif shape[0]=="SPHERE":
                 surf_in.append(pms.Sphere({"centroid": centroid, "central": [0, 0, 1], "diameter": diam[i]}).surface())
+            if shape[0]=="CONE":
+                surf_in.append(0)
 
         # Exterior surface
         sections_ex = [0, 0]
@@ -666,6 +704,8 @@ class PoreKit():
                 surf_ex.append(self._box[0]*(self._box[1]-diam[section]))
             elif self._shapes[section][0]=="SPHERE":
                 surf_ex.append(self._box[0]*self._box[1]-math.pi*(diam[section]/2)**2)
+            if self._shapes[section][0]=="CONE":
+                surf_ex.append(0)
 
         return {"in": sum(surf_in) if is_sum else surf_in, "ex": sum(surf_ex) if is_sum else surf_ex}
 

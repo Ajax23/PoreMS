@@ -60,6 +60,7 @@ Shape
     shape.Cylinder
     shape.Sphere
     shape.Cuboid
+    shape.Cone
 
 
 .. _optimization_api:

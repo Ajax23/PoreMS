@@ -86,8 +86,9 @@ class Shape():
 
         # Normal
         if vec:
-            line = [self.convert([0, 0, 0], False), vec,
-                    self.convert([x*5 for x in geometry.unit(self.normal(vec))], False)]
+            line = [self.convert([0, 0, 0], False),
+                    vec,
+                    self.convert(self.normal(vec), False)]
             ax.plot3D(*utils.column(line))
 
 
@@ -794,3 +795,317 @@ class Cuboid(Shape):
             Inner surface
         """
         return 2*(self._inp["length"]*self._inp["width"]+self._inp["length"]*self._inp["height"]+self._inp["width"]*self._inp["height"])
+
+
+class Cone(Shape):
+    """This class defines a conical shape. Needed inputs are
+
+    * **central** - Central axis
+    * **centroid** - Centroid of block
+    * **length** - Cone length
+    * **diameter_1** - Cone starting diameter
+    * **diameter_2** - Cone ending diameter
+
+    Parameters
+    ----------
+    inp : dictionary
+        Dictionary of necessary inputs
+    """
+    def __init__(self, inp):
+        # Set centroid
+        self._centroid = [0, 0, inp["length"]/2]
+
+        # Call super class
+        super(Cone, self).__init__(inp)
+
+
+    ############
+    # Function #
+    ############
+    def Phi(self, r, phi, z):
+        """Surface function of a cone
+
+        .. math::
+
+            \\Phi(r(z),\\phi,z)=
+            \\begin{bmatrix}r(z)\\cos(\\phi)\\\\r(z)\\sin(\\phi)\\\\z\\end{bmatrix}
+
+        with polar angle :math:`\\phi` and radius function along the :math:`z`-axis
+
+        .. math::
+
+            r(z)=r_1+\\frac{r_2-r_1}{l-1}(z-1)
+
+        with radii :math:`r_1` and :math:`r_2` and cone length :math:`l`.
+
+        Parameters
+        ----------
+        r : float
+            Radius
+        phi : float
+            Polar angle
+        z : float
+            Distance ins z-axis
+
+        Returns
+        -------
+        pos : list
+            Cartesian coordinates for given polar coordinates
+        """
+        def r(z):
+            z = np.array(z)
+            r_1 = self._inp["diameter_1"]/2
+            r_2 = self._inp["diameter_2"]/2
+            l = self._inp["length"]
+            return r_1+(r_2-r_1)/(l-1)*(z-1)
+
+        x = np.outer(r(z), np.cos(phi))
+        y = np.outer(r(z), np.sin(phi))
+        z = np.outer(z, np.ones(len(z)))
+
+        return self.convert([x, y, z], False)
+
+    def d_Phi_phi(self, r, phi, z):
+        """Derivative of the surface function considering the polar angle
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial\\phi}(r(z),\\phi,z)=
+            \\begin{bmatrix}-r(z)\\sin(\\phi)\\\\r(z)\\cos(\\phi)\\\\0\\end{bmatrix}
+
+        with polar angle :math:`\\phi` and radius function along the :math:`z`-axis
+
+        .. math::
+
+            r(z)=r_1+\\frac{r_2-r_1}{l-1}(z-1)
+
+        with radii :math:`r_1` and :math:`r_2` and cone length :math:`l`.
+
+        Parameters
+        ----------
+        r : float
+            Radius
+        phi : float
+            Polar angle
+        z : float
+            Distance ins z-axis
+
+        Returns
+        -------
+        pos : list
+            Cartesian coordinates for given polar coordinates
+        """
+        def r(z):
+            r_1 = self._inp["diameter_1"]/2
+            r_2 = self._inp["diameter_2"]/2
+            l = self._inp["length"]
+            return r_1+(r_2-r_1)/(l-1)*(z-1)
+
+        x = -r(z)*np.sin(phi)
+        y = r(z)*np.cos(phi)
+        z = 0
+
+        return [x, y, z]
+
+    def d_Phi_z(self, r, phi, z):
+        """Derivative of the surface function considering the z-axis
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial z}(r(z),\\phi,z)=
+            \\begin{bmatrix}r(z)\\cos(\\phi)\\\\r(z)\\sin(\\phi)\\\\1\\end{bmatrix}
+
+        with polar angle :math:`\\phi` and radius function along the :math:`z`-axis
+
+        .. math::
+
+            r(z)=\\frac{r_2-r_1}{l-1}
+
+        with radii :math:`r_1` and :math:`r_2` and cone length :math:`l`.
+
+        Parameters
+        ----------
+        r : float
+            Radius
+        phi : float
+            Polar angle
+        z : float
+            Distance ins z-axis
+
+        Returns
+        -------
+        pos : list
+            Cartesian coordinates for given polar coordinates
+        """
+        def r(z):
+            r_1 = self._inp["diameter_1"]/2
+            r_2 = self._inp["diameter_2"]/2
+            l = self._inp["length"]
+            return (r_2-r_1)/(l-1)
+
+        x = r(z)*np.cos(phi)
+        y = r(z)*np.sin(phi)
+        z = 1
+
+        return [x, y, z]
+
+
+    ############
+    # Features #
+    ############
+    def normal(self, pos):
+        """Calculate unit normal vector on surface for a given position
+
+        .. math::
+
+            \\frac{\\partial\\Phi}{\\partial\\phi}(\\tilde r(z),\\phi,z)\\times
+            \\frac{\\partial\\Phi}{\\partial z}(\\hat r(z),\\phi,z)=
+            \\begin{bmatrix}\\tilde r(z)\\cos(\\phi)\\\\\\tilde r(z)\\sin(\\phi)\\\\\\tilde r(z)\\hat r(z)\\end{bmatrix}
+
+        with polar angle :math:`\\phi` and radius functions along the :math:`z`-axis
+
+        .. math::
+
+            &\\tilde r(z)=r_1+\\frac{r_2-r_1}{l-1}(z-1)\\\\
+            &\\hat r(z)=\\frac{r_2-r_1}{l-1},
+
+        with radii :math:`r_1` and :math:`r_2` and cone length :math:`l`.
+
+        Parameters
+        ----------
+        pos : list
+            Position
+
+        Returns
+        -------
+        normal : list
+            Normal vector
+        """
+        # Initialize
+        x, y, z = self.convert(pos)
+
+        # Cartesian to polar
+        r = math.sqrt(x**2+y**2)
+        phi = geometry.angle_polar([x, y, z])
+
+        # Calculate derivatives
+        d_Phi_phi = self.d_Phi_phi(r, phi, z)
+        d_Phi_z = self.d_Phi_z(r, phi, z)
+
+        # Calculate normal vector
+        return geometry.rotate(d_Phi_phi, self._inp["central"], -90, True)
+        return geometry.cross_product(d_Phi_phi, d_Phi_z)
+
+    def is_in(self, pos):
+        """Check if given position is inside of shape.
+
+        Parameters
+        ----------
+        pos : list
+            Position
+
+        Returns
+        -------
+        is_in : bool
+            True if position is inside of shape
+        """
+        def r(z):
+            r_1 = self._inp["diameter_1"]/2
+            r_2 = self._inp["diameter_2"]/2
+            l = self._inp["length"]
+            return r_1+(r_2-r_1)/(l-1)*(z-1)
+
+
+        # Check if within shape
+        pos_zero = self.convert(pos)
+        length = geometry.length(geometry.cross_product(self._inp["central"], geometry.vector([0, 0, 0], pos_zero)))/geometry.length(self._inp["central"])
+        # print(length, r(pos_zero[2]))
+        if length < r(pos_zero[2]):
+            return pos_zero[2]>0 and pos_zero[2]<self._inp["length"]
+        else:
+            return False
+
+
+    #########
+    # Shape #
+    #########
+    def rim(self, z, num=100):
+        """Return x and y values for given z-position.
+
+        Parameters
+        ----------
+        z : float
+            Position on the axis
+        num : integer, optional
+            Number of points
+
+        Returns
+        -------
+        positions : list
+            x and y arrays of the surface rim on the z-position
+        """
+        phi = np.linspace(0, 2*np.pi, num)
+        r = self._inp["diameter_1"]/2
+
+        return self.Phi(r, phi, [z])
+
+    def surf(self, num=100):
+        """Return x, y and z values for the shape.
+
+        Parameters
+        ----------
+        num : integer, optional
+            Number of points
+
+        Returns
+        -------
+        positions : list
+            x, y and z arrays of the surface rim
+        """
+        phi = np.linspace(0, 2*np.pi, num)
+        r = np.linspace(self._inp["diameter_1"]/2, self._inp["diameter_2"]/2, num)
+        z = np.linspace(0, self._inp["length"], num)
+
+        return self.Phi(r, phi, z)
+
+
+    ##############
+    # Properties #
+    ##############
+    def volume(self):
+        """Calculate volume
+
+        .. math::
+
+            V=\\frac{1}{3}\\pi \\left[r_1^2+r_2^2+r_1r_2\\right]l
+
+        with radii :math:`r_1` and :math:`r_2` and cone length :math:`l`.
+
+        Returns
+        -------
+        volume : float
+            Volume
+        """
+        r_1 = self._inp["diameter_1"]/2
+        r_2 = self._inp["diameter_2"]/2
+        l = self._inp["length"]
+        return 1/3*math.pi*(r_1**2+r_2**2+r_1*r_2)*l
+
+    def surface(self):
+        """Calculate inner surface
+
+        .. math::
+
+            S=\\pi (r_1+r_2)l
+
+        with radii :math:`r_1` and :math:`r_2` and cone length :math:`l`.
+
+        Returns
+        -------
+        surface : float
+            Inner surface
+        """
+        r_1 = self._inp["diameter_1"]/2
+        r_2 = self._inp["diameter_2"]/2
+        l = self._inp["length"]
+        return math.pi*(r_1+r_2)*math.sqrt((r_1-r_2)**2+l**2)

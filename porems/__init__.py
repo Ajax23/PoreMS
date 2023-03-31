@@ -5,7 +5,7 @@ from .molecule import Molecule
 from .pattern import BetaCristobalit, AlphaCristobalit
 from .pore import Pore
 from .system import PoreKit, PoreCylinder, PoreSlit, PoreCapsule, PoreAmorphCylinder
-from .shape import Cylinder, Sphere, Cuboid
+from .shape import Cylinder, Sphere, Cuboid, Cone
 from .store import Store
 
 import porems.database as db
@@ -18,6 +18,6 @@ __all__ = [
     "Dice", "Matrix",
     "BetaCristobalit", "AlphaCristobalit",
     "Pore", "PoreKit", "PoreCylinder", "PoreSlit", "PoreCapsule", "PoreAmorphCylinder",
-    "Cylinder", "Sphere", "Cuboid",
+    "Cylinder", "Sphere", "Cuboid", "Cone",
     "db", "gen", "geom", "utils"
 ]

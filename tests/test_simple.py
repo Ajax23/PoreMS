@@ -568,6 +568,47 @@ class UserModelCase(unittest.TestCase):
         cuboid.plot()
         # plt.show()
 
+    def test_shape_cone(self):
+        # self.skipTest("Temporary")
+
+        block = pms.BetaCristobalit().generate([6, 6, 6], "z")
+        block.set_name("shape_cone")
+        dice = pms.Dice(block, 0.4, True)
+        matrix = pms.Matrix(dice.find_parallel(None, ["Si", "O"], [0.155-1e-2, 0.155+1e-2]))
+        centroid = block.centroid()
+        central = pms.geom.unit(pms.geom.rotate([0, 0, 1], [1, 0, 0], 45, True))
+
+        cone = pms.Cone({"centroid": centroid, "central": central, "length": 6, "diameter_1": 4, "diameter_2": 1})
+
+        # Properties
+        self.assertEqual(round(cone.volume(), 4), 32.9867)
+        self.assertEqual(round(cone.surface(), 4), 48.5742)
+
+        # Test vector
+        vec = [3.6977, 4.6102, -1.4961]
+
+        # Surface
+        self.assertEqual([round(x[0][20], 4) for x in cone.surf(num=100)], vec)
+        self.assertEqual([round(x[0][20], 4) for x in cone.rim(0, num=100)], vec)
+
+        # Normal
+        self.assertEqual([round(x, 4) for x in cone.convert([0, 0, 0], False)], [3.0147, 3.0572, 0.0569])
+        self.assertEqual([round(x, 4) for x in cone.normal(vec)], [0.2250, 1.5814, 1.2632])
+
+        # Positioning
+        del_list = [atom_id for atom_id, atom in enumerate(block.get_atom_list()) if cone.is_in(atom.get_pos())]
+        matrix.strip(del_list)
+        block.delete(matrix.bound(0))
+        self.assertEqual(block.get_num(), 12486)
+
+        # Store molecule
+        pms.Store(block, "output").gro()
+
+        # Plot surface
+        plt.figure()
+        cone.plot(vec=[3.17290646, 4.50630614, 0.22183271])
+        # plt.show()
+
 
     ########
     # Pore #
@@ -786,17 +827,30 @@ class UserModelCase(unittest.TestCase):
         # self.skipTest("Temporary")
 
         pore = pms.PoreKit()
-
         pore.structure(pms.BetaCristobalit().generate([5, 5, 10], "z"))
         pore.build()
         pore.exterior(5, hydro=0.4)
-        pore.add_shape(pore.shape_cylinder(4, 6, [2.5, 2.6, 2.5]), section={"x": [], "y": [], "z": [0,  5]}, hydro=0.4)
-        pore.add_shape(pore.shape_cylinder(2, 5, [2.5, 2.6, 7.5]), section={"x": [], "y": [], "z": [5, 10]}, hydro=0.4)
+        pore.add_shape(pore.shape_cylinder(2, 10, [3.5, 3.5, 5]), hydro=0.4)
+        pore.add_shape(pore.shape_cylinder(2, 10, [1.5, 1.5, 5]), hydro=0.4)
         pore.prepare()
         pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in")
         pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex")
         pore.finalize()
-        pore.store("output/kit/")
+        pore.store("output/kit_parallel/")
+        # pore.table()
+
+        pore = pms.PoreKit()
+        pore.structure(pms.BetaCristobalit().generate([7, 7, 10], "z"))
+        pore.build()
+        pore.exterior(5, hydro=0.4)
+        pore.add_shape(pore.shape_cylinder(6, 4, [3.5, 3.5, 2]), section={"x": [], "y": [], "z": [0,  4]}, hydro=0.4)
+        pore.add_shape(pore.shape_cone(4.5, 3, 2,  [3.5, 3.5, 5]), section={"x": [], "y": [], "z": [4,  6]}, hydro=0.4)
+        pore.add_shape(pore.shape_cylinder(4, 4, [3.5, 3.5, 8]), section={"x": [], "y": [], "z": [6, 10]}, hydro=0.4)
+        pore.prepare()
+        pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in")
+        pore.attach(pms.gen.tms(), 0, [0, 1], 20, "ex")
+        pore.finalize()
+        pore.store("output/kit_narrow/")
         # pore.table()
 
     def test_pore_cylinder(self):
