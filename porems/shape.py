@@ -1019,7 +1019,7 @@ class Cone(Shape):
         # Check if within shape
         pos_zero = self.convert(pos)
         length = geometry.length(geometry.cross_product(self._inp["central"], geometry.vector([0, 0, 0], pos_zero)))/geometry.length(self._inp["central"])
-        # print(length, r(pos_zero[2]))
+
         if length < r(pos_zero[2]):
             return pos_zero[2]>0 and pos_zero[2]<self._inp["length"]
         else:

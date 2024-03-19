@@ -10,6 +10,7 @@ import math
 import yaml
 import pandas as pd
 import porems as pms
+import numpy as np
 
 
 class PoreKit():
@@ -249,29 +250,57 @@ class PoreKit():
         for site in self._site_in:
             # Get geometric position
             pos = self._block.pos(site)
+
             # Multiple shapes
             if len(self._shapes)>1:
                 # Check distance to shape centroid
                 lengths = []
                 for i in range(len(self._shapes)):
-                    lengths.append(pms.geom.length(pms.geom.vector(self._shapes[i][1].get_inp()["centroid"], pos)))
-                # Fin minimal length id
+                    if self._shapes[i][1].get_inp()["central"]==[0,0,1]:
+                        try:
+                            self._shapes[i][1].get_inp()["diameter_1"]
+                            dia = (self._shapes[i][1].get_inp()["diameter_1"] + self._shapes[i][1].get_inp()["diameter_2"])/2
+                            lengths.append(pms.geom.length(pms.geom.vector(self._shapes[i][1].get_inp()["centroid"][:2], pos[:2]))/(0.5*dia))
+                        except:
+                            lengths.append(pms.geom.length(pms.geom.vector(self._shapes[i][1].get_inp()["centroid"][:2], pos[:2]))/(0.5*self._shapes[i][1].get_inp()["diameter"]))
+                    if self._shapes[i][1].get_inp()["central"]==[0,1,0]:
+                        centroid = self._shapes[i][1].get_inp()["centroid"]
+                        lengths.append(pms.geom.length(pms.geom.vector([centroid[0], centroid[2]], [pos[0],pos[2]]))/(0.5*self._shapes[i][1].get_inp()["diameter"]))
+                    if self._shapes[i][1].get_inp()["central"]==[1,0,0]:
+                        centroid = self._shapes[i][1].get_inp()["centroid"]
+                        lengths.append(pms.geom.length(pms.geom.vector([centroid[1], centroid[2]], [pos[0],pos[2]]))/(0.5*self._shapes[i][1].get_inp()["diameter"]))
+                    if self._shapes[i][1].get_inp()["central"]==[1,1,0]:
+                        centroid = self._shapes[i][1].get_inp()["centroid"]
+                        lengths.append(pms.geom.length(pms.geom.vector([centroid[-1]], [pos[-1]]))/(0.5*self._shapes[i][1].get_inp()["diameter"]))
+                
+                # Fin minimal length id                            
                 min_len_id = lengths.index(min(lengths))
-
+  
                 # If sections are given
                 if self._is_section:
-                    # Check if position within section
-                    for i, section in enumerate(self._sections):
-                        is_in = []
-                        for dim in range(3):
-                            is_in.append(pos[dim]>=section[dim][0] and pos[dim]<=section[dim][1])
-                        if sum(is_in)==3:
-                            min_len_id = i
+                    for i in range(len(self._shapes)):
+                        # Check if position within section
+                        for i, section in enumerate(self._sections):
+                            if self._shapes[i][1].get_inp()["central"]==[0,0,1]:
+                                is_in = []
+                                for dim in range(3):
+                                    if dim == 2:
+                                        is_in.append(pos[dim]>=self._shapes[i][1].get_inp()["centroid"][dim]-self._shapes[i][1].get_inp()["length"]/2 and pos[dim]<=self._shapes[i][1].get_inp()["centroid"][dim]+self._shapes[i][1].get_inp()["length"]/2)
+                                    else:
+                                        try:
+                                            self._shapes[i][1].get_inp()["diameter_1"]
+                                            dia = (self._shapes[i][1].get_inp()["diameter_1"] + self._shapes[i][1].get_inp()["diameter_2"])/2
+                                            is_in.append(pos[dim]>=self._shapes[i][1].get_inp()["centroid"][dim]-dia/2 and pos[dim]<=self._shapes[i][1].get_inp()["centroid"][dim]+dia/2)
+                                        except:
+                                            is_in.append(pos[dim]>=self._shapes[i][1].get_inp()["centroid"][dim]-self._shapes[i][1].get_inp()["diameter"]/2 and pos[dim]<=self._shapes[i][1].get_inp()["centroid"][dim]+self._shapes[i][1].get_inp()["diameter"]/2)
+                                if sum(is_in)==3:
+                                    min_len_id = i
             else:
                 min_len_id = 0
 
             # Add position to global list
             self._si_pos_in[min_len_id].append(pos)
+
             # Add normal vector to pore site list
             site_list[site]["normal"] = self._shapes[min_len_id][1].normal
 
@@ -528,19 +557,50 @@ class PoreKit():
         """
         # Run through sections
         radii = []
+        pos_new = [0,0,0]
+        
         for i, shape in enumerate(self._shapes):
             pos_list = self._si_pos_in[i]
             centroid = self._shapes[i][1].get_inp()["centroid"]
+            length   = self._shapes[i][1].get_inp()["length"]
+            central   = self._shapes[i][1].get_inp()["central"]
+
+            # Tolerance of centroid in z 
+            z_min = centroid[2] - length/2 + 0.1
+            z_max = centroid[2] + length/2 - 0.1
+
+            
+            centroid_new = [0,0,0]
+            centroid_new[0] = centroid[0]*np.cos(-np.pi/4)-centroid[1]*np.sin(-np.pi/4)
+            centroid_new[1] = centroid[0]*np.sin(-np.pi/4)+centroid[1]*np.cos(-np.pi/4)
+            x_min = centroid_new[0] - 0.2
+            x_max = centroid_new[0] + 0.2
+
             # Calculate distance towards central axis of binding site silicon atoms
             if shape[0]=="CYLINDER":
-                radii.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
+                radii_temp = []
+                for pos in pos_list:
+                    if z_min < pos[2] < z_max and central == [0,0,1]:
+                        radii_temp.append(pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)))
+                    elif central == [1,1,0]:
+                        pos_new[0] = pos[0]*np.cos(-np.pi/4)-pos[1]*np.sin(-np.pi/4)
+                        pos_new[1] = pos[0]*np.sin(-np.pi/4)+pos[1]*np.cos(-np.pi/4)
+                        if x_min < pos_new[0] < x_max :
+                            r = pms.geom.length(pms.geom.vector([pos_new[0], centroid_new[1], centroid_new[2]], pos_new))
+                            diameter_inp   = self._shapes[i][1].get_inp()["diameter"] + 0.5
+                            if (diameter_inp/2)*1.1>r>(diameter_inp/2)*0.9:
+                                radii_temp.append(r)   
+                radii.append(radii_temp)
             elif shape[0]=="SLIT":
                 radii.append([pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)) for pos in pos_list])
             elif shape[0]=="SPHERE":
                 radii.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos_list])
             if shape[0]=="CONE":
-                radii.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
-
+                radii_temp = []
+                for pos in pos_list:
+                    if z_min < pos[2] < z_max and central == [0,0,1]:
+                        radii_temp.append(pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)))
+                radii.append(radii_temp)
         # Calculate mean
         r_bar = [sum(r)/len(r) if len(r)>0 else 0 for r in radii]
 
@@ -728,7 +788,6 @@ class PoreKit():
         # Get surfaces
         surf = self.surface()
         site_dict = self._pore.get_site_dict()
-        # num_in_ex = self._pore.get_num_in_ex()
 
         # Calculate allocation for all molecules
         alloc = {}
