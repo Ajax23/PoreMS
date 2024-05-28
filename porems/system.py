@@ -326,16 +326,20 @@ class PoreKit():
         # Calculate free binding sites of the several pores
         self.sites_sl_shape = {}
         self.amount_sl = {}
+        self._pore.sites_attach_mol = {}
         for i,shapes in enumerate(self._shapes):
             self.sites_sl_shape[i] = []
             self.amount_sl[i] = []
+            self._pore.sites_attach_mol[i] = {}
         for site in self._site_in:
             p = self._pore.get_block().pos(site)
             for i, shape in enumerate(self._shapes):
                 centroid = self._shapes[i][1].get_inp()["centroid"]
+                length = self._shapes[i][1].get_inp()["length"]
                 radi = pms.geometry.length(pms.geometry.vector([centroid[0], centroid[1], p[2]], p))
-                if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.4)/2):
-                    self.sites_sl_shape[i].append(site)
+                if (centroid[2]-length/2)<p[2]<(centroid[2]+length/2):
+                    if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.25)/2):
+                        self.sites_sl_shape[i].append(site)
         self._pore.sites_sl_shape = self.sites_sl_shape
 
         # Objectify grid
@@ -377,7 +381,7 @@ class PoreKit():
         site_list = self._pore.get_sites()
         sites = self._site_in if site_type=="in" else self._site_ex
         hydro = self._hydro["in"] if site_type=="in" else self._hydro["ex"]
-
+        print("sites",len(sites), site_type)
         if site_type=="in":
             self.sites_shape = {}
             self._pore.amount_slx = {}
@@ -389,10 +393,18 @@ class PoreKit():
                     p = self._pore.get_block().pos(site)
                     for i, shape in enumerate(self._shapes):
                         centroid = self._shapes[i][1].get_inp()["centroid"]
+                        length = self._shapes[i][1].get_inp()["length"]
                         radi = pms.geom.length(pms.geom.vector([centroid[0], centroid[1], p[2]], p))
-                        if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.4)/2):
-                            self.sites_shape[i].append(site)
-
+                        if (centroid[2]-length/2)<p[2]<(centroid[2]+length/2):
+                            if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.25)/2):
+                                self.sites_shape[i].append(site)
+            for i in self.sites_shape:
+                print(i,len(self.sites_shape[i]))
+                for s in self.sites_shape[i]:
+                    if s in sites:
+                        pass
+                    else:
+                        pass #print(s)
             # Amount - Connect two oxygen to one siloxane
             amount = []
             for hydro,surface,sites in zip(hydro,self.surface(is_sum=False)[site_type],self.sites_shape.values()):
@@ -403,12 +415,12 @@ class PoreKit():
 
             # Fill siloxane
             for amount, sites in zip(amount, self.sites_shape.items()):
-           
                 if amount > 0:
+                    print(amount)
                     # Run attachment
                     mols = self._pore.siloxane(sites[1], amount, slx_dist=slx_dist, site_type=site_type)
                     self._pore.amount_slx[sites[0]] = len(mols)
- 
+                    print("slx",self._pore.amount_slx[sites[0]])
                     # Add to sorting list
                     for mol in mols:
                         if not mol.get_short() in self._sort_list:
@@ -430,7 +442,7 @@ class PoreKit():
                         self._sort_list.append(mol.get_short())
                         
 
-    def attach(self, mol, mount, axis, amount, site_type="in", inp="num", pos_list=[], scale=1, trials=1000, is_proxi=True, is_rotate=False):
+    def attach(self, mol, mount, axis, amount, site_type="in", inp="num", shape="shape_00", pos_list=[], scale=1, trials=1000, is_proxi=True, is_rotate=False):
         """Attach molecule on the surface.
 
         Parameters
@@ -468,10 +480,7 @@ class PoreKit():
         if inp not in ["num", "molar", "percent"]:
             print("Pore: Wrong inp type...")
             return
-
-        # Define sites
-        sites = self._site_in if site_type=="in" else self._site_ex
-
+   
         # Amount
         if inp=="molar":
             amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
@@ -486,8 +495,30 @@ class PoreKit():
             return
 
         # Run attachment
-        mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
-
+        if site_type=="ex":
+            sites = self._site_ex
+            mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+        elif site_type=="in" and shape!="all":
+            sites = self._pore.sites_sl_shape[int(shape[-1])]
+            print("tms",int(shape[-1]), len(sites))
+            mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+            for mol in mols:
+                if mol.get_short() in self._pore.sites_attach_mol[int(shape[-1])]:
+                    self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()].append(1)
+                else:
+                    self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] = []
+                    self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()].append(1)
+        elif shape=="all" and site_type=="in":
+            for sites_shape_idx in self._pore.sites_sl_shape:
+                sites = self._pore.sites_sl_shape[sites_shape_idx]
+                mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+                for mol in mols:
+                    if mol.get_short() in self._pore.sites_attach_mol[sites_shape_idx]:
+                        self._pore.sites_attach_mol[sites_shape_idx][mol.get_short()].append(1)
+                    else:
+                        self._pore.sites_attach_mol[sites_shape_idx][mol.get_short()] = []
+                        self._pore.sites_attach_mol[sites_shape_idx][mol.get_short()].append(1)
+        
         # Add to sorting list
         for mol in mols:
             if not mol.get_short() in self._sort_list:
@@ -997,7 +1028,7 @@ class PoreKit():
 
 
 
-        for i in range(2):
+        for i in self.sites_sl_shape:
             print(self.volume(is_sum=False)[i])
             pos = self._pore.get_sites()
             sl = []
@@ -1009,19 +1040,16 @@ class PoreKit():
                     slg.append(1)
             data["Interior"]["Surface chemistry - Before Functionalization (Pore " + str(i) +")"] = " "
             data["Exterior"]["Surface chemistry - Before Functionalization (Pore " + str(i) +")"] = " "
-            data["Interior"]["    Pore" + str(i) + " Number of single silanol groups"] = "%i"%len(sl)
-            data["Exterior"]["    Pore" + str(i) + " Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
-            data["Interior"]["    Pore" + str(i) + " Number of geminal silanol groups"] = "%i"%len(slg)
-            data["Exterior"]["    Pore" + str(i) + " Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
-            data["Interior"]["    Pore" + str(i) + " Number of siloxane bridges"] = "%i"%self._pore.amount_slx[i] if "SLX" in allocation else "0"
-            data["Exterior"]["    Pore" + str(i) + " Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
-            data["Interior"]["    Pore" + str(i) + " Total number of OH groups"] = "%i"%(len(sl)+2*len(slg))
-            data["Exterior"]["    Pore" + str(i) + " Total number of OH groups"] = "%i"%allocation["Hydro"]["ex"][0]
-            data["Interior"]["    Pore" + str(i) + " Overall hydroxylation (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(len(sl)+2*len(slg),self.surface(is_sum=False)["in"][i]))
-            data["Exterior"]["    Pore" + str(i) + " Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
-
-
-
+            data["Interior"]["    Pore " + str(i+1) + " Number of single silanol groups"] = "%i"%len(sl)
+            data["Exterior"]["    Pore " + str(i+1) + " Number of single silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==1 and x["type"]=="ex"])
+            data["Interior"]["    Pore " + str(i+1) + " Number of geminal silanol groups"] = "%i"%len(slg)
+            data["Exterior"]["    Pore " + str(i+1) + " Number of geminal silanol groups"] = "%i"%sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]=="ex"])
+            data["Interior"]["    Pore " + str(i+1) + " Number of siloxane bridges"] = "%i"%self._pore.amount_slx[i] if "SLX" in allocation else "0"
+            data["Exterior"]["    Pore " + str(i+1) + " Number of siloxane bridges"] = "%i"%allocation["SLX"]["ex"][0] if "SLX" in allocation else "0"
+            data["Interior"]["    Pore " + str(i+1) + " Total number of OH groups"] = "%i"%(len(sl)+2*len(slg))
+            data["Exterior"]["    Pore " + str(i+1) + " Total number of OH groups"] = "%i"%allocation["Hydro"]["ex"][0]
+            data["Interior"]["    Pore " + str(i+1) + " Overall hydroxylation (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(len(sl)+2*len(slg),self.surface(is_sum=False)["in"][i]))
+            data["Exterior"]["    Pore " + str(i+1) + " Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
 
 
 
@@ -1039,7 +1067,26 @@ class PoreKit():
         data["Exterior"]["    Number of residual OH groups"] = "%i"%allocation["OH"]["ex"][0]
         data["Interior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["in"][2]
         data["Exterior"]["    Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["ex"][2]
-
+        
+        for i in self.sites_sl_shape:    
+            data["Interior"]["Surface chemistry - After Functionalization (Pore " + str(i) +")"] = " "
+            data["Exterior"]["Surface chemistry - After Functionalization (Pore " + str(i) +")"] = " "
+            for mol in allocation.keys():
+                if (mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]): 
+                    try:
+                        self._pore.sites_attach_mol[i][mol]
+                        data["Interior"]["    Pore " + str(i+1) + " Number of "+mol+" groups"] = "%i"%len(self._pore.sites_attach_mol[i][mol])
+                        data["Exterior"]["    Pore " + str(i+1) + " Number of "+mol+" groups"] = "%i"%allocation[mol]["ex"][0]
+                        data["Interior"]["    Pore " + str(i+1) + " "+mol+" density (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(len(self._pore.sites_attach_mol[i][mol]),self.surface(is_sum=False)["in"][i]))
+                        data["Exterior"]["    Pore " + str(i+1) + " "+mol+" density (mumol/m^2)"] = form%allocation[mol]["ex"][2]
+                    except:
+                        pass
+                # data["Interior"]["    Pore " + str(i+1) + " Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
+            # data["Exterior"]["    Pore " + str(i+1) + " Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["ex"][2]-allocation["OH"]["ex"][2])
+            # data["Interior"]["    Pore " + str(i+1) + " Number of residual OH groups"] = "%i"%(len(self._pore.sites_sl_shape[i])-len(self._pore.sites_attach_mol[i]["TMS"]))
+            # data["Exterior"]["    Pore " + str(i+1) + " Number of residual OH groups"] = "%i"%allocation["OH"]["ex"][0]
+            # data["Interior"]["    Pore " + str(i+1) + " Residual hydroxylation (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(len(self._pore.sites_sl_shape[i])-len(self._pore.sites_attach_mol[i]["TMS"]),self.surface(is_sum=False)["in"][i]))
+            #data["Exterior"]["    Pore " + str(i+1) + " Residual hydroxylation (mumol/m^2)"] = form%allocation["OH"]["ex"][2]
         return pd.DataFrame.from_dict(data)
 
 
