@@ -324,22 +324,52 @@ class PoreKit():
         self._site_in = [site_key for site_key, site_val in site_list.items() if site_val["type"]=="in"]
 
         # Calculate free binding sites of the several pores
+        # Initialize dictonaries
         self.sites_sl_shape = {}
-        for i,shapes in enumerate(self._shapes):
+
+        # Loop over the shapes
+        for i,shape in enumerate(self._shapes):
             self.sites_sl_shape[i] = []
+            self.sites = []
+
+        # Key 20 is for binding sites which are not assigned to one specific shape
+        self.sites_sl_shape[20] = []
+
+        # Loop over the free binding sites
         for site in self._site_in:
+            # Get position of the free site
             p = self._pore.get_block().pos(site)
             for i, shape in enumerate(self._shapes):
+                # Set properties of the shape
                 centroid = self._shapes[i][1].get_inp()["centroid"]
                 length = self._shapes[i][1].get_inp()["length"]
                 radi = pms.geometry.length(pms.geometry.vector([centroid[0], centroid[1], p[2]], p))
-                if (centroid[2]-length/2)<p[2]<(centroid[2]+length/2):
-                    if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.25)/2):
-                        self.sites_sl_shape[i].append(site)
-
+                
+                # if shape is cyclinder
+                if shape[0]=="CYLINDER":
+                    if (centroid[2]-length/2)<p[2]<(centroid[2]+length/2):
+                        if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.5)/2):
+                            self.sites_sl_shape[i].append(site)
+                            self.sites.append(site)
+                
+                # if shape is cone
+                elif shape[0]=="CONE":
+                    if (centroid[2]-length/2)<p[2]<(centroid[2]+(length)/2):
+                        if radi < ((self._shapes[i][1].get_inp()["diameter_1"]*1.5)/2):
+                            self.sites_sl_shape[i].append(site)
+                            self.sites.append(site)
+                
+                # if shape is slit
+                elif shape[0]=="SLIT":
+                    self.sites_sl_shape[i].append(site)
+                    self.sites.append(site)
+            # If no match to one shape
+            if site not in self.sites:
+                self.sites_sl_shape[20].append(site)
+               
+        # Count the numbers of attached siloxane
         self._pore.sites_sl_shape = self.sites_sl_shape
         for i in self.sites_sl_shape:
-            print(len(self.sites_sl_shape[i]))
             self._pore.sites_attach_mol[i]["SL"] = 0
             self._pore.sites_attach_mol[i]["SLG"] = 0
             for si in self.sites_sl_shape[i]:
@@ -347,7 +377,7 @@ class PoreKit():
                     self._pore.sites_attach_mol[i]["SL"] +=1
                 elif (len(self._pore._sites[si]["o"])==2 and self._pore._sites[si]["type"]=="in"):
                     self._pore.sites_attach_mol[i]["SLG"] +=1
-            print(self._pore.sites_attach_mol[i]["SL"],self._pore.sites_attach_mol[i]["SLG"])
+        
         # Objectify grid
         non_grid = self._matrix.bound(1)+list(site_list.keys())
         bonded = self._matrix.bound(0, "gt")
@@ -388,23 +418,61 @@ class PoreKit():
         sites = self._site_in if site_type=="in" else self._site_ex
         hydro = self._hydro["in"] if site_type=="in" else self._hydro["ex"]
 
+        # Find free binding sites of Si atoms in the structure
         if site_type=="in":
-            self.sites_shape = {}
-            self._pore.sites_attach_mol = {}
+            # Initialize dictonaries
+            self.sites_shape = {}                   #Index of the binding sites
+            self._pore.sites_attach_mol = {}        #number of attach molecules
+            # Loop over the shapes
             for i,shapes in enumerate(self._shapes):
                 self.sites_shape[i] = []
                 self._pore.sites_attach_mol[i] = {}
-            if site_type=="in":
-                for site in sites:
-                    p = self._pore.get_block().pos(site)
-                    for i, shape in enumerate(self._shapes):
-                        centroid = self._shapes[i][1].get_inp()["centroid"]
-                        length = self._shapes[i][1].get_inp()["length"]
-                        radi = pms.geom.length(pms.geom.vector([centroid[0], centroid[1], p[2]], p))
-                        if (centroid[2]-length/2)<p[2]<(centroid[2]+length/2):
-                            if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.25)/2):
+            # Key 20 is for binding sites which are not assigned to one specific shape
+            self._pore.sites_attach_mol[20] = {}
+            self.sites_shape[20] = []
+
+            # Loop over the free binding sites
+            self.sites = []
+            for site in sites:
+                # Get position of the free site
+                p = self._pore.get_block().pos(site)
+                for i, shape in enumerate(self._shapes):
+                    # Set properties of the shape
+                    centroid = self._shapes[i][1].get_inp()["centroid"]
+                    length = self._shapes[i][1].get_inp()["length"]
+                    radi = pms.geom.length(pms.geom.vector([centroid[0], centroid[1], p[2]], p))
+                    
+                    # if shape is cyclinder
+                    if shape[0]=="CYLINDER":
+                        if (centroid[2]-(length)/2)<p[2]<(centroid[2]+(length)/2):
+                            if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.5)/2):
                                 self.sites_shape[i].append(site)
-    
+                                self.sites.append(site)
+
+                    # if shape is cone
+                    elif shape[0]=="CONE":
+                        if (centroid[2]-(length)/2)<p[2]<(centroid[2]+(length)/2):
+                            if radi < ((self._shapes[i][1].get_inp()["diameter_1"]*1.5)/2):
+                                self.sites_shape[i].append(site)
+                                self.sites.append(site)
+
+                    # if shape is slit
+                    elif shape[0]=="SLIT":
+                        self.sites_shape[i].append(site)
+                        self.sites.append(site)
+                # If no match to one shape
+                if site not in self.sites:
+                    self.sites_shape[20].append(site)
+            # If every site match to one shape drop dictonary "20"
+            if self.sites_shape[20] == []:
+               self.sites_shape[20].pop()
+            # If there are unassigned binding sites print a warning
+            else:
+                print("You create a complex structure. Some SI binding sites in the inner structure can't be match to a specific shape.")
+                print("These sites will be fill with siloxane and silanol bridges.")
+                print("If you want to functionalize these SI sites, use pore_id=\"shape_20\" in the pore.attach() function")
+                print("You can find more information in the table of the system.")
+
             # Amount - Connect two oxygen to one siloxane
             amount = []
             for hydro,surface,sites in zip(hydro,self.surface(is_sum=False)[site_type],self.sites_shape.values()):
@@ -412,14 +480,13 @@ class PoreKit():
                 oh_goal = pms.utils.mumol_m2_to_mols(hydro,surface)
                 amount.append(round((oh-oh_goal)/2))
 
-
             # Fill siloxane
             for amount, sites in zip(amount, self.sites_shape.items()):
                 if amount > 0:
                     # Run attachment
-                    print(sites[1])
                     mols = self._pore.siloxane(sites[1], amount, slx_dist=slx_dist, site_type=site_type)
                     for mol in mols:
+                        # Count the numbers of attached siloxane
                         if mol.get_short() in self._pore.sites_attach_mol[sites[0]]:
                             self._pore.sites_attach_mol[sites[0]][mol.get_short()] +=1
                         else:
@@ -447,7 +514,7 @@ class PoreKit():
                         self._sort_list.append(mol.get_short())
                         
 
-    def attach(self, mol, mount, axis, amount, site_type="in", inp="num", shape="shape_00", pos_list=[], scale=1, trials=1000, is_proxi=True, is_rotate=False):
+    def attach(self, mol, mount, axis, amount, site_type="in", inp="num", shape="all", pos_list=[], scale=1, trials=1000, is_proxi=True, is_rotate=False):
         """Attach molecule on the surface.
 
         Parameters
@@ -476,6 +543,9 @@ class PoreKit():
             True to fill binding sites in proximity of filled binding site
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
+        shape : string, optional 
+            Optional is "all" this means every shape will be functionalize. 
+            Otherwise specific the shape if you want to functionalize.
         """
         # Process input
         if site_type not in ["in", "ex"]:
@@ -515,8 +585,7 @@ class PoreKit():
                 if mol.get_short() not in ["SL","SLG"]:
                     if mol.get_short() in self._pore.sites_attach_mol[int(shape[-1])]:
                         self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] +=1
-                    else:
-                        print(mol.get_short())
+                    else:                
                         self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] = 0
                         self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] += 1
             
@@ -534,7 +603,6 @@ class PoreKit():
                             if mol.get_short() in self._pore.sites_attach_mol[int(shape[-1])]:
                                 self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] +=1
                             else:
-                                print(mol.get_short())
                                 self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] = 0
                                 self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] += 1
         
@@ -671,7 +739,10 @@ class PoreKit():
         pos_new = [0,0,0]
         
         for i, shape in enumerate(self._shapes):
-            pos_list = self._si_pos_in[i]
+            try:
+                index_si = self.sites_shape[i]
+            except:
+                index_si = self._si_pos_in[i]
             centroid = self._shapes[i][1].get_inp()["centroid"]
             length   = self._shapes[i][1].get_inp()["length"]
             central   = self._shapes[i][1].get_inp()["central"]
@@ -686,11 +757,14 @@ class PoreKit():
             centroid_new[1] = centroid[0]*np.sin(-np.pi/4)+centroid[1]*np.cos(-np.pi/4)
             x_min = centroid_new[0] - 0.2
             x_max = centroid_new[0] + 0.2
-
             # Calculate distance towards central axis of binding site silicon atoms
             if shape[0]=="CYLINDER":
                 radii_temp = []
-                for pos in pos_list:
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
                     if z_min < pos[2] < z_max and central == [0,0,1]:
                         radii_temp.append(pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)))
                     elif central == [1,1,0]:
@@ -703,12 +777,23 @@ class PoreKit():
                                 radii_temp.append(r)   
                 radii.append(radii_temp)
             elif shape[0]=="SLIT":
-                radii.append([pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)) for pos in pos_list])
-            elif shape[0]=="SPHERE":
-                radii.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos_list])
-            if shape[0]=="CONE":
                 radii_temp = []
-                for pos in pos_list:
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
+                    radii_temp.append(pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)))
+                radii.append(radii_temp)
+            elif shape[0]=="SPHERE":
+                radii.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos])
+            elif shape[0]=="CONE":
+                radii_temp = []
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
                     if z_min < pos[2] < z_max and central == [0,0,1]:
                         radii_temp.append(pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)))
                 radii.append(radii_temp)
@@ -717,7 +802,6 @@ class PoreKit():
 
         # Return diameter
         diam = [2*r for r in r_bar]
-
         return diam
 
     def roughness(self):
@@ -806,19 +890,21 @@ class PoreKit():
         # Get diameters
         diam = self.diameter()
         diam = diam if isinstance(diam, list) else [diam]
-
+        
         # Calculate volumes
         volume = []
         for i, shape in enumerate(self._shapes):
             centroid = self._shapes[i][1].get_inp()["centroid"]
+            length = self._shapes[i][1].get_inp()["length"]
             if shape[0]=="CYLINDER":
-                volume.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).volume())
+                volume.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": length, "diameter": diam[i]}).volume())
             elif shape[0]=="SLIT":
-                volume.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).volume())
+                volume.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": length, "width": self._box[0], "height": diam[i]}).volume())
             elif shape[0]=="SPHERE":
                 volume.append(pms.Sphere({"centroid": centroid, "central": [0, 0, 1], "diameter": diam[i]}).volume())
             if shape[0]=="CONE":
-                volume.append(0)
+                diam_cone =  [self._shapes[i][1].get_inp()["diameter_1"],self._shapes[i][1].get_inp()["diameter_2"]]
+                volume.append(pms.Cone({"centroid": centroid, "central": [0, 0, 1], "length": length, "diameter_1": diam_cone[0], "diameter_2": diam_cone[1]}).volume())
 
         return sum(volume) if is_sum else volume
 
@@ -850,14 +936,17 @@ class PoreKit():
         surf_in = []
         for i, shape in enumerate(self._shapes):
             centroid = self._shapes[i][1].get_inp()["centroid"]
+            length = self._shapes[i][1].get_inp()["length"]
             if shape[0]=="CYLINDER":
-                surf_in.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "diameter": diam[i]}).surface())
+                surf_in.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": length, "diameter": diam[i]}).surface())
             elif shape[0]=="SLIT":
-                surf_in.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": self._box[2], "width": self._box[0], "height": diam[i]}).surface()/2)
+                diam = [self._shapes[i][1].get_inp()["height"]]
+                surf_in.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": length, "width": self._box[0], "height": diam[i]}).surface()/2)
             elif shape[0]=="SPHERE":
                 surf_in.append(pms.Sphere({"centroid": centroid, "central": [0, 0, 1], "diameter": diam[i]}).surface())
             if shape[0]=="CONE":
-                surf_in.append(0)
+                diam_cone =  [self._shapes[i][1].get_inp()["diameter_1"],self._shapes[i][1].get_inp()["diameter_2"]]
+                surf_in.append(pms.Cone({"centroid": centroid, "central": [0, 0, 1],"length": length, "diameter_1": diam_cone[0], "diameter_2": diam_cone[1]}).surface())
 
         # Exterior surface
         sections_ex = [0, 0]
@@ -1048,24 +1137,35 @@ class PoreKit():
         data["Interior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["in"][2]
         data["Exterior"]["    Overall hydroxylation (mumol/m^2)"] = form%allocation["Hydro"]["ex"][2]
 
-
         try: 
             self._pore.sites_attach_mol
             for i in  self._pore.sites_attach_mol:
-                print(self._pore.sites_attach_mol[i].keys())
-
-                data["Interior"]["Surface chemistry - Before Functionalization (Pore " + str(i) +")"] = " "
-                data["Exterior"]["Surface chemistry - Before Functionalization (Pore " + str(i) +")"] = " "
-                data["Interior"]["    Pore " + str(i+1) + " Number of single silanol groups"] = "%i"%self._pore.sites_attach_mol[i]["SL"]
-                data["Exterior"]["    Pore " + str(i+1) + " Number of single silanol groups"] = " "
-                data["Interior"]["    Pore " + str(i+1) + " Number of geminal silanol groups"] = "%i"%self._pore.sites_attach_mol[i]["SLG"]
-                data["Exterior"]["    Pore " + str(i+1) + " Number of geminal silanol groups"] = " "
-                data["Interior"]["    Pore " + str(i+1) + " Number of siloxane bridges"] = "%i"%self._pore.sites_attach_mol[i]["SLX"] if "SLX" in allocation else "0"
-                data["Exterior"]["    Pore " + str(i+1) + " Number of siloxane bridges"] = " "
-                data["Interior"]["    Pore " + str(i+1) + " Total number of OH groups"] = "%i"%(self._pore.sites_attach_mol[i]["SL"]+2*self._pore.sites_attach_mol[i]["SLG"])
-                data["Exterior"]["    Pore " + str(i+1) + " Total number of OH groups"] = " "
-                data["Interior"]["    Pore " + str(i+1) + " Overall hydroxylation (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(self._pore.sites_attach_mol[i]["SL"]+2*self._pore.sites_attach_mol[i]["SLG"],self.surface(is_sum=False)["in"][i]))
-                data["Exterior"]["    Pore " + str(i+1) + " Overall hydroxylation (mumol/m^2)"] = " "
+                if i != 20:
+                    data["Interior"]["Surface chemistry - Before Functionalization (Pore " + str(i+1) +")"] = " "
+                    data["Exterior"]["Surface chemistry - Before Functionalization (Pore " + str(i+1) +")"] = " "
+                    data["Interior"]["    Pore " + str(i+1) + " Number of single silanol groups"] = "%i"%self._pore.sites_attach_mol[i]["SL"]
+                    data["Exterior"]["    Pore " + str(i+1) + " Number of single silanol groups"] = " "
+                    data["Interior"]["    Pore " + str(i+1) + " Number of geminal silanol groups"] = "%i"%self._pore.sites_attach_mol[i]["SLG"]
+                    data["Exterior"]["    Pore " + str(i+1) + " Number of geminal silanol groups"] = " "
+                    data["Interior"]["    Pore " + str(i+1) + " Number of siloxane bridges"] = "%i"%self._pore.sites_attach_mol[i]["SLX"] if "SLX" in self._pore.sites_attach_mol[i] else "0"
+                    data["Exterior"]["    Pore " + str(i+1) + " Number of siloxane bridges"] = " "
+                    data["Interior"]["    Pore " + str(i+1) + " Total number of OH groups"] = "%i"%(self._pore.sites_attach_mol[i]["SL"]+2*self._pore.sites_attach_mol[i]["SLG"])
+                    data["Exterior"]["    Pore " + str(i+1) + " Total number of OH groups"] = " "
+                    data["Interior"]["    Pore " + str(i+1) + " Overall hydroxylation (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(self._pore.sites_attach_mol[i]["SL"]+2*self._pore.sites_attach_mol[i]["SLG"],self.surface(is_sum=False)["in"][i]))
+                    data["Exterior"]["    Pore " + str(i+1) + " Overall hydroxylation (mumol/m^2)"] = " "
+                elif i == 20:
+                    data["Interior"]["Surface chemistry - Before Functionalization (Unassigned binding sites)"] = " "
+                    data["Exterior"]["Surface chemistry - Before Functionalization (Unassigned binding sites)"] = " "
+                    data["Interior"]["    Unassigned binding sites" + " Number of single silanol groups"] = "%i"%self._pore.sites_attach_mol[i]["SL"]
+                    data["Exterior"]["    Unassigned binding sites" + " Number of single silanol groups"] = " "
+                    data["Interior"]["    Unassigned binding sites" + " Number of geminal silanol groups"] = "%i"%self._pore.sites_attach_mol[i]["SLG"]
+                    data["Exterior"]["    Unassigned binding sites" + " Number of geminal silanol groups"] = " "
+                    data["Interior"]["    Unassigned binding sites" + " Number of siloxane bridges"] = "%i"%self._pore.sites_attach_mol[i]["SLX"] if "SLX" in self._pore.sites_attach_mol[i] else "0"
+                    data["Exterior"]["    Unassigned binding sites" + " Number of siloxane bridges"] = " "
+                    data["Interior"]["    Unassigned binding sites" + " Total number of OH groups"] = "%i"%(self._pore.sites_attach_mol[i]["SL"]+2*self._pore.sites_attach_mol[i]["SLG"])
+                    data["Exterior"]["    Unassigned binding sites" + " Total number of OH groups"] = " "
+                    data["Interior"]["    Unassigned binding sites" + " Overall hydroxylation (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(self._pore.sites_attach_mol[i]["SL"]+2*self._pore.sites_attach_mol[i]["SLG"],self.surface(is_sum=False)["in"][i]))
+                    data["Exterior"]["    Unassigned binding sites" + " Overall hydroxylation (mumol/m^2)"] = " "
         except:
             pass
 
@@ -1088,16 +1188,22 @@ class PoreKit():
         try: 
             self._pore.sites_attach_mol
             for i in  self._pore.sites_attach_mol:   
-                data["Interior"]["Surface chemistry - After Functionalization (Pore " + str(i) +")"] = " "
-                data["Exterior"]["Surface chemistry - After Functionalization (Pore " + str(i) +")"] = " "
-                print(self._pore.sites_attach_mol[i].keys())
                 for mol in self._pore.sites_attach_mol[i]:
                     if (mol not in ["SL", "SLG", "SLX", "Hydro", "OH"]): 
-                        self._pore.sites_attach_mol[i][mol]
-                        data["Interior"]["    Pore " + str(i+1) + " Number of "+mol+" groups"] = "%i"%self._pore.sites_attach_mol[i][mol]
-                        data["Exterior"]["    Pore " + str(i+1) + " Number of "+mol+" groups"] = " "
-                        data["Interior"]["    Pore " + str(i+1) + " "+mol+" density (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(self._pore.sites_attach_mol[i][mol],self.surface(is_sum=False)["in"][i]))
-                        data["Exterior"]["    Pore " + str(i+1) + " "+mol+" density (mumol/m^2)"] = " "
+                        if i == 20:
+                            data["Interior"]["Surface chemistry - After Functionalization (Unassigned binding sites)"] = " "
+                            data["Exterior"]["Surface chemistry - After Functionalization (Unassigned binding sites)"] = " "
+                            data["Interior"]["    Unassigned binding sites" + " Number of "+mol+" groups"] = "%i"%self._pore.sites_attach_mol[i][mol]
+                            data["Exterior"]["    Unassigned binding sites" + " Number of "+mol+" groups"] = " "
+                            data["Interior"]["    Unassigned binding sites" + " "+mol+" density (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(self._pore.sites_attach_mol[i][mol],self.surface(is_sum=False)["in"][i]))
+                            data["Exterior"]["    Unassigned binding sites" + " "+mol+" density (mumol/m^2)"] = " "
+                        else:
+                            data["Interior"]["Surface chemistry - After Functionalization (Pore " + str(i+1) +")"] = " "
+                            data["Exterior"]["Surface chemistry - After Functionalization (Pore " + str(i+1) +")"] = " "
+                            data["Interior"]["    Pore " + str(i+1) + " Number of "+mol+" groups"] = "%i"%self._pore.sites_attach_mol[i][mol]
+                            data["Exterior"]["    Pore " + str(i+1) + " Number of "+mol+" groups"] = " "
+                            data["Interior"]["    Pore " + str(i+1) + " "+mol+" density (mumol/m^2)"] = form%(pms.utils.mols_to_mumol_m2(self._pore.sites_attach_mol[i][mol],self.surface(is_sum=False)["in"][i]))
+                            data["Exterior"]["    Pore " + str(i+1) + " "+mol+" density (mumol/m^2)"] = " "
                         # data["Interior"]["    Pore " + str(i+1) + " Bonded-phase density (mumol/m^2)"] = form%(allocation["Hydro"]["in"][2]-allocation["OH"]["in"][2])
                         # data["Exterior"]["    Pore " + str(i+1) + " Bonded-phase density (mumol/m^2)"] = " "
                         # data["Interior"]["    Pore " + str(i+1) + " Number of residual OH groups"] = "%i"%(self._pore.sites_attach_mol[i][mol]-(self._pore.sites_attach_mol[i]["SL"]+self._pore.sites_attach_mol[i]["SLG"]))
