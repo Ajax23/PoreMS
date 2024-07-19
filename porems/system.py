@@ -366,6 +366,10 @@ class PoreKit():
             # If no match to one shape
             if site not in self.sites:
                 self.sites_sl_shape[20].append(site)
+        # If every site match to one shape drop dictonary "20"
+        if self.sites_sl_shape[20] == []:
+            del self.sites_sl_shape[20]
+
                
         # Count the numbers of attached siloxane
         self._pore.sites_sl_shape = self.sites_sl_shape
@@ -465,12 +469,11 @@ class PoreKit():
                     self.sites_shape[20].append(site)
             # If every site match to one shape drop dictonary "20"
             if self.sites_shape[20] == []:
-               self.sites_shape[20].pop()
+               del self.sites_shape[20]
             # If there are unassigned binding sites print a warning
             else:
                 print("You create a complex structure. Some SI binding sites in the inner structure can't be match to a specific shape.")
                 print("These sites will be fill with siloxane and silanol bridges.")
-                print("If you want to functionalize these SI sites, use pore_id=\"shape_20\" in the pore.attach() function")
                 print("You can find more information in the table of the system.")
 
             # Amount - Connect two oxygen to one siloxane
@@ -533,6 +536,9 @@ class PoreKit():
             Input type: **num** - Number of molecules,
             **molar** - :math:`\\frac{\\mu\\text{mol}}{\\text{m}^2}`,
             **percent** - :math:`\\%` of OH groups
+        shape : string, optional 
+            Optional is "all" this means every shape will be functionalize. 
+            Otherwise specific the shape if you want to functionalize.
         pos_list : list, optional
             List of positions (Cartesian) to find nearest available binding site for
         scale : float, optional
@@ -543,9 +549,6 @@ class PoreKit():
             True to fill binding sites in proximity of filled binding site
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
-        shape : string, optional 
-            Optional is "all" this means every shape will be functionalize. 
-            Otherwise specific the shape if you want to functionalize.
         """
         # Process input
         if site_type not in ["in", "ex"]:
@@ -555,14 +558,52 @@ class PoreKit():
         if inp not in ["num", "molar", "percent"]:
             print("Pore: Wrong inp type...")
             return
-   
+
+        # 
+        if shape == "all":
+            try:
+                save = self._pore.sites_sl_shape[20]
+                del self._pore.sites_sl_shape[20]
+            except:
+                pass
+
         # Amount
         if inp=="molar":
-            amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
+            if site_type=="in" and shape!="all":
+                amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface(is_sum=False)[site_type][int(shape[-1])]))
+            elif site_type=="in" and shape=="all":
+                amount_list = {}
+                for sites_shape_idx in self._pore.sites_sl_shape:
+                    amount_list[sites_shape_idx] = int(pms.utils.mumol_m2_to_mols(amount, self.surface(is_sum=False)[site_type][sites_shape_idx]))
+            elif site_type=="ex":
+                 amount = int(pms.utils.mumol_m2_to_mols(amount, self.surface()[site_type]))
         elif inp=="percent":
-            num_oh = len(sites)
-            num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
-            amount = int(amount/100*num_oh)
+            if site_type=="in" and shape!="all":
+                sites = self._pore.sites_sl_shape[int(shape[-1])]
+                num_oh = len(sites)
+                num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
+                amount = int(amount/100*num_oh)
+            elif site_type=="in" and shape=="all":
+                amount_list = {}
+                for sites_shape_idx in self._pore.sites_sl_shape:
+                    sites = self._pore.sites_sl_shape[sites_shape_idx]
+                    num_oh = len(sites)
+                    num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
+                    amount_list[sites_shape_idx] = int(amount/100*num_oh)
+            elif site_type=="ex":
+                num_oh = len(sites)
+                num_oh += sum([1 for x in self._pore.get_sites().values() if len(x["o"])==2 and x["type"]==site_type])
+                amount = int(amount/100*num_oh)
+        else:
+            if site_type=="in" and shape!="all":
+                amount = amount
+            elif site_type=="in" and shape=="all":
+                amount_list = {}
+                for sites_shape_idx in self._pore.sites_sl_shape:
+                    amount_list[sites_shape_idx] = int(amount/len(self._pore.sites_sl_shape))
+            elif site_type=="ex":
+                amount = amount
+            
 
         # Check number of given positions
         if pos_list and not len(pos_list)==amount:
@@ -592,7 +633,7 @@ class PoreKit():
         elif shape=="all" and site_type=="in":
             for sites_shape_idx in self._pore.sites_sl_shape:
                 sites = self._pore.sites_sl_shape[sites_shape_idx]
-                mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+                mols = self._pore.attach(mol, mount, axis, sites, amount_list[sites_shape_idx], scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
                 for i in self._pore.sites_sl_shape:
                     for si in self._pore.sites_sl_shape[i]:
                         state = self._pore._sites[si]["state"]
@@ -600,17 +641,21 @@ class PoreKit():
                             self._pore.sites_sl_shape[i].remove(si)
                     for mol in mols:
                         if mol.get_short() not in ["SL","SLG"]:
-                            if mol.get_short() in self._pore.sites_attach_mol[int(shape[-1])]:
-                                self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] +=1
+                            if mol.get_short() in self._pore.sites_attach_mol[i]:
+                                self._pore.sites_attach_mol[i][mol.get_short()] +=1
                             else:
-                                self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] = 0
-                                self._pore.sites_attach_mol[int(shape[-1])][mol.get_short()] += 1
+                                self._pore.sites_attach_mol[i][mol.get_short()] = 0
+                                self._pore.sites_attach_mol[i][mol.get_short()] += 1
         
         # Add to sorting list
         for mol in mols:
             if not mol.get_short() in self._sort_list:
                 self._sort_list.append(mol.get_short())
-
+        if shape == "all":
+            try:
+                self._pore.sites_sl_shape[20] = save
+            except:
+                pass
     ################
     # Finalization #
     ################
@@ -940,7 +985,6 @@ class PoreKit():
             if shape[0]=="CYLINDER":
                 surf_in.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": length, "diameter": diam[i]}).surface())
             elif shape[0]=="SLIT":
-                diam = [self._shapes[i][1].get_inp()["height"]]
                 surf_in.append(pms.Cuboid({"centroid": centroid, "central": [0, 0, 1], "length": length, "width": self._box[0], "height": diam[i]}).surface()/2)
             elif shape[0]=="SPHERE":
                 surf_in.append(pms.Sphere({"centroid": centroid, "central": [0, 0, 1], "diameter": diam[i]}).surface())

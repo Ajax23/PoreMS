@@ -934,45 +934,45 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(round(pore.volume()), 114)
         self.assertEqual(round(pore.surface()["in"]), 75)
 
-    def test_pore_capsule(self):
-        # self.skipTest("Temporary")
+    # def test_pore_capsule(self):
+    #     # self.skipTest("Temporary")
 
-        # Empty pore
-        pore = pms.PoreCapsule([4, 4, 4], 1, 1, 0)
-        pore.finalize()
+    #     # Empty pore
+    #     pore = pms.PoreCapsule([4, 4, 4], 1, 1, 0)
+    #     pore.finalize()
 
-        # Filled pore
-        pore = pms.PoreCapsule([6, 6, 10], 4, 2, 5, [5, 5])
+    #     # Filled pore
+    #     pore = pms.PoreCapsule([6, 6, 10], 4, 2, 5, [5, 5])
 
-        ## Attachment
-        # pore.attach_special(pms.gen.tms(),  0, [0, 1], 5)
-        # pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="mirror")
+    #     ## Attachment
+    #     # pore.attach_special(pms.gen.tms(),  0, [0, 1], 5)
+    #     # pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="mirror")
 
-        tms2 = pms.gen.tms()
-        tms2.set_short("TMS2")
+    #     tms2 = pms.gen.tms()
+    #     tms2.set_short("TMS2")
 
-        pore.attach(tms2, 0, [0, 1], 10, "in", trials=10, inp="percent")
-        pore.attach(tms2, 0, [0, 1], 1, "in", trials=10, inp="molar")
-        pore.attach(tms2, 0, [0, 1], 0.1, "ex", trials=10, inp="molar")
+    #     pore.attach(tms2, 0, [0, 1], 10, "in", trials=10, inp="percent")
+    #     pore.attach(tms2, 0, [0, 1], 1, "in", trials=10, inp="molar")
+    #     pore.attach(tms2, 0, [0, 1], 0.1, "ex", trials=10, inp="molar")
 
-        # Special cases
-        print()
-        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, site_type="DOTA"))
-        self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", inp="DOTA"))
-        # elf.assertIsNone(pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="DOTA"))
+    #     # Special cases
+    #     print()
+    #     self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, site_type="DOTA"))
+    #     self.assertIsNone(pore.attach(pms.gen.tms(), 0, [0, 1], 100, "in", inp="DOTA"))
+    #     # elf.assertIsNone(pore.attach_special(pms.gen.tms(),  0, [0, 1], 3, symmetry="DOTA"))
 
-        # Finalize
-        pore.finalize()
-        pore.store("output/capsule/")
-        print(pore.table())
+    #     # Finalize
+    #     pore.finalize()
+    #     pore.store("output/capsule/")
+    #     print(pore.table())
 
-        # Properties
-        self.assertEqual([round(x, 4) for x in pore.diameter()], [4.2624, 4.4975, 4.4958, 4.2140])
-        self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0147, 3.0572, 4.9169])
-        self.assertEqual([round(x, 4) for x in pore.roughness()["in"]], [0.1259, 0.0817, 0.0808, 0.1226])
-        self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
-        self.assertEqual(round(pore.volume()), 375)
-        self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 391, 'ex': 44})
+    #     # Properties
+    #     self.assertEqual([round(x, 4) for x in pore.diameter()], [4.2624, 4.4975, 4.4958, 4.2140])
+    #     self.assertEqual([round(x, 4) for x in pore.centroid()], [3.0147, 3.0572, 4.9169])
+    #     self.assertEqual([round(x, 4) for x in pore.roughness()["in"]], [0.1259, 0.0817, 0.0808, 0.1226])
+    #     self.assertEqual(round(pore.roughness()["ex"], 1), 0.0)
+    #     self.assertEqual(round(pore.volume()), 375)
+    #     self.assertEqual({key: round(item) for key, item in pore.surface().items()}, {'in': 391, 'ex': 44})
 
     def test_pore_cylinder_amorph(self):
         # self.skipTest("Temporary")

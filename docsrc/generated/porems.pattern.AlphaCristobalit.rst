@@ -1,4 +1,4 @@
-.. raw:: html
+﻿.. raw:: html
 
     </div>
     <div class=col-md-9 content>
@@ -10,23 +10,21 @@ AlphaCristobalit
 
 .. autoclass:: AlphaCristobalit
 
+   
 
-  .. rubric:: Block Generation
+   
+   .. rubric:: Methods
 
-  .. autosummary::
-
-    ~AlphaCristobalit._block
-    ~AlphaCristobalit._orientation
-    ~AlphaCristobalit.generate
-    ~AlphaCristobalit.pattern
-
-
-  .. rubric:: Getter Methods
-
-  .. autosummary::
-
-    ~AlphaCristobalit.get_block
-    ~AlphaCristobalit.get_gap
-    ~AlphaCristobalit.get_orient
-    ~AlphaCristobalit.get_repeat
-    ~AlphaCristobalit.get_size
+   .. autosummary::
+   
+      ~AlphaCristobalit._block
+      ~AlphaCristobalit._orientation
+      ~AlphaCristobalit.generate
+      ~AlphaCristobalit.get_block
+      ~AlphaCristobalit.get_gap
+      ~AlphaCristobalit.get_orient
+      ~AlphaCristobalit.get_repeat
+      ~AlphaCristobalit.get_size
+      ~AlphaCristobalit.pattern
+   
+   

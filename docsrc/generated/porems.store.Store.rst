@@ -1,4 +1,4 @@
-.. raw:: html
+﻿.. raw:: html
 
     </div>
     <div class=col-md-9 content>
@@ -10,22 +10,20 @@ Store
 
 .. autoclass:: Store
 
+   
 
-  .. rubric:: Structure Methods
+   
+   .. rubric:: Methods
 
-  .. autosummary::
-
-    ~Store.gro
-    ~Store.pdb
-    ~Store.lmp
-    ~Store.xyz
-    ~Store.obj
-    ~Store.job
-
-
-  .. rubric:: Topology Methods
-
-  .. autosummary::
-
-    ~Store.grid
-    ~Store.top
+   .. autosummary::
+   
+      ~Store.grid
+      ~Store.gro
+      ~Store.job
+      ~Store.lmp
+      ~Store.obj
+      ~Store.pdb
+      ~Store.top
+      ~Store.xyz
+   
+   

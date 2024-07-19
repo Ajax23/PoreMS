@@ -1,4 +1,4 @@
-.. raw:: html
+﻿.. raw:: html
 
     </div>
     <div class=col-md-9 content>
@@ -10,51 +10,37 @@ PoreKit
 
 .. autoclass:: PoreKit
 
+   
 
-  .. rubric:: Structure
+   
+   .. rubric:: Methods
 
-  .. autosummary::
-
-    ~PoreKit._normal_ex
-    ~PoreKit._siloxane
-    ~PoreKit.attach
-    ~PoreKit.build
-    ~PoreKit.exterior
-    ~PoreKit.prepare
-    ~PoreKit.structure
-
-
-  .. rubric:: Shape
-
-  .. autosummary::
-
-    ~PoreKit.add_shape
-    ~PoreKit.shape_cylinder
-    ~PoreKit.shape_cone
-    ~PoreKit.shape_slit
-    ~PoreKit.shape_sphere
-
-
-  .. rubric:: Finalization
-
-  .. autosummary::
-
-    ~PoreKit.finalize
-    ~PoreKit.store
-    ~PoreKit.yml
-
-
-  .. rubric:: Analysis
-
-  .. autosummary::
-
-    ~PoreKit.allocation
-    ~PoreKit.box
-    ~PoreKit.centroid
-    ~PoreKit.diameter
-    ~PoreKit.reservoir
-    ~PoreKit.roughness
-    ~PoreKit.shape
-    ~PoreKit.surface
-    ~PoreKit.table
-    ~PoreKit.volume
+   .. autosummary::
+   
+      ~PoreKit._normal_ex
+      ~PoreKit._siloxane
+      ~PoreKit.add_shape
+      ~PoreKit.allocation
+      ~PoreKit.attach
+      ~PoreKit.box
+      ~PoreKit.build
+      ~PoreKit.centroid
+      ~PoreKit.diameter
+      ~PoreKit.exterior
+      ~PoreKit.finalize
+      ~PoreKit.prepare
+      ~PoreKit.reservoir
+      ~PoreKit.roughness
+      ~PoreKit.shape
+      ~PoreKit.shape_cone
+      ~PoreKit.shape_cylinder
+      ~PoreKit.shape_slit
+      ~PoreKit.shape_sphere
+      ~PoreKit.store
+      ~PoreKit.structure
+      ~PoreKit.surface
+      ~PoreKit.table
+      ~PoreKit.volume
+      ~PoreKit.yml
+   
+   

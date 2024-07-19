@@ -1,4 +1,4 @@
-.. raw:: html
+﻿.. raw:: html
 
     </div>
     <div class=col-md-9 content>
@@ -10,35 +10,22 @@ Cuboid
 
 .. autoclass:: Cuboid
 
+   
 
-  .. rubric:: Surface Function
+   
+   .. rubric:: Methods
 
-  .. autosummary::
-
-    ~Cuboid.Phi
-
-
-  .. rubric:: Shape
-
-  .. autosummary::
-
-    ~Cuboid.convert
-    ~Cuboid.plot
-    ~Cuboid.rim
-    ~Cuboid.surf
-
-
-  .. rubric:: Properties
-
-  .. autosummary::
-
-    ~Cuboid.is_in
-    ~Cuboid.normal
-    ~Cuboid.surface
-    ~Cuboid.volume
-
-  .. rubric:: Getter Methods
-
-  .. autosummary::
-
-    ~Cuboid.get_inp
+   .. autosummary::
+   
+      ~Cuboid.Phi
+      ~Cuboid.convert
+      ~Cuboid.get_inp
+      ~Cuboid.is_in
+      ~Cuboid.normal
+      ~Cuboid.plot
+      ~Cuboid.rim
+      ~Cuboid.surf
+      ~Cuboid.surface
+      ~Cuboid.volume
+   
+   

@@ -43,15 +43,13 @@ import sphinx_bootstrap_theme
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.doctest',
+extensions = ['sphinx.ext.doctest',
               'sphinx.ext.todo',
               'sphinx.ext.mathjax',
-              'sphinx.ext.autosummary',
               'numpydoc']
 
 # Generate the API documentation when building
-autosummary_generate = True
+autosummary_generate = False
 numpydoc_show_class_members = False
 
 # autodoc_default_flags = ['members','private-members']
@@ -212,5 +210,4 @@ texinfo_documents = [
 # examples, originally taken from scikit-learn's doc/conf.py
 
 
-def setup(app):
-    app.add_stylesheet('style.css')
+
