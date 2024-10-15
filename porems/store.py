@@ -241,7 +241,7 @@ class Store:
         # Initialize
         link = self._link
         link += name if name else self._name+".gro"
-
+        print(link)
         # Open file
         with open(link, "w") as file_out:
             # Set title

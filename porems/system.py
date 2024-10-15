@@ -343,7 +343,8 @@ class PoreKit():
             for i, shape in enumerate(self._shapes):
                 # Set properties of the shape
                 centroid = self._shapes[i][1].get_inp()["centroid"]
-                length = self._shapes[i][1].get_inp()["length"]
+                if not shape[0]=="SPHERE":
+                    length = self._shapes[i][1].get_inp()["length"]
                 radi = pms.geometry.length(pms.geometry.vector([centroid[0], centroid[1], p[2]], p))
                 
                 # if shape is cyclinder
@@ -364,6 +365,14 @@ class PoreKit():
                 elif shape[0]=="SLIT":
                     self.sites_sl_shape[i].append(site)
                     self.sites.append(site)
+
+                elif shape[0]=="SPHERE":
+                    if (centroid[2]-(length)/2)<p[2]<(centroid[2]+(length)/2):
+                        if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.05)/2):
+                            self.sites_sl_shape[i].append(site)
+                            self.sites.append(site)
+
+
             # If no match to one shape
             if site not in self.sites:
                 self.sites_sl_shape[20].append(site)
@@ -444,7 +453,9 @@ class PoreKit():
                 for i, shape in enumerate(self._shapes):
                     # Set properties of the shape
                     centroid = self._shapes[i][1].get_inp()["centroid"]
-                    length = self._shapes[i][1].get_inp()["length"]
+                    if not shape[0]=="SPHERE":
+                        length = self._shapes[i][1].get_inp()["length"]
+                    
                     radi = pms.geom.length(pms.geom.vector([centroid[0], centroid[1], p[2]], p))
                     
                     # if shape is cyclinder
@@ -464,6 +475,11 @@ class PoreKit():
                         elif shape[0]=="SLIT":
                             self.sites_shape[i].append(site)
                             self.sites.append(site)
+                        elif shape[0]=="SPHERE":
+                            if (centroid[2]-(length)/2)<p[2]<(centroid[2]+(length)/2):
+                                if radi < ((self._shapes[i][1].get_inp()["diameter"]*1.05)/2):
+                                    self.sites_shape[i].append(site)
+                                    self.sites.append(site)
 
                 # If no match to one shape
                 if site not in self.sites:
@@ -800,24 +816,33 @@ class PoreKit():
         pos_new = [0,0,0]
         
         for i, shape in enumerate(self._shapes):
+           
             try:
                 index_si = self.sites_shape[i]
             except:
                 index_si = self._si_pos_in[i]
             centroid = self._shapes[i][1].get_inp()["centroid"]
-            length   = self._shapes[i][1].get_inp()["length"]
+            if not shape[0] =="SPHERE":
+                length = self._shapes[i][1].get_inp()["length"]
+            elif shape[0] =="SPHERE":
+                length = self._shapes[i][1].get_inp()["diameter"]
             central   = self._shapes[i][1].get_inp()["central"]
-
+            print( shape[0], length)
             # Tolerance of centroid in z 
-            z_min = centroid[2] - length/2 + 0.1
-            z_max = centroid[2] + length/2 - 0.1
+            if not shape[0] =="SPHERE":
+                z_min = centroid[2] - length/2 + 0.1
+                z_max = centroid[2] + length/2 - 0.1
+                centroid_new = [0,0,0]
+                centroid_new[0] = centroid[0]*np.cos(-np.pi/4)-centroid[1]*np.sin(-np.pi/4)
+                centroid_new[1] = centroid[0]*np.sin(-np.pi/4)+centroid[1]*np.cos(-np.pi/4)
+                x_min = centroid_new[0] - 0.2
+                x_max = centroid_new[0] + 0.2
+            elif shape[0]=="SPHERE":
+                #print(central)
+                z_min = centroid[2] - length/2 
+                z_max = centroid[2] + length/2 
 
-            
-            centroid_new = [0,0,0]
-            centroid_new[0] = centroid[0]*np.cos(-np.pi/4)-centroid[1]*np.sin(-np.pi/4)
-            centroid_new[1] = centroid[0]*np.sin(-np.pi/4)+centroid[1]*np.cos(-np.pi/4)
-            x_min = centroid_new[0] - 0.2
-            x_max = centroid_new[0] + 0.2
+
             # Calculate distance towards central axis of binding site silicon atoms
             if shape[0]=="CYLINDER":
                 radii_temp = []
@@ -847,7 +872,15 @@ class PoreKit():
                     radii_temp.append(pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)))
                 radii.append(radii_temp)
             elif shape[0]=="SPHERE":
-                radii.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos])
+                radii_temp = []
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
+                    if z_min < pos[2] < z_max and central == [0,0,1]:
+                        radii_temp.append(pms.geom.length(pms.geom.vector(centroid, pos)))
+                radii.append(radii_temp)
             elif shape[0]=="CONE":
                 radii_temp = []
                 for index in index_si:
@@ -863,6 +896,7 @@ class PoreKit():
 
         # Return diameter
         diam = [2*r for r in r_bar]
+        print(diam)
         return diam
 
     def roughness(self):
@@ -895,17 +929,82 @@ class PoreKit():
         # Interior
         ## Calculate distance towards central axis of binding site silicon atoms
         radii_in = []
+        pos_new = [0,0,0]
+        
         for i, shape in enumerate(self._shapes):
-            pos_list = self._si_pos_in[i]
+            try:
+                index_si = self.sites_shape[i]
+            except:
+                index_si = self._si_pos_in[i]
             centroid = self._shapes[i][1].get_inp()["centroid"]
-            if shape[0]=="CYLINDER":
-                radii_in.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
-            elif shape[0]=="SLIT":
-                radii_in.append([pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)) for pos in pos_list])
+            if not shape[0] =="SPHERE":
+                length = self._shapes[i][1].get_inp()["length"]
+            elif shape[0] =="SPHERE":
+                length = self._shapes[i][1].get_inp()["diameter"]
+            central   = self._shapes[i][1].get_inp()["central"]
+
+            # Tolerance of centroid in z 
+            if not shape[0] =="SPHERE":
+                z_min = centroid[2] - length/2 + 0.1
+                z_max = centroid[2] + length/2 - 0.1
+                centroid_new = [0,0,0]
+                centroid_new[0] = centroid[0]*np.cos(-np.pi/4)-centroid[1]*np.sin(-np.pi/4)
+                centroid_new[1] = centroid[0]*np.sin(-np.pi/4)+centroid[1]*np.cos(-np.pi/4)
+                x_min = centroid_new[0] - 0.2
+                x_max = centroid_new[0] + 0.2
             elif shape[0]=="SPHERE":
-                radii_in.append([pms.geom.length(pms.geom.vector(centroid, pos)) for pos in pos_list])
-            if shape[0]=="CONE":
-                radii_in.append([pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)) for pos in pos_list])
+                #print(central)
+                z_min = centroid[2] - length/2 
+                z_max = centroid[2] + length/2 
+
+            # Calculate distance towards central axis of binding site silicon atoms
+            if shape[0]=="CYLINDER":
+                radii_temp = []
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
+                    if z_min < pos[2] < z_max and central == [0,0,1]:
+                        radii_temp.append(pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)))
+                    elif central == [1,1,0]:
+                        pos_new[0] = pos[0]*np.cos(-np.pi/4)-pos[1]*np.sin(-np.pi/4)
+                        pos_new[1] = pos[0]*np.sin(-np.pi/4)+pos[1]*np.cos(-np.pi/4)
+                        if x_min < pos_new[0] < x_max :
+                            r = pms.geom.length(pms.geom.vector([pos_new[0], centroid_new[1], centroid_new[2]], pos_new))
+                            diameter_inp   = self._shapes[i][1].get_inp()["diameter"] + 0.5
+                            if (diameter_inp/2)*1.1>r>(diameter_inp/2)*0.9:
+                                radii_temp.append(r)   
+                radii_in.append(radii_temp)
+            elif shape[0]=="SLIT":
+                radii_temp = []
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
+                    radii_temp.append(pms.geom.length(pms.geom.vector([pos[0], centroid[1], pos[2]], pos)))
+                radii_in.append(radii_temp)
+            elif shape[0]=="SPHERE":
+                radii_temp = []
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
+                    if z_min < pos[2] < z_max and central == [0,0,1]:
+                        radii_temp.append(pms.geom.length(pms.geom.vector(centroid, pos)))
+                radii_in.append(radii_temp)
+            elif shape[0]=="CONE":
+                radii_temp = []
+                for index in index_si:
+                    try:
+                        pos = self._pore.get_block().pos(index)
+                    except:
+                        pos = index
+                    if z_min < pos[2] < z_max and central == [0,0,1]:
+                        radii_temp.append(pms.geom.length(pms.geom.vector([centroid[0], centroid[1], pos[2]], pos)))
+                radii_in.append(radii_temp)
 
         # Exterior
         if self._res:
@@ -951,12 +1050,13 @@ class PoreKit():
         # Get diameters
         diam = self.diameter()
         diam = diam if isinstance(diam, list) else [diam]
-        
+        print(diam)
         # Calculate volumes
         volume = []
         for i, shape in enumerate(self._shapes):
             centroid = self._shapes[i][1].get_inp()["centroid"]
-            length = self._shapes[i][1].get_inp()["length"]
+            if not shape[0]=="SPHERE":
+                length = self._shapes[i][1].get_inp()["length"]
             if shape[0]=="CYLINDER":
                 volume.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": length, "diameter": diam[i]}).volume())
             elif shape[0]=="SLIT":
@@ -997,7 +1097,8 @@ class PoreKit():
         surf_in = []
         for i, shape in enumerate(self._shapes):
             centroid = self._shapes[i][1].get_inp()["centroid"]
-            length = self._shapes[i][1].get_inp()["length"]
+            if not shape[0]=="SPHERE":
+                length = self._shapes[i][1].get_inp()["length"]
             if shape[0]=="CYLINDER":
                 surf_in.append(pms.Cylinder({"centroid": centroid, "central": [0, 0, 1], "length": length, "diameter": diam[i]}).surface())
             elif shape[0]=="SLIT":
