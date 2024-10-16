@@ -329,7 +329,7 @@ class Pore():
             if si is not None and self._sites[si]["state"]:
                 # Disable binding site
                 self._sites[si]["state"] = False
-
+               
                 # Create a copy of the molecule
                 mol_temp = copy.deepcopy(mol)
 
@@ -361,7 +361,6 @@ class Pore():
                     proxi_list = [sites[x] for x in si_matrix[sites.index(si)]]
                     if len(proxi_list) > 0:
                         mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), site_type=site_type, is_proxi=False, is_random=False))
-
         return mol_list
 
     def siloxane(self, sites, amount, slx_dist=[0.507-1e-2, 0.507+1e-2], trials=1000, site_type="in"):
@@ -489,7 +488,7 @@ class Pore():
             List of molecule objects that are attached on the surface
         """
         mol_list = self.attach(generic.silanol(), 0, [0, 1], sites, len(sites), site_type=site_type, is_proxi=False, is_random=False)
-
+        
         return mol_list
 
 

@@ -1,4 +1,4 @@
-.. raw:: html
+﻿.. raw:: html
 
     </div>
     <div class=col-md-9 content>
@@ -10,34 +10,37 @@ PoreCapsule
 
 .. autoclass:: PoreCapsule
 
+   
 
-  .. rubric:: Attachement
+   
+   .. rubric:: Methods
 
-  .. autosummary::
-
-    ~PoreCapsule.attach
-
-
-  .. rubric:: Analysis
-
-  .. autosummary::
-
-    ~PoreCapsule.allocation
-    ~PoreCapsule.box
-    ~PoreCapsule.centroid
-    ~PoreCapsule.diameter
-    ~PoreCapsule.reservoir
-    ~PoreCapsule.roughness
-    ~PoreCapsule.shape
-    ~PoreCapsule.surface
-    ~PoreCapsule.table
-    ~PoreCapsule.volume
-
-
-  .. rubric:: Finalization
-
-  .. autosummary::
-
-    ~PoreCapsule.finalize
-    ~PoreCapsule.store
-    ~PoreCapsule.yml
+   .. autosummary::
+   
+      ~PoreCapsule._normal_ex
+      ~PoreCapsule._siloxane
+      ~PoreCapsule.add_shape
+      ~PoreCapsule.allocation
+      ~PoreCapsule.attach
+      ~PoreCapsule.box
+      ~PoreCapsule.build
+      ~PoreCapsule.centroid
+      ~PoreCapsule.diameter
+      ~PoreCapsule.exterior
+      ~PoreCapsule.finalize
+      ~PoreCapsule.prepare
+      ~PoreCapsule.reservoir
+      ~PoreCapsule.roughness
+      ~PoreCapsule.shape
+      ~PoreCapsule.shape_cone
+      ~PoreCapsule.shape_cylinder
+      ~PoreCapsule.shape_slit
+      ~PoreCapsule.shape_sphere
+      ~PoreCapsule.store
+      ~PoreCapsule.structure
+      ~PoreCapsule.surface
+      ~PoreCapsule.table
+      ~PoreCapsule.volume
+      ~PoreCapsule.yml
+   
+   

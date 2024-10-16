@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="../">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Matrix &#8212; PoreMS 0.2.5 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.2.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Matrix &#8212; PoreMS 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=cab96e3b" />
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -46,7 +36,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,6 +46,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../shape_examples.html">Pore shape examples</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -78,7 +69,10 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Matrix</a></li>
+<li><a class="reference internal" href="#">Matrix</a><ul>
+<li><a class="reference internal" href="#porems.matrix.Matrix"><code class="docutils literal notranslate"><span class="pre">Matrix</span></code></a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -106,14 +100,35 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Matrix</a><ul>
+<li><a class="reference internal" href="#porems.matrix.Matrix"><code class="docutils literal notranslate"><span class="pre">Matrix</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div id="sourcelink">
+  <a href="../_sources/generated/porems.matrix.Matrix.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="matrix">
-<h1>Matrix<a class="headerlink" href="#matrix" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="porems.matrix.Matrix">
-<em class="property">class </em><code class="descclassname">porems.matrix.</code><code class="descname">Matrix</code><span class="sig-paren">(</span><em>bonds</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.matrix.Matrix" title="Permalink to this definition">¶</a></dt>
+<div class=col-md-9 content><section id="matrix">
+<h1>Matrix<a class="headerlink" href="#matrix" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="porems.matrix.Matrix">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">porems.matrix.</span></span><span class="sig-name descname"><span class="pre">Matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bonds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#porems.matrix.Matrix" title="Link to this definition">¶</a></dt>
 <dd><p>The aim of this class is preserving all information of the grid bonds.</p>
 <p>Although the search can be parallelized, still multiple iterations are
 needed to cover the surface preparations. Additionally, due to machine
@@ -124,9 +139,9 @@ another optimization, or rather supporting algorithm, was implemented to
 bypass these issues.</p>
 <p>The idea was reducing the number of iterations to a single search by
 creating a connectivity matrix of all grid atoms. The result is a dictionary
-that has atoms <span class="math">\(1\dots n\)</span> as keys and their corresponding value is a
-list of bonded atoms <span class="math">\(1\dots m\)</span></p>
-<div class="math">
+that has atoms <span class="math notranslate nohighlight">\(1\dots n\)</span> as keys and their corresponding value is a
+list of bonded atoms <span class="math notranslate nohighlight">\(1\dots m\)</span></p>
+<div class="math notranslate nohighlight">
 \[\begin{split}\boldsymbol{C}=
 \begin{Bmatrix}
     a_1:&amp;\begin{bmatrix}a_{1,1}&amp;a_{1,2}&amp;\dots&amp;a_{1,m_1}\end{bmatrix}\\
@@ -140,58 +155,42 @@ from the matrix. For example, conditions for the surface preparation only
 need to consider the number of bonds remaining in each entry and thereby
 determine whether an atom needs to be removed or not, resulting into a
 negligible computational effort scaling linear with the number of atoms</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\mathcal{O}(n).\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>bonds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">List of all pairwise bonds in the grid with only two different atom
+<p>In addtition, for further processing, the original amount of bonds is saved
+in the same dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>bonds</strong><span class="classifier">list</span></dt><dd><p>List of all pairwise bonds in the grid with only two different atom
 types</p>
 </dd>
 </dl>
-</td>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.matrix.Matrix.add.html#porems.matrix.Matrix.add" title="porems.matrix.Matrix.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(atom_a, atom_b)</p></td>
+<td><p>Add atom between given atom ids.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Management</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.matrix.Matrix.add.html#porems.matrix.Matrix.add" title="porems.matrix.Matrix.add"><code class="xref py py-obj docutils literal"><span class="pre">add</span></code></a>(self,&nbsp;atom_a,&nbsp;atom_b)</td>
-<td>Add atom between given atom ids.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.matrix.Matrix.bound.html#porems.matrix.Matrix.bound" title="porems.matrix.Matrix.bound"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bound</span></code></a>(num_bonds[, logic])</p></td>
+<td><p>Return a list of atoms with the specified number of bonds.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.matrix.Matrix.bound.html#porems.matrix.Matrix.bound" title="porems.matrix.Matrix.bound"><code class="xref py py-obj docutils literal"><span class="pre">bound</span></code></a>(self,&nbsp;num_bonds[,&nbsp;logic])</td>
-<td>Return a list of atoms with the specified number of bonds.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.matrix.Matrix.get_matrix.html#porems.matrix.Matrix.get_matrix" title="porems.matrix.Matrix.get_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_matrix</span></code></a>()</p></td>
+<td><p>Return the connectivity matrix.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.matrix.Matrix.split.html#porems.matrix.Matrix.split" title="porems.matrix.Matrix.split"><code class="xref py py-obj docutils literal"><span class="pre">split</span></code></a>(self,&nbsp;atom_a,&nbsp;atom_b)</td>
-<td>Remove the bond between two atoms from the connectivity matrix.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.matrix.Matrix.split.html#porems.matrix.Matrix.split" title="porems.matrix.Matrix.split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split</span></code></a>(atom_a, atom_b)</p></td>
+<td><p>Remove the bond between two atoms from the connectivity matrix.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.matrix.Matrix.strip.html#porems.matrix.Matrix.strip" title="porems.matrix.Matrix.strip"><code class="xref py py-obj docutils literal"><span class="pre">strip</span></code></a>(self,&nbsp;atoms)</td>
-<td>Remove all bonds of a specified atom from the connection matrix.</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Getter Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.matrix.Matrix.get_matrix.html#porems.matrix.Matrix.get_matrix" title="porems.matrix.Matrix.get_matrix"><code class="xref py py-obj docutils literal"><span class="pre">get_matrix</span></code></a>(self)</td>
-<td>Return the connectivity matrix.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.matrix.Matrix.strip.html#porems.matrix.Matrix.strip" title="porems.matrix.Matrix.strip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strip</span></code></a>(atoms)</p></td>
+<td><p>Remove all bonds of a specified atom from the connection matrix.</p></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
+</section>
 
 
     </div>
@@ -206,7 +205,7 @@ types</p>
     </p>
     <p>
         &copy; Copyright 2021, Hamzeh Kraus.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.6.<br/>
     </p>
   </div>
 </footer>

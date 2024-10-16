@@ -2,6 +2,7 @@
 * Reworked generation methodology for easier shape combination and pattern usage
 * Added new alpha-cristobalite pattern
 * Generalization of connectivity search
+* New Lennard Jones parameter (Coasne, B.; Fourkas, J. T. from 10.1021/jp203831q)
 
 # v0.2.5
 * Add properties output in yaml format

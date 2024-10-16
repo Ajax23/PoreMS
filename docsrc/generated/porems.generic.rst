@@ -1,14 +1,33 @@
-porems\.generic
-===============
+﻿porems.generic
+==============
 
 .. automodule:: porems.generic
 
-  .. rubric:: Functions
+   
+   
+   
 
-  .. autosummary::
+   
+   
+   .. rubric:: Functions
 
-    alcohol
-    alkane
-    ketone
-    silanol
-    tms
+   .. autosummary::
+   
+      alcohol
+      alkane
+      ketone
+      silanol
+      tms
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

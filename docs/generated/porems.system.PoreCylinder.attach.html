@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="../">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PoreCylinder.attach &#8212; PoreMS 0.2.5 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.2.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>PoreCylinder.attach &#8212; PoreMS 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=cab96e3b" />
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -46,7 +36,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,6 +46,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../shape_examples.html">Pore shape examples</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -78,7 +69,10 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">PoreCylinder.attach</a></li>
+<li><a class="reference internal" href="#">PoreCylinder.attach</a><ul>
+<li><a class="reference internal" href="#porems.system.PoreCylinder.attach"><code class="docutils literal notranslate"><span class="pre">PoreCylinder.attach()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -106,63 +100,69 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">PoreCylinder.attach</a><ul>
+<li><a class="reference internal" href="#porems.system.PoreCylinder.attach"><code class="docutils literal notranslate"><span class="pre">PoreCylinder.attach()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div id="sourcelink">
+  <a href="../_sources/generated/porems.system.PoreCylinder.attach.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="porecylinder-attach">
-<h1>PoreCylinder.attach<a class="headerlink" href="#porecylinder-attach" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
-<dt id="porems.system.PoreCylinder.attach">
-<code class="descclassname">PoreCylinder.</code><code class="descname">attach</code><span class="sig-paren">(</span><em>self</em>, <em>mol</em>, <em>mount</em>, <em>axis</em>, <em>amount</em>, <em>site_type='in'</em>, <em>inp='num'</em>, <em>pos_list=[]</em>, <em>scale=1</em>, <em>trials=1000</em>, <em>is_proxi=True</em>, <em>is_rotate=False</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder.attach" title="Permalink to this definition">¶</a></dt>
+<div class=col-md-9 content><section id="porecylinder-attach">
+<h1>PoreCylinder.attach<a class="headerlink" href="#porecylinder-attach" title="Link to this heading">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="porems.system.PoreCylinder.attach">
+<span class="sig-prename descclassname"><span class="pre">PoreCylinder.</span></span><span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'num'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_proxi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCylinder.attach" title="Link to this definition">¶</a></dt>
 <dd><p>Attach molecule on the surface.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule</span></dt>
-<dd><p class="first last">Molecule object to attach</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mol</strong><span class="classifier">Molecule</span></dt><dd><p>Molecule object to attach</p>
 </dd>
-<dt><strong>mount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer</span></dt>
-<dd><p class="first last">Atom id of the molecule that is placed on the surface silicon atom</p>
+<dt><strong>mount</strong><span class="classifier">integer</span></dt><dd><p>Atom id of the molecule that is placed on the surface silicon atom</p>
 </dd>
-<dt><strong>axis</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">List of two atom ids of the molecule that define the molecule axis</p>
+<dt><strong>axis</strong><span class="classifier">list</span></dt><dd><p>List of two atom ids of the molecule that define the molecule axis</p>
 </dd>
-<dt><strong>amount</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Number of molecules to attach</p>
+<dt><strong>amount</strong><span class="classifier">int</span></dt><dd><p>Number of molecules to attach</p>
 </dd>
-<dt><strong>site_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Use <strong>in</strong> for the interior surface and <strong>ex</strong> for the exterior</p>
+<dt><strong>site_type</strong><span class="classifier">string, optional</span></dt><dd><p>Use <strong>in</strong> for the interior surface and <strong>ex</strong> for the exterior</p>
 </dd>
-<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Input type: <strong>num</strong> - Number of molecules,
-<strong>molar</strong> - <span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>,
-<strong>percent</strong> - <span class="math">\(\%\)</span> of OH groups</p>
+<dt><strong>inp</strong><span class="classifier">string, optional</span></dt><dd><p>Input type: <strong>num</strong> - Number of molecules,
+<strong>molar</strong> - <span class="math notranslate nohighlight">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span>,
+<strong>percent</strong> - <span class="math notranslate nohighlight">\(\%\)</span> of OH groups</p>
 </dd>
-<dt><strong>pos_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
-<dd><p class="first last">List of positions (cartesian) to find nearest available binding site for</p>
+<dt><strong>pos_list</strong><span class="classifier">list, optional</span></dt><dd><p>List of positions (Cartesian) to find nearest available binding site for</p>
 </dd>
-<dt><strong>scale</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Circumference scaling around the molecule position</p>
+<dt><strong>scale</strong><span class="classifier">float, optional</span></dt><dd><p>Circumference scaling around the molecule position</p>
 </dd>
-<dt><strong>trials</strong> <span class="classifier-delimiter">:</span> <span class="classifier">integer, optional</span></dt>
-<dd><p class="first last">Number of trials picking a random site</p>
+<dt><strong>trials</strong><span class="classifier">integer, optional</span></dt><dd><p>Number of trials picking a random site</p>
 </dd>
-<dt><strong>is_proxi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True to fill binding sites in proximity of filled binding site</p>
+<dt><strong>is_proxi</strong><span class="classifier">bool, optional</span></dt><dd><p>True to fill binding sites in proximity of filled binding site</p>
 </dd>
-<dt><strong>is_rotate</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">True to randomly rotate molecule around own axis</p>
+<dt><strong>is_rotate</strong><span class="classifier">bool, optional</span></dt><dd><p>True to randomly rotate molecule around own axis</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-</div>
+</section>
 
 
     </div>
@@ -177,7 +177,7 @@
     </p>
     <p>
         &copy; Copyright 2021, Hamzeh Kraus.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.6.<br/>
     </p>
   </div>
 </footer>

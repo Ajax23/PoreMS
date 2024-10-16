@@ -1,4 +1,4 @@
-.. raw:: html
+﻿.. raw:: html
 
     </div>
     <div class=col-md-9 content>
@@ -10,37 +10,24 @@ Cylinder
 
 .. autoclass:: Cylinder
 
+   
 
-  .. rubric:: Surface Function
+   
+   .. rubric:: Methods
 
-  .. autosummary::
-
-    ~Cylinder.Phi
-    ~Cylinder.d_Phi_phi
-    ~Cylinder.d_Phi_z
-
-
-  .. rubric:: Shape
-
-  .. autosummary::
-
-    ~Cylinder.convert
-    ~Cylinder.plot
-    ~Cylinder.rim
-    ~Cylinder.surf
-
-
-  .. rubric:: Properties
-
-  .. autosummary::
-
-    ~Cylinder.is_in
-    ~Cylinder.normal
-    ~Cylinder.surface
-    ~Cylinder.volume
-
-  .. rubric:: Getter Methods
-
-  .. autosummary::
-
-    ~Cylinder.get_inp
+   .. autosummary::
+   
+      ~Cylinder.Phi
+      ~Cylinder.convert
+      ~Cylinder.d_Phi_phi
+      ~Cylinder.d_Phi_z
+      ~Cylinder.get_inp
+      ~Cylinder.is_in
+      ~Cylinder.normal
+      ~Cylinder.plot
+      ~Cylinder.rim
+      ~Cylinder.surf
+      ~Cylinder.surface
+      ~Cylinder.volume
+   
+   

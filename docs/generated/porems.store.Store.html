@@ -1,39 +1,28 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="../">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Store &#8212; PoreMS 0.2.5 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.2.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Store &#8212; PoreMS 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=cab96e3b" />
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -46,7 +35,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,6 +45,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../shape_examples.html">Pore shape examples</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -78,7 +68,10 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Store</a></li>
+<li><a class="reference internal" href="#">Store</a><ul>
+<li><a class="reference internal" href="#porems.store.Store"><code class="docutils literal notranslate"><span class="pre">Store</span></code></a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -106,14 +99,35 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Store</a><ul>
+<li><a class="reference internal" href="#porems.store.Store"><code class="docutils literal notranslate"><span class="pre">Store</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div id="sourcelink">
+  <a href="../_sources/generated/porems.store.Store.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="store">
-<h1>Store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="porems.store.Store">
-<em class="property">class </em><code class="descclassname">porems.store.</code><code class="descname">Store</code><span class="sig-paren">(</span><em>inp</em>, <em>link='./'</em>, <em>sort_list=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.store.Store" title="Permalink to this definition">¶</a></dt>
+<div class=col-md-9 content><section id="store">
+<h1>Store<a class="headerlink" href="#store" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="porems.store.Store">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">porems.store.</span></span><span class="sig-name descname"><span class="pre">Store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#porems.store.Store" title="Link to this definition">¶</a></dt>
 <dd><p>This class converts a molecule object to a structure file of different
 possible formats. Currently only <strong>PDB</strong> and <strong>GRO</strong> are fully supported.</p>
 <p>For pore objects two additional methods are available for generating the
@@ -121,78 +135,58 @@ main topology file and a topology file containing grid molecule
 parameters and charges. Currently only the GROMACS format is supported.</p>
 <p>Furthermore, there is an automized routine for generating topologies
 with Antechamber where job-file for this tool are created.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule, Pore</span></dt>
-<dd><p class="first last">Molecule or Pore object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inp</strong><span class="classifier">Molecule, Pore</span></dt><dd><p>Molecule or Pore object</p>
 </dd>
-<dt><strong>link</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Folder link for output</p>
+<dt><strong>link</strong><span class="classifier">string, optional</span></dt><dd><p>Folder link for output</p>
 </dd>
-<dt><strong>sort_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
-<dd><p class="first last">Optionally provide a sorting list in case a dictionary of molecules is
+<dt><strong>sort_list</strong><span class="classifier">list, optional</span></dt><dd><p>Optionally provide a sorting list in case a dictionary of molecules is
 given</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>Assuming a pore or molecule object have already been created, the structure
 files can be generated like following examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Store</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span><span class="o">.</span><span class="n">pdb</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Store</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span><span class="o">.</span><span class="n">pdb</span><span class="p">()</span>
 <span class="n">Store</span><span class="p">(</span><span class="n">pore</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">gro</span><span class="p">(</span><span class="s2">&quot;pore.gro&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Structure Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.gro.html#porems.store.Store.gro" title="porems.store.Store.gro"><code class="xref py py-obj docutils literal"><span class="pre">gro</span></code></a>(self[,&nbsp;name,&nbsp;use_atom_names])</td>
-<td>Generate the structure file for the defined molecule in the <strong>GRO</strong> format.</td>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.store.Store.grid.html#porems.store.Store.grid" title="porems.store.Store.grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code></a>([name, charges])</p></td>
+<td><p>Store the <strong>grid.itp</strong> file containing the necessary parameters and charges of the grid molecules.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.pdb.html#porems.store.Store.pdb" title="porems.store.Store.pdb"><code class="xref py py-obj docutils literal"><span class="pre">pdb</span></code></a>(self[,&nbsp;name,&nbsp;use_atom_names])</td>
-<td>Generate the structure file for the defined molecule in the <strong>PDB</strong> format.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.store.Store.gro.html#porems.store.Store.gro" title="porems.store.Store.gro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gro</span></code></a>([name, use_atom_names])</p></td>
+<td><p>Generate the structure file for the defined molecule in the <strong>GRO</strong> format.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.lmp.html#porems.store.Store.lmp" title="porems.store.Store.lmp"><code class="xref py py-obj docutils literal"><span class="pre">lmp</span></code></a>(self[,&nbsp;name])</td>
-<td>Generate the structure file for the defined molecule in the LAMMPS format.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.store.Store.job.html#porems.store.Store.job" title="porems.store.Store.job"><code class="xref py py-obj docutils literal notranslate"><span class="pre">job</span></code></a>([name, master])</p></td>
+<td><p>Create job file to run with Antechamber.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.xyz.html#porems.store.Store.xyz" title="porems.store.Store.xyz"><code class="xref py py-obj docutils literal"><span class="pre">xyz</span></code></a>(self[,&nbsp;name,&nbsp;use_atom_names])</td>
-<td>Generate the structure file for the defined molecule in the <strong>XYZ</strong> format for running qm-simulations.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.store.Store.lmp.html#porems.store.Store.lmp" title="porems.store.Store.lmp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lmp</span></code></a>([name])</p></td>
+<td><p>Generate the structure file for the defined molecule in the LAMMPS format.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.obj.html#porems.store.Store.obj" title="porems.store.Store.obj"><code class="xref py py-obj docutils literal"><span class="pre">obj</span></code></a>(self[,&nbsp;name])</td>
-<td>Save the molecule object or the dictionary of those using pickle.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.store.Store.obj.html#porems.store.Store.obj" title="porems.store.Store.obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obj</span></code></a>([name])</p></td>
+<td><p>Save the molecule object or the dictionary of those using pickle.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.job.html#porems.store.Store.job" title="porems.store.Store.job"><code class="xref py py-obj docutils literal"><span class="pre">job</span></code></a>(self[,&nbsp;name,&nbsp;master])</td>
-<td>Create job file to run with Antechamber.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.store.Store.pdb.html#porems.store.Store.pdb" title="porems.store.Store.pdb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdb</span></code></a>([name, use_atom_names])</p></td>
+<td><p>Generate the structure file for the defined molecule in the <strong>PDB</strong> format.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Topology Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.store.Store.grid.html#porems.store.Store.grid" title="porems.store.Store.grid"><code class="xref py py-obj docutils literal"><span class="pre">grid</span></code></a>(self[,&nbsp;name,&nbsp;charges])</td>
-<td>Store the <strong>grid.itp</strong> file containing the necessary parameters and charges of the grid molecules.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.store.Store.top.html#porems.store.Store.top" title="porems.store.Store.top"><code class="xref py py-obj docutils literal notranslate"><span class="pre">top</span></code></a>([name])</p></td>
+<td><p>Store the <strong>topology</strong> file for a pore.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.store.Store.top.html#porems.store.Store.top" title="porems.store.Store.top"><code class="xref py py-obj docutils literal"><span class="pre">top</span></code></a>(self[,&nbsp;name])</td>
-<td>Store the <strong>topology</strong> file for a pore.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.store.Store.xyz.html#porems.store.Store.xyz" title="porems.store.Store.xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xyz</span></code></a>([name, use_atom_names])</p></td>
+<td><p>Generate the structure file for the defined molecule in the <strong>XYZ</strong> format for running qm-simulations.</p></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
+</section>
 
 
     </div>
@@ -207,7 +201,7 @@ files can be generated like following examples</p>
     </p>
     <p>
         &copy; Copyright 2021, Hamzeh Kraus.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.6.<br/>
     </p>
   </div>
 </footer>

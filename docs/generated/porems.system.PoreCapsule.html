@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="../">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PoreCapsule &#8212; PoreMS 0.2.5 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.2.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>PoreCapsule &#8212; PoreMS 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=cab96e3b" />
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -46,7 +36,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,6 +46,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../shape_examples.html">Pore shape examples</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -78,7 +69,10 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">PoreCapsule</a></li>
+<li><a class="reference internal" href="#">PoreCapsule</a><ul>
+<li><a class="reference internal" href="#porems.system.PoreCapsule"><code class="docutils literal notranslate"><span class="pre">PoreCapsule</span></code></a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -106,47 +100,59 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">PoreCapsule</a><ul>
+<li><a class="reference internal" href="#porems.system.PoreCapsule"><code class="docutils literal notranslate"><span class="pre">PoreCapsule</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div id="sourcelink">
+  <a href="../_sources/generated/porems.system.PoreCapsule.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="porecapsule">
-<h1>PoreCapsule<a class="headerlink" href="#porecapsule" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="porems.system.PoreCapsule">
-<em class="property">class </em><code class="descclassname">porems.system.</code><code class="descname">PoreCapsule</code><span class="sig-paren">(</span><em>size, diam, sep, res=5, hydro=[0, 0]</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCapsule" title="Permalink to this definition">¶</a></dt>
+<div class=col-md-9 content><section id="porecapsule">
+<h1>PoreCapsule<a class="headerlink" href="#porecapsule" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="porems.system.PoreCapsule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">porems.system.</span></span><span class="sig-name descname"><span class="pre">PoreCapsule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hydro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#porems.system.PoreCapsule" title="Link to this definition">¶</a></dt>
 <dd><p>This class carves a capsule pore system out of a
-<span class="math">\(\beta\)</span>-cristobalite block.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">Size of the silicon-oxygen-grid</p>
+<span class="math notranslate nohighlight">\(\beta\)</span>-cristobalite block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size</strong><span class="classifier">list</span></dt><dd><p>Size of the silicon-oxygen-grid</p>
 </dd>
-<dt><strong>diam</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Cylinder diameter</p>
+<dt><strong>diam</strong><span class="classifier">float</span></dt><dd><p>Cylinder diameter</p>
 </dd>
-<dt><strong>sep</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Separation length between capsule</p>
+<dt><strong>sep</strong><span class="classifier">float</span></dt><dd><p>Separation length between capsule</p>
 </dd>
-<dt><strong>res</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Reservoir size on each side</p>
+<dt><strong>res</strong><span class="classifier">float, optional</span></dt><dd><p>Reservoir size on each side</p>
 </dd>
-<dt><strong>hydro: list, optional</strong></dt>
-<dd><p class="first last">Hydroxilation degree for interior and exterior of the pore in
-<span class="math">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span></p>
+<dt><strong>hydro: list, optional</strong></dt><dd><p>Hydroxilation degree for interior and exterior of the pore in
+<span class="math notranslate nohighlight">\(\frac{\mu\text{mol}}{\text{m}^2}\)</span></p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>Following example generates a capsule pore with a diameter of 4nm, a
 separation distance between the capsules of 2nm, reservoirs of 5nm on each
 side and a surface functionalized with TMS</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">porems</span> <span class="k">as</span> <span class="nn">pms</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">porems</span> <span class="k">as</span> <span class="nn">pms</span>
 
 <span class="n">pore</span> <span class="o">=</span> <span class="n">pms</span><span class="o">.</span><span class="n">PoreCapsule</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
@@ -158,87 +164,89 @@ side and a surface functionalized with TMS</p>
 <span class="n">pore</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;output/&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Attachement</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule._normal_ex.html#porems.system.PoreCapsule._normal_ex" title="porems.system.PoreCapsule._normal_ex"><code class="xref py py-obj docutils literal"><span class="pre">_normal_ex</span></code></a>(self,&nbsp;pos)</td>
-<td>Normal function for the exterior surface</td>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_normal_ex</span></code>(pos)</p></td>
+<td><p>Normal function for the exterior surface</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreCapsule._normal_in.html#porems.system.PoreCapsule._normal_in" title="porems.system.PoreCapsule._normal_in"><code class="xref py py-obj docutils literal"><span class="pre">_normal_in</span></code></a>(self,&nbsp;pos)</td>
-<td>Normal function for the interior surface</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_siloxane</span></code>(site_type[, slx_dist])</p></td>
+<td><p>Attach siloxane bridges using function <a class="reference internal" href="porems.pore.Pore.siloxane.html#porems.pore.Pore.siloxane" title="porems.pore.Pore.siloxane"><code class="xref py py-func docutils literal notranslate"><span class="pre">porems.pore.Pore.siloxane()</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.attach.html#porems.system.PoreCapsule.attach" title="porems.system.PoreCapsule.attach"><code class="xref py py-obj docutils literal"><span class="pre">attach</span></code></a>(self,&nbsp;mol,&nbsp;mount,&nbsp;axis,&nbsp;amount[,&nbsp;…])</td>
-<td>Attach molecule on the surface.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_shape</span></code>(shape[, section, hydro])</p></td>
+<td><p>Add shape to pore system for drilling.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Analysis</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule._table_base.html#porems.system.PoreCapsule._table_base" title="porems.system.PoreCapsule._table_base"><code class="xref py py-obj docutils literal"><span class="pre">_table_base</span></code></a>(self,&nbsp;props[,&nbsp;decimals])</td>
-<td>Base functino for converting properties to pandas table for easy viewing.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.system.PoreCapsule.allocation.html#porems.system.PoreCapsule.allocation" title="porems.system.PoreCapsule.allocation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">allocation</span></code></a>()</p></td>
+<td><p>Calculate molecule allocation on the surface.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreCapsule.allocation.html#porems.system.PoreCapsule.allocation" title="porems.system.PoreCapsule.allocation"><code class="xref py py-obj docutils literal"><span class="pre">allocation</span></code></a>(self)</td>
-<td>Calculate molecule allocation on the surface.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.system.PoreCapsule.attach.html#porems.system.PoreCapsule.attach" title="porems.system.PoreCapsule.attach"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attach</span></code></a>(mol, mount, axis, amount[, ...])</p></td>
+<td><p>Attach molecule on the surface.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.box.html#porems.system.PoreCapsule.box" title="porems.system.PoreCapsule.box"><code class="xref py py-obj docutils literal"><span class="pre">box</span></code></a>(self)</td>
-<td>Return the box size of the pore block.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.system.PoreCapsule.box.html#porems.system.PoreCapsule.box" title="porems.system.PoreCapsule.box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">box</span></code></a>()</p></td>
+<td><p>Return the box size of the pore block.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreCapsule.centroid.html#porems.system.PoreCapsule.centroid" title="porems.system.PoreCapsule.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a>(self)</td>
-<td>Return pore centroid.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code>([bonds])</p></td>
+<td><p>Process provided structure to build connectivity matrix.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.diameter.html#porems.system.PoreCapsule.diameter" title="porems.system.PoreCapsule.diameter"><code class="xref py py-obj docutils literal"><span class="pre">diameter</span></code></a>(self)</td>
-<td>Calculate true cylinder diameter after drilling and preperation.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.system.PoreCapsule.centroid.html#porems.system.PoreCapsule.centroid" title="porems.system.PoreCapsule.centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centroid</span></code></a>()</p></td>
+<td><p>Return pore centroid.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreCapsule.reservoir.html#porems.system.PoreCapsule.reservoir" title="porems.system.PoreCapsule.reservoir"><code class="xref py py-obj docutils literal"><span class="pre">reservoir</span></code></a>(self)</td>
-<td>Return the reservoir length.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.system.PoreCapsule.diameter.html#porems.system.PoreCapsule.diameter" title="porems.system.PoreCapsule.diameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diameter</span></code></a>()</p></td>
+<td><p>Calculate true diameter after drilling and preparation.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.roughness.html#porems.system.PoreCapsule.roughness" title="porems.system.PoreCapsule.roughness"><code class="xref py py-obj docutils literal"><span class="pre">roughness</span></code></a>(self)</td>
-<td>Calculate surface roughness.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">exterior</span></code>(res[, hydro])</p></td>
+<td><p>Optionally create and adjust exterior surface.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreCapsule.shape.html#porems.system.PoreCapsule.shape" title="porems.system.PoreCapsule.shape"><code class="xref py py-obj docutils literal"><span class="pre">shape</span></code></a>(self)</td>
-<td>Return the pore shape for analysis using PoreAna.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.system.PoreCapsule.finalize.html#porems.system.PoreCapsule.finalize" title="porems.system.PoreCapsule.finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize</span></code></a>()</p></td>
+<td><p>Finalize pore system.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.surface.html#porems.system.PoreCapsule.surface" title="porems.system.PoreCapsule.surface"><code class="xref py py-obj docutils literal"><span class="pre">surface</span></code></a>(self)</td>
-<td>Calculate pore surface and exterior surface.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code>()</p></td>
+<td><p>Prepare pore surface, add siloxane bridges, assign sites to sections, and assign a unique normal vector to each site by updating the original pore object site list.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreCapsule.table.html#porems.system.PoreCapsule.table" title="porems.system.PoreCapsule.table"><code class="xref py py-obj docutils literal"><span class="pre">table</span></code></a>(self[,&nbsp;decimals])</td>
-<td>Create properties as pandas table for easy viewing.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.system.PoreCapsule.reservoir.html#porems.system.PoreCapsule.reservoir" title="porems.system.PoreCapsule.reservoir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reservoir</span></code></a>()</p></td>
+<td><p>Return the reservoir length.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.volume.html#porems.system.PoreCapsule.volume" title="porems.system.PoreCapsule.volume"><code class="xref py py-obj docutils literal"><span class="pre">volume</span></code></a>(self)</td>
-<td>Calculate pore volume.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.system.PoreCapsule.roughness.html#porems.system.PoreCapsule.roughness" title="porems.system.PoreCapsule.roughness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roughness</span></code></a>()</p></td>
+<td><p>Calculate surface roughness.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Finalization</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.finalize.html#porems.system.PoreCapsule.finalize" title="porems.system.PoreCapsule.finalize"><code class="xref py py-obj docutils literal"><span class="pre">finalize</span></code></a>(self)</td>
-<td>Finalize pore system.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.system.PoreCapsule.shape.html#porems.system.PoreCapsule.shape" title="porems.system.PoreCapsule.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a>()</p></td>
+<td><p>Return the pore shape for analysis using PoreAna.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.system.PoreCapsule.store.html#porems.system.PoreCapsule.store" title="porems.system.PoreCapsule.store"><code class="xref py py-obj docutils literal"><span class="pre">store</span></code></a>(self[,&nbsp;link,&nbsp;sort_list])</td>
-<td>Store pore system and all necessary files for simulation at given link.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape_cone</span></code>(diam_1, diam_2[, length, ...])</p></td>
+<td><p>Add cone shape</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.system.PoreCapsule.yml.html#porems.system.PoreCapsule.yml" title="porems.system.PoreCapsule.yml"><code class="xref py py-obj docutils literal"><span class="pre">yml</span></code></a>(self[,&nbsp;link])</td>
-<td>Save yaml file with properties necessary for analysis.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape_cylinder</span></code>(diam[, length, centroid, central])</p></td>
+<td><p>Add cylindrical shape</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape_slit</span></code>(height[, length, centroid, central])</p></td>
+<td><p>Add slit shape</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape_sphere</span></code>(diameter[, centroid, central])</p></td>
+<td><p>Add sphere shape</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.system.PoreCapsule.store.html#porems.system.PoreCapsule.store" title="porems.system.PoreCapsule.store"><code class="xref py py-obj docutils literal notranslate"><span class="pre">store</span></code></a>([link, sort_list])</p></td>
+<td><p>Store pore system and all necessary files for simulation at given link.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">structure</span></code>(structure)</p></td>
+<td><p>Add structure to the Pore builder.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.system.PoreCapsule.surface.html#porems.system.PoreCapsule.surface" title="porems.system.PoreCapsule.surface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surface</span></code></a>([is_sum])</p></td>
+<td><p>Calculate pore surface and exterior surface.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.system.PoreCapsule.table.html#porems.system.PoreCapsule.table" title="porems.system.PoreCapsule.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a>([decimals])</p></td>
+<td><p>Create properties as pandas table for easy viewing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.system.PoreCapsule.volume.html#porems.system.PoreCapsule.volume" title="porems.system.PoreCapsule.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>([is_sum])</p></td>
+<td><p>Calculate pore volume.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.system.PoreCapsule.yml.html#porems.system.PoreCapsule.yml" title="porems.system.PoreCapsule.yml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yml</span></code></a>([link])</p></td>
+<td><p>Save yaml file with properties necessary for analysis.</p></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
+</section>
 
 
     </div>
@@ -253,7 +261,7 @@ side and a surface functionalized with TMS</p>
     </p>
     <p>
         &copy; Copyright 2021, Hamzeh Kraus.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.6.<br/>
     </p>
   </div>
 </footer>

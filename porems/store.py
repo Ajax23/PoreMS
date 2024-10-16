@@ -57,6 +57,7 @@ class Store:
             self._mols = [self._inp]
         elif isinstance(inp, Pore):
             if sort_list:
+                print(inp.get_mol_dict().keys())
                 if sorted(sort_list) == sorted(list(inp.get_mol_dict().keys())):
                     self._mols = sum([inp.get_mol_dict()[x] for x in sort_list], [])
                     self._short_list = sort_list
@@ -240,7 +241,7 @@ class Store:
         # Initialize
         link = self._link
         link += name if name else self._name+".gro"
-
+        print(link)
         # Open file
         with open(link, "w") as file_out:
             # Set title

@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="../">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Dice &#8212; PoreMS 0.2.5 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.2.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dice &#8212; PoreMS 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=cab96e3b" />
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -46,7 +36,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,6 +46,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../shape_examples.html">Pore shape examples</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -78,7 +69,10 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Dice</a></li>
+<li><a class="reference internal" href="#">Dice</a><ul>
+<li><a class="reference internal" href="#porems.dice.Dice"><code class="docutils literal notranslate"><span class="pre">Dice</span></code></a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -106,29 +100,50 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Dice</a><ul>
+<li><a class="reference internal" href="#porems.dice.Dice"><code class="docutils literal notranslate"><span class="pre">Dice</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div id="sourcelink">
+  <a href="../_sources/generated/porems.dice.Dice.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="dice">
-<h1>Dice<a class="headerlink" href="#dice" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="porems.dice.Dice">
-<em class="property">class </em><code class="descclassname">porems.dice.</code><code class="descname">Dice</code><span class="sig-paren">(</span><em>mol</em>, <em>size</em>, <em>is_pbc</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.dice.Dice" title="Permalink to this definition">¶</a></dt>
+<div class=col-md-9 content><section id="dice">
+<h1>Dice<a class="headerlink" href="#dice" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="porems.dice.Dice">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">porems.dice.</span></span><span class="sig-name descname"><span class="pre">Dice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_pbc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#porems.dice.Dice" title="Link to this definition">¶</a></dt>
 <dd><p>This class splits the molecule into smaller sub boxes and provides
 parallelized functions for pair-search.</p>
 <p>The aim is reducing the workload on search algorithms for atom pairs.
 Normally the computational effort would be</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\mathcal O(n^2)\]</div>
-<p>with the number of atoms <span class="math">\(n\)</span>, because each atom has to be compared
+<p>with the number of atoms <span class="math notranslate nohighlight">\(n\)</span>, because each atom has to be compared
 with all other atoms.</p>
 <p>Since a bond distance is fixed, the idea is reducing the search space by
 dividing the molecule box into cubes and only performing the  pair-search
 within these smaller boxes and their 26 immediate neighbors. Assuming that
 the grid structure is ideal in a geometrical sense, that all bond length and
 angles are constant, the number of atoms in each cube are a constant
-<span class="math">\(b\)</span>. The computational effort for each atom is thus a constant</p>
-<div class="math">
+<span class="math notranslate nohighlight">\(b\)</span>. The computational effort for each atom is thus a constant</p>
+<div class="math notranslate nohighlight">
 \[\mathcal O(27\cdot b^2)\]</div>
 <p>Therefore, the computational effort for an entire search scales linear with
 the number of cubes. For example, doubling the cristobalite block size only
@@ -138,130 +153,83 @@ needed between the subprocesses that each cover a set of cubes. The effort
 therefore has an ideal speedup.</p>
 <p>Note that the cube size must be strictly greater than the intended
 bond length searches.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Molecule</span></dt>
-<dd><p class="first last">Molecule to be divided</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mol</strong><span class="classifier">Molecule</span></dt><dd><p>Molecule to be divided</p>
 </dd>
-<dt><strong>size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Cube edge size</p>
+<dt><strong>size</strong><span class="classifier">float</span></dt><dd><p>Cube edge size</p>
 </dd>
-<dt><strong>is_pbc</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">True if periodic boundary conditions are needed</p>
+<dt><strong>is_pbc</strong><span class="classifier">bool</span></dt><dd><p>True if periodic boundary conditions are needed</p>
 </dd>
 </dl>
-</td>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice._back.html#porems.dice.Dice._back" title="porems.dice.Dice._back"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_back</span></code></a>(index)</p></td>
+<td><p>Step one cube to the back considering the z-axis.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Management</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice._fill.html#porems.dice.Dice._fill" title="porems.dice.Dice._fill"><code class="xref py py-obj docutils literal"><span class="pre">_fill</span></code></a>(self)</td>
-<td>Based on their coordinates, the atom ids, as defined in the molecule object, are filled into the cubes.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice._bot.html#porems.dice.Dice._bot" title="porems.dice.Dice._bot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_bot</span></code></a>(index)</p></td>
+<td><p>Step one cube to the bottom considering the y-axis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice._pos_to_index.html#porems.dice.Dice._pos_to_index" title="porems.dice.Dice._pos_to_index"><code class="xref py py-obj docutils literal"><span class="pre">_pos_to_index</span></code></a>(self,&nbsp;position)</td>
-<td>Calculate the cube index for a given position.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice._fill.html#porems.dice.Dice._fill" title="porems.dice.Dice._fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_fill</span></code></a>()</p></td>
+<td><p>Based on their coordinates, the atom ids, as defined in the molecule object, are filled into the cubes.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice._split.html#porems.dice.Dice._split" title="porems.dice.Dice._split"><code class="xref py py-obj docutils literal"><span class="pre">_split</span></code></a>(self)</td>
-<td>Here the number of cubes is calculated for each dimension for the defined cube size and molecule dimension.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice._front.html#porems.dice.Dice._front" title="porems.dice.Dice._front"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_front</span></code></a>(index)</p></td>
+<td><p>Step one cube to the front considering the z-axis.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Iterator</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice._right.html#porems.dice.Dice._right" title="porems.dice.Dice._right"><code class="xref py py-obj docutils literal"><span class="pre">_right</span></code></a>(self,&nbsp;index)</td>
-<td>Step one cube to the right considering the x-axis.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice._left.html#porems.dice.Dice._left" title="porems.dice.Dice._left"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_left</span></code></a>(index)</p></td>
+<td><p>Step one cube to the left considering the x-axis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice._left.html#porems.dice.Dice._left" title="porems.dice.Dice._left"><code class="xref py py-obj docutils literal"><span class="pre">_left</span></code></a>(self,&nbsp;index)</td>
-<td>Step one cube to the left considering the x-axis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice._pos_to_index.html#porems.dice.Dice._pos_to_index" title="porems.dice.Dice._pos_to_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pos_to_index</span></code></a>(position)</p></td>
+<td><p>Calculate the cube index for a given position.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice._top.html#porems.dice.Dice._top" title="porems.dice.Dice._top"><code class="xref py py-obj docutils literal"><span class="pre">_top</span></code></a>(self,&nbsp;index)</td>
-<td>Step one cube to the top considering the y-axis.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice._right.html#porems.dice.Dice._right" title="porems.dice.Dice._right"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_right</span></code></a>(index)</p></td>
+<td><p>Step one cube to the right considering the x-axis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice._bot.html#porems.dice.Dice._bot" title="porems.dice.Dice._bot"><code class="xref py py-obj docutils literal"><span class="pre">_bot</span></code></a>(self,&nbsp;index)</td>
-<td>Step one cube to the bottom considering the y-axis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice._split.html#porems.dice.Dice._split" title="porems.dice.Dice._split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_split</span></code></a>()</p></td>
+<td><p>Here the number of cubes is calculated for each dimension for the defined cube size and molecule dimension.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice._front.html#porems.dice.Dice._front" title="porems.dice.Dice._front"><code class="xref py py-obj docutils literal"><span class="pre">_front</span></code></a>(self,&nbsp;index)</td>
-<td>Step one cube to the front considering the z-axis.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice._step.html#porems.dice.Dice._step" title="porems.dice.Dice._step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_step</span></code></a>(dim, step, index)</p></td>
+<td><p>Helper function for iterating through the cubes.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice._back.html#porems.dice.Dice._back" title="porems.dice.Dice._back"><code class="xref py py-obj docutils literal"><span class="pre">_back</span></code></a>(self,&nbsp;index)</td>
-<td>Step one cube to the back considering the z-axis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice._top.html#porems.dice.Dice._top" title="porems.dice.Dice._top"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_top</span></code></a>(index)</p></td>
+<td><p>Step one cube to the top considering the y-axis.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice._step.html#porems.dice.Dice._step" title="porems.dice.Dice._step"><code class="xref py py-obj docutils literal"><span class="pre">_step</span></code></a>(self,&nbsp;dim,&nbsp;step,&nbsp;index)</td>
-<td>Helper function for iterating through the cubes.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice.find_bond.html#porems.dice.Dice.find_bond" title="porems.dice.Dice.find_bond"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_bond</span></code></a>(cube_list, atom_type, distance)</p></td>
+<td><p>Search for a bond in the given cubes.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice.neighbor.html#porems.dice.Dice.neighbor" title="porems.dice.Dice.neighbor"><code class="xref py py-obj docutils literal"><span class="pre">neighbor</span></code></a>(self,&nbsp;cube_id[,&nbsp;is_self])</td>
-<td>Get the ids of the cubes surrounding the given one.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice.find_parallel.html#porems.dice.Dice.find_parallel" title="porems.dice.Dice.find_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_parallel</span></code></a>(cube_list, atom_type, distance)</p></td>
+<td><p>Parallelized bond search of function <a class="reference internal" href="porems.dice.Dice.find_bond.html#porems.dice.Dice.find_bond" title="porems.dice.Dice.find_bond"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_bond()</span></code></a>.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Search</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice.find_bond.html#porems.dice.Dice.find_bond" title="porems.dice.Dice.find_bond"><code class="xref py py-obj docutils literal"><span class="pre">find_bond</span></code></a>(self,&nbsp;cube_list,&nbsp;atom_type,&nbsp;distance)</td>
-<td>Search for a bond in the given cubes.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice.get_count.html#porems.dice.Dice.get_count" title="porems.dice.Dice.get_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_count</span></code></a>()</p></td>
+<td><p>Return the number of cubes in each dimension.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice.find_parallel.html#porems.dice.Dice.find_parallel" title="porems.dice.Dice.find_parallel"><code class="xref py py-obj docutils literal"><span class="pre">find_parallel</span></code></a>(self,&nbsp;cube_list,&nbsp;atom_type,&nbsp;…)</td>
-<td>Parallelized bond search of function <a class="reference internal" href="porems.dice.Dice.find_bond.html#porems.dice.Dice.find_bond" title="porems.dice.Dice.find_bond"><code class="xref py py-func docutils literal"><span class="pre">find_bond()</span></code></a>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice.get_mol.html#porems.dice.Dice.get_mol" title="porems.dice.Dice.get_mol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mol</span></code></a>()</p></td>
+<td><p>Return the molecule.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Setter Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice.set_pbc.html#porems.dice.Dice.set_pbc" title="porems.dice.Dice.set_pbc"><code class="xref py py-obj docutils literal"><span class="pre">set_pbc</span></code></a>(self,&nbsp;pbc)</td>
-<td>Turn the periodic boundary conditions on or off.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice.get_origin.html#porems.dice.Dice.get_origin" title="porems.dice.Dice.get_origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_origin</span></code></a>()</p></td>
+<td><p>Return the origin positions of the cubes.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Getter Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice.get_count.html#porems.dice.Dice.get_count" title="porems.dice.Dice.get_count"><code class="xref py py-obj docutils literal"><span class="pre">get_count</span></code></a>(self)</td>
-<td>Return the number of cubes in each dimension.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice.get_pointer.html#porems.dice.Dice.get_pointer" title="porems.dice.Dice.get_pointer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pointer</span></code></a>()</p></td>
+<td><p>Return the list of atoms in each cube.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice.get_mol.html#porems.dice.Dice.get_mol" title="porems.dice.Dice.get_mol"><code class="xref py py-obj docutils literal"><span class="pre">get_mol</span></code></a>(self)</td>
-<td>Return the molecule.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice.get_size.html#porems.dice.Dice.get_size" title="porems.dice.Dice.get_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_size</span></code></a>()</p></td>
+<td><p>Return the cubes size.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice.get_origin.html#porems.dice.Dice.get_origin" title="porems.dice.Dice.get_origin"><code class="xref py py-obj docutils literal"><span class="pre">get_origin</span></code></a>(self)</td>
-<td>Return the origin positions of the cubes.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.dice.Dice.neighbor.html#porems.dice.Dice.neighbor" title="porems.dice.Dice.neighbor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbor</span></code></a>(cube_id[, is_self])</p></td>
+<td><p>Get the ids of the cubes surrounding the given one.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.dice.Dice.get_pointer.html#porems.dice.Dice.get_pointer" title="porems.dice.Dice.get_pointer"><code class="xref py py-obj docutils literal"><span class="pre">get_pointer</span></code></a>(self)</td>
-<td>Return the list of atoms in each cube.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.dice.Dice.get_size.html#porems.dice.Dice.get_size" title="porems.dice.Dice.get_size"><code class="xref py py-obj docutils literal"><span class="pre">get_size</span></code></a>(self)</td>
-<td>Return the cubes size.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.dice.Dice.set_pbc.html#porems.dice.Dice.set_pbc" title="porems.dice.Dice.set_pbc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_pbc</span></code></a>(pbc)</p></td>
+<td><p>Turn the periodic boundary conditions on or off.</p></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
+</section>
 
 
     </div>
@@ -276,7 +244,7 @@ bond length searches.</p>
     </p>
     <p>
         &copy; Copyright 2021, Hamzeh Kraus.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.6.<br/>
     </p>
   </div>
 </footer>

@@ -1,4 +1,4 @@
-.. raw:: html
+﻿.. raw:: html
 
     </div>
     <div class=col-md-9 content>
@@ -10,19 +10,17 @@ Matrix
 
 .. autoclass:: Matrix
 
+   
 
-  .. rubric:: Management
+   
+   .. rubric:: Methods
 
-  .. autosummary::
-
+   .. autosummary::
+   
       ~Matrix.add
       ~Matrix.bound
+      ~Matrix.get_matrix
       ~Matrix.split
       ~Matrix.strip
-
-
-  .. rubric:: Getter Methods
-
-  .. autosummary::
-
-      ~Matrix.get_matrix
+   
+   
