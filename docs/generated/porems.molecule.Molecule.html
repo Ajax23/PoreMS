@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="../">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Molecule &#8212; PoreMS 0.2.5 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.2.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Molecule &#8212; PoreMS 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=cab96e3b" />
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -46,7 +36,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           PoreMS</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,6 +46,7 @@
                 <li><a href="../molecule.html">Molecule</a></li>
                 <li><a href="../pore.html">Pore</a></li>
                 <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../shape_examples.html">Pore shape examples</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -78,7 +69,10 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Molecule</a></li>
+<li><a class="reference internal" href="#">Molecule</a><ul>
+<li><a class="reference internal" href="#porems.molecule.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -106,43 +100,57 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Molecule</a><ul>
+<li><a class="reference internal" href="#porems.molecule.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div id="sourcelink">
+  <a href="../_sources/generated/porems.molecule.Molecule.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
       
   </div>
-<div class=col-md-9 content><div class="section" id="molecule">
-<h1>Molecule<a class="headerlink" href="#molecule" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="porems.molecule.Molecule">
-<em class="property">class </em><code class="descclassname">porems.molecule.</code><code class="descname">Molecule</code><span class="sig-paren">(</span><em>name='molecule'</em>, <em>short='MOL'</em>, <em>inp=None</em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule" title="Permalink to this definition">¶</a></dt>
+<div class=col-md-9 content><section id="molecule">
+<h1>Molecule<a class="headerlink" href="#molecule" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="porems.molecule.Molecule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">porems.molecule.</span></span><span class="sig-name descname"><span class="pre">Molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'molecule'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">short</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MOL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#porems.molecule.Molecule" title="Link to this definition">¶</a></dt>
 <dd><p>This class defines a molecule object, which is basically a list of Atom
 objects. Each atom object has a specific cartesian position and atom type,
 creating the construct of a molecule.</p>
 <p>Functions have been provided for editing, moving and transforming the
 atom objects, either as a collective or specific part of the molecule.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Molecule name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">string, optional</span></dt><dd><p>Molecule name</p>
 </dd>
-<dt><strong>short</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Molecule short name</p>
+<dt><strong>short</strong><span class="classifier">string, optional</span></dt><dd><p>Molecule short name</p>
 </dd>
-<dt><strong>inp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None, string, list, optional</span></dt>
-<dd><p class="first last">None for empty Molecule, string to read a molecule from a
+<dt><strong>inp</strong><span class="classifier">None, string, list, optional</span></dt><dd><p>None for empty Molecule, string to read a molecule from a
 specified file link or a list of either molecules to concatenate these
 into one object, or a list of atom objects</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>Following example generates a benzene molecule without hydrogen atoms</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">porems</span> <span class="k">as</span> <span class="nn">pms</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">porems</span> <span class="k">as</span> <span class="nn">pms</span>
 
 <span class="n">mol</span> <span class="o">=</span> <span class="n">pms</span><span class="o">.</span><span class="n">Molecule</span><span class="p">(</span><span class="s2">&quot;benzene&quot;</span><span class="p">,</span> <span class="s2">&quot;BEN&quot;</span><span class="p">)</span>
 <span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
@@ -153,207 +161,137 @@ into one object, or a list of atom objects</p>
 <span class="n">mol</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.1375</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Representation</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.__repr__.html#porems.molecule.Molecule.__repr__" title="porems.molecule.Molecule.__repr__"><code class="xref py py-obj docutils literal"><span class="pre">__repr__</span></code></a>(self)</td>
-<td>Create a pandas table of the molecule data.</td>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule._box_size.html#porems.molecule.Molecule._box_size" title="porems.molecule.Molecule._box_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_box_size</span></code></a>()</p></td>
+<td><p>Calculate the box size of the current molecule.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Management</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule._concat.html#porems.molecule.Molecule._concat" title="porems.molecule.Molecule._concat"><code class="xref py py-obj docutils literal"><span class="pre">_concat</span></code></a>(self,&nbsp;mol_list)</td>
-<td>Concatenate a molecule list into one molecule object.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule._concat.html#porems.molecule.Molecule._concat" title="porems.molecule.Molecule._concat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_concat</span></code></a>(mol_list)</p></td>
+<td><p>Concatenate a molecule list into one molecule object.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule._read.html#porems.molecule.Molecule._read" title="porems.molecule.Molecule._read"><code class="xref py py-obj docutils literal"><span class="pre">_read</span></code></a>(self,&nbsp;file_path,&nbsp;file_type)</td>
-<td>Read a molecule from a file.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule._read.html#porems.molecule.Molecule._read" title="porems.molecule.Molecule._read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_read</span></code></a>(file_path, file_type)</p></td>
+<td><p>Read a molecule from a file.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule._temp.html#porems.molecule.Molecule._temp" title="porems.molecule.Molecule._temp"><code class="xref py py-obj docutils literal"><span class="pre">_temp</span></code></a>(self,&nbsp;atoms)</td>
-<td>Create a temporary molecule of specified atom ids.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule._temp.html#porems.molecule.Molecule._temp" title="porems.molecule.Molecule._temp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_temp</span></code></a>(atoms)</p></td>
+<td><p>Create a temporary molecule of specified atom ids.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.append.html#porems.molecule.Molecule.append" title="porems.molecule.Molecule.append"><code class="xref py py-obj docutils literal"><span class="pre">append</span></code></a>(self,&nbsp;mol)</td>
-<td>Append a given molecule to the current object.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule._vector.html#porems.molecule.Molecule._vector" title="porems.molecule.Molecule._vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_vector</span></code></a>(pos_a, pos_b)</p></td>
+<td><p>Calculate the vector between to two positions as defined in <a class="reference internal" href="porems.geometry.vector.html#porems.geometry.vector" title="porems.geometry.vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">porems.geometry.vector</span></code></a> with the addition to define the inputs as atom indices.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.column_pos.html#porems.molecule.Molecule.column_pos" title="porems.molecule.Molecule.column_pos"><code class="xref py py-obj docutils literal"><span class="pre">column_pos</span></code></a>(self)</td>
-<td>Create column list of atom positions</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.add.html#porems.molecule.Molecule.add" title="porems.molecule.Molecule.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(atom_type, pos[, bond, r, theta, phi, ...])</p></td>
+<td><p>Add a new atom in polar coordinates.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Geometry</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule._box_size.html#porems.molecule.Molecule._box_size" title="porems.molecule.Molecule._box_size"><code class="xref py py-obj docutils literal"><span class="pre">_box_size</span></code></a>(self)</td>
-<td>Calculate the box size of the current molecule.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.append.html#porems.molecule.Molecule.append" title="porems.molecule.Molecule.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(mol)</p></td>
+<td><p>Append a given molecule to the current object.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule._vector.html#porems.molecule.Molecule._vector" title="porems.molecule.Molecule._vector"><code class="xref py py-obj docutils literal"><span class="pre">_vector</span></code></a>(self,&nbsp;pos_a,&nbsp;pos_b)</td>
-<td>Calculate the vector between to two positions as defined in <a class="reference internal" href="porems.geometry.vector.html#porems.geometry.vector" title="porems.geometry.vector"><code class="xref py py-class docutils literal"><span class="pre">porems.geometry.vector</span></code></a> with the addition to define the inputs as atom indices.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.bond.html#porems.molecule.Molecule.bond" title="porems.molecule.Molecule.bond"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bond</span></code></a>(inp_a, inp_b)</p></td>
+<td><p>Return the bond vector of a specified bond.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Properties</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.bond.html#porems.molecule.Molecule.bond" title="porems.molecule.Molecule.bond"><code class="xref py py-obj docutils literal"><span class="pre">bond</span></code></a>(self,&nbsp;inp_a,&nbsp;inp_b)</td>
-<td>Return the bond vector of a specified bond.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.centroid.html#porems.molecule.Molecule.centroid" title="porems.molecule.Molecule.centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centroid</span></code></a>()</p></td>
+<td><p>Calculate the geometrical center of mass</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.centroid.html#porems.molecule.Molecule.centroid" title="porems.molecule.Molecule.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a>(self)</td>
-<td>Calculate the geometrical center of mass</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.column_pos.html#porems.molecule.Molecule.column_pos" title="porems.molecule.Molecule.column_pos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column_pos</span></code></a>()</p></td>
+<td><p>Create column list of atom positions</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.com.html#porems.molecule.Molecule.com" title="porems.molecule.Molecule.com"><code class="xref py py-obj docutils literal"><span class="pre">com</span></code></a>(self)</td>
-<td>Calculate the center of mass</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.com.html#porems.molecule.Molecule.com" title="porems.molecule.Molecule.com"><code class="xref py py-obj docutils literal notranslate"><span class="pre">com</span></code></a>()</p></td>
+<td><p>Calculate the center of mass</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.pos.html#porems.molecule.Molecule.pos" title="porems.molecule.Molecule.pos"><code class="xref py py-obj docutils literal"><span class="pre">pos</span></code></a>(self,&nbsp;atom)</td>
-<td>Get the position of an atom.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.delete.html#porems.molecule.Molecule.delete" title="porems.molecule.Molecule.delete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete</span></code></a>(atoms)</p></td>
+<td><p>Delete specified atom from the molecule.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Editing</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.move.html#porems.molecule.Molecule.move" title="porems.molecule.Molecule.move"><code class="xref py py-obj docutils literal"><span class="pre">move</span></code></a>(self,&nbsp;atom,&nbsp;pos)</td>
-<td>Move whole the molecule to a new position, where the dragging point is a given atom that is moved to a specified position.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_atom_list.html#porems.molecule.Molecule.get_atom_list" title="porems.molecule.Molecule.get_atom_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_atom_list</span></code></a>()</p></td>
+<td><p>Return the atoms list.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.put.html#porems.molecule.Molecule.put" title="porems.molecule.Molecule.put"><code class="xref py py-obj docutils literal"><span class="pre">put</span></code></a>(self,&nbsp;atom,&nbsp;pos)</td>
-<td>Change the position of an atom to a given position vector <span class="math">\(\boldsymbol{a}\in\mathbb{R}^n\)</span>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_atom_type.html#porems.molecule.Molecule.get_atom_type" title="porems.molecule.Molecule.get_atom_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_atom_type</span></code></a>(atom)</p></td>
+<td><p>Return the atom type of the given atom id.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.rotate.html#porems.molecule.Molecule.rotate" title="porems.molecule.Molecule.rotate"><code class="xref py py-obj docutils literal"><span class="pre">rotate</span></code></a>(self,&nbsp;axis,&nbsp;angle[,&nbsp;is_deg])</td>
-<td>Rotate data matrix <span class="math">\(\boldsymbol{D}\)</span> around an axis <span class="math">\(\boldsymbol{a}\in\mathbb{R}^3\)</span> with angle <span class="math">\(\alpha\in\mathbb{R}\)</span> using rotation function <a class="reference internal" href="porems.geometry.rotate.html#porems.geometry.rotate" title="porems.geometry.rotate"><code class="xref py py-func docutils literal"><span class="pre">porems.geometry.rotate()</span></code></a>.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_box.html#porems.molecule.Molecule.get_box" title="porems.molecule.Molecule.get_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_box</span></code></a>()</p></td>
+<td><p>Return the box size of the molecule.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.translate.html#porems.molecule.Molecule.translate" title="porems.molecule.Molecule.translate"><code class="xref py py-obj docutils literal"><span class="pre">translate</span></code></a>(self,&nbsp;vec)</td>
-<td>Translate the atoms data matrix <span class="math">\(\boldsymbol{D}\)</span> along a vector <span class="math">\(\boldsymbol{a}\in\mathbb{R}^n\)</span>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_charge.html#porems.molecule.Molecule.get_charge" title="porems.molecule.Molecule.get_charge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_charge</span></code></a>()</p></td>
+<td><p>Return the total charge of the molecule.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.zero.html#porems.molecule.Molecule.zero" title="porems.molecule.Molecule.zero"><code class="xref py py-obj docutils literal"><span class="pre">zero</span></code></a>(self[,&nbsp;pos])</td>
-<td>Move whole the molecule, so that the minimal coordinate between all atoms is zero in all dimensions, or rather the values of the position variable <code class="docutils literal"><span class="pre">pos</span></code>.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_mass.html#porems.molecule.Molecule.get_mass" title="porems.molecule.Molecule.get_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mass</span></code></a>()</p></td>
+<td><p>Return the molar mass of the molecule.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.part_angle.html#porems.molecule.Molecule.part_angle" title="porems.molecule.Molecule.part_angle"><code class="xref py py-obj docutils literal"><span class="pre">part_angle</span></code></a>(self,&nbsp;bond_a,&nbsp;bond_b,&nbsp;atoms,&nbsp;…)</td>
-<td>Change the bond angle of two bond vectors.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_masses.html#porems.molecule.Molecule.get_masses" title="porems.molecule.Molecule.get_masses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_masses</span></code></a>()</p></td>
+<td><p>Return a list of masses of the atoms.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.part_move.html#porems.molecule.Molecule.part_move" title="porems.molecule.Molecule.part_move"><code class="xref py py-obj docutils literal"><span class="pre">part_move</span></code></a>(self,&nbsp;bond,&nbsp;atoms,&nbsp;length[,&nbsp;vec])</td>
-<td>Change the length of a specified bond.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_name.html#porems.molecule.Molecule.get_name" title="porems.molecule.Molecule.get_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_name</span></code></a>()</p></td>
+<td><p>Return the molecule name.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.part_rotate.html#porems.molecule.Molecule.part_rotate" title="porems.molecule.Molecule.part_rotate"><code class="xref py py-obj docutils literal"><span class="pre">part_rotate</span></code></a>(self,&nbsp;bond,&nbsp;atoms,&nbsp;angle,&nbsp;zero)</td>
-<td>Rotate a set of specified atoms around a given bond as the rotation axis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_num.html#porems.molecule.Molecule.get_num" title="porems.molecule.Molecule.get_num"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_num</span></code></a>()</p></td>
+<td><p>Return the number of atoms.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Atoms</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.add.html#porems.molecule.Molecule.add" title="porems.molecule.Molecule.add"><code class="xref py py-obj docutils literal"><span class="pre">add</span></code></a>(self,&nbsp;atom_type,&nbsp;pos[,&nbsp;bond,&nbsp;r,&nbsp;theta,&nbsp;…])</td>
-<td>Add a new atom in polar coordinates.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.get_short.html#porems.molecule.Molecule.get_short" title="porems.molecule.Molecule.get_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_short</span></code></a>()</p></td>
+<td><p>Return the molecule short name.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.delete.html#porems.molecule.Molecule.delete" title="porems.molecule.Molecule.delete"><code class="xref py py-obj docutils literal"><span class="pre">delete</span></code></a>(self,&nbsp;atoms)</td>
-<td>Delete specified atom from the molecule.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.move.html#porems.molecule.Molecule.move" title="porems.molecule.Molecule.move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move</span></code></a>(atom, pos)</p></td>
+<td><p>Move whole the molecule to a new position, where the dragging point is a given atom that is moved to a specified position.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.overlap.html#porems.molecule.Molecule.overlap" title="porems.molecule.Molecule.overlap"><code class="xref py py-obj docutils literal"><span class="pre">overlap</span></code></a>(self[,&nbsp;error])</td>
-<td>Search for overlapping atoms.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.overlap.html#porems.molecule.Molecule.overlap" title="porems.molecule.Molecule.overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlap</span></code></a>([error])</p></td>
+<td><p>Search for overlapping atoms.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.switch_atom_order.html#porems.molecule.Molecule.switch_atom_order" title="porems.molecule.Molecule.switch_atom_order"><code class="xref py py-obj docutils literal"><span class="pre">switch_atom_order</span></code></a>(self,&nbsp;atom_a,&nbsp;atom_b)</td>
-<td>Switch atom order of two atoms.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.part_angle.html#porems.molecule.Molecule.part_angle" title="porems.molecule.Molecule.part_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">part_angle</span></code></a>(bond_a, bond_b, atoms, angle, zero)</p></td>
+<td><p>Change the bond angle of two bond vectors.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.set_atom_name.html#porems.molecule.Molecule.set_atom_name" title="porems.molecule.Molecule.set_atom_name"><code class="xref py py-obj docutils literal"><span class="pre">set_atom_name</span></code></a>(self,&nbsp;atom,&nbsp;name)</td>
-<td>Change the atom name of a specified atom.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.part_move.html#porems.molecule.Molecule.part_move" title="porems.molecule.Molecule.part_move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">part_move</span></code></a>(bond, atoms, length[, vec])</p></td>
+<td><p>Change the length of a specified bond.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.get_atom_list.html#porems.molecule.Molecule.get_atom_list" title="porems.molecule.Molecule.get_atom_list"><code class="xref py py-obj docutils literal"><span class="pre">get_atom_list</span></code></a>(self)</td>
-<td>Return the atoms list.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.part_rotate.html#porems.molecule.Molecule.part_rotate" title="porems.molecule.Molecule.part_rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">part_rotate</span></code></a>(bond, atoms, angle, zero)</p></td>
+<td><p>Rotate a set of specified atoms around a given bond as the rotation axis.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.set_atom_residue.html#porems.molecule.Molecule.set_atom_residue" title="porems.molecule.Molecule.set_atom_residue"><code class="xref py py-obj docutils literal"><span class="pre">set_atom_residue</span></code></a>(self,&nbsp;atom,&nbsp;residue)</td>
-<td>Change the residue index of a specified atom.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.pos.html#porems.molecule.Molecule.pos" title="porems.molecule.Molecule.pos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pos</span></code></a>(atom)</p></td>
+<td><p>Get the position of an atom.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.set_atom_type.html#porems.molecule.Molecule.set_atom_type" title="porems.molecule.Molecule.set_atom_type"><code class="xref py py-obj docutils literal"><span class="pre">set_atom_type</span></code></a>(self,&nbsp;atom,&nbsp;atom_type)</td>
-<td>Change the atom type of a specified atom.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.put.html#porems.molecule.Molecule.put" title="porems.molecule.Molecule.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>(atom, pos)</p></td>
+<td><p>Change the position of an atom to a given position vector <span class="math notranslate nohighlight">\(\boldsymbol{a}\in\mathbb{R}^n\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.get_atom_type.html#porems.molecule.Molecule.get_atom_type" title="porems.molecule.Molecule.get_atom_type"><code class="xref py py-obj docutils literal"><span class="pre">get_atom_type</span></code></a>(self,&nbsp;atom)</td>
-<td>Return the atom type of the given atom id.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.rotate.html#porems.molecule.Molecule.rotate" title="porems.molecule.Molecule.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(axis, angle[, is_deg])</p></td>
+<td><p>Rotate data matrix <span class="math notranslate nohighlight">\(\boldsymbol{D}\)</span> around an axis <span class="math notranslate nohighlight">\(\boldsymbol{a}\in\mathbb{R}^3\)</span> with angle <span class="math notranslate nohighlight">\(\alpha\in\mathbb{R}\)</span> using rotation function <a class="reference internal" href="porems.geometry.rotate.html#porems.geometry.rotate" title="porems.geometry.rotate"><code class="xref py py-func docutils literal notranslate"><span class="pre">porems.geometry.rotate()</span></code></a>.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Setter Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.set_box.html#porems.molecule.Molecule.set_box" title="porems.molecule.Molecule.set_box"><code class="xref py py-obj docutils literal"><span class="pre">set_box</span></code></a>(self,&nbsp;box)</td>
-<td>Set the box size.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_atom_name.html#porems.molecule.Molecule.set_atom_name" title="porems.molecule.Molecule.set_atom_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_atom_name</span></code></a>(atom, name)</p></td>
+<td><p>Change the atom name of a specified atom.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.set_charge.html#porems.molecule.Molecule.set_charge" title="porems.molecule.Molecule.set_charge"><code class="xref py py-obj docutils literal"><span class="pre">set_charge</span></code></a>(self,&nbsp;charge)</td>
-<td>Set the total charge of the molecule.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_atom_residue.html#porems.molecule.Molecule.set_atom_residue" title="porems.molecule.Molecule.set_atom_residue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_atom_residue</span></code></a>(atom, residue)</p></td>
+<td><p>Change the residue index of a specified atom.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.set_mass.html#porems.molecule.Molecule.set_mass" title="porems.molecule.Molecule.set_mass"><code class="xref py py-obj docutils literal"><span class="pre">set_mass</span></code></a>(self[,&nbsp;mass])</td>
-<td>Set the molar mass of the molecule.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_atom_type.html#porems.molecule.Molecule.set_atom_type" title="porems.molecule.Molecule.set_atom_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_atom_type</span></code></a>(atom, atom_type)</p></td>
+<td><p>Change the atom type of a specified atom.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.set_masses.html#porems.molecule.Molecule.set_masses" title="porems.molecule.Molecule.set_masses"><code class="xref py py-obj docutils literal"><span class="pre">set_masses</span></code></a>(self[,&nbsp;masses])</td>
-<td>Set the molar masses of the atoms.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_box.html#porems.molecule.Molecule.set_box" title="porems.molecule.Molecule.set_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_box</span></code></a>(box)</p></td>
+<td><p>Set the box size.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.set_name.html#porems.molecule.Molecule.set_name" title="porems.molecule.Molecule.set_name"><code class="xref py py-obj docutils literal"><span class="pre">set_name</span></code></a>(self,&nbsp;name)</td>
-<td>Set the molecule name.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_charge.html#porems.molecule.Molecule.set_charge" title="porems.molecule.Molecule.set_charge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_charge</span></code></a>(charge)</p></td>
+<td><p>Set the total charge of the molecule.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.set_short.html#porems.molecule.Molecule.set_short" title="porems.molecule.Molecule.set_short"><code class="xref py py-obj docutils literal"><span class="pre">set_short</span></code></a>(self,&nbsp;short)</td>
-<td>Set the molecule short name.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_mass.html#porems.molecule.Molecule.set_mass" title="porems.molecule.Molecule.set_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mass</span></code></a>([mass])</p></td>
+<td><p>Set the molar mass of the molecule.</p></td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">Getter Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.get_box.html#porems.molecule.Molecule.get_box" title="porems.molecule.Molecule.get_box"><code class="xref py py-obj docutils literal"><span class="pre">get_box</span></code></a>(self)</td>
-<td>Return the box size of the molecule.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_masses.html#porems.molecule.Molecule.set_masses" title="porems.molecule.Molecule.set_masses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_masses</span></code></a>([masses])</p></td>
+<td><p>Set the molar masses of the atoms.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.get_charge.html#porems.molecule.Molecule.get_charge" title="porems.molecule.Molecule.get_charge"><code class="xref py py-obj docutils literal"><span class="pre">get_charge</span></code></a>(self)</td>
-<td>Return the total charge of the molecule.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_name.html#porems.molecule.Molecule.set_name" title="porems.molecule.Molecule.set_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></a>(name)</p></td>
+<td><p>Set the molecule name.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.get_mass.html#porems.molecule.Molecule.get_mass" title="porems.molecule.Molecule.get_mass"><code class="xref py py-obj docutils literal"><span class="pre">get_mass</span></code></a>(self)</td>
-<td>Return the molar mass of the molecule.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.set_short.html#porems.molecule.Molecule.set_short" title="porems.molecule.Molecule.set_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_short</span></code></a>(short)</p></td>
+<td><p>Set the molecule short name.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.get_masses.html#porems.molecule.Molecule.get_masses" title="porems.molecule.Molecule.get_masses"><code class="xref py py-obj docutils literal"><span class="pre">get_masses</span></code></a>(self)</td>
-<td>Return a list of masses of the atoms.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.switch_atom_order.html#porems.molecule.Molecule.switch_atom_order" title="porems.molecule.Molecule.switch_atom_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_atom_order</span></code></a>(atom_a, atom_b)</p></td>
+<td><p>Switch atom order of two atoms.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.get_name.html#porems.molecule.Molecule.get_name" title="porems.molecule.Molecule.get_name"><code class="xref py py-obj docutils literal"><span class="pre">get_name</span></code></a>(self)</td>
-<td>Return the molecule name.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.molecule.Molecule.translate.html#porems.molecule.Molecule.translate" title="porems.molecule.Molecule.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(vec)</p></td>
+<td><p>Translate the atoms data matrix <span class="math notranslate nohighlight">\(\boldsymbol{D}\)</span> along a vector <span class="math notranslate nohighlight">\(\boldsymbol{a}\in\mathbb{R}^n\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="porems.molecule.Molecule.get_num.html#porems.molecule.Molecule.get_num" title="porems.molecule.Molecule.get_num"><code class="xref py py-obj docutils literal"><span class="pre">get_num</span></code></a>(self)</td>
-<td>Return the number of atoms.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="porems.molecule.Molecule.get_short.html#porems.molecule.Molecule.get_short" title="porems.molecule.Molecule.get_short"><code class="xref py py-obj docutils literal"><span class="pre">get_short</span></code></a>(self)</td>
-<td>Return the molecule short name.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.molecule.Molecule.zero.html#porems.molecule.Molecule.zero" title="porems.molecule.Molecule.zero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero</span></code></a>([pos])</p></td>
+<td><p>Move whole the molecule, so that the minimal coordinate between all atoms is zero in all dimensions, or rather the values of the position variable <code class="docutils literal notranslate"><span class="pre">pos</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
+</section>
 
 
     </div>
@@ -368,7 +306,7 @@ into one object, or a list of atom objects</p>
     </p>
     <p>
         &copy; Copyright 2021, Hamzeh Kraus.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.6.<br/>
     </p>
   </div>
 </footer>

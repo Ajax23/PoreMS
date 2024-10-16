@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Cone &#8212; PoreMS 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=cab96e3b" />
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          PoreMS</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../molecule.html">Molecule</a></li>
+                <li><a href="../pore.html">Pore</a></li>
+                <li><a href="../workflow.html">Workflow</a></li>
+                <li><a href="../shape_examples.html">Pore shape examples</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Cone</a><ul>
+<li><a class="reference internal" href="#porems.shape.Cone"><code class="docutils literal notranslate"><span class="pre">Cone</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Cone</a><ul>
+<li><a class="reference internal" href="#porems.shape.Cone"><code class="docutils literal notranslate"><span class="pre">Cone</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div id="sourcelink">
+  <a href="../_sources/generated/porems.shape.Cone.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  </div>
+<div class=col-md-9 content><section id="cone">
+<h1>Cone<a class="headerlink" href="#cone" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="porems.shape.Cone">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">porems.shape.</span></span><span class="sig-name descname"><span class="pre">Cone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#porems.shape.Cone" title="Link to this definition">¶</a></dt>
+<dd><p>This class defines a conical shape. Needed inputs are</p>
+<ul class="simple">
+<li><p><strong>central</strong> - Central axis</p></li>
+<li><p><strong>centroid</strong> - Centroid of block</p></li>
+<li><p><strong>length</strong> - Cone length</p></li>
+<li><p><strong>diameter_1</strong> - Cone starting diameter</p></li>
+<li><p><strong>diameter_2</strong> - Cone ending diameter</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inp</strong><span class="classifier">dictionary</span></dt><dd><p>Dictionary of necessary inputs</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.shape.Cone.Phi.html#porems.shape.Cone.Phi" title="porems.shape.Cone.Phi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Phi</span></code></a>(r, phi, z)</p></td>
+<td><p>Surface function of a cone</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.shape.Cone.convert.html#porems.shape.Cone.convert" title="porems.shape.Cone.convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert</span></code></a>(data[, to_zero])</p></td>
+<td><p>This helper method rotates the given data to match the global central axis and translates it so that the center point is aligned.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.shape.Cone.d_Phi_phi.html#porems.shape.Cone.d_Phi_phi" title="porems.shape.Cone.d_Phi_phi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">d_Phi_phi</span></code></a>(r, phi, z)</p></td>
+<td><p>Derivative of the surface function considering the polar angle</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.shape.Cone.d_Phi_z.html#porems.shape.Cone.d_Phi_z" title="porems.shape.Cone.d_Phi_z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">d_Phi_z</span></code></a>(r, phi, z)</p></td>
+<td><p>Derivative of the surface function considering the z-axis</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.shape.Cone.get_inp.html#porems.shape.Cone.get_inp" title="porems.shape.Cone.get_inp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_inp</span></code></a>()</p></td>
+<td><p>Return full input dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.shape.Cone.is_in.html#porems.shape.Cone.is_in" title="porems.shape.Cone.is_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_in</span></code></a>(pos)</p></td>
+<td><p>Check if given position is inside of shape.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.shape.Cone.normal.html#porems.shape.Cone.normal" title="porems.shape.Cone.normal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normal</span></code></a>(pos)</p></td>
+<td><p>Calculate unit normal vector on surface for a given position</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.shape.Cone.plot.html#porems.shape.Cone.plot" title="porems.shape.Cone.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([inp, num, vec])</p></td>
+<td><p>Plot surface and rim.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.shape.Cone.rim.html#porems.shape.Cone.rim" title="porems.shape.Cone.rim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rim</span></code></a>(z[, num])</p></td>
+<td><p>Return x and y values for given z-position.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.shape.Cone.surf.html#porems.shape.Cone.surf" title="porems.shape.Cone.surf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surf</span></code></a>([num])</p></td>
+<td><p>Return x, y and z values for the shape.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="porems.shape.Cone.surface.html#porems.shape.Cone.surface" title="porems.shape.Cone.surface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surface</span></code></a>()</p></td>
+<td><p>Calculate inner surface</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="porems.shape.Cone.volume.html#porems.shape.Cone.volume" title="porems.shape.Cone.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>()</p></td>
+<td><p>Calculate volume</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Hamzeh Kraus.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
