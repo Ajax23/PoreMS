@@ -46,12 +46,7 @@ occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`.
 Shape 2 (Parallel Pore 5 nm)
 ----------------------------
 
-| Create 2 parallel pores with a diameter of 5 nm, a length of 10 nm and
-  a reservoir length of 5 nm.
-| The silanol on the inner surface is 6.06
-  :math:`\mathrm{\mu mol m^{-2}}`.
-| The outer surface is completely occupied by TMS molecules with 6.06
-  :math:`\mathrm{\mu mol m^{-2}}`.
+| Create 2 parallel pores with a diameter of 5 nm, a length of 10 nm and a reservoir length of 5 nm. The silanol on the inner surface is 6.06 :math:`\mathrm{\mu mol m^{-2}}`. The outer surface is completely occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`.
 
 .. code:: ipython3
 
@@ -89,13 +84,7 @@ Shape 2 (Parallel Pore 5 nm)
 Shape 3 (Pore with Connection)
 ------------------------------
 
-| Generate a 2 parallel pores with a diameter of 5 nm, a length of 10 nm
-  connected
-| with a 2.5 nm pore and a reservoir length of 5 nm.
-| The silanol on the inner surface is 6.06
-  :math:`\mathrm{\mu mol m^{-2}}`.
-| The outer surface is completely occupied by TMS molecules with 6.06
-  :math:`\mathrm{\mu mol m^{-2}}`.
+| Generate a 2 parallel pores with a diameter of 5 nm, a length of 10 nm connected with a 2.5 nm pore and a reservoir length of 5 nm. The silanol on the inner surface is 6.06 :math:`\mathrm{\mu mol m^{-2}}`. The outer surface is completely occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`.
 
 .. code:: ipython3
 
@@ -141,13 +130,7 @@ Shape 3 (Pore with Connection)
 Shape 4 (Pore with different inner surfaces)
 --------------------------------------------
 
-| Generate a 3 pores with a diameter of 5 nm directly adjacent to each
-  other in z-direction.
-| The silanol on the inner surface is 6.06
-  :math:`\mathrm{\mu mol m^{-2}}` in the second pore (shape_01).
-| Shape_00 and shape_02 are occupied by TMS molecules with 6.06
-  :math:`\mathrm{\mu mol m^{-2}}`. The outer surface is completely
-  occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`.
+| Generate a 3 pores with a diameter of 5 nm directly adjacent to each other in z-direction. The silanol on the inner surface is 6.06 :math:`\mathrm{\mu mol m^{-2}}` in the second pore (shape_01). Shape_00 and shape_02 are occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`. The outer surface is completely occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`.
 
 .. code:: ipython3
 
@@ -191,10 +174,7 @@ Shape 4 (Pore with different inner surfaces)
 Shape 5 (Pore with different inner surfaces)
 --------------------------------------------
 
-| Generate a 3 pores with a diameter of 5, 2.5 and 5 nm directly adjacent to each
-  other in z-direction connected with a cone shape.
-| The outer surface is completely
-  occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`.
+| Generate a 3 pores with a diameter of 5, 2.5 and 5 nm directly adjacent to each other in z-direction connected with a cone shape. The outer surface is completely occupied by TMS molecules with 6.06 :math:`\mathrm{\mu mol m^{-2}}`.
 
 .. code:: ipython3
 
