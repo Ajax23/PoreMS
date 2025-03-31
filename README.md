@@ -61,8 +61,8 @@ When citing PoreMS please use the following: **Kraus et al., Molecular Simulatio
 Additionaly, to assure reproducability of the generated pore systems, please cite the **Zenodo DOI** corresponding to the used PoreMS version. (Current DOI is listed in the badges.)
 
 ## Published Work
-* Probst et al., 2025. Ring-Expansion Metathesis Polymerization under Confinement. Journal of the American Chemical Society, doi:[doi.org/10.1021/acscatal.4c02626](https://doi.org/10.1021/acscatal.4c02626)
-  - Data-Repository: doi:[doi.org/10.1021/jacs.4c18171](https://doi.org/10.1021/jacs.4c18171)
+* Probst et al., 2025. Ring-Expansion Metathesis Polymerization under Confinement. Journal of the American Chemical Society, doi:[doi.org/10.1021/jacs.4c18171](https://doi.org/10.1021/jacs.4c18171)
+  - Data-Repository: doi:[]()
 * Högler et al., 2024. Influence of Ionic Liquid Film Thickness and Flow Rate on Macrocyclization Efficiency and Selectivity in Supported Ionic Liquid-Liquid Phase Catalysis. Chemistry – A European Journal, doi:[doi.org/10.1002/chem.202403237](https://doi.org/10.1002/chem.202403237)
   - Data-Repository: doi:[10.18419/DARUS-4063](https://doi.org/10.18419/DARUS-4063)
 * Nguyen et al., 2024. Effects of Surfaces and Confinement on Formic Acid Dehydrogenation Catalyzed by an Immobilized Ru–H Complex: Insights from Molecular Simulation and Neutron Scattering. ACS Catalysis, doi:[doi.org/10.1021/acscatal.4c02626](https://doi.org/10.1021/acscatal.4c02626)
