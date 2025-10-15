@@ -65,9 +65,6 @@ class Pore():
         molecules that are to be placed on the surface.
         """
         # Remove unsaturated silicon atoms
-        # for atom in self._matrix.bound(4, "lt"):
-        #     if self._block.get_atom_type(atom)=="Si":
-        #         self._matrix.strip(atom)
         for atom, props in self._matrix.get_matrix().items():
             if self._block.get_atom_type(atom)=="Si":
                 if len(props["atoms"]) < props["bonds"]:
@@ -247,7 +244,7 @@ class Pore():
     #######################
     # Molecule Attachment #
     #######################
-    def attach(self, mol, mount, axis, sites, amount, scale=1, trials=1000, pos_list=[], site_type="in", is_proxi=True, is_random=True, is_rotate=False):
+    def attach(self, mol, mount, axis, sites, amount, scale=1, trials=1000, pos_list=[], site_type="in", is_proxi=True, is_random=True, is_rotate=False, is_g=True):
         """Attach molecules on the surface.
 
         Parameters
@@ -276,6 +273,8 @@ class Pore():
             True to randomly pick a binding site from given list
         is_rotate : bool, optional
             True to randomly rotate molecule around own axis
+        is_g : bool, optinal
+            Force to add molecules only on single binding sites
 
         Returns
         -------
@@ -319,48 +318,54 @@ class Pore():
                 for j in range(trials):
                     si_rand = random.choice(sites)
                     if self._sites[si_rand]["state"]:
-                        si = si_rand
-                        break
+                        if (is_g==False and len(self._sites[si_rand]["o"])==2):
+                            pass  
+                        else: 
+                            si = si_rand                  
+                            break
             # Or use next binding site in given list
             else:
                 si = sites[i] if i<len(sites) else None
 
             # Place molecule on surface
-            if si is not None and self._sites[si]["state"]:
-                # Disable binding site
-                self._sites[si]["state"] = False
-               
-                # Create a copy of the molecule
-                mol_temp = copy.deepcopy(mol)
+            if si is not None and self._sites[si]["state"]: 
+                if (is_g==False and len(self._sites[si]["o"])==2):
+                    pass
+                else:
+                    # Disable binding site
+                    self._sites[si]["state"] = False
+                
+                    # Create a copy of the molecule
+                    mol_temp = copy.deepcopy(mol)
 
-                # Check if geminal
-                if len(self._sites[si]["o"])==2:
-                    mol_temp.add("O", mount, r=0.164, theta=45)
-                    mol_temp.add("H", mol_temp.get_num()-1, r=0.098)
-                    mol_temp.set_name(mol.get_name()+"g")
-                    mol_temp.set_short(mol.get_short()+"G")
+                    # Check if geminal
+                    if len(self._sites[si]["o"])==2:
+                        mol_temp.add("O", mount, r=0.164, theta=45)
+                        mol_temp.add("H", mol_temp.get_num()-1, r=0.098)
+                        mol_temp.set_name(mol.get_name()+"g")
+                        mol_temp.set_short(mol.get_short()+"G")
 
-                # Rotate molecule towards surface normal vector
-                surf_axis = self._sites[si]["normal"](self._block.pos(si))
-                mol_temp.rotate(geometry.cross_product([0, 0, 1], surf_axis), -geometry.angle([0, 0, 1], surf_axis))
+                    # Rotate molecule towards surface normal vector
+                    surf_axis = self._sites[si]["normal"](self._block.pos(si))
+                    mol_temp.rotate(geometry.cross_product([0, 0, 1], surf_axis), -geometry.angle([0, 0, 1], surf_axis))
 
-                # Move molecule to mounting position
-                mol_temp.move(mount, self._block.pos(si))
+                    # Move molecule to mounting position
+                    mol_temp.move(mount, self._block.pos(si))
 
-                # Add molecule to molecule list and global dictionary
-                mol_list.append(mol_temp)
-                if not mol_temp.get_short() in self._mol_dict[site_type]:
-                    self._mol_dict[site_type][mol_temp.get_short()] = []
-                self._mol_dict[site_type][mol_temp.get_short()].append(mol_temp)
+                    # Add molecule to molecule list and global dictionary
+                    mol_list.append(mol_temp)
+                    if not mol_temp.get_short() in self._mol_dict[site_type]:
+                        self._mol_dict[site_type][mol_temp.get_short()] = []
+                    self._mol_dict[site_type][mol_temp.get_short()].append(mol_temp)
 
-                # Remove bonds of occupied binding site
-                self._matrix.strip([si]+self._sites[si]["o"])
+                    # Remove bonds of occupied binding site
+                    self._matrix.strip([si]+self._sites[si]["o"])
 
-                # Recursively fill sites in proximity with silanol and geminal silanol
-                if is_proxi:
-                    proxi_list = [sites[x] for x in si_matrix[sites.index(si)]]
-                    if len(proxi_list) > 0:
-                        mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), site_type=site_type, is_proxi=False, is_random=False))
+                    # Recursively fill sites in proximity with silanol and geminal silanol
+                    if is_proxi:
+                        proxi_list = [sites[x] for x in si_matrix[sites.index(si)]]
+                        if len(proxi_list) > 0:
+                            mol_list.extend(self.attach(generic.silanol(), 0, [0, 1], proxi_list, len(proxi_list), site_type=site_type, is_proxi=False, is_random=False))
         return mol_list
 
     def siloxane(self, sites, amount, slx_dist=[0.507-1e-2, 0.507+1e-2], trials=1000, site_type="in"):

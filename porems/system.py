@@ -536,7 +536,7 @@ class PoreKit():
                         self._sort_list.append(mol.get_short())
                         
 
-    def attach(self, mol, mount, axis, amount, site_type="in", inp="num", shape="all", pos_list=[], scale=1, trials=1000, is_proxi=True, is_rotate=False):
+    def attach(self, mol, mount, axis, amount, site_type="in", inp="num", shape="all", pos_list=[], scale=1, trials=1000, is_proxi=True, is_rotate=False, is_g=True):
         """Attach molecule on the surface.
 
         Parameters
@@ -637,11 +637,11 @@ class PoreKit():
         # Attachment on exterior
         if site_type=="ex":
             sites = self._site_ex
-            mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+            mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate, is_g=is_g)
         # Attachment in interior (for a specific shape)
         elif site_type=="in" and shape!="all":
             sites = self._pore.sites_sl_shape[int(shape[-1])]
-            mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+            mols = self._pore.attach(mol, mount, axis, sites, amount, scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate, is_g=is_g)
             # Remove Si sites which are no longer free
             for i in self._pore.sites_sl_shape:
                 for si in self._pore.sites_sl_shape[i]:
@@ -660,7 +660,7 @@ class PoreKit():
         elif shape=="all" and site_type=="in":
             for sites_shape_idx in self._pore.sites_sl_shape:
                 sites = self._pore.sites_sl_shape[sites_shape_idx]
-                mols = self._pore.attach(mol, mount, axis, sites, amount_list[sites_shape_idx], scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate)
+                mols = self._pore.attach(mol, mount, axis, sites, amount_list[sites_shape_idx], scale, trials, pos_list=pos_list, site_type=site_type, is_proxi=is_proxi, is_random=True, is_rotate=is_rotate, is_g=is_g)
                 # Remove Si sites which are no longer free
                 for i in self._pore.sites_sl_shape:
                     for si in self._pore.sites_sl_shape[i]:
@@ -827,7 +827,7 @@ class PoreKit():
             elif shape[0] =="SPHERE":
                 length = self._shapes[i][1].get_inp()["diameter"]
             central   = self._shapes[i][1].get_inp()["central"]
-            print( shape[0], length)
+
             # Tolerance of centroid in z 
             if not shape[0] =="SPHERE":
                 z_min = centroid[2] - length/2 + 0.1
@@ -838,7 +838,6 @@ class PoreKit():
                 x_min = centroid_new[0] - 0.2
                 x_max = centroid_new[0] + 0.2
             elif shape[0]=="SPHERE":
-                #print(central)
                 z_min = centroid[2] - length/2 
                 z_max = centroid[2] + length/2 
 
@@ -896,7 +895,6 @@ class PoreKit():
 
         # Return diameter
         diam = [2*r for r in r_bar]
-        print(diam)
         return diam
 
     def roughness(self):
@@ -953,7 +951,6 @@ class PoreKit():
                 x_min = centroid_new[0] - 0.2
                 x_max = centroid_new[0] + 0.2
             elif shape[0]=="SPHERE":
-                #print(central)
                 z_min = centroid[2] - length/2 
                 z_max = centroid[2] + length/2 
 
@@ -1050,7 +1047,7 @@ class PoreKit():
         # Get diameters
         diam = self.diameter()
         diam = diam if isinstance(diam, list) else [diam]
-        print(diam)
+
         # Calculate volumes
         volume = []
         for i, shape in enumerate(self._shapes):
