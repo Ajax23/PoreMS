@@ -3,6 +3,9 @@
 The development of this project has moved to:  
 👉 [https://github.com/PoreMS/PoreMS](https://github.com/PoreMS/PoreMS)
 
+Please submit issues and pull requests there.
+
+
 
 <img src="https://github.com/Ajax23/PoreMS/blob/master/docsrc/pics/logo_text_sub.svg" width="60%">
 
