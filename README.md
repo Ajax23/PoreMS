@@ -1,3 +1,9 @@
+# ⚠️ This repository is no longer maintained
+
+The development of this project has moved to:  
+👉 [https://github.com/PoreMS/PoreMS](https://github.com/PoreMS/PoreMS)
+
+
 <img src="https://github.com/Ajax23/PoreMS/blob/master/docsrc/pics/logo_text_sub.svg" width="60%">
 
 --------------------------------------
